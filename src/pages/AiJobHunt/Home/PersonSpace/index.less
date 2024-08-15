@@ -1,0 +1,34 @@
+.list {
+  margin-top: 16px;
+  overflow: auto;
+  flex: 1;
+}
+
+.item {
+  height: 56px;
+  border-radius: 4px;
+  padding: 8px;
+  background: url('~@/assets/images/wordIcon.png') no-repeat 8px 12px / 32px
+    32px;
+  display: flex;
+  cursor: pointer;
+  justify-content: space-between;
+  align-items: center;
+
+  &:hover,
+  &.active {
+    background-color: #eef1ff;
+
+    :global([class^='file-item-container'] > div:first-child),
+    :global(.anticon) {
+      color: #5a73ff;
+    }
+  }
+}
+
+.search-icon {
+  background: url('~@/assets/images/searchIcon.png') no-repeat 0 0 / 16px;
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+}

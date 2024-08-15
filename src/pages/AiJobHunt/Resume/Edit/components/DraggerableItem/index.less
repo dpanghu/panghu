@@ -1,0 +1,42 @@
+.drag-content {
+  position: relative;
+
+  & + & {
+    margin-top: 16px;
+  }
+
+  &:hover .content-section-operate {
+    display: flex;
+  }
+}
+
+.content-section-operate {
+  position: absolute;
+  display: none;
+  width: 16px;
+  top: 0;
+  right: -16px;
+  height: 200px;
+  flex-direction: column;
+  gap: 4px;
+  padding-left: 4px;
+
+  span {
+    cursor: pointer;
+  }
+
+  &:hover {
+    display: flex;
+  }
+}
+
+@names: append, del, down, up;
+
+each(@names, {
+  .operate-icon-@{value} {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background: url(~'~@/assets/images/resume/@{value}Icon.png') no-repeat 0 0/16px 16px;
+  }
+});

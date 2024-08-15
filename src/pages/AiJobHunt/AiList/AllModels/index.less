@@ -1,0 +1,38 @@
+/* eslint-disable */
+// .col {
+//     background: url(../../../../assets/images/card.png);
+// }
+.cardGrid {
+    display: flex;
+    flex-wrap: wrap; // 允许列表项换行
+    justify-content: space-between; // 均匀分布列表项
+}
+
+.card {
+    width: 398px;
+    height: 166px;
+    background: url("../../../../assets/images/card.png");
+    position: relative;
+}
+
+.card:hover {
+    color: #1890ff;
+    border-color: #ff1818;
+}
+
+.cardContent {
+    width: 372px;
+    height: 140px;
+    position: absolute;
+    top: 8px;
+    left: 13px;
+}
+
+.cardNote {
+    //溢出隐藏
+    white-space: nowrap;
+    /* 防止文本换行 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /* 以省略号显示溢出的文本 */
+}

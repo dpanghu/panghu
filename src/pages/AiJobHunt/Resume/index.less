@@ -1,0 +1,58 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 8px;
+  padding-right: 24px;
+  height: 54px;
+  border: 1px solid rgba(0, 0, 0, 4%);
+
+  & > button {
+    border-width: 0;
+    font-size: 14px;
+    color: #333;
+    display: flex;
+    align-items: center;
+    padding-right: 0 !important;
+    box-shadow: none;
+
+    & > img {
+      width: 16px;
+      height: 16px;
+    }
+
+    & > div {
+      top: 0;
+    }
+  }
+}
+
+.basic-info {
+  display: flex;
+}
+
+.basic-avatar {
+  width: 100px;
+}
+
+.employment-intention {
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  background: white;
+  flex: 1;
+  overflow: auto;
+  padding: 24px 24px 0;
+}
+
+.header-button-group {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+
+  button {
+    width: 60px;
+  }
+}

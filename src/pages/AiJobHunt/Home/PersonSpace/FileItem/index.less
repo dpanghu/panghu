@@ -1,0 +1,49 @@
+.file-item-container {
+  padding: 4px 0 4px 48px;
+}
+
+.operate-btn {
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  font-size: 14px;
+  transform: rotateZ(90deg);
+}
+
+.popup-container {
+  width: 94px;
+
+  :global {
+    .ant-popover-inner {
+      padding: 8px;
+    }
+  }
+}
+
+.edit-btn {
+  height: 40px;
+  width: 78px;
+  display: flex;
+  align-items: center;
+  font-weight: 400;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 80%);
+  background: url('~@/assets/images/edit.png') no-repeat 8px 12px / 16px;
+  padding-left: 24px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #f7f8ff;
+    border-radius: 3px;
+  }
+}
+
+.input-edit {
+  border: 0;
+  background-color: transparent;
+  padding: 0;
+
+  &:focus {
+    box-shadow: none;
+  }
+}
