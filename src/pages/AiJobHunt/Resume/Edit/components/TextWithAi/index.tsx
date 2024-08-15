@@ -223,21 +223,30 @@ const TextWithAi: React.FC<Props> = ({
                   </pre>
                 </div>
               ) : (
-                <Typewriter
-                  onInit={(typewriter: TypewriterClass) => {
-                    state.isTyping = true;
-                    typeWriter.current = typewriter;
-                    typewriter
-                      .typeString('')
-                      .start()
-                      .callFunction(() => {
-                        state.isTyping = false;
-                      });
-                  }}
-                  options={{
-                    delay: 25,
-                  }}
-                />
+                <div
+                  className={classNames(
+                    sf.sPositionAbs,
+                    sf.sHFull,
+                    sf.sOvfYAuto,
+                    sf.sWFull,
+                  )}
+                >
+                  <Typewriter
+                    onInit={(typewriter: TypewriterClass) => {
+                      state.isTyping = true;
+                      typeWriter.current = typewriter;
+                      typewriter
+                        .typeString('')
+                        .start()
+                        .callFunction(() => {
+                          state.isTyping = false;
+                        });
+                    }}
+                    options={{
+                      delay: 25,
+                    }}
+                  />
+                </div>
               )}
             </div>
             {isTypeFinished && typewriterStrCache.current && (

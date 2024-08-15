@@ -63,7 +63,10 @@ export async function generatePlugin<T>(params?: RecordItem): Promise<T> {
   return $axios.request({
     url: '/xai/plugin/create',
     method: 'POST',
-    params,
+    params: {
+      ...params,
+      async: true,
+    },
     isJSON: true,
   });
 }
