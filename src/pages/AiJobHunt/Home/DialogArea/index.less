@@ -28,19 +28,38 @@
   display: inline-block;
   line-height: 24px;
   white-space: break-spaces;
-  margin-left: 40px;
+  margin-left: 16px;
   width: calc(100% - 40px);
   font-size: 14px;
   font-weight: 400;
   color: #272648;
 }
 
+@spanBg:{
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+}
+
 .message-from-user {
-  background: url('~@/assets/images/rebotIcon.png') no-repeat 0 0 / 24px 24px;
+  display: flex;
+
+  &::before{
+    content: '';
+    @spanBg();
+    border-radius: 50%;
+    background: url('~@/assets/images/avatar_passport.png') no-repeat 0 0 / 24px 24px;
+  }
 }
 
 .message-from-ai {
-  background: url('~@/assets/images/rebotIcon.png') no-repeat 0 0 / 24px 24px;
+  display: flex;
+  
+  &::before{
+    content: '';
+    @spanBg();
+    background: url('~@/assets/images/rebotIcon.png') no-repeat 0 0 / 24px 24px;
+  }
 
   & .message-area {
     color: #272648;

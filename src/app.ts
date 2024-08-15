@@ -12,10 +12,6 @@ export async function getInitialState() {
   const sessionStorageQs = window.sessionStorage.getItem('qs');
   if (search && search.startsWith('?qs=')) {
     const queryParams = await getQueryParam();
-    // TODO 修改userToken，上线后删除
-    queryParams.userToken = 'e4e01673792f38c01dbe2cbd0f0326db';
-    queryParams.userId = '112397075911544880';
-    queryParams.userType = 'PLATFORM';
     const paramId = await getConvertParamId(queryParams);
     window.sessionStorage.setItem(
       'queryParams',
