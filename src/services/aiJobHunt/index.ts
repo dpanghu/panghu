@@ -29,6 +29,16 @@ export async function getMyResult<T>(params?: RecordItem): Promise<T[]> {
   });
 }
 
+// 删除我的成果
+
+export async function deleteMyResult<T>(params?: RecordItem): Promise<T> {
+  return $axios.request({
+    url: '/xai/theme/del',
+    method: 'POST',
+    params,
+  });
+}
+
 // 获取主题下的聊天记录
 export async function getChatRecord<T>(params?: RecordItem): Promise<T[]> {
   return $axios.request({

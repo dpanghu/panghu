@@ -20,7 +20,7 @@
   }
 }
 
-.edit-btn {
+@btn: {
   height: 40px;
   width: 78px;
   display: flex;
@@ -28,7 +28,6 @@
   font-weight: 400;
   font-size: 14px;
   color: rgba(0, 0, 0, 80%);
-  background: url('~@/assets/images/edit.png') no-repeat 8px 12px / 16px;
   padding-left: 24px;
   cursor: pointer;
 
@@ -36,6 +35,16 @@
     background-color: #f7f8ff;
     border-radius: 3px;
   }
+};
+
+.edit-btn {
+  @btn();
+  background: url('~@/assets/images/edit.png') no-repeat 8px 12px / 16px;
+}
+
+.del-btn {
+  @btn();
+  background: url('~@/assets/images/delete.png') no-repeat 8px 12px / 16px;
 }
 
 .input-edit {

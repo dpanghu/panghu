@@ -15,6 +15,7 @@ type Props = {
   fileId: string;
   fileName: string;
   type: string;
+  onDelItem: (themeId: string) => void;
 };
 
 type TState = {
@@ -36,7 +37,7 @@ const FILE_STATUS = {
 
 const FILE_STATUS_NAME = ['生成中', '已生成', '生成失败'];
 
-const FileItem: React.FC<Props> = ({ fileId, fileName, type }) => {
+const FileItem: React.FC<Props> = ({ fileId, fileName, type, onDelItem }) => {
   const state = useReactive<TState>({
     status: FILE_STATUS.SUCCESS,
     result: '',
@@ -174,20 +175,30 @@ const FileItem: React.FC<Props> = ({ fileId, fileName, type }) => {
       <Popover
         overlayClassName={styles['popup-container']}
         content={
-          <div
-            className={styles['edit-btn']}
-            onClick={() => {
-              state.isEditing = true;
-              state.editName = state.name;
-              setTimeout(() => {
-                inputRef.current?.select();
-                inputRef.current?.focus();
-                state.popupVisible = false;
-              });
-            }}
-          >
-            重命名
-          </div>
+          <>
+            <div
+              className={styles['edit-btn']}
+              onClick={() => {
+                state.isEditing = true;
+                state.editName = state.name;
+                setTimeout(() => {
+                  inputRef.current?.select();
+                  inputRef.current?.focus();
+                  state.popupVisible = false;
+                });
+              }}
+            >
+              重命名
+            </div>
+            <div
+              className={styles['del-btn']}
+              onClick={() => {
+                onDelItem(fileId);
+              }}
+            >
+              删除
+            </div>
+          </>
         }
         trigger="click"
         open={state.popupVisible}
