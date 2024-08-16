@@ -112,8 +112,7 @@ const MessageSendArea: React.FC<Props> = ({
             className={styles.pluginItem}
             onClick={changePlugin(item)}
           >
-            {/* FIXME  后端返回的icon，暂时用其他的icon代替*/}
-            <img src={`/images/${item.code}Plugin.png`} alt="" />
+            <img src={`/bus_xai_web/images/${item.code}Plugin.png`} alt="" />
             <div>{item.name}</div>
           </div>
         ))}
