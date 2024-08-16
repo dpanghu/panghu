@@ -16,6 +16,7 @@ export default defineConfig({
       path: '/',
       layout: false,
       component: '@/pages/404',
+      redirect: '/aiJobHunt',
     },
     {
       path: '/aiJobHunt',
