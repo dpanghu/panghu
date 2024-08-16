@@ -208,25 +208,45 @@ const TextWithAi: React.FC<Props> = ({
                 ></span>
               )}
             </div>
-            <div className={classNames(sf.sFlex, sf.sFlex1)}>
+            <div className={classNames(sf.sFlex, sf.sFlex1, sf.sPositionRel)}>
               {isTypeFinished ? (
-                <div>{typewriterStrCache.current}</div>
+                <div
+                  className={classNames(
+                    sf.sPositionAbs,
+                    sf.sHFull,
+                    sf.sOvfYAuto,
+                    sf.sWFull,
+                  )}
+                >
+                  <pre style={{ whiteSpace: 'pre-wrap', margin: 0 }}>
+                    {typewriterStrCache.current}
+                  </pre>
+                </div>
               ) : (
-                <Typewriter
-                  onInit={(typewriter: TypewriterClass) => {
-                    state.isTyping = true;
-                    typeWriter.current = typewriter;
-                    typewriter
-                      .typeString('')
-                      .start()
-                      .callFunction(() => {
-                        state.isTyping = false;
-                      });
-                  }}
-                  options={{
-                    delay: 25,
-                  }}
-                />
+                <div
+                  className={classNames(
+                    sf.sPositionAbs,
+                    sf.sHFull,
+                    sf.sOvfYAuto,
+                    sf.sWFull,
+                  )}
+                >
+                  <Typewriter
+                    onInit={(typewriter: TypewriterClass) => {
+                      state.isTyping = true;
+                      typeWriter.current = typewriter;
+                      typewriter
+                        .typeString('')
+                        .start()
+                        .callFunction(() => {
+                          state.isTyping = false;
+                        });
+                    }}
+                    options={{
+                      delay: 25,
+                    }}
+                  />
+                </div>
               )}
             </div>
             {isTypeFinished && typewriterStrCache.current && (

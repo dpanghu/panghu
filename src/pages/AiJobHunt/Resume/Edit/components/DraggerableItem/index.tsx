@@ -17,6 +17,12 @@ type Props = {
   form: FormInstance;
 };
 
+const doNotDeleteOnlyOne = [
+  'educationalBackgroundList',
+  'internshipExperienceList',
+  'campusExperienceList',
+];
+
 const DraggableItem: React.FC<Props> = ({
   formName,
   form,
@@ -75,25 +81,33 @@ const DraggableItem: React.FC<Props> = ({
                           >
                             <div className={styles['content-section-operate']}>
                               <span
+                                title="添加"
                                 onClick={() =>
                                   add({ key: uniqueId() }, index + 1)
                                 }
                                 className={styles['operate-icon-append']}
                               ></span>
-                              <Popconfirm
-                                title="删除项目"
-                                description="是否确认呢删除该条信息?"
-                                onConfirm={() => {
-                                  remove(index);
-                                }}
-                                okText="确定"
-                                cancelText="取消"
-                              >
-                                <span
-                                  className={styles['operate-icon-del']}
-                                ></span>
-                              </Popconfirm>
+                              {(!doNotDeleteOnlyOne.includes(formName) ||
+                                (doNotDeleteOnlyOne.includes(formName) &&
+                                  fields.length > 1)) && (
+                                <Popconfirm
+                                  title="删除项目"
+                                  description="是否确认呢删除该条信息?"
+                                  onConfirm={() => {
+                                    remove(index);
+                                  }}
+                                  okText="确定"
+                                  cancelText="取消"
+                                >
+                                  <span
+                                    title="移除"
+                                    className={styles['operate-icon-del']}
+                                  ></span>
+                                </Popconfirm>
+                              )}
+
                               <span
+                                title="下移"
                                 onClick={() => {
                                   if (fields.length > index + 1) {
                                     reorder(index, index + 1);
@@ -102,6 +116,7 @@ const DraggableItem: React.FC<Props> = ({
                                 className={styles['operate-icon-down']}
                               ></span>
                               <span
+                                title="上移"
                                 className={styles['operate-icon-up']}
                                 onClick={() => {
                                   if (index > 0) {

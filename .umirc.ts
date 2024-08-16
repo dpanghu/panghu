@@ -1,6 +1,8 @@
 import { defineConfig } from '@umijs/max';
 
 export default defineConfig({
+  base: '/bus_xai_web/',
+  publicPath: '/bus_xai_web/',
   antd: {},
   access: {},
   model: {},
@@ -14,6 +16,7 @@ export default defineConfig({
       path: '/',
       layout: false,
       component: '@/pages/404',
+      redirect: '/aiJobHunt',
     },
     {
       path: '/aiJobHunt',
