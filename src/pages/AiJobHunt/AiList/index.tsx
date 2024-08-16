@@ -5,7 +5,9 @@ import { Input, Space, Button } from 'antd';
 import { Menu } from 'antd';
 import styles from './index.less';
 import AllModels from './AllModels/index';
-// import { HomeWork } from "@/assets/images/homework.png"
+import homeworkImg from '@/assets/images/homework.png';
+import searchImg from '@/assets/images/search.png';
+import selectImg from '@/assets/images/select.png';
 const suffix = (
   <SearchOutlined
     style={{
@@ -17,8 +19,9 @@ const suffix = (
 const AiList: React.FC = () => {
   const [data, setData] = React.useState<any>([]);
   const [list, setList] = React.useState<any>([]);
+  const [select, setSelect] = React.useState<any>(null);//用于控制点击渲染背景色
   const [selectedKey, setSelectedKey] = React.useState<string>();//子组件查询所需要的modelTypeId参数
-  const [selectedsKey, setSelectedsKey] = React.useState<string>();//子组件查询所需要的domainId参数
+  const [selectedsKey, setSelectedsKey] = React.useState<any>(null);//子组件查询所需要的domainId参数
   const [scrollKey, setScrollKey] = React.useState<string>();//用于控制子组件的重新渲染，滚动参数
   const [item, setItem] = React.useState<any>([]);//用于子组件渲染数据
   // 获取AI产品列表
@@ -32,13 +35,14 @@ const AiList: React.FC = () => {
       setList(res);
     })
   }, []); // 传入空数组，使副作用函数仅在组件挂载时执行一次  
-  const handleMenuClick = (key: string, items: any) => {
+  const handleMenuClick = (key: any, items: any) => {
     setSelectedKey(key);
     setScrollKey(key);
     setItem(items);
   };
-  const handleModelClick = (keys: string) => {
+  const handleModelClick = (keys: any) => {
     setSelectedsKey(keys);
+    setSelect(keys);
   }
   //scrollKey传到子组件后，子组件重新渲染，scrollKey清空
   const deletes = setInterval(() => {
@@ -50,7 +54,7 @@ const AiList: React.FC = () => {
   const items = data.map((item: any) => ({
     key: item.id,
     label: item.name,
-    icon: <img style={{ width: '16px', height: '16px' }} src="@/assets/images/homework.png" alt='' />,
+    icon: <img style={{ width: '16px', height: '16px' }} src={homeworkImg} alt='' />,
     onClick: () => handleMenuClick(item.id, items),
     children: item.children?.map((child: any) => ({
       // key: child.id,
@@ -70,25 +74,27 @@ const AiList: React.FC = () => {
         />
         <div className={styles.right}>
           <div className={styles.title}>
-            <p className={styles.titleName}><span className={styles.word} style={{ marginRight: '30px' }}>AI</span><span style={{ color: '#0417DB' }}>工具集</span></p>
-            <p className={styles.description}>精选AI产品，高效工作，乐享生活！</p>
+            <div className={styles.text}>
+              <p className={styles.titleName}><span className={styles.word} >AI</span><span style={{ color: '#0417DB' }}>工具集</span></p>
+              <p className={styles.description}>精选AI产品，高效工作，乐享生活！</p>
+            </div>
             <div className={styles.choice}>
               <div className={styles.models}>
-                <ul><li><img src="@/assets/images/buttn.png" alt="" /></li></ul>
+                <ul style={select === null ? { backgroundImage: `url(${selectImg})`, backgroundSize: '100% 100%', color: 'white' } : {}}><li onClick={() => handleModelClick(null)}>全部</li></ul>
                 {list.map((item: any) => (
-                  <ul><li onClick={() => handleModelClick(item.id)}>{item.name}</li></ul>
+                  <ul style={select === item.id ? { backgroundImage: `url(${selectImg})`, backgroundSize: '100% 100%', color: 'white' } : {}}><li onClick={() => handleModelClick(item.id)}>{item.name}</li></ul>
                 ))}
               </div>
               <div className={styles.search}>
                 <Space direction="vertical">
                   <Input className={styles.searchInput} placeholder="请输入搜索内容" allowClear suffix={suffix} style={{ width: 240, height: 32 }} />
                 </Space>
-                <Button className={styles.searchBtn} type="primary" danger><img src="@/assets/images/search.png" alt="" /><span className={styles.words}>新建</span></Button>
+                <Button className={styles.searchBtn} type="primary" danger><img src={searchImg} alt="" /><span className={styles.words}>新建</span></Button>
               </div>
             </div>
           </div>
           <div className={styles.contents}>
-            <AllModels items={item} activeKey={selectedKey} activesKey={selectedsKey} scrollKey={scrollKey}></AllModels>
+            <AllModels itemss={item} activeKey={selectedKey} activesKey={selectedsKey} scrollKey={scrollKey}></AllModels>
           </div>
         </div>
       </div >

@@ -26,7 +26,7 @@ export default defineConfig({
           title: 'XAI | ai求职',
         },
         {
-          path: '/aiJobHunt/aiList/:id',
+          path: '/aiJobHunt/aiList',
           component: '@/pages/AiJobHunt/AiList',
           exact: true,
           title: 'XAI | ai列表',
