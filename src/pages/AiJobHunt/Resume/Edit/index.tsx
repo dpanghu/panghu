@@ -22,7 +22,7 @@ type Props = {
 
 const Sections = [
   'employmentIntention',
-  'educationBackground',
+  'educationalBackgroundList',
   'internshipExperienceList',
   'campusExperienceList',
   'skill',
