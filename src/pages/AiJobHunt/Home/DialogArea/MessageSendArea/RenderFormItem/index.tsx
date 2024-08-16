@@ -8,7 +8,7 @@ import {
   Select,
   Upload,
 } from 'SeenPc';
-import sf from 'Seenpc/dist/esm/globalStyle/global.less';
+import sf from 'SeenPc/dist/esm/globalStyle/global.less';
 import { useReactive } from 'ahooks';
 import classNames from 'classnames';
 import React, { useEffect } from 'react';
