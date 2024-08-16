@@ -15,44 +15,41 @@ export default defineConfig({
     {
       path: '/',
       layout: false,
-      component: '@/pages/Layout',
+      component: '@/pages/404',
+    },
+    {
+      path: '/aiJobHunt',
+      component: '@/pages/AiJobHunt',
+      layout: false,
       routes: [
         {
           path: '/aiJobHunt',
-          component: '@/pages/AiJobHunt',
-          layout: false,
-          routes: [
-            {
-              path: '/aiJobHunt',
-              component: '@/pages/AiJobHunt/Home',
-              title: 'XAI | ai求职',
-            },
-            {
-              path: '/aiJobHunt/aiList/:id',
-              component: '@/pages/AiJobHunt/AiList',
-              exact: true,
-              title: 'XAI | ai列表',
-            },
-            {
-              path: '/aiJobHunt/resume/:id',
-              component: '@/pages/AiJobHunt/Resume',
-              exact: true,
-              title: 'XAI | ai简历',
-            },
-            {
-              path: '/aiJobHunt/interview/:id',
-              component: '@/pages/AiJobHunt/Interview',
-              exact: true,
-              title: 'XAI | ai面试',
-            },
-            {
-              component: '@/pages/404',
-            },
-          ],
+          component: '@/pages/AiJobHunt/Home',
+          title: 'XAI | ai求职',
+        },
+        {
+          path: '/aiJobHunt/aiList/:id',
+          component: '@/pages/AiJobHunt/AiList',
+          exact: true,
+          title: 'XAI | ai列表',
+        },
+        {
+          path: '/aiJobHunt/resume/:id',
+          component: '@/pages/AiJobHunt/Resume',
+          exact: true,
+          title: 'XAI | ai简历',
+        },
+        {
+          path: '/aiJobHunt/interview/:id',
+          component: '@/pages/AiJobHunt/Interview',
+          exact: true,
+          title: 'XAI | ai面试',
+        },
+        {
+          component: '@/pages/404',
         },
       ],
     },
-
     {
       component: '@/pages/404',
     },
