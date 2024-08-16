@@ -35,27 +35,28 @@
   color: #272648;
 }
 
-@spanBg:{
+@spanBg: {
   display: inline-block;
   width: 24px;
   height: 24px;
-}
+};
 
 .message-from-user {
   display: flex;
 
-  &::before{
+  &::before {
     content: '';
     @spanBg();
     border-radius: 50%;
-    background: url('~@/assets/images/avatar_passport.png') no-repeat 0 0 / 24px 24px;
+    background: url('~@/assets/images/avatar_passport.png') no-repeat 0 0 / 24px
+      24px;
   }
 }
 
 .message-from-ai {
   display: flex;
-  
-  &::before{
+
+  &::before {
     content: '';
     @spanBg();
     background: url('~@/assets/images/rebotIcon.png') no-repeat 0 0 / 24px 24px;
@@ -81,7 +82,7 @@
     padding: 26px 30px 20px;
     background: hsla(0deg, 0%, 100%, 80%);
     border-radius: 8px;
-    margin-left: 40px;
+    margin-left: 16px;
     font-weight: 400;
     font-size: 14px;
     color: #272648;
