@@ -15,7 +15,7 @@ export default defineConfig({
     {
       path: '/',
       layout: false,
-      component: '@/pages/layout',
+      component: '@/pages/Layout',
       routes: [
         {
           path: '/aiJobHunt',
