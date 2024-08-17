@@ -5,6 +5,7 @@ import { Input, Space, Button } from 'antd';
 import { Menu } from 'antd';
 import styles from './index.less';
 import AllModels from './AllModels/index';
+import { history } from 'umi';
 // import { HomeWork } from "@/assets/images/homework.png"
 const suffix = (
   <SearchOutlined
@@ -83,7 +84,9 @@ const AiList: React.FC = () => {
                 <Space direction="vertical">
                   <Input className={styles.searchInput} placeholder="请输入搜索内容" allowClear suffix={suffix} style={{ width: 240, height: 32 }} />
                 </Space>
-                <Button className={styles.searchBtn} type="primary" danger><img src="@/assets/images/search.png" alt="" /><span className={styles.words}>新建</span></Button>
+                <Button className={styles.searchBtn} type="primary" danger><img src="@/assets/images/search.png" alt="" /><span className={styles.words} onClick={()=> {
+                  history.push('/createAiModule');
+                }}>新建</span></Button>
               </div>
             </div>
           </div>
