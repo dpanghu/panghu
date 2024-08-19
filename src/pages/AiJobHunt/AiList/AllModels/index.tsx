@@ -22,7 +22,6 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
         lineHeight: '20px',
         textAlign: 'center',
         fontStyle: 'normal',
-        // background: 'rgba(116,139,255,0.1)',
         borderRadius: '4px',
       },
     },
@@ -37,7 +36,6 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
         lineHeight: '20px',
         textAlign: 'center',
         fontStyle: 'normal',
-        // background: 'rgba(116,139,255,0.1)',
         borderRadius: '4px',
       }
     },
@@ -52,7 +50,6 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
         lineHeight: '20px',
         textAlign: 'center',
         fontStyle: 'normal',
-        // background: 'rgba(116,139,255,0.1)',
         borderRadius: '4px',
       }
     },
@@ -67,7 +64,6 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
         lineHeight: '20px',
         textAlign: 'center',
         fontStyle: 'normal',
-        // background: 'rgba(116,139,255,0.1)',
         borderRadius: '4px',
       }
     },
@@ -137,7 +133,6 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
               <div className={styles.right}>
                 <div className={styles.cardPicture}>
                   <img src={eyeImg} alt="" />
-                  {/* <EllipsisOutlined className={styles.maohao} onClick={handleEditClick} />*/}
                   <Dropdown className={styles.maohao} autoAdjustOverflow={true} overlayStyle={{ width: '92px', height: '141px' }} menu={{ items }}>
                     <a onClick={(e) => e.preventDefault()}>
                       <Space>

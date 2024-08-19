@@ -13,7 +13,6 @@ const suffix = (
     style={{
       width: '13px',
       height: '13px',
-      // background: '#999999',
     }}
   />);
 const AiList: React.FC = () => {
@@ -61,7 +60,11 @@ const AiList: React.FC = () => {
       label: child.name,
     })) || undefined,
   }));
-
+  useEffect(() => {
+    if (data.length > 0) {
+      setSelectedKey(data[0].id);
+    }
+  }, [data]);
   return (
     <div className={styles.container}>
       <div className={styles.header}></div>
@@ -69,8 +72,9 @@ const AiList: React.FC = () => {
         <Menu
           className={styles.left}
           mode="inline"
+          defaultSelectedKeys={[selectedKey]}
+          selectedKeys={[selectedKey]}
           items={items}
-        // imgSrc="@/assets/images/homework.png"
         />
         <div className={styles.right}>
           <div className={styles.title}>

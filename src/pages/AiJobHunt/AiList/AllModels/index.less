@@ -1,22 +1,17 @@
 /* eslint-disable */
-// .col {
-//     background: url(../../../../assets/images/card.png);
-// }
 .cardGrid {
     display: flex;
     flex-wrap: wrap; // 允许列表项换行
-    justify-content: space-between; // 均匀分布列表项
+    // justify-content: space-between; // 均匀分布列表项
 }
 
 .card {
-    // width: 398px;
-    // height: 166px;
     background: url("../../../../assets/images/cards.png");
     border-radius: 8px;
     border: 1px solid linear-gradient(180deg, #EAEBFF 0%, #E8E9FF 100%);
-    margin-bottom: 24px;
+    margin: 0 25px 24px 0;
     box-shadow: 0px 4px 12px 0px rgba(102, 111, 197, 0.22);
-    // position: relative;
+
 }
 
 .card:hover {
@@ -25,25 +20,15 @@
 
 }
 
-// .cardContent:hover {
-//     color: #1890ff !important;
-//     border-radius: 8px;
-//     border-image: linear-gradient(156deg, rgba(255, 255, 255, 1), rgba(213, 191, 254, 1)) 1 1;
-// }
-
 .cardContent {
     width: 372px;
     height: 140px;
-    // position: absolute;
-    // top: 8px;
-    // left: 13px;
     display: flex;
 
     .left {
         width: 80px;
         height: 80px;
-        margin: 30px 0;
-        margin-left: 14px;
+        margin: 30px 0 30px 14px;
 
         img {
             width: 100%;
