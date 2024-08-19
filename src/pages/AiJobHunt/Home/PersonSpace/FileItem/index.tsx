@@ -76,6 +76,7 @@ const FileItem: React.FC<Props> = ({ fileId, fileName, type, onDelItem }) => {
             ? state.progress
             : state.progress + Math.floor(10 * Math.random());
       } else if (result!.status === FILE_STATUS.FAILURE) {
+        state.status = FILE_STATUS.FAILURE;
         cancel();
       }
     },
