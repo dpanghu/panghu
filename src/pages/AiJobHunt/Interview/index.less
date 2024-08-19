@@ -67,7 +67,7 @@
           height: 22px !important;
         }
 
-        .ant-btn > .anticon + span {
+        .ant-btn>.anticon+span {
           margin-inline-start: 0;
         }
       }
@@ -83,13 +83,15 @@
     white-space: break-spaces;
     display: inline-block;
 
-    // :global {
-    //     .Typewriter {
-    //         border: none;
-    //         padding: 0px;
-    //         max-width: 700px;
-    //     }
-    // }
+    :global {
+      .Typewriter {
+        border: none;
+        padding: 0px;
+        margin: 0px;
+        width: 100%;
+        max-width: 700px;
+      }
+    }
   }
 
   .aiBox {
@@ -128,6 +130,10 @@
 
       p {
         margin-bottom: 0;
+      }
+
+      .wel_box {
+        font-size: 16px;
       }
 
       .headTip {
@@ -182,8 +188,7 @@
       position: relative;
 
       :global {
-        .ant-input-textarea-affix-wrapper.ant-input-affix-wrapper
-          .ant-input-suffix {
+        .ant-input-textarea-affix-wrapper.ant-input-affix-wrapper .ant-input-suffix {
           position: absolute;
           right: 68px;
           bottom: -8px;
@@ -235,11 +240,9 @@
         cursor: pointer;
 
         &:hover {
-          background: linear-gradient(
-            90deg,
-            rgba(77, 108, 255, 70%) 0%,
-            rgba(119, 114, 255, 70%) 100%
-          );
+          background: linear-gradient(90deg,
+              rgba(77, 108, 255, 70%) 0%,
+              rgba(119, 114, 255, 70%) 100%);
         }
       }
     }
@@ -251,6 +254,7 @@
   }
 
   @keyframes blink {
+
     from,
     to {
       opacity: 1;
