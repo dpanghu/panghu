@@ -167,7 +167,9 @@ const TextWithAi: React.FC<Props> = ({
         }}
         placeholder={placeholder}
       />
-      <div className={styles['ai-btn']} onClick={send}></div>
+      {isTypeFinished && (
+        <div className={styles['ai-btn']} onClick={send}></div>
+      )}
       {state.visible && (
         <div className={styles['ai-content']}>
           <div
