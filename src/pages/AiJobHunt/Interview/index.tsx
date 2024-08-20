@@ -2,12 +2,14 @@ import goBack from '@/assets/images/goBack.png';
 import {
   exportInterview,
   getInterviewQuestionList,
+  getShowAIAnswer,
+  updateShowAIAnswer,
 } from '@/services/aiJobHunt';
 import { downloadFile } from '@/utils/utils';
 import { Button, message } from 'SeenPc';
 import { useCreation, useMount, useReactive } from 'ahooks';
 import { Input, Modal } from 'antd';
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import Typewriter from 'typewriter-effect';
 import { history, useParams } from 'umi';
 import EventSourceStream from '../Home/DialogArea/EventSourceStream';
@@ -30,7 +32,7 @@ type TState = {
   btnLoading: boolean;
 };
 const Interview: React.FC = ({ }) => {
-  const params = useParams<{ id?: string }>();
+  const params = useParams<{ paramId?: string; themeId?: string }>();
   const queryData = useCreation(() => {
     return JSON.parse(window.sessionStorage.getItem('queryParams') || '{}');
   }, []);
@@ -115,6 +117,15 @@ const Interview: React.FC = ({ }) => {
     });
   };
 
+  //获取参考答案和AI点评
+  const getInterviewQuestionLists = () => {
+    getInterviewQuestionList({ paramId: params.paramId }).then((res) => {
+      res.forEach((item: any) => {
+        state.ReferenceAnswers = [...state.ReferenceAnswers, item.aiAnswer];
+        state.AIComments = [...state.AIComments, item.aiComment];
+      });
+    });
+  }
   const handleShowReferenceAnswers = () => {
     if (state.isLoading) {
       state.btnLoading = true;
@@ -126,16 +137,21 @@ const Interview: React.FC = ({ }) => {
         state.ReferenceAnswers = [];
         state.AIComments = [];
       } else {
-        getInterviewQuestionList({ paramId: params.id }).then((res) => {
-          res.forEach((item: any) => {
-            state.ReferenceAnswers = [...state.ReferenceAnswers, item.aiAnswer];
-            state.AIComments = [...state.AIComments, item.aiComment];
-          });
-          state.showReferenceAnswers = true;
-        });
+        getInterviewQuestionLists();
+        state.showReferenceAnswers = true;
       }
     }
   };
+
+  const prevBtnLoading = useRef(false);
+
+  useEffect(() => {
+    if (!state.btnLoading && prevBtnLoading.current) {
+      getInterviewQuestionLists();
+      state.showReferenceAnswers = true;
+    }
+    prevBtnLoading.current = state.btnLoading;
+  }, [state.btnLoading]);
 
   const handleShowAIComments = () => {
     if (state.showAIComments) {
@@ -145,14 +161,14 @@ const Interview: React.FC = ({ }) => {
     }
   };
   const downLoadInterview = () => {
-    exportInterview({ paramId: params.id }).then((res: any) => {
+    exportInterview({ paramId: params.paramId }).then((res: any) => {
       downloadFile(res);
     });
   };
 
   const getInterviewQuestion = () => {
-    if (params.id) {
-      getInterviewQuestionList({ paramId: params.id })
+    if (params.paramId) {
+      getInterviewQuestionList({ paramId: params.paramId })
         .then((res) => {
           state.data = res;
         })
@@ -175,9 +191,32 @@ const Interview: React.FC = ({ }) => {
         });
     }
   };
+  const getShowAIAnswers = () => {
+    getShowAIAnswer({ themeId: params.themeId }).then((res: any) => {
+      state.showReferenceAnswers = res.aiAnswer === 1 ? true : false
+      state.showAIComments = res.aiComment === 1 ? true : false
+      if (res.aiAnswer === 1) {
+        getInterviewQuestionLists()
+      }
+    })
+  }
+  const updateShowAIAnswers = () => {
+    updateShowAIAnswer({
+      themeId: params.themeId,
+      aiAnswer: state.showReferenceAnswers ? 1 : 0,
+      aiComment: state.showAIComments ? 1 : 0
+    }).then((res) => console.log(res))
+  }
   useMount(() => {
     getInterviewQuestion();
+    getShowAIAnswers();
   });
+
+  useEffect(() => {
+    return () => {
+      updateShowAIAnswers();
+    }
+  }, [])
 
   return (
     <div className={styles.interviewContainer}>
@@ -305,7 +344,7 @@ const Interview: React.FC = ({ }) => {
               onChange={(e) => (state.message = e.target.value)}
             />
             <div className={styles.inputFooter}>
-              <Button type="primary" onClick={handleAnswerSubmit}>
+              <Button type="primary" onClick={handleAnswerSubmit} disabled={state.showBtn}>
                 发送
               </Button>
             </div>
