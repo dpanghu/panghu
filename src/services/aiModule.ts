@@ -8,3 +8,11 @@ export async function saveAiModule<T>(params?: RecordItem): Promise<T> {
     params,
   });
 }
+
+export async function iconList<T>(params?: RecordItem): Promise<T> {
+  return $axios.request({
+    url: '/xai/xai/plugin/icon/list',
+    method: 'GET',
+    params,
+  });
+}

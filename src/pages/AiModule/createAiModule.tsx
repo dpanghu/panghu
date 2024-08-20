@@ -10,7 +10,7 @@ import selectImg from '@/assets/images/selectImgs.png';
 import radioImgs from '@/assets/images/radioImgs.png';
 import checkboxImgs from '@/assets/images/checkboxImgs.png';
 import { history } from 'umi';
-import { saveAiModule } from '@/services/aiModule';
+import { saveAiModule, iconList } from '@/services/aiModule';
 import { getAIProductList, getAllAIModel } from '@/services/aiJobHunt';
 import { CloseOutlined, DeleteOutlined, LeftOutlined } from '@ant-design/icons';
 
@@ -32,6 +32,7 @@ type IState = {
   saveData: any;
   iconImg: any;
   modelTypeIdData: any;
+  iconData: any;
 };
 const Resume: React.FC = ({ }) => {
   const state = useReactive<IState>({
@@ -40,7 +41,7 @@ const Resume: React.FC = ({ }) => {
     draggleData: {},
     portfolioOption: '',
     modelTypeIdData: [],
-    open2: true,
+    open2: false,
     option: [],
     open1: false,
     iconImg: '',
@@ -49,6 +50,7 @@ const Resume: React.FC = ({ }) => {
     },
     moveStartIndex: '',
     open: false,
+    iconData: [],
     modalData: {
       name: '',
       keys: '',
@@ -60,6 +62,16 @@ const Resume: React.FC = ({ }) => {
     ],
   });
   useMount(() => {
+    iconList({
+      userId: '1',
+      memberId: '1',
+      schoolId: '1',
+    }).then((res: any)=> {
+      console.log(res);
+      // state.iconImg = res[0]?.icon;
+      // res[0].choose = true;
+      state.iconData = res;
+    })
     getAIProductList({
       userId: '1',
       memberId: '1',
@@ -412,14 +424,39 @@ const Resume: React.FC = ({ }) => {
 
   return (
     <div className={styles.container}>
-      <Modal open={state.open2} title={'图标选择'} width={600} maskClosable={false} cancelText={'取消'}
+      <Modal open={state.open2} title={'图标选择'} width={822} maskClosable={false} cancelText={'取消'}
         okText={'确定'}
         onOk={() => {
-          save();
+          let chooseIcon: any = state.iconData.find((item: any)=> item.choose === true);
+          if(chooseIcon === void 0) {
+            message.warning('请至少选择一个图标');
+            return;
+          }
+          console.log('choose',chooseIcon);
+          state.open2 = false;
+          state.iconImg = chooseIcon.icon;
         }}
         onCancel={() => {
           state.open1 = false;
-        }}></Modal>
+        }}>
+           <div style={{ display:'flex',flexWrap:'wrap' }}>
+             {
+              state.iconData && state.iconData.map((el: any)=> {
+                return <div onClick={()=> {
+                  let cloneIcon: any = state.iconData;
+                  cloneIcon.forEach((element: any) => {
+                    element.choose = false;
+                  });
+                  el.choose = true;
+                  console.log('staef',JSON.stringify(cloneIcon));
+                  state.iconData = cloneIcon;
+                }} key={el.id} style={{ width: 70, height: 70,marginTop: 24,marginLeft: 24, cursor:'pointer', boxShadow:'0 2px 6px 0 rgba(0,0,0,.15)',padding: 5,borderRadius: 3,border: el.choose ? '1px solid rgb(86, 114, 255)' : 'none' }}>
+                   <img src={el.icon} style={{ width:"100%",height:'100%' }}></img>
+                </div>
+              })
+             }
+           </div>
+        </Modal>
       <Modal open={state.open1} title={'保存'} width={600} maskClosable={false} cancelText={'取消'}
         okText={'保存'}
         onOk={() => {
@@ -603,9 +640,13 @@ const Resume: React.FC = ({ }) => {
               <div className={styles.textBox}>
                 <h3 style={{ width: 90 }}><span style={{ color: 'red', marginRight: 5 }}>*</span>场景图标</h3>
                 {
-                  state.iconImg === '' ? <span style={{ fontSize: 14, color: '#5A73FF', marginLeft: 0, cursor: 'pointer' }}>点击选择</span> : <>
-                    <img src={''} style={{ width: 40, height: 40, borderRadius: 2 }}></img>
-                    <span style={{ fontSize: 14, color: '#5A73FF', marginLeft: 15 }}>替换</span>
+                  state.iconImg === '' ? <span style={{ fontSize: 14, color: '#5A73FF', marginLeft: 0, cursor: 'pointer' }} onClick={()=> { 
+                    state.open2 = true;
+                   }}>点击选择</span> : <>
+                    <img src={state.iconImg} style={{ width: 40, height: 40, borderRadius: 2 }}></img>
+                    <span onClick={()=> {
+                      state.open2 = true;
+                    }} style={{ fontSize: 14,cursor: 'pointer', color: '#5A73FF', marginLeft: 15 }}>替换</span>
                   </>
                 }
               </div>
