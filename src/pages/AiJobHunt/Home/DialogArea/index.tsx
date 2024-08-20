@@ -125,6 +125,7 @@ const DialogArea = React.forwardRef(
       if (msg.pluginCode) {
         generatePlugin({
           ...msg,
+          userType:'PLATFORM',
           themeId: curDialogId.current,
           conversationId: conversationId.current,
         }).then(() => {
@@ -238,7 +239,7 @@ const DialogArea = React.forwardRef(
             onSubmit={(msg) => {
               submitChat(msg);
             }}
-            onChangePlugin={() => {}}
+            onChangePlugin={() => { }}
           />
         </div>
         <div className={styles['warning-message']}>

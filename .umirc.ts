@@ -29,6 +29,11 @@ export default defineConfig({
       component: '@/pages/AiModule/AiScene',
     },
     {
+      path: '/OCR',
+      layout: false,
+      component: '@/pages/AiOCR',
+    },
+    {
       path: '/aiJobHunt',
       component: '@/pages/AiJobHunt',
       layout: false,
