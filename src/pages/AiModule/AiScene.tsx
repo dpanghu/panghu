@@ -79,7 +79,7 @@ const JobHunt: React.FC = () => {
 
   useMount(() => {
     let qsData: any = getQueryParam();
-    if (qsData.code !== 'resume' && qsData.code !== 'picRecognition') {
+    if (qsData.code !== 'resume' && qsData.code !== 'picRecognition' && qsData.code !== 'aiInterviewer') {
       getPluginDetail({
         id: qsData.code,
         userId: '1',
@@ -89,7 +89,7 @@ const JobHunt: React.FC = () => {
         state.data = JSON.parse(res.param?.params);
         state.aiData = res;
       })
-    }else if(qsData.code === 'resume') {
+    }else if(qsData.code === 'resume' || qsData.code === 'aiInterviewer') {
        history.push('/aiJobHunt');
     }
   });
