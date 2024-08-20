@@ -9,7 +9,6 @@
 .left {
     width: 166px;
     height: 100%;
-    // margin-top: 48px;
     background: #FFFFFF;
     font-family: PingFangSC, PingFang SC;
     font-weight: 400;
@@ -22,21 +21,9 @@
     :hover {
         color: #3f85fa;
     }
-
-    // :hover {
-    //     color: #3f85fa;
-    //     cursor: pointer; 
-    // }
-    // position: fixed; /* 固定位置 */
-    // top: 0;
-    // left: 0;
-    // bottom: 0;
-    // overflow-y: auto; /* 如果内容过多，允许垂直滚动 */
-    // z-index: 1000; /* 确保菜单在内容上方 */
 }
 
 .container {
-    // display: flex;
     width: 100%;
     height: 100%;
 }
@@ -49,16 +36,10 @@
 .content {
     width: 100%;
     height: calc(100% - 48px);
-    // margin-top: 48px;
     display: flex;
 }
 
 .right {
-    // flex: 1;
-    // padding: 10px;
-    // border: 1px solid #f7f5f5;
-    // margin-top: 48px;
-    // border-radius: 4px;
     height: 100%;
     margin-left: 0px;
     /* 确保右侧内容不被菜单遮挡 */
@@ -80,17 +61,13 @@
         margin: 3px 54px;
         display: flex;
         flex-wrap: wrap;
-        // justify-content: center;
-
         margin-top: 21px;
         position: relative;
 
         .models {
-            // width: 678px;
             font-size: 14px;
             display: flex;
             flex-wrap: wrap;
-            // border: 1px dashed;
             background: url('@/../../../../assets/images/listbackground.png');
             background-size: cover;
 
@@ -99,56 +76,31 @@
                 display: flex;
                 flex-wrap: wrap; // 允许列表项换行
                 justify-content: space-between; // 均匀分布列表项
-                // width: 60px;
-                // height: 24px;
                 margin: 0;
             }
 
             li {
+                cursor: pointer;
                 box-sizing: border-box;
                 list-style-type: none;
-                // margin: 7px 0;
-                // margin-left: 2px;
-                // margin-right: 32px;
                 font-family: PingFangSC, PingFang SC;
                 font-weight: 400;
-                // font-size: 14px;
-                // color: #333333;
-                // line-height: 18px;
                 text-align: left;
                 font-style: normal;
-                // line-height: 30px;
-                // width: 100px;
-                // height: 30px;
-                // border: 1px solid #dcdfe6;
-                // border-radius: 150px;
-                // margin-right: 5px;
-
-                // @media (max-width: 900px) {
-                //     // 针对小屏幕
-                //     width: auto; // 例如，在小屏幕上每个列表项占 45% 的宽度
-                //     height: auto;
-                //     line-height: auto;
-                //     margin-right: 5px; // 小屏幕上的右边距
-                // }
             }
 
             li:hover {
                 background: rgba(64, 158, 255, .06);
-                // border-color: #409eff;
                 color: #409eff;
             }
         }
 
         .search {
-            // top: 0;
             position: absolute;
             right: 0;
             width: 335px;
             height: 32px;
-            // width: 100%;
-            // height: 100%;
-            line-height: 32px;
+            line-height: 30px;
 
             .searchInput {
                 margin-right: 16px;
@@ -171,9 +123,8 @@
                 img {
                     width: 14px;
                     height: 14px;
-                    margin-right: 8px;
                     line-height: 32px;
-                    margin-bottom: 13px;
+                    margin: 0 8px 13px 0;
                 }
 
                 .words {
@@ -185,7 +136,6 @@
                     font-weight: 400;
                     font-size: 14px;
                     color: #FFFFFF;
-                    // line-height: 32px;
                     text-align: left;
                     font-style: normal;
                 }
@@ -195,25 +145,16 @@
 }
 
 .contents {
-    // margin-top: 30px;
-    // margin-left: 54px;
-    // margin-bottom: 105px;
-    // margin-right: 54px;
     margin: 30px 54px 105px;
 }
 
 .word {
-    // background: linear-gradient(138deg, #36d2a7 30%, #256af2 36%, #9c5888 85%, #9c5888);
     background: linear-gradient(344deg, #0417DB 0%, #08AFFF 75%, #FF00FC 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
 .text {
-    // text-align: center;
-    // display: flex;
-    // justify-content: center;
-    // align-items: center;
     margin-top: 44px;
     width: 100%;
 
@@ -227,10 +168,7 @@
         line-height: 22px;
         text-align: left;
         font-style: normal;
-        // margin-left: 525px;
-        margin-top: 8px;
-        margin-bottom: 18px;
-        // display: inline-block;
+        margin: 8px 0 18px;
         text-align: center;
     }
 
@@ -240,9 +178,5 @@
         width: 100%;
         height: 22px;
         text-align: center;
-        // display: inline-block;
-        // margin-top: 44px;
-        // margin-left: 587px;
-        // background: linear-gradient(344deg, #0417DB 0%, #08AFFF 75%, #FF00FC 100%);
     }
 }
