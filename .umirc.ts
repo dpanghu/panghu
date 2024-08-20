@@ -19,6 +19,11 @@ export default defineConfig({
       redirect: '/aiJobHunt',
     },
     {
+      path: '/createAiModule',
+      layout: false,
+      component: '@/pages/AiModule/createAiModule',
+    },
+    {
       path: '/aiJobHunt',
       component: '@/pages/AiJobHunt',
       layout: false,
@@ -29,7 +34,7 @@ export default defineConfig({
           title: 'XAI | ai求职',
         },
         {
-          path: '/aiJobHunt/aiList',
+          path: '/aiJobHunt/AiList',
           component: '@/pages/AiJobHunt/AiList',
           exact: true,
           title: 'XAI | ai列表',
