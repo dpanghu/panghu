@@ -55,7 +55,7 @@ const AiList: React.FC = () => {
   const items = data.map((item: any) => ({
     key: item.id,
     label: item.name,
-    icon: <img style={{ width: '16px', height: '16px' }} src={homeworkImg} alt='' />,
+    icon: <img style={{ width: '16px', height: '16px' }} src={item.icon} alt='' />,
     onClick: () => handleMenuClick(item.id, items),
     children: item.children?.map((child: any) => ({
       // key: child.id,

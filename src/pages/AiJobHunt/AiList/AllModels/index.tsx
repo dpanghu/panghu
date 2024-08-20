@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, } from 'react';
 import { Card } from 'antd';
-import { getAICardDetail } from '@/services/aiJobHunt'
+import { getAICardDetail, deletePlugin } from '@/services/aiJobHunt'
 import styles from './index.less';
-import { EllipsisOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Dropdown, Space } from 'antd';
-import xinImg from '@/assets/images/xin.png';
 import eyeImg from '@/assets/images/eye.png';
+import maohaoImg from '@/assets/images/maohao.png';
+// import message from 'antd';
 
 const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey: string | null; scrollKey: string | null }> = ({ itemss, activeKey, activesKey, scrollKey }) => {
 
@@ -24,6 +24,9 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
         fontStyle: 'normal',
         borderRadius: '4px',
       },
+      onClick: () => {
+        console.log('发布');
+      }
     },
     {
       label: '编辑',
@@ -51,6 +54,9 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
         textAlign: 'center',
         fontStyle: 'normal',
         borderRadius: '4px',
+      },
+      onClick: () => {
+        console.log('复制');
       }
     },
     {
@@ -65,7 +71,46 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
         textAlign: 'center',
         fontStyle: 'normal',
         borderRadius: '4px',
-      }
+      },
+      // onClick: () => {
+      //   const keyToDelete = data.find((item: any) => item.id)?.id;
+      //   deletePlugin({
+      //     userId: 1,
+      //     userToken: 2,
+      //     schoolId: 3,
+      //     memberId: 5,
+      //     pluginId: keyToDelete
+      //   }).then((res) => {
+      //     message.info({
+      //       type: 'success',
+      //       content: '删除成功',
+      //     });
+      //     if (activeKey && activesKey) {
+      //       getAICardDetail({
+      //         userId: 1,
+      //         userToken: 2,
+      //         schoolId: 3,
+      //         memberId: 5,
+      //         domainId: activesKey,
+      //         modelTypeId: activeKey
+      //       }).then((res) => {
+      //         setData(res);
+      //         // console.log('res', res);
+      //       });
+      //     }
+      //     else if (activeKey && activesKey === null) {
+      //       getAICardDetail({
+      //         userId: 1,
+      //         userToken: 2,
+      //         schoolId: 3,
+      //         memberId: 5,
+      //       }).then((res) => {
+      //         setData(res);
+      //         // console.log('res', res);
+      //       });
+      //     }
+      //   })
+      // }
     },
   ];
   const [data, setData] = React.useState<any>([]);
@@ -81,7 +126,7 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
         modelTypeId: activeKey
       }).then((res) => {
         setData(res);
-        console.log('res', res);
+        // console.log('res', res);
       });
     }
     else if (activeKey && activesKey === null) {
@@ -92,7 +137,7 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
         memberId: 5,
       }).then((res) => {
         setData(res);
-        console.log('res', res);
+        // console.log('res', res);
       });
     }
   }, [activeKey, activesKey]);
@@ -106,9 +151,9 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
       }
     }
   }, [scrollKey]);
-  const handleEditClick = () => {
-    console.log('修改')
-  }
+  // const handleEditClick = () => {
+  //   console.log('修改')
+  // }
   return (
     <div ref={contentRef}>
       {/* {itemss.map((item, index) => (
@@ -124,19 +169,19 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
         ))}
       </Row> */}
       <div className={styles.cardGrid}>
-        {data.map((item) => (
-          <Card.Grid key={item.id} className={styles.card} hoverable={true} onClick={handleEditClick}>
+        {data.map((item: any) => (
+          <Card.Grid key={item.id} className={styles.card} hoverable={true}>
             <div className={styles.cardContent}>
               <div className={styles.left}>
-                <img src={xinImg} alt="" />
+                <img src={item.icon} alt="" />
               </div>
               <div className={styles.right}>
                 <div className={styles.cardPicture}>
-                  <img src={eyeImg} alt="" />
+                  <img className={styles.eye} src={eyeImg} alt="" />
                   <Dropdown className={styles.maohao} autoAdjustOverflow={true} overlayStyle={{ width: '92px', height: '141px' }} menu={{ items }}>
                     <a onClick={(e) => e.preventDefault()}>
                       <Space>
-                        <EllipsisOutlined />
+                        <img src={maohaoImg} alt="" />
                       </Space>
                     </a>
                   </Dropdown>
