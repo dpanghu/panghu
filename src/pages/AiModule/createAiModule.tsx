@@ -112,23 +112,23 @@ const Resume: React.FC = ({ }) => {
           dataType: 'string',
           options: item.option,
         });
-      } else if (item.type === 'treeSelect') {
+      } else if (item.type === 'radio') {
         paramsArr.push({
           name: `ai${index}`,
           required: 'true',
           displayName: item.title,
           decimalLength: 0,
-          elementType: 'select',
+          elementType: 'treeSelect',
           dataType: 'string',
           options: item.option,
         });
-      } else if (item.type === 'selectCheck') {
+      } else if (item.type === 'checkbox') {
         paramsArr.push({
           name: `ai${index}`,
           required: 'true',
           displayName: item.title,
           decimalLength: 0,
-          elementType: 'select',
+          elementType: 'selectCheck',
           dataType: 'string',
           options: item.option,
         });
