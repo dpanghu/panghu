@@ -173,6 +173,7 @@ const Resume: React.FC = ({ }) => {
           state.draggleData.type = 5;
           state.moveStartIndex = index;
         }} draggable onClick={() => {
+          state.tabId = '1';
           state.chooseData = item;
         }}>
           <div className={styles.close} onClick={() => {
@@ -211,6 +212,7 @@ const Resume: React.FC = ({ }) => {
             }
           }
         }} onClick={() => {
+          state.tabId = '1';
           state.chooseData = item;
         }}>
           <div className={styles.close} onClick={() => {
@@ -256,6 +258,7 @@ const Resume: React.FC = ({ }) => {
             }
           }
         }} onClick={() => {
+          state.tabId = '1';
           state.chooseData = item;
         }}>
           <div className={styles.close} onClick={() => {
@@ -298,6 +301,7 @@ const Resume: React.FC = ({ }) => {
             }
           }
         }} onClick={() => {
+          state.tabId = '1';
           state.chooseData = item;
         }}>
           <div className={styles.close} onClick={() => {
