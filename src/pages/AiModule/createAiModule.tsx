@@ -140,6 +140,7 @@ const Resume: React.FC = ({ }) => {
       memberId: '1',
       schoolId: '1',
       ...state.saveData,
+      icon: state.iconImg,
       params: JSON.stringify(paramsArr),
     }
     saveAiModule({
