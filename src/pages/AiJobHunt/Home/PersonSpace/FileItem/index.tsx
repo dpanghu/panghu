@@ -76,6 +76,7 @@ const FileItem: React.FC<Props> = ({ fileId, fileName, type, onDelItem }) => {
             ? state.progress
             : state.progress + Math.floor(10 * Math.random());
       } else if (result!.status === FILE_STATUS.FAILURE) {
+        state.status = FILE_STATUS.FAILURE;
         cancel();
       }
     },
@@ -144,11 +145,15 @@ const FileItem: React.FC<Props> = ({ fileId, fileName, type, onDelItem }) => {
         ) : (
           <div
             className={classNames(sf.sFs14, sf.sColorGrey3, sf.sMrB4)}
-            onClick={() =>
-              type === 'resume'
-                ? history.push('/AiJobHunt/resume/' + fileId)
-                : history.push('/AiJobHunt/interview/' + paramId)
-            }
+            onClick={() => {
+              if (state.status === FILE_STATUS.SUCCESS) {
+                if (type === 'resume') {
+                  history.push('/AiJobHunt/resume/' + fileId);
+                } else {
+                  history.push('/AiJobHunt/interview/' + paramId);
+                }
+              }
+            }}
           >
             {state.name}
           </div>

@@ -12,6 +12,7 @@ import Typewriter from 'typewriter-effect';
 import { history, useParams } from 'umi';
 import EventSourceStream from '../Home/DialogArea/EventSourceStream';
 import styles from './index.less';
+import PageLoading from '@/components/PageLoading';
 
 type TState = {
   data: any[];
@@ -26,8 +27,9 @@ type TState = {
   problemId: string;
   isLoading: boolean;
   isType: boolean;
+  btnLoading: boolean;
 };
-const Interview: React.FC = ({}) => {
+const Interview: React.FC = ({ }) => {
   const params = useParams<{ id?: string }>();
   const queryData = useCreation(() => {
     return JSON.parse(window.sessionStorage.getItem('queryParams') || '{}');
@@ -45,6 +47,7 @@ const Interview: React.FC = ({}) => {
     problemId: '',
     isLoading: false,
     isType: false,
+    btnLoading: false,
   });
   const submitUserAnswer = () => {
     state.isLoading = true;
@@ -69,12 +72,13 @@ const Interview: React.FC = ({}) => {
         // 结束，包括接收完毕所有数据、报错、关闭链接
         onFinished: () => {
           state.isLoading = false;
+          state.btnLoading = false;
         },
         onError: (error) => {
           console.log(error);
         },
         // 接收到数据
-        receiveMessage: () => {},
+        receiveMessage: () => { },
       },
     ).run();
     state.answers = [
@@ -84,6 +88,7 @@ const Interview: React.FC = ({}) => {
     state.message = '';
     state.isType = true;
     state.currentQuestionIndex += 1;
+    state.problemId = state.data[state.currentQuestionIndex]?.id;
     if (state.currentQuestionIndex === state.data.length) {
       state.showBtn = true;
     }
@@ -106,28 +111,38 @@ const Interview: React.FC = ({}) => {
       onOk() {
         submitUserAnswer();
       },
-      onCancel() {},
+      onCancel() { },
     });
   };
 
   const handleShowReferenceAnswers = () => {
-    if (state.showReferenceAnswers || state.isLoading) {
-      return;
+    if (state.isLoading) {
+      state.btnLoading = true;
+    } else {
+      state.btnLoading = false;
+      if (state.showReferenceAnswers) {
+        state.showReferenceAnswers = false;
+        state.showAIComments = false;
+        state.ReferenceAnswers = [];
+        state.AIComments = [];
+      } else {
+        getInterviewQuestionList({ paramId: params.id }).then((res) => {
+          res.forEach((item: any) => {
+            state.ReferenceAnswers = [...state.ReferenceAnswers, item.aiAnswer];
+            state.AIComments = [...state.AIComments, item.aiComment];
+          });
+          state.showReferenceAnswers = true;
+        });
+      }
     }
-    getInterviewQuestionList({ paramId: params.id }).then((res) => {
-      res.forEach((item: any) => {
-        state.ReferenceAnswers = [...state.ReferenceAnswers, item.aiAnswer];
-        state.AIComments = [...state.AIComments, item.aiComment];
-      });
-      state.showReferenceAnswers = true;
-    });
   };
 
   const handleShowAIComments = () => {
     if (state.showAIComments) {
-      return;
+      state.showAIComments = false;
+    } else {
+      state.showAIComments = true;
     }
-    state.showAIComments = true;
   };
   const downLoadInterview = () => {
     exportInterview({ paramId: params.id }).then((res: any) => {
@@ -166,6 +181,9 @@ const Interview: React.FC = ({}) => {
 
   return (
     <div className={styles.interviewContainer}>
+      {
+        state.btnLoading && <PageLoading />
+      }
       <div className={styles.top}>
         <div className={styles.topLeft}>
           <Button onClick={() => history.push('/aiJobHunt')}>
@@ -181,10 +199,10 @@ const Interview: React.FC = ({}) => {
         <div className={styles.interviewContent} id="interview_container">
           <div className={styles.aiBox}>
             <div className={styles.box}>
-              <p>
+              <p className={styles.welBox}>
                 欢迎参加本次面试，我是您的AI面试官，在接下来的时间里，我将通过一系列问题来了解您的专业技能、工作经验以及个人能力。
               </p>
-              <p className={styles.head_tip}>
+              <p className={styles.headTip}>
                 请您认真审题，并在思考后，清晰、详细的进行回答。
               </p>
             </div>
@@ -196,7 +214,7 @@ const Interview: React.FC = ({}) => {
                   <>
                     <div className={styles.aiBox}>
                       {index === state.currentQuestionIndex &&
-                      state.isType === true ? (
+                        state.isType === true ? (
                         <div className={styles.box}>
                           {state.isLoading ? (
                             <div className={styles.loadingCursor}>|</div>
@@ -282,7 +300,7 @@ const Interview: React.FC = ({}) => {
                   handleAnswerSubmit();
                 }
               }}
-              value={state.message}
+              value={state.showBtn ? '' : state.message}
               placeholder={'请输入问题的答案'}
               onChange={(e) => (state.message = e.target.value)}
             />
