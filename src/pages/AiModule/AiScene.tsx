@@ -128,7 +128,10 @@ const JobHunt: React.FC = () => {
           <div className={styles.warningBox}>
             <img src={aiimg} style={{ width: 24, height: 24, marginRight: 16 }}></img>
             <div className={styles.warning}>
-               {state.aiData.plugin?.tips}
+              <div>{state.aiData.plugin?.tips}</div>
+              <div className={styles.subwarning}>
+               {state.aiData.plugin?.note}
+            </div>
             </div>
           </div>
         </div>
