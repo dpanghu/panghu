@@ -24,6 +24,11 @@ export default defineConfig({
       component: '@/pages/AiModule/createAiModule',
     },
     {
+      path: '/AiScene',
+      layout: false,
+      component: '@/pages/AiModule/AiScene',
+    },
+    {
       path: '/aiJobHunt',
       component: '@/pages/AiJobHunt',
       layout: false,

@@ -6,7 +6,6 @@ import { Menu } from 'antd';
 import styles from './index.less';
 import AllModels from './AllModels/index';
 import { history } from 'umi';
-// import { HomeWork } from "@/assets/images/homework.png"
 import homeworkImg from '@/assets/images/homework.png';
 import searchImg from '@/assets/images/search.png';
 import selectImg from '@/assets/images/select.png';
@@ -95,7 +94,7 @@ const AiList: React.FC = () => {
                 <Space direction="vertical">
                   <Input className={styles.searchInput} placeholder="请输入搜索内容" allowClear suffix={suffix} style={{ width: 240, height: 32 }} />
                 </Space>
-                <Button className={styles.searchBtn} onClick={()=> {
+                <Button className={styles.searchBtn} onClick={() => {
                   history.push('/createAiModule');
                 }} type="primary" danger><img src={searchImg} alt="" /><span className={styles.words}>新建</span></Button>
               </div>

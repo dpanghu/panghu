@@ -112,23 +112,23 @@ const Resume: React.FC = ({ }) => {
           dataType: 'string',
           options: item.option,
         });
-      } else if (item.type === 'treeSelect') {
+      } else if (item.type === 'radio') {
         paramsArr.push({
           name: `ai${index}`,
           required: 'true',
           displayName: item.title,
           decimalLength: 0,
-          elementType: 'select',
+          elementType: 'treeSelect',
           dataType: 'string',
           options: item.option,
         });
-      } else if (item.type === 'selectCheck') {
+      } else if (item.type === 'checkbox') {
         paramsArr.push({
           name: `ai${index}`,
           required: 'true',
           displayName: item.title,
           decimalLength: 0,
-          elementType: 'select',
+          elementType: 'selectCheck',
           dataType: 'string',
           options: item.option,
         });
@@ -173,6 +173,7 @@ const Resume: React.FC = ({ }) => {
           state.draggleData.type = 5;
           state.moveStartIndex = index;
         }} draggable onClick={() => {
+          state.tabId = '1';
           state.chooseData = item;
         }}>
           <div className={styles.close} onClick={() => {
@@ -211,6 +212,7 @@ const Resume: React.FC = ({ }) => {
             }
           }
         }} onClick={() => {
+          state.tabId = '1';
           state.chooseData = item;
         }}>
           <div className={styles.close} onClick={() => {
@@ -256,6 +258,7 @@ const Resume: React.FC = ({ }) => {
             }
           }
         }} onClick={() => {
+          state.tabId = '1';
           state.chooseData = item;
         }}>
           <div className={styles.close} onClick={() => {
@@ -298,6 +301,7 @@ const Resume: React.FC = ({ }) => {
             }
           }
         }} onClick={() => {
+          state.tabId = '1';
           state.chooseData = item;
         }}>
           <div className={styles.close} onClick={() => {
