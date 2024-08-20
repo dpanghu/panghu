@@ -175,6 +175,22 @@ export async function deletePlugin<T>(params?: RecordItem): Promise<T> {
     params,
   });
 }
+//复制插件
+export async function copyPlugin<T>(params?: RecordItem): Promise<T> {
+  return $axios.request({
+    url: '/xai/remote/plugin/copy',
+    method: 'POST',
+    params,
+  });
+}
+//发布/取消发布插件
+export async function publishPlugin<T>(params?: RecordItem): Promise<T> {
+  return $axios.request({
+    url: '/xai/remote/plugin/release',
+    method: 'POST',
+    params,
+  });
+}
 
 //智能生成插件实例-流式
 export async function generatePluginInstance<T>(
