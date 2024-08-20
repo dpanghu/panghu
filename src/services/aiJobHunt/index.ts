@@ -169,7 +169,7 @@ export async function getAIProductList<T>(params?: RecordItem): Promise<T[]> {
     params,
   });
 }
-//查询全部AI模型
+//查询全部AI领域
 export async function getAllAIModel<T>(params?: RecordItem): Promise<T[]> {
   return $axios.request({
     url: '/xai/xai/domain/all',
@@ -177,11 +177,19 @@ export async function getAllAIModel<T>(params?: RecordItem): Promise<T[]> {
     params,
   });
 }
-//查询AI产品详情卡片
+//查询可编辑AI插件列表
 export async function getAICardDetail<T>(params?: RecordItem): Promise<T> {
   return $axios.request({
-    url: '/xai/plugin/list/withoutparams',
+    url: '/xai/plugin/editable/list',
     method: 'GET',
+    params,
+  });
+}
+//删除插件
+export async function deletePlugin<T>(params?: RecordItem): Promise<T> {
+  return $axios.request({
+    url: '/xai/remote/plugin/del',
+    method: 'POST',
     params,
   });
 }
