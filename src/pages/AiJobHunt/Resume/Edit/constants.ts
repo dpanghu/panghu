@@ -386,7 +386,7 @@ export const formItemConfig: Record<
       ],
     ],
   },
-  educationBackground: {
+  educationalBackgroundList: {
     className: 'education-background',
     name: '教育背景',
     formName: 'educationalBackgroundList',

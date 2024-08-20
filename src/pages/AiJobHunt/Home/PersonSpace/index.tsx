@@ -1,4 +1,4 @@
-import { getMyResult } from '@/services/aiJobHunt';
+import { deleteMyResult, getMyResult } from '@/services/aiJobHunt';
 import { Input, message } from 'SeenPc';
 import sf from 'SeenPc/dist/esm/globalStyle/global.less';
 import { useMount, useReactive } from 'ahooks';
@@ -45,6 +45,13 @@ const PersonSpace = React.forwardRef(({}, ref) => {
     onSearch();
   });
 
+  const onDelIte1m = (themeId: string) => {
+    deleteMyResult({ themeId }).then(() => {
+      message.success('删除成功');
+      onSearch();
+    });
+  };
+
   return (
     <div className={classNames(sf.sHFull, sf.sFlex, sf.sFlexDirC)}>
       <div className={styles['search-container']}>
@@ -76,6 +83,7 @@ const PersonSpace = React.forwardRef(({}, ref) => {
               fileId={item.id}
               fileName={item.name}
               type={item.pluginCode}
+              onDelItem={onDelIte1m}
             />
           </div>
         ))}

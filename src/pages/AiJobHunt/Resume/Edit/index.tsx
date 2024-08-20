@@ -22,7 +22,7 @@ type Props = {
 
 const Sections = [
   'employmentIntention',
-  'educationBackground',
+  'educationalBackgroundList',
   'internshipExperienceList',
   'campusExperienceList',
   'skill',
@@ -384,7 +384,7 @@ const EditResume = React.forwardRef(({ resumeData, reload }: Props, ref) => {
                 : 'visible',
           }}
         >
-          <span>项目经历1</span>
+          <span>项目经历</span>
         </div>
         <div
           onClick={() => {

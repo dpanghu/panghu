@@ -28,7 +28,9 @@ type IState = {
   moveStartIndex: any;
   option: any;
   portfolioOption: any;
+  open2: any;
   saveData: any;
+  iconImg: any;
   modelTypeIdData: any;
 };
 const Resume: React.FC = ({ }) => {
@@ -38,8 +40,10 @@ const Resume: React.FC = ({ }) => {
     draggleData: {},
     portfolioOption: '',
     modelTypeIdData: [],
+    open2: true,
     option: [],
     open1: false,
+    iconImg: '',
     saveData: {
       portfolio: ''
     },
@@ -60,15 +64,15 @@ const Resume: React.FC = ({ }) => {
       userId: '1',
       memberId: '1',
       schoolId: '1',
-    }).then((el: any)=> {
-       state.modelTypeIdData = el;
+    }).then((el: any) => {
+      state.modelTypeIdData = el;
     });
     getAllAIModel({
       userId: '1',
       memberId: '1',
       schoolId: '1',
-    }).then((el: any)=> {
-       state.domainData = el;
+    }).then((el: any) => {
+      state.domainData = el;
     });
   });
 
@@ -408,6 +412,14 @@ const Resume: React.FC = ({ }) => {
 
   return (
     <div className={styles.container}>
+      <Modal open={state.open2} title={'图标选择'} width={600} maskClosable={false} cancelText={'取消'}
+        okText={'确定'}
+        onOk={() => {
+          save();
+        }}
+        onCancel={() => {
+          state.open1 = false;
+        }}></Modal>
       <Modal open={state.open1} title={'保存'} width={600} maskClosable={false} cancelText={'取消'}
         okText={'保存'}
         onOk={() => {
@@ -425,19 +437,19 @@ const Resume: React.FC = ({ }) => {
             <div style={{ minWidth: 42, marginRight: 10 }}><span style={{ color: 'red', marginRight: 7 }}>*</span>所属领域</div>
             <Select label={'name'} text={'id'} option={state.domainData} value={state.saveData.domainId} onChange={(e: any) => { state.saveData.domainId = e }} placeholder={'请选择所属领域'}></Select>
           </div>
-          <div style={{ display: 'flex',  marginTop: 14 }}>
-            <div style={{ minWidth: 42, marginRight: 10,paddingTop: 5 }}><span style={{ color: 'red', marginRight: 7 }}>*</span>系统人设</div>
-            <div style={{ display:'flex',flexDirection:'column' }}>
-            <div style={{ display:'flex',alignItems:'center',marginBottom: 16 }}>
-               <Select option={state.option} value={state.portfolioOption} style={{ width: 150 }} onChange={(e: any)=> { state.portfolioOption = e }}></Select>
-               <Button type='primary' onClick={()=> {
-                let portfolioOptionValue: any = state.option.find((ids: any)=> ids.value === state.portfolioOption);
-                state.saveData.portfolio = state.saveData.portfolio + portfolioOptionValue.label;
-               }} style={{ marginLeft: 16 }}>插入</Button>
-            </div>
-            <Input value={state.saveData.portfolio} type='textarea' onChange={(e: any) => { 
-              state.saveData.portfolio = e;
-             }} placeholder={'请预置系统人设'}></Input>
+          <div style={{ display: 'flex', marginTop: 14 }}>
+            <div style={{ minWidth: 42, marginRight: 10, paddingTop: 5 }}><span style={{ color: 'red', marginRight: 7 }}>*</span>系统人设</div>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <div style={{ display: 'flex', alignItems: 'center', marginBottom: 16 }}>
+                <Select option={state.option} value={state.portfolioOption} style={{ width: 150 }} onChange={(e: any) => { state.portfolioOption = e }}></Select>
+                <Button type='primary' onClick={() => {
+                  let portfolioOptionValue: any = state.option.find((ids: any) => ids.value === state.portfolioOption);
+                  state.saveData.portfolio = state.saveData.portfolio + portfolioOptionValue.label;
+                }} style={{ marginLeft: 16 }}>插入</Button>
+              </div>
+              <Input value={state.saveData.portfolio} type='textarea' onChange={(e: any) => {
+                state.saveData.portfolio = e;
+              }} placeholder={'请预置系统人设'}></Input>
             </div>
           </div>
         </div>
@@ -518,7 +530,9 @@ const Resume: React.FC = ({ }) => {
           createComponents();
         }}>
           <div className={styles.middleHead}>
-            <div style={{ display: 'flex', alignItems: 'center', color: '#333333', cursor: 'pointer' }}>
+            <div style={{ display: 'flex', alignItems: 'center', color: '#333333', cursor: 'pointer' }} onClick={() => {
+              history.push('/aiJobHunt/aiList');
+            }}>
               <LeftOutlined style={{ marginRight: 10 }} />
               <div>返回</div>
             </div>
@@ -530,10 +544,10 @@ const Resume: React.FC = ({ }) => {
                 state.open1 = true;
                 let arr: any = [];
                 // eslint-disable-next-line @typescript-eslint/no-unused-expressions, array-callback-return
-                state.data && state.data.map((el: any,index: any)=> {
+                state.data && state.data.map((el: any, index: any) => {
                   arr.push({
                     label: el.title,
-                    value: `ai${index +1}`,
+                    value: `ai${index + 1}`,
                   })
                 })
                 state.option = arr;
@@ -588,8 +602,12 @@ const Resume: React.FC = ({ }) => {
               </div>
               <div className={styles.textBox}>
                 <h3 style={{ width: 90 }}><span style={{ color: 'red', marginRight: 5 }}>*</span>场景图标</h3>
-                <img src={''} style={{ width: 40, height: 40, borderRadius: 2 }}></img>
-                <span style={{ fontSize: 14, color: '#5A73FF', marginLeft: 15 }}>替换</span>
+                {
+                  state.iconImg === '' ? <span style={{ fontSize: 14, color: '#5A73FF', marginLeft: 0, cursor: 'pointer' }}>点击选择</span> : <>
+                    <img src={''} style={{ width: 40, height: 40, borderRadius: 2 }}></img>
+                    <span style={{ fontSize: 14, color: '#5A73FF', marginLeft: 15 }}>替换</span>
+                  </>
+                }
               </div>
               <Divider></Divider>
               {
