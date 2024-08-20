@@ -41,7 +41,7 @@ export default defineConfig({
           title: 'XAI | ai简历',
         },
         {
-          path: '/aiJobHunt/interview/:id',
+          path: '/aiJobHunt/interview/:paramId/:themeId',
           component: '@/pages/AiJobHunt/Interview',
           exact: true,
           title: 'XAI | ai面试',

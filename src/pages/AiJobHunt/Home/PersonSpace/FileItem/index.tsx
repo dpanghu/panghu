@@ -150,7 +150,7 @@ const FileItem: React.FC<Props> = ({ fileId, fileName, type, onDelItem }) => {
                 if (type === 'resume') {
                   history.push('/AiJobHunt/resume/' + fileId);
                 } else {
-                  history.push('/AiJobHunt/interview/' + paramId);
+                  history.push('/AiJobHunt/interview/' + paramId + '/' + fileId);
                 }
               }
             }}

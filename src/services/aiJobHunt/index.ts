@@ -142,6 +142,24 @@ export async function exportInterview<T>(params?: RecordItem): Promise<T> {
     params,
   });
 }
+
+//查询是否显示ai回答和ai点评
+export async function getShowAIAnswer<T>(params?: RecordItem): Promise<T> {
+  return $axios.request({
+    url: '/widget/xai/interviewer/state/get',
+    method: 'GET',
+    params,
+  });
+}
+
+//是否显示ai回答和ai点评
+export async function updateShowAIAnswer<T>(params?: RecordItem): Promise<T> {
+  return $axios.request({
+    url: '/widget/xai/interviewer/state/update',
+    method: 'POST',
+    params,
+  });
+}
 /** ------------------------------------------------- AI产品页面 ------------------------------------ */
 //查询AI产品列表
 export async function getAIProductList<T>(params?: RecordItem): Promise<T[]> {
