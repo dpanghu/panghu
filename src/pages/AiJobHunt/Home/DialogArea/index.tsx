@@ -238,7 +238,7 @@ const DialogArea = React.forwardRef(
             onSubmit={(msg) => {
               submitChat(msg);
             }}
-            onChangePlugin={() => {}}
+            onChangePlugin={() => { }}
           />
         </div>
         <div className={styles['warning-message']}>

@@ -79,19 +79,32 @@ const JobHunt: React.FC = () => {
 
   useMount(() => {
     let qsData: any = getQueryParam();
-    if (qsData.code !== 'resume' && qsData.code !== 'picRecognition' && qsData.code !== 'aiInterviewer') {
-      getPluginDetail({
-        id: qsData.code,
-        userId: '1',
-        memberId: '1',
-        schoolId: '1',
-      }).then((res: any) => {
+    getPluginDetail({
+      id: qsData.id,
+      userId: '1',
+      memberId: '1',
+      schoolId: '1',
+    }).then((res: any) => {
+      if(res.code == 'resume' || res.code === 'aiInterviewer') {
+        history.push('/aiJobHunt');
+      }else {
         state.data = JSON.parse(res.param?.params);
         state.aiData = res;
-      })
-    }else if(qsData.code === 'resume' || qsData.code === 'aiInterviewer') {
-       history.push('/aiJobHunt');
-    }
+      }
+    })
+    // if (qsData.code !== 'resume' && qsData.code !== 'picRecognition' && qsData.code !== 'aiInterviewer') {
+    //   getPluginDetail({
+    //     id: qsData.id,
+    //     userId: '1',
+    //     memberId: '1',
+    //     schoolId: '1',
+    //   }).then((res: any) => {
+    //     state.data = JSON.parse(res.param?.params);
+    //     state.aiData = res;
+    //   })
+    // }else if(qsData.code === 'resume' || qsData.code === 'aiInterviewer') {
+    //    history.push('/aiJobHunt');
+    // }
   });
 
   return (
