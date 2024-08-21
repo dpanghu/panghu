@@ -559,6 +559,10 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                                     memberId: 5,
                                     pluginId: item.id
                                   }).then((res) => {
+                                    messageApi.open({
+                                      type: 'success',
+                                      content: '删除成功',
+                                    });
                                     if (activeKey && activesKey) {
                                       getAICardDetail({
                                         userId: 1,
