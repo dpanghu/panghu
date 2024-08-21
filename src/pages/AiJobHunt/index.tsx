@@ -1,21 +1,37 @@
 import PageLoading from '@/components/PageLoading';
-import { useModel, useOutlet } from '@umijs/max';
+import { getConvertParamId } from '@/services/aiJobHunt';
+import { useOutlet } from '@umijs/max';
 import sf from 'SeenPc/dist/esm/globalStyle/global.less';
+import { useMount } from 'ahooks';
 import classnames from 'classnames';
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './index.less';
 
-
-const AiJobHuntLayout: React.FC = ({ }) => {
+const AiJobHuntLayout: React.FC = ({}) => {
   const outlet = useOutlet();
+  const [loading, setLoading] = useState<boolean>(true);
 
+  useMount(() => {
+    const queryParams = JSON.parse(
+      window.sessionStorage.getItem('queryParams'),
+    );
+    getConvertParamId(queryParams)
+      .then((id) => {
+        window.sessionStorage.setItem(
+          'queryParams',
+          JSON.stringify({ ...queryParams, paramId: id }),
+        );
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  });
 
-  const { loading } = useModel('@@initialState');
-  console.log(loading);
   return (
     <div className={classnames(styles.container, sf.sFullAbs, sf.sPd8)}>
       {loading ? <PageLoading /> : outlet}
-    </div >
+    </div>
   );
 };
 
