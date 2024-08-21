@@ -85,7 +85,7 @@ const JobHunt: React.FC = () => {
       memberId: '1',
       schoolId: '1',
     }).then((res: any) => {
-      if(res.code === 'resume' || res.code === 'aiInterviewer') {
+      if(res.plugin?.code === 'resume' || res.plugin?.code === 'aiInterviewer') {
         history.push('/aiJobHunt');
       }else {
         state.data = JSON.parse(res.param?.params);

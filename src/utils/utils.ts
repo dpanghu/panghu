@@ -39,6 +39,18 @@ export function _getQueryParam() {
   };
 }
 
+// 获取公共参数
+export function getCommonData() {
+  let qs: any = getQueryParam();
+  if (Object.keys(qs)?.length === 0) {
+    let commonData = JSON.parse(window.sessionStorage.getItem('commonDatas') as any || '{}');
+    return commonData;
+  } else {
+    window.sessionStorage.setItem('commonDatas', JSON.stringify(qs));
+    return qs;
+  }
+}
+
 // 分隔符转驼峰命名
 export function transformVarName(variable: string, separator: string) {
   const separatorIndex = variable.indexOf(separator);
