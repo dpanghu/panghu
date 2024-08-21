@@ -6,6 +6,7 @@ import { Dropdown, Space } from 'antd';
 import eyeImg from '@/assets/images/eye.png';
 import maohaoImg from '@/assets/images/maohao.png';
 import { message, Modal } from 'antd';
+import { history } from 'umi';
 
 const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey: string | null; scrollKey: string | null }> = ({ itemss, activeKey, activesKey, scrollKey }) => {
 
@@ -159,6 +160,10 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                               textAlign: 'center',
                               fontStyle: 'normal',
                               borderRadius: '4px',
+                            },
+                            onClick: () => {
+                              window.sessionStorage.setItem('pluginId',item.id);
+                              history.push('/createAiModule');
                             }
                           },
                           {
@@ -320,6 +325,10 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                               textAlign: 'center',
                               fontStyle: 'normal',
                               borderRadius: '4px',
+                            },
+                            onClick: () => {
+                              window.sessionStorage.setItem('pluginId',item.id);
+                              history.push('/createAiModule');
                             }
                           },
                           {

@@ -95,6 +95,7 @@ const AiList: React.FC = () => {
                   <Input className={styles.searchInput} placeholder="请输入搜索内容" allowClear suffix={suffix} style={{ width: 240, height: 32 }} />
                 </Space>
                 <Button className={styles.searchBtn} onClick={() => {
+                  window.sessionStorage.setItem('pluginId','null');
                   history.push('/createAiModule');
                 }} type="primary" danger><img src={searchImg} alt="" /><span className={styles.words}>新建</span></Button>
               </div>

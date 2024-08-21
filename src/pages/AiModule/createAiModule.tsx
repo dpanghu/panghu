@@ -3,7 +3,7 @@ import React from 'react';
 import styles from './createAiModule.less';
 import aiHead from '@/assets/images/rebotIcon.png';
 import { Input, Select, Button, ComboBox } from 'SeenPc';
-import { Divider, Tabs, Modal, message } from 'antd';
+import { Divider, Tabs, Modal, message, Tag } from 'antd';
 import { Select as Selects } from 'antd';
 import textImg from '@/assets/images/textImg.png';
 import selectImg from '@/assets/images/selectImgs.png';
@@ -369,10 +369,6 @@ const Resume: React.FC = ({ }) => {
           value: '1',
           title: '默认标题',
           option: [
-            {
-              value: '1',
-              label: '预置选项'
-            }
           ],
           id: datas.length + 1,
         });
@@ -384,10 +380,6 @@ const Resume: React.FC = ({ }) => {
           value: '',
           title: '默认标题',
           option: [
-            {
-              value: '',
-              label: '测试'
-            }
           ],
           id: datas.length + 1,
         });
@@ -483,7 +475,7 @@ const Resume: React.FC = ({ }) => {
             <div style={{ minWidth: 42, marginRight: 10, paddingTop: 5 }}><span style={{ color: 'red', marginRight: 7 }}>*</span>系统人设</div>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               <div style={{ display: 'flex', alignItems: 'center', marginBottom: 16 }}>
-                <Select option={state.option} value={state.portfolioOption} style={{ width: 150 }} onChange={(e: any) => { state.portfolioOption = e }}></Select>
+                <Select option={state.option} value={state.portfolioOption} style={{ width: 179 }} onChange={(e: any) => { state.portfolioOption = e }}></Select>
                 <Button type='primary' onClick={() => {
                   let portfolioOptionValue: any = state.option.find((ids: any) => ids.value === state.portfolioOption);
                   state.saveData.portfolio = state.saveData.portfolio + portfolioOptionValue.label;
@@ -579,9 +571,9 @@ const Resume: React.FC = ({ }) => {
               <div>返回</div>
             </div>
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              <Button type='primary' style={{ width: 70 }} onClick={() => {
+              {/* <Button type='primary' style={{ width: 70 }} onClick={() => {
                 save();
-              }}>预览</Button>
+              }}>预览</Button> */}
               <Button type='primary' style={{ width: 70, marginLeft: 20 }} onClick={() => {
                 state.open1 = true;
                 let arr: any = [];
@@ -709,26 +701,38 @@ const Resume: React.FC = ({ }) => {
                   <div className={styles.textBox} style={{ alignItems: 'flex-start' }}>
                     <h3 style={{ display: 'flex', justifyContent: 'flex-end', marginRight: 20, minWidth: 56, marginTop: 10, width: 60 }}>数据配置</h3>
                     <div style={{ width: 175, display: 'flex', flexDirection: 'column' }}>
-                      <Selects style={{ width: 166 }} value={state.baseData.limit}>
-                        {
-                          state.chooseData.option && state.chooseData.option.map((el: any, index: any) => {
+                      <Select option={state.chooseData.option} style={{ width: '100%' }} value={state.baseData.limit}>
+                        {/* {
+                          state.chooseData.option && state.chooseData.option.map((el: any) => {
                             return <Selects.Option key={el.id} value={el.value}><div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                              <div>{state.modalData.name}</div>
-                              <DeleteOutlined className={styles.deleteIcon} onClick={(e: any) => {
+                              <div>{el.label}</div>
+                              {/* <DeleteOutlined className={styles.deleteIcon} onClick={(e: any) => {
                                 e.stopPropagation()
                                 const chooseDataClone: any = state.chooseData;
                                 chooseDataClone.option.splice(index, 1);
                                 state.chooseData = chooseDataClone;
                                 message.success('删除成功');
-                              }} style={{ fontSize: 16, zIndex: 999 }} />
-                            </div></Selects.Option>
-                          })
-                        }
-                      </Selects>
-                      <div style={{ fontSize: 14, color: '#5A73FF', marginTop: 10 }} onClick={() => {
+                              }} style={{ fontSize: 16, zIndex: 999 }} /> */}
+                          
+                      </Select>
+                      <div style={{ fontSize: 14, color: '#5A73FF', marginTop: 10, cursor:'pointer' }} onClick={() => {
                         state.open = true;
                         state.modalData = {};
                       }}>添加选项</div>
+                      <div style={{ display:'flex' }}>
+                          {
+                            state.chooseData.option && state.chooseData.option.map((item: any,index: any)=> {
+                              return <Tag color="blue" onClose={(e: any)=> {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                const chooseDataClone: any = state.chooseData;
+                                chooseDataClone.option.splice(index, 1);
+                                state.chooseData = chooseDataClone;
+                                message.success('删除成功');
+                              }} key={item.id} closable style={{ marginTop: 12 }}>{item.label}</Tag>
+                            })
+                          }
+                      </div>
                     </div>
                   </div>
                 </> : state.chooseData.type === 'radio' ? <>
@@ -742,7 +746,7 @@ const Resume: React.FC = ({ }) => {
                   <div className={styles.textBox} style={{ alignItems: 'flex-start' }}>
                     <h3 style={{ display: 'flex', justifyContent: 'flex-end', marginRight: 20, minWidth: 56, marginTop: 10, width: 60 }}>数据配置</h3>
                     <div style={{ width: 175, display: 'flex', flexDirection: 'column' }}>
-                      <Selects style={{ width: 166 }} value={state.baseData.limit}>
+                      {/* <Selects style={{ width: '100%' }} value={state.baseData.limit}>
                         {
                           state.chooseData.option && state.chooseData.option.map((el: any, index: any) => {
                             return <Selects.Option key={el.id} value={el.value}><div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -757,11 +761,26 @@ const Resume: React.FC = ({ }) => {
                             </div></Selects.Option>
                           })
                         }
-                      </Selects>
+                      </Selects> */}
+                       <Select option={state.chooseData.option} style={{ width: '100%' }} value={state.baseData.limit}></Select>
                       <div style={{ fontSize: 14, color: '#5A73FF', marginTop: 10, cursor: 'pointer' }} onClick={() => {
                         state.open = true;
                         state.modalData = {};
                       }}>添加选项</div>
+                      <div style={{ display:'flex' }}>
+                          {
+                            state.chooseData.option && state.chooseData.option.map((item: any,index: any)=> {
+                              return <Tag color="blue" onClose={(e: any)=> {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                const chooseDataClone: any = state.chooseData;
+                                chooseDataClone.option.splice(index, 1);
+                                state.chooseData = chooseDataClone;
+                                message.success('删除成功');
+                              }} key={item.id} closable style={{ marginTop: 12 }}>{item.label}</Tag>
+                            })
+                          }
+                      </div>
                     </div>
                   </div>
                 </> : state.chooseData.type === 'checkbox' ? <>
@@ -775,7 +794,8 @@ const Resume: React.FC = ({ }) => {
                   <div className={styles.textBox} style={{ alignItems: 'flex-start' }}>
                     <h3 style={{ display: 'flex', justifyContent: 'flex-end', marginRight: 20, minWidth: 56, marginTop: 10, width: 60 }}>数据配置</h3>
                     <div style={{ width: 175, display: 'flex', flexDirection: 'column' }}>
-                      <Selects style={{ width: 166 }} value={state.baseData.limit}>
+                    <Select option={state.chooseData.option} style={{ width: '100%' }} value={state.baseData.limit}></Select>
+                      {/* <Selects style={{ width: '100%' }} value={state.baseData.limit}>
                         {
                           state.chooseData.option && state.chooseData.option.map((el: any, index: any) => {
                             return <Selects.Option key={el.id} value={el.value}><div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -790,11 +810,25 @@ const Resume: React.FC = ({ }) => {
                             </div></Selects.Option>
                           })
                         }
-                      </Selects>
+                      </Selects> */}
                       <div style={{ fontSize: 14, color: '#5A73FF', marginTop: 10, cursor: 'pointer' }} onClick={() => {
                         state.open = true;
                         state.modalData = {};
                       }}>添加选项</div>
+                      <div style={{ display:'flex' }}>
+                          {
+                            state.chooseData.option && state.chooseData.option.map((item: any,index: any)=> {
+                              return <Tag color="blue" onClose={(e: any)=> {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                const chooseDataClone: any = state.chooseData;
+                                chooseDataClone.option.splice(index, 1);
+                                state.chooseData = chooseDataClone;
+                                message.success('删除成功');
+                              }} key={item.id} closable style={{ marginTop: 12 }}>{item.label}</Tag>
+                            })
+                          }
+                    </div>
                     </div>
                   </div>
                 </> : <></>
