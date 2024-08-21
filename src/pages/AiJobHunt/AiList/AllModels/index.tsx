@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { Card } from 'antd';
 import { getAICardDetail, deletePlugin, copyPlugin, publishPlugin } from '@/services/aiJobHunt'
 import styles from './index.less';
-import type { MenuProps } from 'antd';
+// import type { MenuProps } from 'antd';
 import { Dropdown, Space } from 'antd';
 import eyeImg from '@/assets/images/eye.png';
 import maohaoImg from '@/assets/images/maohao.png';
@@ -10,189 +10,203 @@ import { message, Modal } from 'antd';
 
 const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey: string | null; scrollKey: string | null }> = ({ itemss, activeKey, activesKey, scrollKey }) => {
 
+  const [data, setData] = React.useState<any>([]);
   const [messageApi, contextHolder] = message.useMessage();
-  const items: MenuProps['items'] = [
-    {
-      label: '发布',
-      key: '0',
-      style: {
-        fontFamily: 'PingFangSC, PingFang SC',
-        fontWeight: 400,
-        fontSize: '14px',
-        color: '#333333',
-        lineHeight: '20px',
-        textAlign: 'center',
-        fontStyle: 'normal',
-        borderRadius: '4px',
-      },
-      onClick: () => {
-        const keyToDelete = data.find((item: any) => item.id)?.id;
-        publishPlugin({
+  // 状态管理变量，用对象存储每个 item 的发布状态
+  const [publishedStates, setPublishedStates] = React.useState<Record<string, boolean>>({});
+  // 获取发布按钮的标签文本
+  const getPublishLabel = (keys: any) => {
+    return publishedStates[keys] ? '取消发布' : '发布';
+  };
+
+  // 处理发布按钮点击事件
+  const handlePublishClick = (keyToDelete: string) => {
+    const state = publishedStates[keyToDelete] ? 'unrelase' : 'normal';
+    publishPlugin({
+      userId: 1,
+      userToken: 2,
+      schoolId: 3,
+      memberId: 5,
+      pluginId: keyToDelete,
+      state,
+    }).then((res) => {
+      messageApi.open({
+        type: 'success',
+        content: publishedStates[keyToDelete] ? '取消发布成功' : '发布成功',
+      });
+      setPublishedStates({
+        ...publishedStates,
+        [keyToDelete]: !publishedStates[keyToDelete],
+      });
+      if (activeKey && activesKey) {
+        getAICardDetail({
           userId: 1,
           userToken: 2,
           schoolId: 3,
           memberId: 5,
-          pluginId: keyToDelete,
-          state: 'normal'
+          domainId: activesKey,
+          modelTypeId: activeKey,
         }).then((res) => {
-          messageApi.open({
-            type: 'success',
-            content: '发布成功',
-          });
-          if (activeKey && activesKey) {
-            getAICardDetail({
-              userId: 1,
-              userToken: 2,
-              schoolId: 3,
-              memberId: 5,
-              domainId: activesKey,
-              modelTypeId: activeKey
-            }).then((res) => {
-              setData(res);
-              // console.log('res', res);
-            });
-          }
-          else if (activeKey && activesKey === null) {
-            getAICardDetail({
-              userId: 1,
-              userToken: 2,
-              schoolId: 3,
-              memberId: 5,
-            }).then((res) => {
-              setData(res);
-              // console.log('res', res);
-            });
-          }
-        })
-      }
-    },
-    {
-      label: '编辑',
-      key: '1',
-      style: {
-        fontFamily: 'PingFangSC, PingFang SC',
-        fontWeight: 400,
-        fontSize: '14px',
-        color: '#333333',
-        lineHeight: '20px',
-        textAlign: 'center',
-        fontStyle: 'normal',
-        borderRadius: '4px',
-      }
-    },
-    {
-      label: '复制',
-      key: '3',
-      style: {
-        fontFamily: 'PingFangSC, PingFang SC',
-        fontWeight: 400,
-        fontSize: '14px',
-        color: '#333333',
-        lineHeight: '20px',
-        textAlign: 'center',
-        fontStyle: 'normal',
-        borderRadius: '4px',
-      },
-      onClick: () => {
-        const keyToDelete = data.find((item: any) => item.id)?.id;
-        copyPlugin({
+          setData(res);
+        });
+      } else if (activeKey && activesKey === null) {
+        getAICardDetail({
           userId: 1,
           userToken: 2,
           schoolId: 3,
           memberId: 5,
-          pluginId: keyToDelete
         }).then((res) => {
-          messageApi.open({
-            type: 'success',
-            content: '复制成功',
-          });
-          if (activeKey && activesKey) {
-            getAICardDetail({
-              userId: 1,
-              userToken: 2,
-              schoolId: 3,
-              memberId: 5,
-              domainId: activesKey,
-              modelTypeId: activeKey
-            }).then((res) => {
-              setData(res);
-              // console.log('res', res);
-            });
-          }
-          else if (activeKey && activesKey === null) {
-            getAICardDetail({
-              userId: 1,
-              userToken: 2,
-              schoolId: 3,
-              memberId: 5,
-            }).then((res) => {
-              setData(res);
-              // console.log('res', res);
-            });
-          }
-        })
-      },
-    },
-    {
-      label: '删除',
-      key: '4',
-      style: {
-        fontFamily: 'PingFangSC, PingFang SC',
-        fontWeight: 400,
-        fontSize: '14px',
-        color: '#333333',
-        lineHeight: '20px',
-        textAlign: 'center',
-        fontStyle: 'normal',
-        borderRadius: '4px',
-      },
-      onClick: () => {
-        const keyToDelete = data.find((item: any) => item.id)?.id;
-        Modal.confirm({
-          title: '你确定要删除吗？',
-          okText: '确定',
-          cancelText: '取消',
-          onOk: () => {
-            deletePlugin({
-              userId: 1,
-              userToken: 2,
-              schoolId: 3,
-              memberId: 5,
-              pluginId: keyToDelete
-            }).then((res) => {
-              if (activeKey && activesKey) {
-                getAICardDetail({
-                  userId: 1,
-                  userToken: 2,
-                  schoolId: 3,
-                  memberId: 5,
-                  domainId: activesKey,
-                  modelTypeId: activeKey
-                }).then((res) => {
-                  setData(res);
-                  // console.log('res', res);
-                });
-              } else if (activeKey && activesKey === null) {
-                getAICardDetail({
-                  userId: 1,
-                  userToken: 2,
-                  schoolId: 3,
-                  memberId: 5,
-                }).then((res) => {
-                  setData(res);
-                  // console.log('res', res);
-                });
-              }
-            });
-          },
-          onCancel: () => {
-            // 取消操作，可根据需要进行处理
-          }
+          setData(res);
         });
       }
-    },
-  ];
-  const [data, setData] = React.useState<any>([]);
+    });
+  };
+  // const items: MenuProps['items'] = [
+  //   {
+  //     label: getPublishLabel(),
+  //     key: '0',
+  //     style: {
+  //       fontFamily: 'PingFangSC, PingFang SC',
+  //       fontWeight: 400,
+  //       fontSize: '14px',
+  //       color: '#333333',
+  //       lineHeight: '20px',
+  //       textAlign: 'center',
+  //       fontStyle: 'normal',
+  //       borderRadius: '4px',
+  //     },
+  //     onClick: () => {
+  //       const keyToDelete = data.find((item: any) => item.id)?.id;
+  //       handlePublishClick(keyToDelete)
+  //     }
+  //   },
+  //   {
+  //     label: '编辑',
+  //     key: '1',
+  //     style: {
+  //       fontFamily: 'PingFangSC, PingFang SC',
+  //       fontWeight: 400,
+  //       fontSize: '14px',
+  //       color: '#333333',
+  //       lineHeight: '20px',
+  //       textAlign: 'center',
+  //       fontStyle: 'normal',
+  //       borderRadius: '4px',
+  //     }
+  //   },
+  //   {
+  //     label: '复制',
+  //     key: '3',
+  //     style: {
+  //       fontFamily: 'PingFangSC, PingFang SC',
+  //       fontWeight: 400,
+  //       fontSize: '14px',
+  //       color: '#333333',
+  //       lineHeight: '20px',
+  //       textAlign: 'center',
+  //       fontStyle: 'normal',
+  //       borderRadius: '4px',
+  //     },
+  //     onClick: () => {
+  //       const keyToDelete = data.find((item: any) => item.id)?.id;
+  //       copyPlugin({
+  //         userId: 1,
+  //         userToken: 2,
+  //         schoolId: 3,
+  //         memberId: 5,
+  //         pluginId: keyToDelete
+  //       }).then((res) => {
+  //         messageApi.open({
+  //           type: 'success',
+  //           content: '复制成功',
+  //         });
+  //         if (activeKey && activesKey) {
+  //           getAICardDetail({
+  //             userId: 1,
+  //             userToken: 2,
+  //             schoolId: 3,
+  //             memberId: 5,
+  //             domainId: activesKey,
+  //             modelTypeId: activeKey
+  //           }).then((res) => {
+  //             setData(res);
+  //             // console.log('res', res);
+  //           });
+  //         }
+  //         else if (activeKey && activesKey === null) {
+  //           getAICardDetail({
+  //             userId: 1,
+  //             userToken: 2,
+  //             schoolId: 3,
+  //             memberId: 5,
+  //           }).then((res) => {
+  //             setData(res);
+  //             // console.log('res', res);
+  //           });
+  //         }
+  //       })
+  //     },
+  //   },
+  //   {
+  //     label: '删除',
+  //     key: '4',
+  //     style: {
+  //       fontFamily: 'PingFangSC, PingFang SC',
+  //       fontWeight: 400,
+  //       fontSize: '14px',
+  //       color: '#333333',
+  //       lineHeight: '20px',
+  //       textAlign: 'center',
+  //       fontStyle: 'normal',
+  //       borderRadius: '4px',
+  //     },
+  //     onClick: () => {
+  //       const keyToDelete = data.find((item: any) => item.id)?.id;
+  //       Modal.confirm({
+  //         title: '你确定要删除吗？',
+  //         okText: '确定',
+  //         cancelText: '取消',
+  //         onOk: () => {
+  //           deletePlugin({
+  //             userId: 1,
+  //             userToken: 2,
+  //             schoolId: 3,
+  //             memberId: 5,
+  //             pluginId: keyToDelete
+  //           }).then((res) => {
+  //             if (activeKey && activesKey) {
+  //               getAICardDetail({
+  //                 userId: 1,
+  //                 userToken: 2,
+  //                 schoolId: 3,
+  //                 memberId: 5,
+  //                 domainId: activesKey,
+  //                 modelTypeId: activeKey
+  //               }).then((res) => {
+  //                 setData(res);
+  //                 // console.log('res', res);
+  //               });
+  //             } else if (activeKey && activesKey === null) {
+  //               getAICardDetail({
+  //                 userId: 1,
+  //                 userToken: 2,
+  //                 schoolId: 3,
+  //                 memberId: 5,
+  //               }).then((res) => {
+  //                 setData(res);
+  //                 // console.log('res', res);
+  //               });
+  //             }
+  //           });
+  //         },
+  //         onCancel: () => {
+  //           // 取消操作，可根据需要进行处理
+  //         }
+  //       });
+  //     }
+  //   },
+  // ];
+
   useEffect(() => {
     // 根据参数获取不同AI数据
     if (activeKey && activesKey) {
@@ -258,157 +272,71 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
               <div className={styles.right}>
                 <div className={styles.cardPicture}>
                   <img className={styles.eye} src={eyeImg} alt="" />
-                  <Dropdown className={styles.maohao} autoAdjustOverflow={true} overlayStyle={{ width: '92px', height: '141px' }} menu={{
-                    items: [
-                      {
-                        label: '发布',
-                        key: '0',
-                        style: {
-                          fontFamily: 'PingFangSC, PingFang SC',
-                          fontWeight: 400,
-                          fontSize: '14px',
-                          color: '#333333',
-                          lineHeight: '20px',
-                          textAlign: 'center',
-                          fontStyle: 'normal',
-                          borderRadius: '4px',
-                        },
-                        onClick: () => {
-                          console.log(item.id);
-                          const keyToDelete = data.find((item: any) => item.id)?.id;
-                          publishPlugin({
-                            userId: 1,
-                            userToken: 2,
-                            schoolId: 3,
-                            memberId: 5,
-                            pluginId: item.id,
-                            state: 'normal'
-                          }).then((res) => {
-                            messageApi.open({
-                              type: 'success',
-                              content: '发布成功',
-                            });
-                            if (activeKey && activesKey) {
-                              getAICardDetail({
-                                userId: 1,
-                                userToken: 2,
-                                schoolId: 3,
-                                memberId: 5,
-                                domainId: activesKey,
-                                modelTypeId: activeKey
-                              }).then((res) => {
-                                setData(res);
-                                // console.log('res', res);
-                              });
+                  {item.isConfig === 0 ? (
+                    <Dropdown
+                      className={`${styles.maohao} disabled-dropdown`}
+                      autoAdjustOverflow={true}
+                      overlayStyle={{ width: '92px', height: '141px' }}
+                      menu={{
+                        items: [
+                          {
+                            label: getPublishLabel(item.id),
+                            key: '0',
+                            style: {
+                              fontFamily: 'PingFangSC, PingFang SC',
+                              fontWeight: 400,
+                              fontSize: '14px',
+                              color: '#333333',
+                              lineHeight: '20px',
+                              textAlign: 'center',
+                              fontStyle: 'normal',
+                              borderRadius: '4px',
+                            },
+                            onClick: () => {
+                              // const keyToDelete = data.find((item: any) => item.id)?.id;
+                              handlePublishClick(item.id)
                             }
-                            else if (activeKey && activesKey === null) {
-                              getAICardDetail({
-                                userId: 1,
-                                userToken: 2,
-                                schoolId: 3,
-                                memberId: 5,
-                              }).then((res) => {
-                                setData(res);
-                                // console.log('res', res);
-                              });
+                          },
+                          {
+                            label: '编辑',
+                            key: '1',
+                            style: {
+                              fontFamily: 'PingFangSC, PingFang SC',
+                              fontWeight: 400,
+                              fontSize: '14px',
+                              color: '#333333',
+                              lineHeight: '20px',
+                              textAlign: 'center',
+                              fontStyle: 'normal',
+                              borderRadius: '4px',
                             }
-                          })
-                        }
-                      },
-                      {
-                        label: '编辑',
-                        key: '1',
-                        style: {
-                          fontFamily: 'PingFangSC, PingFang SC',
-                          fontWeight: 400,
-                          fontSize: '14px',
-                          color: '#333333',
-                          lineHeight: '20px',
-                          textAlign: 'center',
-                          fontStyle: 'normal',
-                          borderRadius: '4px',
-                        }
-                      },
-                      {
-                        label: '复制',
-                        key: '3',
-                        style: {
-                          fontFamily: 'PingFangSC, PingFang SC',
-                          fontWeight: 400,
-                          fontSize: '14px',
-                          color: '#333333',
-                          lineHeight: '20px',
-                          textAlign: 'center',
-                          fontStyle: 'normal',
-                          borderRadius: '4px',
-                        },
-                        onClick: () => {
-                          const keyToDelete = data.find((item: any) => item.id)?.id;
-                          copyPlugin({
-                            userId: 1,
-                            userToken: 2,
-                            schoolId: 3,
-                            memberId: 5,
-                            pluginId: keyToDelete
-                          }).then((res) => {
-                            messageApi.open({
-                              type: 'success',
-                              content: '复制成功',
-                            });
-                            if (activeKey && activesKey) {
-                              getAICardDetail({
+                          },
+                          {
+                            label: '复制',
+                            key: '3',
+                            style: {
+                              fontFamily: 'PingFangSC, PingFang SC',
+                              fontWeight: 400,
+                              fontSize: '14px',
+                              color: '#333333',
+                              lineHeight: '20px',
+                              textAlign: 'center',
+                              fontStyle: 'normal',
+                              borderRadius: '4px',
+                            },
+                            onClick: () => {
+                              // const keyToDelete = data.find((item: any) => item.id)?.id;
+                              copyPlugin({
                                 userId: 1,
                                 userToken: 2,
                                 schoolId: 3,
                                 memberId: 5,
-                                domainId: activesKey,
-                                modelTypeId: activeKey
+                                pluginId: item.id
                               }).then((res) => {
-                                setData(res);
-                                // console.log('res', res);
-                              });
-                            }
-                            else if (activeKey && activesKey === null) {
-                              getAICardDetail({
-                                userId: 1,
-                                userToken: 2,
-                                schoolId: 3,
-                                memberId: 5,
-                              }).then((res) => {
-                                setData(res);
-                                // console.log('res', res);
-                              });
-                            }
-                          })
-                        },
-                      },
-                      {
-                        label: '删除',
-                        key: '4',
-                        style: {
-                          fontFamily: 'PingFangSC, PingFang SC',
-                          fontWeight: 400,
-                          fontSize: '14px',
-                          color: '#333333',
-                          lineHeight: '20px',
-                          textAlign: 'center',
-                          fontStyle: 'normal',
-                          borderRadius: '4px',
-                        },
-                        onClick: () => {
-                          const keyToDelete = data.find((item: any) => item.id)?.id;
-                          Modal.confirm({
-                            title: '你确定要删除吗？',
-                            okText: '确定',
-                            cancelText: '取消',
-                            onOk: () => {
-                              deletePlugin({
-                                userId: 1,
-                                userToken: 2,
-                                schoolId: 3,
-                                memberId: 5,
-                                pluginId: keyToDelete
-                              }).then((res) => {
+                                messageApi.open({
+                                  type: 'success',
+                                  content: '复制成功',
+                                });
                                 if (activeKey && activesKey) {
                                   getAICardDetail({
                                     userId: 1,
@@ -421,7 +349,8 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                                     setData(res);
                                     // console.log('res', res);
                                   });
-                                } else if (activeKey && activesKey === null) {
+                                }
+                                else if (activeKey && activesKey === null) {
                                   getAICardDetail({
                                     userId: 1,
                                     userToken: 2,
@@ -432,22 +361,245 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                                     // console.log('res', res);
                                   });
                                 }
-                              });
+                              })
                             },
-                            onCancel: () => {
-                              // 取消操作，可根据需要进行处理
+                          },
+                          {
+                            label: '删除',
+                            key: '4',
+                            style: {
+                              fontFamily: 'PingFangSC, PingFang SC',
+                              fontWeight: 400,
+                              fontSize: '14px',
+                              color: '#333333',
+                              lineHeight: '20px',
+                              textAlign: 'center',
+                              fontStyle: 'normal',
+                              borderRadius: '4px',
+                            },
+                            onClick: () => {
+                              // const keyToDelete = data.find((item: any) => item.id)?.id;
+                              Modal.confirm({
+                                title: '你确定要删除吗？',
+                                okText: '确定',
+                                cancelText: '取消',
+                                onOk: () => {
+                                  deletePlugin({
+                                    userId: 1,
+                                    userToken: 2,
+                                    schoolId: 3,
+                                    memberId: 5,
+                                    pluginId: item.id
+                                  }).then((res) => {
+                                    if (activeKey && activesKey) {
+                                      getAICardDetail({
+                                        userId: 1,
+                                        userToken: 2,
+                                        schoolId: 3,
+                                        memberId: 5,
+                                        domainId: activesKey,
+                                        modelTypeId: activeKey
+                                      }).then((res) => {
+                                        setData(res);
+                                        // console.log('res', res);
+                                      });
+                                    } else if (activeKey && activesKey === null) {
+                                      getAICardDetail({
+                                        userId: 1,
+                                        userToken: 2,
+                                        schoolId: 3,
+                                        memberId: 5,
+                                      }).then((res) => {
+                                        setData(res);
+                                        // console.log('res', res);
+                                      });
+                                    }
+                                  });
+                                },
+                                onCancel: () => {
+                                  // 取消操作，可根据需要进行处理
+                                }
+                              });
                             }
-                          });
-                        }
-                      },
-                    ]
-                  }}>
-                    <a onClick={(e) => e.preventDefault()}>
-                      <Space>
-                        <img src={maohaoImg} alt="" />
-                      </Space>
-                    </a>
-                  </Dropdown>
+                          },
+                        ]
+                      }}
+                      disabled
+                      style={{ pointerEvents: 'none', opacity: 0.5 }}
+                      onMouseEnter={(e: any) => {
+                        e.currentTarget.style.opacity = 0.5;
+                        e.currentTarget.style.cursor = 'not-allowed';
+                      }}
+                      onMouseLeave={(e: any) => {
+                        e.currentTarget.style.opacity = 0.5;
+                      }}
+                    >
+                      <a onClick={(e) => e.preventDefault()}>
+                        <Space>
+                          <img src={maohaoImg} alt="" />
+                        </Space>
+                      </a>
+                    </Dropdown>
+                  ) : (
+                    <Dropdown
+                      className={styles.maohao}
+                      autoAdjustOverflow={true}
+                      overlayStyle={{ width: '92px', height: '141px' }}
+                      menu={{
+                        items: [
+                          {
+                            label: getPublishLabel(item.id),
+                            key: '0',
+                            style: {
+                              fontFamily: 'PingFangSC, PingFang SC',
+                              fontWeight: 400,
+                              fontSize: '14px',
+                              color: '#333333',
+                              lineHeight: '20px',
+                              textAlign: 'center',
+                              fontStyle: 'normal',
+                              borderRadius: '4px',
+                            },
+                            onClick: () => {
+                              // const keyToDelete = data.find((item: any) => item.id)?.id;
+                              handlePublishClick(item.id)
+                            }
+                          },
+                          {
+                            label: '编辑',
+                            key: '1',
+                            style: {
+                              fontFamily: 'PingFangSC, PingFang SC',
+                              fontWeight: 400,
+                              fontSize: '14px',
+                              color: '#333333',
+                              lineHeight: '20px',
+                              textAlign: 'center',
+                              fontStyle: 'normal',
+                              borderRadius: '4px',
+                            }
+                          },
+                          {
+                            label: '复制',
+                            key: '3',
+                            style: {
+                              fontFamily: 'PingFangSC, PingFang SC',
+                              fontWeight: 400,
+                              fontSize: '14px',
+                              color: '#333333',
+                              lineHeight: '20px',
+                              textAlign: 'center',
+                              fontStyle: 'normal',
+                              borderRadius: '4px',
+                            },
+                            onClick: () => {
+                              // const keyToDelete = data.find((item: any) => item.id)?.id;
+                              copyPlugin({
+                                userId: 1,
+                                userToken: 2,
+                                schoolId: 3,
+                                memberId: 5,
+                                pluginId: item.id
+                              }).then((res) => {
+                                messageApi.open({
+                                  type: 'success',
+                                  content: '复制成功',
+                                });
+                                if (activeKey && activesKey) {
+                                  getAICardDetail({
+                                    userId: 1,
+                                    userToken: 2,
+                                    schoolId: 3,
+                                    memberId: 5,
+                                    domainId: activesKey,
+                                    modelTypeId: activeKey
+                                  }).then((res) => {
+                                    setData(res);
+                                    // console.log('res', res);
+                                  });
+                                }
+                                else if (activeKey && activesKey === null) {
+                                  getAICardDetail({
+                                    userId: 1,
+                                    userToken: 2,
+                                    schoolId: 3,
+                                    memberId: 5,
+                                  }).then((res) => {
+                                    setData(res);
+                                    // console.log('res', res);
+                                  });
+                                }
+                              })
+                            },
+                          },
+                          {
+                            label: '删除',
+                            key: '4',
+                            style: {
+                              fontFamily: 'PingFangSC, PingFang SC',
+                              fontWeight: 400,
+                              fontSize: '14px',
+                              color: '#333333',
+                              lineHeight: '20px',
+                              textAlign: 'center',
+                              fontStyle: 'normal',
+                              borderRadius: '4px',
+                            },
+                            onClick: () => {
+                              // const keyToDelete = data.find((item: any) => item.id)?.id;
+                              Modal.confirm({
+                                title: '你确定要删除吗？',
+                                okText: '确定',
+                                cancelText: '取消',
+                                onOk: () => {
+                                  deletePlugin({
+                                    userId: 1,
+                                    userToken: 2,
+                                    schoolId: 3,
+                                    memberId: 5,
+                                    pluginId: item.id
+                                  }).then((res) => {
+                                    if (activeKey && activesKey) {
+                                      getAICardDetail({
+                                        userId: 1,
+                                        userToken: 2,
+                                        schoolId: 3,
+                                        memberId: 5,
+                                        domainId: activesKey,
+                                        modelTypeId: activeKey
+                                      }).then((res) => {
+                                        setData(res);
+                                        // console.log('res', res);
+                                      });
+                                    } else if (activeKey && activesKey === null) {
+                                      getAICardDetail({
+                                        userId: 1,
+                                        userToken: 2,
+                                        schoolId: 3,
+                                        memberId: 5,
+                                      }).then((res) => {
+                                        setData(res);
+                                        // console.log('res', res);
+                                      });
+                                    }
+                                  });
+                                },
+                                onCancel: () => {
+                                  // 取消操作，可根据需要进行处理
+                                }
+                              });
+                            }
+                          },
+                        ]
+                      }}
+                    >
+                      <a onClick={(e) => e.preventDefault()}>
+                        <Space>
+                          <img src={maohaoImg} alt="" />
+                        </Space>
+                      </a>
+                    </Dropdown>
+                  )}
                 </div>
                 <div className={styles.cardTitle}>{item.name}</div>
                 <div className={styles.cardNote}>{item.note}</div>

@@ -29,6 +29,11 @@ export default defineConfig({
       component: '@/pages/AiModule/AiScene',
     },
     {
+      path: '/OCR',
+      layout: false,
+      component: '@/pages/AiOCR',
+    },
+    {
       path: '/aiJobHunt',
       component: '@/pages/AiJobHunt',
       layout: false,
@@ -51,7 +56,7 @@ export default defineConfig({
           title: 'XAI | ai简历',
         },
         {
-          path: '/aiJobHunt/interview/:id',
+          path: '/aiJobHunt/interview/:paramId/:themeId',
           component: '@/pages/AiJobHunt/Interview',
           exact: true,
           title: 'XAI | ai面试',
