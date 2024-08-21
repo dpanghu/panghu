@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from 'react';
 import { Card } from 'antd';
 import { getAICardDetail, deletePlugin, copyPlugin, publishPlugin } from '@/services/aiJobHunt'
 import styles from './index.less';
-// import type { MenuProps } from 'antd';
 import { Dropdown, Space } from 'antd';
 import eyeImg from '@/assets/images/eye.png';
 import maohaoImg from '@/assets/images/maohao.png';
@@ -61,152 +60,6 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
       }
     });
   };
-  // const items: MenuProps['items'] = [
-  //   {
-  //     label: getPublishLabel(),
-  //     key: '0',
-  //     style: {
-  //       fontFamily: 'PingFangSC, PingFang SC',
-  //       fontWeight: 400,
-  //       fontSize: '14px',
-  //       color: '#333333',
-  //       lineHeight: '20px',
-  //       textAlign: 'center',
-  //       fontStyle: 'normal',
-  //       borderRadius: '4px',
-  //     },
-  //     onClick: () => {
-  //       const keyToDelete = data.find((item: any) => item.id)?.id;
-  //       handlePublishClick(keyToDelete)
-  //     }
-  //   },
-  //   {
-  //     label: '编辑',
-  //     key: '1',
-  //     style: {
-  //       fontFamily: 'PingFangSC, PingFang SC',
-  //       fontWeight: 400,
-  //       fontSize: '14px',
-  //       color: '#333333',
-  //       lineHeight: '20px',
-  //       textAlign: 'center',
-  //       fontStyle: 'normal',
-  //       borderRadius: '4px',
-  //     }
-  //   },
-  //   {
-  //     label: '复制',
-  //     key: '3',
-  //     style: {
-  //       fontFamily: 'PingFangSC, PingFang SC',
-  //       fontWeight: 400,
-  //       fontSize: '14px',
-  //       color: '#333333',
-  //       lineHeight: '20px',
-  //       textAlign: 'center',
-  //       fontStyle: 'normal',
-  //       borderRadius: '4px',
-  //     },
-  //     onClick: () => {
-  //       const keyToDelete = data.find((item: any) => item.id)?.id;
-  //       copyPlugin({
-  //         userId: 1,
-  //         userToken: 2,
-  //         schoolId: 3,
-  //         memberId: 5,
-  //         pluginId: keyToDelete
-  //       }).then((res) => {
-  //         messageApi.open({
-  //           type: 'success',
-  //           content: '复制成功',
-  //         });
-  //         if (activeKey && activesKey) {
-  //           getAICardDetail({
-  //             userId: 1,
-  //             userToken: 2,
-  //             schoolId: 3,
-  //             memberId: 5,
-  //             domainId: activesKey,
-  //             modelTypeId: activeKey
-  //           }).then((res) => {
-  //             setData(res);
-  //             // console.log('res', res);
-  //           });
-  //         }
-  //         else if (activeKey && activesKey === null) {
-  //           getAICardDetail({
-  //             userId: 1,
-  //             userToken: 2,
-  //             schoolId: 3,
-  //             memberId: 5,
-  //           }).then((res) => {
-  //             setData(res);
-  //             // console.log('res', res);
-  //           });
-  //         }
-  //       })
-  //     },
-  //   },
-  //   {
-  //     label: '删除',
-  //     key: '4',
-  //     style: {
-  //       fontFamily: 'PingFangSC, PingFang SC',
-  //       fontWeight: 400,
-  //       fontSize: '14px',
-  //       color: '#333333',
-  //       lineHeight: '20px',
-  //       textAlign: 'center',
-  //       fontStyle: 'normal',
-  //       borderRadius: '4px',
-  //     },
-  //     onClick: () => {
-  //       const keyToDelete = data.find((item: any) => item.id)?.id;
-  //       Modal.confirm({
-  //         title: '你确定要删除吗？',
-  //         okText: '确定',
-  //         cancelText: '取消',
-  //         onOk: () => {
-  //           deletePlugin({
-  //             userId: 1,
-  //             userToken: 2,
-  //             schoolId: 3,
-  //             memberId: 5,
-  //             pluginId: keyToDelete
-  //           }).then((res) => {
-  //             if (activeKey && activesKey) {
-  //               getAICardDetail({
-  //                 userId: 1,
-  //                 userToken: 2,
-  //                 schoolId: 3,
-  //                 memberId: 5,
-  //                 domainId: activesKey,
-  //                 modelTypeId: activeKey
-  //               }).then((res) => {
-  //                 setData(res);
-  //                 // console.log('res', res);
-  //               });
-  //             } else if (activeKey && activesKey === null) {
-  //               getAICardDetail({
-  //                 userId: 1,
-  //                 userToken: 2,
-  //                 schoolId: 3,
-  //                 memberId: 5,
-  //               }).then((res) => {
-  //                 setData(res);
-  //                 // console.log('res', res);
-  //               });
-  //             }
-  //           });
-  //         },
-  //         onCancel: () => {
-  //           // 取消操作，可根据需要进行处理
-  //         }
-  //       });
-  //     }
-  //   },
-  // ];
-
   useEffect(() => {
     // 根据参数获取不同AI数据
     if (activeKey && activesKey) {
@@ -219,7 +72,6 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
         modelTypeId: activeKey
       }).then((res) => {
         setData(res);
-        // console.log('res', res);
       });
     }
     else if (activeKey && activesKey === null) {
@@ -230,7 +82,6 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
         memberId: 5,
       }).then((res) => {
         setData(res);
-        // console.log('res', res);
       });
     }
   }, [activeKey, activesKey]);
@@ -293,7 +144,6 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                               borderRadius: '4px',
                             },
                             onClick: () => {
-                              // const keyToDelete = data.find((item: any) => item.id)?.id;
                               handlePublishClick(item.id)
                             }
                           },
@@ -325,7 +175,6 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                               borderRadius: '4px',
                             },
                             onClick: () => {
-                              // const keyToDelete = data.find((item: any) => item.id)?.id;
                               copyPlugin({
                                 userId: 1,
                                 userToken: 2,
@@ -347,7 +196,6 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                                     modelTypeId: activeKey
                                   }).then((res) => {
                                     setData(res);
-                                    // console.log('res', res);
                                   });
                                 }
                                 else if (activeKey && activesKey === null) {
@@ -358,7 +206,6 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                                     memberId: 5,
                                   }).then((res) => {
                                     setData(res);
-                                    // console.log('res', res);
                                   });
                                 }
                               })
@@ -378,7 +225,6 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                               borderRadius: '4px',
                             },
                             onClick: () => {
-                              // const keyToDelete = data.find((item: any) => item.id)?.id;
                               Modal.confirm({
                                 title: '你确定要删除吗？',
                                 okText: '确定',
@@ -401,7 +247,6 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                                         modelTypeId: activeKey
                                       }).then((res) => {
                                         setData(res);
-                                        // console.log('res', res);
                                       });
                                     } else if (activeKey && activesKey === null) {
                                       getAICardDetail({
@@ -411,7 +256,6 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                                         memberId: 5,
                                       }).then((res) => {
                                         setData(res);
-                                        // console.log('res', res);
                                       });
                                     }
                                   });
@@ -461,7 +305,6 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                               borderRadius: '4px',
                             },
                             onClick: () => {
-                              // const keyToDelete = data.find((item: any) => item.id)?.id;
                               handlePublishClick(item.id)
                             }
                           },
@@ -493,7 +336,6 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                               borderRadius: '4px',
                             },
                             onClick: () => {
-                              // const keyToDelete = data.find((item: any) => item.id)?.id;
                               copyPlugin({
                                 userId: 1,
                                 userToken: 2,
@@ -515,7 +357,6 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                                     modelTypeId: activeKey
                                   }).then((res) => {
                                     setData(res);
-                                    // console.log('res', res);
                                   });
                                 }
                                 else if (activeKey && activesKey === null) {
@@ -526,7 +367,6 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                                     memberId: 5,
                                   }).then((res) => {
                                     setData(res);
-                                    // console.log('res', res);
                                   });
                                 }
                               })
@@ -546,7 +386,6 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                               borderRadius: '4px',
                             },
                             onClick: () => {
-                              // const keyToDelete = data.find((item: any) => item.id)?.id;
                               Modal.confirm({
                                 title: '你确定要删除吗？',
                                 okText: '确定',
@@ -559,6 +398,10 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                                     memberId: 5,
                                     pluginId: item.id
                                   }).then((res) => {
+                                    messageApi.open({
+                                      type: 'success',
+                                      content: '删除成功',
+                                    });
                                     if (activeKey && activesKey) {
                                       getAICardDetail({
                                         userId: 1,
@@ -569,7 +412,6 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                                         modelTypeId: activeKey
                                       }).then((res) => {
                                         setData(res);
-                                        // console.log('res', res);
                                       });
                                     } else if (activeKey && activesKey === null) {
                                       getAICardDetail({
@@ -579,7 +421,6 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                                         memberId: 5,
                                       }).then((res) => {
                                         setData(res);
-                                        // console.log('res', res);
                                       });
                                     }
                                   });

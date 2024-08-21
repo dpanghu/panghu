@@ -213,10 +213,8 @@ const Interview: React.FC = ({ }) => {
   });
 
   useEffect(() => {
-    return () => {
-      updateShowAIAnswers();
-    }
-  }, [])
+    updateShowAIAnswers();
+  }, [state.showReferenceAnswers, state.showAIComments])
 
   return (
     <div className={styles.interviewContainer}>
