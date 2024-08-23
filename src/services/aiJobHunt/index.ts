@@ -161,7 +161,7 @@ export async function updateShowAIAnswer<T>(params?: RecordItem): Promise<T> {
   });
 }
 /** ------------------------------------------------- AI产品页面 ------------------------------------ */
-//查询AI产品列表
+//查询AI通用工具分类查询列表
 export async function getAIProductList<T>(params?: RecordItem): Promise<T[]> {
   return $axios.request({
     url: '/xai/xai/model/type/list',

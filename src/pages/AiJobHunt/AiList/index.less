@@ -101,6 +101,7 @@
             width: 335px;
             height: 32px;
             line-height: 30px;
+            display: flex;
 
             .searchInput {
                 margin-right: 16px;
@@ -111,6 +112,20 @@
                 line-height: 32px;
                 text-align: left;
                 font-style: normal;
+            }
+
+            .searchBox {
+                position: relative;
+
+                .searchImg {
+                    width: 16px;
+                    height: 16px;
+                    z-index: 1000;
+                    cursor: pointer;
+                    position: absolute;
+                    right: 25px;
+                    top: 8px;
+                }
             }
 
             .searchBtn {
@@ -148,12 +163,6 @@
     margin: 30px 27px 105px 54px;
 }
 
-.word {
-    background: linear-gradient(344deg, #0417DB 0%, #08AFFF 75%, #FF00FC 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
 .text {
     margin-top: 44px;
     width: 100%;
@@ -169,14 +178,6 @@
         text-align: left;
         font-style: normal;
         margin: 8px 0 18px;
-        text-align: center;
-    }
-
-    .titleName {
-        margin-bottom: 0;
-        font-size: 17px;
-        width: 100%;
-        height: 22px;
         text-align: center;
     }
 }

@@ -1,14 +1,17 @@
 import React, { useEffect } from 'react';
 import { getAIProductList, getAllAIModel } from '@/services/aiJobHunt';
 import { SearchOutlined } from '@ant-design/icons';
-import { Input, Space, Button } from 'antd';
+import { Space, Button } from 'antd';
 import { Menu } from 'antd';
 import styles from './index.less';
 import AllModels from './AllModels/index';
 import { history } from 'umi';
 import homeworkImg from '@/assets/images/homework.png';
 import searchImg from '@/assets/images/search.png';
+import addImg from '@/assets/images/add.png';
 import selectImg from '@/assets/images/select.png';
+import aiTitleImg from '@/assets/images/aiTitle.png';
+import { Input } from 'SeenPc';
 const suffix = (
   <SearchOutlined
     style={{
@@ -66,6 +69,7 @@ const AiList: React.FC = () => {
       setSelectedKey(data[0].id);
     }
   }, [data]);
+  const [value, setvalue] = React.useState<any>('');//用于搜索框的值
   return (
     <div className={styles.container}>
       <div className={styles.header}></div>
@@ -80,7 +84,7 @@ const AiList: React.FC = () => {
         <div className={styles.right}>
           <div className={styles.title}>
             <div className={styles.text}>
-              <p className={styles.titleName}><span className={styles.word} >AI</span><span style={{ color: '#0417DB' }}>工具集</span></p>
+              <img src={aiTitleImg} alt="" />
               <p className={styles.description}>精选AI产品，高效工作，乐享生活！</p>
             </div>
             <div className={styles.choice}>
@@ -91,12 +95,26 @@ const AiList: React.FC = () => {
                 ))}
               </div>
               <div className={styles.search}>
-                <Space direction="vertical">
+                <div className={styles.searchBox}>
+                  <Input
+                    className={styles.searchInput}
+                    allowClear={true}
+                    style={{ width: 240, height: 32 }}
+                    placeholder="请输入搜索内容"
+                    value={value}
+                    onChange={(e: any) => {
+                      setvalue(e);
+                    }}
+                    size="medium"
+                  ></Input>
+                  <img className={styles.searchImg} src={searchImg} alt="" />
+                </div>
+                {/* <Space direction="vertical">
                   <Input className={styles.searchInput} placeholder="请输入搜索内容" allowClear suffix={suffix} style={{ width: 240, height: 32 }} />
-                </Space>
+                </Space> */}
                 <Button className={styles.searchBtn} onClick={() => {
                   history.push('/createAiModule');
-                }} type="primary" danger><img src={searchImg} alt="" /><span className={styles.words}>新建</span></Button>
+                }} type="primary" danger><img src={addImg} alt="" /><span className={styles.words}>新建</span></Button>
               </div>
             </div>
           </div>
