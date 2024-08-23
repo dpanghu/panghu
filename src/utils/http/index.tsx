@@ -7,7 +7,7 @@ import type { AxiosInstance, AxiosResponse } from 'axios';
 import axios from 'axios';
 import { cloneDeep } from 'lodash';
 import qs from 'qs';
-import { transformFormData } from '../utils';
+import { transformFormData, getCommonData } from '../utils';
 import { CodeMessage } from './config';
 import { ContentType } from './enum';
 import type { CreateAxiosConfig } from './interface.d';
@@ -37,9 +37,11 @@ class Axios {
     let qsData = JSON.parse(
       window.sessionStorage.getItem('queryParams') || '{}',
     );
+    let commonData: any = getCommonData(); 
     conf.params = {
       ...qsData,
       ...conf.params,
+      ...commonData,
     };
     if (conf.method?.toLocaleUpperCase() === 'POST') {
       if (conf.isFormData) {

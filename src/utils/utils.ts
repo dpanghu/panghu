@@ -39,6 +39,30 @@ export function _getQueryParam() {
   };
 }
 
+// 获取公共参数
+export function getCommonData() {
+  let qs: any = getQueryParam();
+  let commonData: any = {};
+  if (Object.keys(qs)?.length === 0) {
+    commonData = JSON.parse(window.sessionStorage.getItem('commonDatas') as any || '{}');
+  } else {
+    const { schoolMemberId ,schoolId, userId, userName, memberId, userToken, userType, classId  } = qs;
+    commonData = {
+      schoolMemberId,
+      schoolId,
+      userId,
+      userName,
+      memberId,
+      userToken,
+      userType,
+      classId
+    }
+    window.sessionStorage.setItem('commonDatas', JSON.stringify(commonData));
+  }
+  return commonData;
+  
+}
+
 // 分隔符转驼峰命名
 export function transformVarName(variable: string, separator: string) {
   const separatorIndex = variable.indexOf(separator);

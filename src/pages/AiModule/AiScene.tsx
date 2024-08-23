@@ -80,12 +80,12 @@ const JobHunt: React.FC = () => {
   useMount(() => {
     let qsData: any = getQueryParam();
     getPluginDetail({
-      id: qsData.id,
+      id: qsData.imageId,
       userId: '1',
       memberId: '1',
       schoolId: '1',
     }).then((res: any) => {
-      if(res.code == 'resume' || res.code === 'aiInterviewer') {
+      if(res.plugin?.code === 'resume' || res.plugin?.code === 'aiInterviewer') {
         history.push('/aiJobHunt');
       }else {
         state.data = JSON.parse(res.param?.params);
