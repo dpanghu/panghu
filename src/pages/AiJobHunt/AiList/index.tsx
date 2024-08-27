@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
-import { getAIProductList, getAllAIModel } from '@/services/aiJobHunt';
+import { getAIProductList, getAllAIModel, getAICardDetail } from '@/services/aiJobHunt';
 import { SearchOutlined } from '@ant-design/icons';
-import { Space, Button } from 'antd';
+import { Button } from 'antd';
 import { Menu } from 'antd';
 import styles from './index.less';
 import AllModels from './AllModels/index';
@@ -22,6 +22,7 @@ const suffix = (
 const AiList: React.FC = () => {
   const [data, setData] = React.useState<any>([]);
   const [list, setList] = React.useState<any>([]);
+  const [searchValue, setSearchValue] = React.useState<any>('');
   const [select, setSelect] = React.useState<any>(null);//用于控制点击渲染背景色
   const [selectedKey, setSelectedKey] = React.useState<string>();//子组件查询所需要的modelTypeId参数
   const [selectedsKey, setSelectedsKey] = React.useState<any>(null);//子组件查询所需要的domainId参数
@@ -43,9 +44,14 @@ const AiList: React.FC = () => {
     setScrollKey(key);
     setItem(items);
   };
+  //点击更换选中时的背景色
   const handleModelClick = (keys: any) => {
     setSelectedsKey(keys);
     setSelect(keys);
+  }
+  //点击搜索
+  const handleSearchClick = (val: any) => {
+    setSearchValue(val)
   }
   //scrollKey传到子组件后，子组件重新渲染，scrollKey清空
   const deletes = setInterval(() => {
@@ -107,20 +113,20 @@ const AiList: React.FC = () => {
                     }}
                     size="medium"
                   ></Input>
-                  <img className={styles.searchImg} src={searchImg} alt="" />
+                  <img className={styles.searchImg} src={searchImg} onClick={() => handleSearchClick(value)} alt="" />
                 </div>
                 {/* <Space direction="vertical">
                   <Input className={styles.searchInput} placeholder="请输入搜索内容" allowClear suffix={suffix} style={{ width: 240, height: 32 }} />
                 </Space> */}
                 <Button className={styles.searchBtn} onClick={() => {
-                  window.sessionStorage.setItem('pluginId','null');
+                  window.sessionStorage.setItem('pluginId', 'null');
                   history.push('/createAiModule');
                 }} type="primary" danger><img src={addImg} alt="" /><span className={styles.words}>新建</span></Button>
               </div>
             </div>
           </div>
           <div className={styles.contents}>
-            <AllModels itemss={item} activeKey={selectedKey} activesKey={selectedsKey} scrollKey={scrollKey}></AllModels>
+            <AllModels itemss={item} activeKey={selectedKey} activesKey={selectedsKey} scrollKey={scrollKey} values={searchValue}></AllModels>
           </div>
         </div>
       </div >

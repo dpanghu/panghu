@@ -8,7 +8,7 @@ import maohaoImg from '@/assets/images/maohao.png';
 import { message, Modal } from 'antd';
 import { history } from 'umi';
 
-const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey: string | null; scrollKey: string | null }> = ({ itemss, activeKey, activesKey, scrollKey }) => {
+const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey: string | null; scrollKey: string | null; values: any | null }> = ({ itemss, activeKey, activesKey, scrollKey, values }) => {
 
   const [data, setData] = React.useState<any>([]);
   const [messageApi, contextHolder] = message.useMessage();
@@ -46,6 +46,7 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
           memberId: 5,
           domainId: activesKey,
           modelTypeId: activeKey,
+          search: values,
         }).then((res) => {
           setData(res);
         });
@@ -55,6 +56,7 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
           userToken: 2,
           schoolId: 3,
           memberId: 5,
+          search: values,
         }).then((res) => {
           setData(res);
         });
@@ -70,7 +72,8 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
         schoolId: 3,
         memberId: 5,
         domainId: activesKey,
-        modelTypeId: activeKey
+        modelTypeId: activeKey,
+        search: values,
       }).then((res) => {
         setData(res);
       });
@@ -81,11 +84,12 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
         userToken: 2,
         schoolId: 3,
         memberId: 5,
+        search: values,
       }).then((res) => {
         setData(res);
       });
     }
-  }, [activeKey, activesKey]);
+  }, [activeKey, activesKey, values]);
   const contentRef = useRef<HTMLDivElement>(null);
   //控制滚动
   useEffect(() => {
@@ -162,7 +166,7 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                               borderRadius: '4px',
                             },
                             onClick: () => {
-                              window.sessionStorage.setItem('pluginId',item.id);
+                              window.sessionStorage.setItem('pluginId', item.id);
                               history.push('/createAiModule');
                             }
                           },
@@ -198,7 +202,8 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                                     schoolId: 3,
                                     memberId: 5,
                                     domainId: activesKey,
-                                    modelTypeId: activeKey
+                                    modelTypeId: activeKey,
+                                    search: values,
                                   }).then((res) => {
                                     setData(res);
                                   });
@@ -209,6 +214,7 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                                     userToken: 2,
                                     schoolId: 3,
                                     memberId: 5,
+                                    search: values,
                                   }).then((res) => {
                                     setData(res);
                                   });
@@ -249,7 +255,8 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                                         schoolId: 3,
                                         memberId: 5,
                                         domainId: activesKey,
-                                        modelTypeId: activeKey
+                                        modelTypeId: activeKey,
+                                        search: values,
                                       }).then((res) => {
                                         setData(res);
                                       });
@@ -259,6 +266,7 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                                         userToken: 2,
                                         schoolId: 3,
                                         memberId: 5,
+                                        search: values,
                                       }).then((res) => {
                                         setData(res);
                                       });
@@ -327,7 +335,7 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                               borderRadius: '4px',
                             },
                             onClick: () => {
-                              window.sessionStorage.setItem('pluginId',item.id);
+                              window.sessionStorage.setItem('pluginId', item.id);
                               history.push('/createAiModule');
                             }
                           },
@@ -363,7 +371,8 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                                     schoolId: 3,
                                     memberId: 5,
                                     domainId: activesKey,
-                                    modelTypeId: activeKey
+                                    modelTypeId: activeKey,
+                                    search: values,
                                   }).then((res) => {
                                     setData(res);
                                   });
@@ -374,6 +383,7 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                                     userToken: 2,
                                     schoolId: 3,
                                     memberId: 5,
+                                    search: values,
                                   }).then((res) => {
                                     setData(res);
                                   });
@@ -418,7 +428,8 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                                         schoolId: 3,
                                         memberId: 5,
                                         domainId: activesKey,
-                                        modelTypeId: activeKey
+                                        modelTypeId: activeKey,
+                                        search: values,
                                       }).then((res) => {
                                         setData(res);
                                       });
@@ -428,6 +439,7 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                                         userToken: 2,
                                         schoolId: 3,
                                         memberId: 5,
+                                        search: values,
                                       }).then((res) => {
                                         setData(res);
                                       });
