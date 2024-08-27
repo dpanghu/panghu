@@ -1,11 +1,10 @@
 import React from 'react';
-import styles from './AiScene.less';
+import styles from './scenePreview.less';
 import { useReactive, useMount } from 'ahooks';
-import { getQueryParam } from '@/utils/utils';
-import { getPluginDetail } from '@/services/aiModule';
 import { Input, Select, ComboBox, Button } from 'SeenPc';
+import { getPluginDetail } from '@/services/aiModule';
 import confings from '@/assets/images/configs.png';
-import { message } from 'antd';
+import { message, Modal } from 'antd';
 import aiimg from '@/assets/images/rebotIcon.png';
 import { history } from 'umi';
 
@@ -66,7 +65,7 @@ const renderPreview = (item: any) => {
   }
 }
 
-const JobHunt: React.FC = () => {
+const JobHunt: React.FC = (props: any) => {
   const state = useReactive<TState>({
     curTheme: undefined,
     dialogList: [],
@@ -78,32 +77,19 @@ const JobHunt: React.FC = () => {
   });
 
   useMount(() => {
-    let qsData: any = getQueryParam();
-    getPluginDetail({
-      id: qsData.imageId,
-      userId: '1',
-      memberId: '1',
-      schoolId: '1',
-    }).then((res: any) => {
-      if(res.plugin?.code === 'resume' || res.plugin?.code === 'aiInterviewer') {
-        history.push('/aiJobHunt');
-      }else {
+    console.log('id',props.id);
+    if(props.id !== null) {
+      getPluginDetail({id: props.id}).then((res: any)=> {
         state.data = JSON.parse(res.param?.params);
-        state.aiData = res;
-      }
-    })
+      });
+    }
   });
 
   return (
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    <Modal footer={false} width={445} open={true} onCancel={()=> { props.onCancel && props.onCancel() }} onOk={()=> { props.onOk && props.onOk() }}>
     <div className={styles.aicontainer}>
-      <div className={styles.head}>{state.aiData.plugin?.name}</div>
-      <div className={styles.content}>
-        <div className={styles.left_content}>
-          <div className={styles.config_head}>
-            <img src={confings} style={{ width: 16, height: 16,marginRight: 4 }}></img>
-            <div>生成配置</div>
-            <div className={styles.confing_text} onClick={()=> { message.warning('该功能暂未开放') }}>填入示例</div>
-          </div>
+      <div className={styles.left_content}>
           <div className={styles.left_top}>
             {
               state.data && state.data.map((item: any) => {
@@ -111,32 +97,9 @@ const JobHunt: React.FC = () => {
               })
             }
           </div>
-          <div className={styles.left_bottom}>
-            <Button type='primary'>AI生成</Button>
-            <div style={{ display:'flex',alignItems:'center',marginTop: 8 }}>
-            <ComboBox type="checkbox" options={[
-              {
-                label: '',
-                value: '1'
-              }
-            ]} value={state.allow} onChange={(e: any)=> { state.allow = e; }}></ComboBox>
-            <div style={{ fontSize: 12, color:'#666666',lineHeight: '12px' }}>我已阅读并同意《AI内容生成功能使用说明》</div>
-            </div>
-          </div>
         </div>
-        <div className={styles.mid_content}>
-          <div className={styles.warningBox}>
-            <img src={aiimg} style={{ width: 24, height: 24, marginRight: 16 }}></img>
-            <div className={styles.warning}>
-              <div>{state.aiData.plugin?.tips}</div>
-              <div className={styles.subwarning}>
-               {state.aiData.plugin?.note}
-            </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
+    </Modal>
   );
 };
 

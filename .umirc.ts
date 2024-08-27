@@ -34,6 +34,12 @@ export default defineConfig({
       component: '@/pages/AiOCR',
     },
     {
+      path: '/aiJobHunt/AiList',
+      component: '@/pages/AiJobHunt/AiList',
+      title: 'XAI | ai列表',
+      layout: false,
+    },
+    {
       path: '/aiJobHunt',
       component: '@/pages/AiJobHunt',
       layout: false,
@@ -42,12 +48,6 @@ export default defineConfig({
           path: '/aiJobHunt',
           component: '@/pages/AiJobHunt/Home',
           title: 'XAI | ai求职',
-        },
-        {
-          path: '/aiJobHunt/AiList',
-          component: '@/pages/AiJobHunt/AiList',
-          exact: true,
-          title: 'XAI | ai列表',
         },
         {
           path: '/aiJobHunt/resume/:id',

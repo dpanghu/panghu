@@ -7,10 +7,13 @@ import eyeImg from '@/assets/images/eye.png';
 import maohaoImg from '@/assets/images/maohao.png';
 import { message, Modal } from 'antd';
 import { history } from 'umi';
+import ScenePreview from '../../../AiModule/scenePreview';
 
 const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey: string | null; scrollKey: string | null; values: any | null }> = ({ itemss, activeKey, activesKey, scrollKey, values }) => {
 
   const [data, setData] = React.useState<any>([]);
+  const [open, setOpen] = React.useState<any>(false);
+  const [id, setId] = React.useState<any>(null);
   const [messageApi, contextHolder] = message.useMessage();
   // 状态管理变量，用对象存储每个 item 的发布状态
   const [publishedStates, setPublishedStates] = React.useState<Record<string, boolean>>({});
@@ -105,6 +108,9 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
   // }
   return (
     <div ref={contentRef}>
+      {
+        open && <ScenePreview id={id} onCancel={()=> { setOpen(false) }} onOk={()=> { setOpen(false) }}></ScenePreview>
+      }
       {contextHolder}
       {/* {itemss.map((item, index) => (
         <div className='Card' key={index} data-key={item.key} style={{ fontWeight: 500, fontSize: '20px', color: 'gray' }}><span style={{ marginRight: '8px' }}>{item.icon}</span>{item.label}</div>
@@ -127,7 +133,11 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
               </div>
               <div className={styles.right}>
                 <div className={styles.cardPicture}>
-                  <img className={styles.eye} src={eyeImg} alt="" />
+                  <img onClick={()=> {
+                    console.log('222222222222');
+                    setOpen(true);
+                    setId(item.id);
+                  }} className={styles.eye} src={eyeImg} alt="" />
                   {item.isConfig === 0 ? (
                     <Dropdown
                       className={`${styles.maohao} disabled-dropdown`}
