@@ -217,9 +217,9 @@ const EditResume = React.forwardRef(({ resumeData, reload }: Props, ref) => {
               formatter: ({ value, count }) => (
                 <span
                   className={classNames(styles['content-text-area-count'], {
-                    [sf.sColorMainColor]: value.length >= 2000,
+                    [sf.sColorMainColor]: value.length > 2000,
                   })}
-                  style={value.length >= 2000 ? { color: '#ff2739' } : {}}
+                  style={value.length > 2000 ? { color: '#ff2739' } : {}}
                 >
                   {count}/2000
                 </span>
