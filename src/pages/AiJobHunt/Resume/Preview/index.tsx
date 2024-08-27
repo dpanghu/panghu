@@ -135,7 +135,7 @@ const ResumePreview: React.FC<Props> = ({ resumeInfo }) => {
           <Col span={4} offset={1} style={{ textAlign: 'center' }}>
             <span className={styles['info-title']}>期望薪资：</span>
             <span className={styles['info-content']}>
-              {resumeInfo?.intentCity || '-'}
+              {resumeInfo?.salary || '-'}
             </span>
           </Col>
           <Col span={4} offset={1} style={{ textAlign: 'center' }}>

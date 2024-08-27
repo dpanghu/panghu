@@ -332,16 +332,18 @@ export const formItemConfig: Record<
         },
         {
           cName: '薪资要求',
-          name: 'intentSalary',
+          name: 'salary',
           className: 'form-gap',
           rules: [
             { required: true, message: '请输入薪资' },
             {
-              max: 20,
+              max: 99999999,
+              min: 0,
+              type: 'number',
               message: ExceedMaxLength,
             },
           ],
-          type: 'input',
+          type: 'inputNumber',
           elementConfig: {
             placeholder: '请输入薪资',
             className: 'basic-short-input',
@@ -687,17 +689,18 @@ export const formItemConfig: Record<
         {
           name: 'selfEvaluation',
           rules: [
-            { required: true, message: '请输入荣誉证书' },
+            { required: true, message: '请输入自我评价' },
             {
               max: 2000,
               message: ExceedMaxLength,
             },
           ],
           className: 'form-item-full-width',
-          type: 'textarea',
+          type: 'textareaWithAi',
           elementConfig: {
             placeholder: '自我评价应做到突出自身符合目标岗位要求',
             className: 'content-text-area',
+            pluginCode: 'resume_self',
           },
         },
       ],
@@ -899,11 +902,10 @@ export const formItemConfig: Record<
             },
           ],
           className: 'form-item-full-width',
-          type: 'textareaWithAi',
+          type: 'textarea',
           elementConfig: {
             placeholder: '输入你的自定义内容',
             className: 'content-text-area',
-            pluginCode: 'resume_self',
           },
         },
       ],
