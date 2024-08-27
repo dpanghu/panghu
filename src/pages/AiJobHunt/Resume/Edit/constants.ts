@@ -218,7 +218,11 @@ export const formItemConfig: Record<
         cName: '年龄',
         name: 'age',
         className: 'form-gap',
-        rules: [{ required: true, message: '请输入年龄' }],
+        rules: [
+          { required: true, message: '请输入年龄' },
+          { max: 100, min: 1, message: '年龄范围输入1-100', type: 'number' },
+          { pattern: /^[1-9]\d*$/, message: '请输入整数' },
+        ],
         type: 'inputNumber',
         elementConfig: {
           placeholder: '请输入年龄',
