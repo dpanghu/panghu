@@ -1,0 +1,87 @@
+.DocumentSummaryContainer {
+  width: 100%;
+  height: 100vh;
+  cursor: default;
+
+  :global {
+    :where(.css-dev-only-do-not-override-2mh66p).ant-upload-wrapper
+      .ant-upload-drag
+      .ant-upload {
+      padding: 0;
+    }
+  }
+
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 54px;
+    padding: 0 16px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+    .title {
+      font-weight: 600;
+      font-size: 22px;
+      color: #1a1a1e;
+    }
+    .action {
+      display: flex;
+      align-items: center;
+      .recordLast {
+        display: flex;
+        align-items: center;
+        column-gap: 2px;
+        cursor: pointer;
+        &:hover {
+          opacity: 0.75;
+        }
+        > img {
+          width: 16px;
+        }
+        > span {
+          color: #666;
+          font-size: 14px;
+          line-height: 16px;
+        }
+      }
+    }
+  }
+  .main {
+    width: 100%;
+    height: calc(100% - 54px);
+    padding: 8px;
+    .content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(180deg, #e5f0ff 0%, #e9e9ff 100%);
+      border-radius: 8px;
+      .uploadContainer {
+        background: url('../../assets/images/file_container.png') no-repeat;
+        width: 566px;
+        height: 201px;
+        background-size: 566px 201px;
+        background-position: center;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        row-gap: 8px;
+        flex-direction: column;
+        padding-left: 225px;
+        border: 1px solid transparent;
+        align-items: baseline;
+        &:hover {
+          border: 1px solid #aaa;
+          border-radius: 8px;
+        }
+        > span {
+          font-size: 14px;
+          color: #333;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}
