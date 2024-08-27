@@ -863,11 +863,11 @@ export const formItemConfig: Record<
     formItems: [
       [
         {
-          cName: '公司名称',
+          cName: '名称',
           name: 'projectName',
           className: 'form-gap',
           rules: [
-            { required: true, message: '请输入公司名称' },
+            { required: true, message: '请输入名称' },
             {
               max: 30,
               message: ExceedMaxLength,
@@ -875,7 +875,7 @@ export const formItemConfig: Record<
           ],
           type: 'input',
           elementConfig: {
-            placeholder: '请输入公司名称',
+            placeholder: '请输入名称',
             className: 'basic-short-input',
           },
         },
