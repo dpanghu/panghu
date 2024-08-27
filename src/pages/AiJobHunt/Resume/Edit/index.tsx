@@ -248,6 +248,7 @@ const EditResume = React.forwardRef(({ resumeData, reload }: Props, ref) => {
           formItems: FormItemType[][];
           draggable?: boolean;
           formName?: string;
+          maxItems?: number;
         },
   ) {
     function innerRender(
@@ -317,6 +318,7 @@ const EditResume = React.forwardRef(({ resumeData, reload }: Props, ref) => {
                 formCName={config.name}
                 formName={config.formName || ''}
                 form={form}
+                maxItems={config.maxItems}
               >
                 {(field) => (
                   <div className={styles['content-section']}>

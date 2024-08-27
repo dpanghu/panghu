@@ -191,6 +191,7 @@ export const formItemConfig: Record<
       formItems: FormItemType[][];
       draggable?: boolean;
       formName?: string;
+      maxItems?: number;
     }
   | FormItemType[][]
 > = {
@@ -860,6 +861,7 @@ export const formItemConfig: Record<
     name: '自定义模块',
     formName: 'selfDefList',
     draggable: true,
+    maxItems: 3,
     formItems: [
       [
         {

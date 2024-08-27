@@ -1,3 +1,4 @@
+import { message } from 'SeenPc';
 import type { FormInstance, FormListFieldData } from 'antd';
 import { Form, Popconfirm, Row } from 'antd';
 import { uniqueId } from 'lodash';
@@ -14,6 +15,7 @@ type Props = {
   formName: string;
   children: (field: FormListFieldData) => React.ReactNode;
   formCName: string;
+  maxItems?: number;
   form: FormInstance;
 };
 
@@ -25,6 +27,7 @@ const doNotDeleteOnlyOne = [
 
 const DraggableItem: React.FC<Props> = ({
   formName,
+  maxItems,
   form,
   children: RenderFunc,
 }) => {
@@ -82,9 +85,15 @@ const DraggableItem: React.FC<Props> = ({
                             <div className={styles['content-section-operate']}>
                               <span
                                 title="添加"
-                                onClick={() =>
-                                  add({ key: uniqueId() }, index + 1)
-                                }
+                                onClick={() => {
+                                  if (maxItems && fields.length >= maxItems) {
+                                    message.warning(
+                                      '该模块最多添加' + maxItems + '个',
+                                    );
+                                    return;
+                                  }
+                                  add({ key: uniqueId() }, index + 1);
+                                }}
                                 className={styles['operate-icon-append']}
                               ></span>
                               {(!doNotDeleteOnlyOne.includes(formName) ||
