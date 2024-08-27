@@ -40,6 +40,12 @@ export default defineConfig({
       layout: false,
     },
     {
+      path: '/documentSummary',
+      component: '@/pages/DocumentSummary',
+      title: 'AI文档总结',
+      layout: false,
+    },
+    {
       path: '/aiJobHunt',
       component: '@/pages/AiJobHunt',
       layout: false,
