@@ -321,26 +321,32 @@ const ResumePreview: React.FC<Props> = ({ resumeInfo }) => {
           </div>
         )}
       {resumeInfo?.selfDefList && resumeInfo?.selfDefList.length > 0 && (
-        <div className={styles['self-def']}>
-          <h4>
-            <span>自定义模块</span>
-            <div></div>
-          </h4>
-          <div className={classnames(sf.sFlex, sf.sFlexDirC, sf.sFlexGap24)}>
-            {resumeInfo?.selfDefList?.map((item, index) => (
-              <div key={index} className={sf.sFlex1}>
-                <div className={styles['title']}>
-                  <span>
-                    {item.periodStart}~{item.periodEnd}
-                  </span>
-                  <span>{item.projectName}</span>
-                  <span>{item.role}</span>
+        <>
+          {resumeInfo?.selfDefList?.map((item) => (
+            <div className={styles['self-def']} key={item.moduleName}>
+              <h4>
+                <span>{item.moduleName}</span>
+                <div></div>
+              </h4>
+              <div
+                className={classnames(sf.sFlex, sf.sFlexDirC, sf.sFlexGap24)}
+              >
+                <div className={sf.sFlex1}>
+                  <div className={styles['title']}>
+                    <span>
+                      {item.periodStart}~{item.periodEnd}
+                    </span>
+                    <span>{item.projectName}</span>
+                    <span>{item.role}</span>
+                  </div>
+                  <pre className={styles['info-content']}>
+                    {item.description}
+                  </pre>
                 </div>
-                <pre className={styles['info-content']}>{item.description}</pre>
               </div>
-            ))}
-          </div>
-        </div>
+            </div>
+          ))}
+        </>
       )}
     </div>
   );

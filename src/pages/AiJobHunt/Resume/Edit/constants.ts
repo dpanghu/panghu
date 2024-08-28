@@ -192,6 +192,7 @@ export const formItemConfig: Record<
       draggable?: boolean;
       formName?: string;
       maxItems?: number;
+      editableTitle?: boolean;
     }
   | FormItemType[][]
 > = {
@@ -861,15 +862,33 @@ export const formItemConfig: Record<
     name: '自定义模块',
     formName: 'selfDefList',
     draggable: true,
+    editableTitle: true,
     maxItems: 3,
     formItems: [
       [
         {
-          cName: '名称',
+          cName: '模块名称',
+          name: 'moduleName',
+          className: 'form-gap',
+          rules: [
+            { required: true, message: '请输入模块名称' },
+            {
+              max: 10,
+              message: ExceedMaxLength,
+            },
+          ],
+          type: 'input',
+          elementConfig: {
+            placeholder: '请输入模块名称',
+            className: 'basic-short-input',
+          },
+        },
+        {
+          cName: '项目名称',
           name: 'projectName',
           className: 'form-gap',
           rules: [
-            { required: true, message: '请输入名称' },
+            { required: true, message: '请输入项目名称' },
             {
               max: 30,
               message: ExceedMaxLength,
@@ -877,7 +896,7 @@ export const formItemConfig: Record<
           ],
           type: 'input',
           elementConfig: {
-            placeholder: '请输入名称',
+            placeholder: '请输入项目名称',
             className: 'basic-short-input',
           },
         },
