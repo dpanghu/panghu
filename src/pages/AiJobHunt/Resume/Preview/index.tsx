@@ -1,7 +1,8 @@
 import sf from 'SeenPc/dist/esm/globalStyle/global.less';
 import { Col, Row } from 'antd';
 import { default as classNames, default as classnames } from 'classnames';
-import React from 'react';
+import { last, nth } from 'lodash';
+import React, { useMemo } from 'react';
 import type { IResumeContent } from '../../type';
 import styles from './index.less';
 
@@ -9,6 +10,23 @@ type Props = {
   resumeInfo: IResumeContent | null;
 };
 const ResumePreview: React.FC<Props> = ({ resumeInfo }) => {
+  const camputedPosition = useMemo<string>(() => {
+    if (typeof resumeInfo?.intentPosition === 'string') {
+      return resumeInfo?.intentPosition || '-';
+    } else if (Array.isArray(resumeInfo?.intentPosition)) {
+      // ["互联网/AI","互联网/AI/前端/移动开发","互联网/AI/前端/移动开发/前端开发工程师"]
+      if (resumeInfo?.intentPosition?.length > 1) {
+        return last(resumeInfo?.intentPosition).substring(
+          nth(resumeInfo?.intentPosition, -2).length + 1,
+        );
+      } else {
+        return resumeInfo?.intentPosition?.[0] || '-';
+      }
+    } else {
+      return '-';
+    }
+  }, [resumeInfo?.intentPosition]);
+
   return (
     <div className={styles.container}>
       <div className={styles['resume-extra-icon']}></div>
@@ -122,9 +140,7 @@ const ResumePreview: React.FC<Props> = ({ resumeInfo }) => {
         <Row>
           <Col span={4}>
             <span className={styles['info-title']}>意向职位：</span>
-            <span className={styles['info-content']}>
-              {resumeInfo?.intentPositionValue || '-'}
-            </span>
+            <span className={styles['info-content']}>{camputedPosition}</span>
           </Col>
           <Col span={4} offset={1} style={{ textAlign: 'center' }}>
             <span className={styles['info-title']}>意向城市：</span>

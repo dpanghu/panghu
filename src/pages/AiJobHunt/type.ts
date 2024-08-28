@@ -117,7 +117,6 @@ export interface IResumeContent {
   nativePlace?: string;
   intentPosition?: string;
   workNature?: string;
-  intentPositionValue?: string;
 }
 
 interface IResume {

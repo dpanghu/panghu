@@ -6,7 +6,7 @@ import { useCreation, useReactive } from 'ahooks';
 import { Row } from 'antd';
 import type { Store } from 'antd/lib/form/interface';
 import { default as classNames, default as classnames } from 'classnames';
-import { isArray, last, pick } from 'lodash';
+import { isArray, pick } from 'lodash';
 import React, { useImperativeHandle } from 'react';
 import type { FormItemType, IResumeContent, ResumeResponse } from '../../type';
 import DraggableItem from './components/DraggerableItem';
@@ -118,14 +118,10 @@ const EditResume = React.forwardRef(({ resumeData, reload }: Props, ref) => {
             delete value.rangeData;
           });
         }
-        // 期望职位为级联，值为路径，导出需要最后一个节点，因此需要设置一个隐藏字段，用于记录
-        values.intentPositionValue = last(
-          last((values?.intentPosition as string[]) || [])?.split('/'),
-        );
         saveResume({
           name: resumeData?.xaiResume.name,
           content: JSON.stringify(values),
-          themeId: resumeData?.xaiResume.themeId,
+          themeId: resumeData?.xaiResume.id,
           ...queryData,
         }).then(() => {
           message.success('保存成功');

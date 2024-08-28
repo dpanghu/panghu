@@ -221,11 +221,24 @@ export const formItemConfig: Record<
         name: 'age',
         className: 'form-gap',
         rules: [
-          { required: true, message: '请输入年龄' },
-          { max: 100, min: 1, message: '年龄范围输入1-100', type: 'number' },
-          { pattern: /^[1-9]\d*$/, message: '请输入整数' },
+          () => ({
+            validator(_, value) {
+              if (value === '') {
+                return Promise.reject('请输入年龄');
+              }
+              if (/^[1-9]\d*$/.exec(value)) {
+                if (Number(value) > 100 || Number(value) < 1) {
+                  return Promise.reject('年龄范围1-100');
+                } else {
+                  return Promise.resolve();
+                }
+              } else {
+                return Promise.reject('请输入整数');
+              }
+            },
+          }),
         ],
-        type: 'inputNumber',
+        type: 'input',
         elementConfig: {
           placeholder: '请输入年龄',
           className: 'basic-short-input',
