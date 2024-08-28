@@ -6,20 +6,10 @@ import { Button, Input, message } from 'SeenPc';
 import sf from 'SeenPc/dist/esm/globalStyle/global.less';
 import { useCreation, useReactive, useUpdateEffect } from 'ahooks';
 import classNames from 'classnames';
-import { pick } from 'lodash';
 import type { ChangeEventHandler } from 'react';
 import React, { memo, useMemo, useRef } from 'react';
 import Typewriter, { type TypewriterClass } from 'typewriter-effect';
 import styles from './index.less';
-
-type Props = {
-  resumeData: ResumeResponse | null;
-  pluginCode: keyof typeof PluginsCode;
-  placeholder: string;
-  id?: string; // 从formitem获得
-  value?: string; // 从formitem获得
-  onChange?: ChangeEventHandler<HTMLTextAreaElement>; // 从formitem获得
-};
 
 type UseCount = {
   resume_project: number | undefined;
@@ -30,13 +20,23 @@ type UseCount = {
   resume: number | undefined;
 };
 
+type Props = {
+  resumeData: ResumeResponse | null;
+  pluginCode: keyof typeof PluginsCode;
+  placeholder: string;
+  id?: string; // 从formitem获得
+  useCount: UseCount;
+  value?: string; // 从formitem获得
+  onCountChange: (code: string) => void;
+  onChange?: ChangeEventHandler<HTMLTextAreaElement>; // 从formitem获得
+};
+
 type TState = {
   isLoading: boolean;
   isTyping: boolean;
   typewriterArrCache: string[];
   message: string;
   visible: boolean;
-  useCount: UseCount;
 };
 
 const TextWithAi: React.FC<Props> = ({
@@ -45,7 +45,9 @@ const TextWithAi: React.FC<Props> = ({
   placeholder,
   id,
   value,
+  useCount,
   onChange,
+  onCountChange,
 }) => {
   const queryData = useCreation(() => {
     return JSON.parse(window.sessionStorage.getItem('queryParams') || '{}');
@@ -59,13 +61,6 @@ const TextWithAi: React.FC<Props> = ({
     typewriterArrCache: [],
     message: 'string',
     visible: false,
-    useCount: pick(resumeData || {}, [
-      'resume_intern',
-      'resume_project',
-      'resume_school',
-      'resume_self',
-      'resume_work',
-    ]) as UseCount,
   });
   // 是否完成对话
   const isTypeFinished = useMemo(() => {
@@ -95,14 +90,14 @@ const TextWithAi: React.FC<Props> = ({
   }, [state.isTyping]);
 
   const send = () => {
-    if (state.useCount[pluginCode]! >= 3) {
+    if (useCount[pluginCode]! >= 3) {
       message.error('自动渲染次数已用完');
       return;
     }
     state.visible = true;
     state.isLoading = true;
     typewriterStrCache.current = '';
-    state.useCount[pluginCode]! += 1;
+    onCountChange(pluginCode);
     let qsData = {
       ...queryData,
       chatType: 'dtc240630',
@@ -199,7 +194,7 @@ const TextWithAi: React.FC<Props> = ({
               >
                 剩余
                 <span className={sf.sColorBaseColor}>
-                  {3 - (state.useCount[pluginCode as keyof UseCount] || 0)}
+                  {3 - (useCount[pluginCode as keyof UseCount] || 0)}
                 </span>
                 次
               </span>
@@ -261,7 +256,7 @@ const TextWithAi: React.FC<Props> = ({
                   sf.sFlexAliCenter,
                 )}
               >
-                {state.useCount[pluginCode as keyof UseCount]! < 3 && (
+                {useCount[pluginCode as keyof UseCount]! < 3 && (
                   <Button
                     type="link"
                     icon={

@@ -2,11 +2,11 @@ import { saveResume } from '@/services/aiJobHunt';
 import { useModel } from '@umijs/max';
 import { Cascader, DatePicker, Form, Input, Select, message } from 'SeenPc';
 import sf from 'SeenPc/dist/esm/globalStyle/global.less';
-import { useCreation } from 'ahooks';
+import { useCreation, useReactive } from 'ahooks';
 import { Row } from 'antd';
 import type { Store } from 'antd/lib/form/interface';
 import { default as classNames, default as classnames } from 'classnames';
-import { isArray, last } from 'lodash';
+import { isArray, last, pick } from 'lodash';
 import React, { useImperativeHandle } from 'react';
 import type { FormItemType, IResumeContent, ResumeResponse } from '../../type';
 import DraggableItem from './components/DraggerableItem';
@@ -36,6 +36,17 @@ const EditResume = React.forwardRef(({ resumeData, reload }: Props, ref) => {
   const queryData = useCreation(() => {
     return JSON.parse(window.sessionStorage.getItem('queryParams') || '{}');
   }, []);
+
+  const state = useReactive({
+    useCount: pick(resumeData || {}, [
+      'resume_intern',
+      'resume_project',
+      'resume_school',
+      'resume_self',
+      'resume_work',
+    ]),
+  });
+
   const initialValue = useCreation<IResumeContent>(() => {
     const content = resumeData?.xaiResume?.content as IResumeContent;
     if (content) {
@@ -235,6 +246,12 @@ const EditResume = React.forwardRef(({ resumeData, reload }: Props, ref) => {
             placeholder={placeholder}
             resumeData={resumeData}
             pluginCode={pluginCode}
+            // @ts-ignore
+            useCount={state.useCount}
+            onCountChange={(code) => {
+              // @ts-ignore
+              state.useCount[code] = state.useCount[code] + 1;
+            }}
           />
         );
     }
