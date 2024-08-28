@@ -50,6 +50,10 @@ export interface FieldProperties {
   options?: FieldOptions[]; // 下拉选项（仅当控件类型是select或selectCheck时）
   required?: boolean; // 是否必填
   treeSelectOptionsUrl?: string;
+  fileConf?: {
+    ext: string[];
+    maxSize: number;
+  };
 }
 
 export interface SubmitMessage {

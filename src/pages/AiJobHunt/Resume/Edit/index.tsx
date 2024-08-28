@@ -114,6 +114,7 @@ const EditResume = React.forwardRef(({ resumeData, reload }: Props, ref) => {
         saveResume({
           name: resumeData?.xaiResume.name,
           content: JSON.stringify(values),
+          themeId: resumeData?.xaiResume.themeId,
           ...queryData,
         }).then(() => {
           message.success('保存成功');
@@ -418,6 +419,7 @@ const EditResume = React.forwardRef(({ resumeData, reload }: Props, ref) => {
                 description: '',
                 rangeDate: [],
                 periodEnd: '',
+                moduleName: '',
                 periodStart: '',
               },
             ]);

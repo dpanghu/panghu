@@ -145,7 +145,11 @@ const MessageSendArea: React.FC<Props> = ({
           }}
           value={state.message}
           placeholder={state.placeholder}
-          onChange={(e) => (state.message = e.target.value)}
+          onChange={(e) => {
+            if (state?.curPlugin?.code !== 'aiInterviewer') {
+              state.message = e.target.value;
+            }
+          }}
         />
         <div className={styles['input-footer']}>
           <span
