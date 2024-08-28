@@ -194,7 +194,7 @@ const ResumePreview: React.FC<Props> = ({ resumeInfo }) => {
                   <span>{item.schoolName}</span>
                   <span>{`${item.major}（${item.education}）`}</span>
                 </div>
-                <pre className={styles['info-content']}>{item.description}</pre>
+                <pre className={styles['info-content']}>{item.majorCourse}</pre>
               </div>
             ))
           )}

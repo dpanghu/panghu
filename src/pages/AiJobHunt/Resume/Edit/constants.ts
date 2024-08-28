@@ -480,7 +480,7 @@ export const formItemConfig: Record<
       ],
       [
         {
-          name: 'description',
+          name: 'majorCourse',
           rules: [
             { required: true, message: '请输入经历描述' },
             {

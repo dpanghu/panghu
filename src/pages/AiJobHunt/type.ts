@@ -21,6 +21,7 @@ export type Plugin = {
   name: string;
   note: string;
   portfolio: string;
+  needInput: 0 | 1;
   paramMetadataList: FieldProperties[];
 };
 
@@ -81,6 +82,7 @@ interface IEducationBackground {
   graduationEndTime: string;
   graduationStartTime: string;
   major: string;
+  majorCourse: string;
   schoolName: string;
   description: string;
 }

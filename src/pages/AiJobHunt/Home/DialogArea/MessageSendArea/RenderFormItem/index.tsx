@@ -122,33 +122,34 @@ const RenderFormItem: React.FC<Props> = ({ formRef, plugin }) => {
           },
         };
         return item?.fileConf ? (
-          <Tooltip
-            title={`上传${item?.fileConf?.ext.join('、')}类型文件，大小不超过${
-              item?.fileConf?.maxSize
-            }MB`}
+          <Upload
+            {...params}
+            accept={(item?.fileConf?.ext || [])
+              .map((item) => '.' + item)
+              .join(',')}
+            className={classNames(sf.sFlex, sf.sFlexGap10)}
+            beforeUpload={(file) => {
+              const isOverSize =
+                file.size / 1024 / 1024 > item.fileConf?.maxSize;
+              if (isOverSize) {
+                message.warning(
+                  '请上传不超过' + item.fileConf?.maxSize + 'MB的文件',
+                );
+                return Upload.LIST_IGNORE;
+              }
+              return true;
+            }}
           >
-            <Upload
-              {...params}
-              accept={(item?.fileConf?.ext || [])
-                .map((item) => '.' + item)
-                .join(',')}
-              className={classNames(sf.sFlex, sf.sFlexGap10)}
-              beforeUpload={(file) => {
-                const isOverSize = file.size / 1024 / 1024 > 0.0001;
-                if (isOverSize) {
-                  message.warning(
-                    '请上传不超过' + item.fileConf?.maxSize + 'MB的文件',
-                  );
-                  return Upload.LIST_IGNORE;
-                }
-                return true;
-              }}
+            <Tooltip
+              title={`上传${item?.fileConf?.ext.join(
+                '、',
+              )}类型文件，大小不超过${item?.fileConf?.maxSize}MB`}
             >
               <Button style={{ width: 104 }} icon={<UploadOutlined />}>
                 点击上传
               </Button>
-            </Upload>
-          </Tooltip>
+            </Tooltip>
+          </Upload>
         ) : (
           <Upload {...params} className={classNames(sf.sFlex, sf.sFlexGap10)}>
             <Button style={{ width: 104 }} icon={<UploadOutlined />}>
