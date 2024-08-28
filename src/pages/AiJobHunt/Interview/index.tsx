@@ -290,6 +290,13 @@ const Interview: React.FC = ({ }) => {
               </div>
             );
           })}
+          {state.showBtn && (
+            <div className={styles.aiBox}>
+              <div className={styles.box}>
+                本次面试已结束，感谢您参加此次面试，我们会尽快对您的表现进行评估并给出反馈
+              </div>
+            </div>
+          )}
           {state.showReferenceAnswers && (
             <div className={styles.aiAnswerBox}>
               <span>参考答案:</span>
