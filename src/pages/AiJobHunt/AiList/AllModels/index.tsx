@@ -10,6 +10,7 @@ import { history } from 'umi';
 import ScenePreview from '../../../AiModule/scenePreview';
 import type { FormProps } from 'SeenPc';
 import { Button, ComboBox, Form, Input } from 'SeenPc';
+import { set } from 'lodash';
 
 const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey: string | null; scrollKey: string | null; values: any | null }> = ({ itemss, activeKey, activesKey, scrollKey, values }) => {
 
@@ -110,13 +111,59 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
   // }
   const [opens, setOpens] = React.useState<any>(false);
   const [copyPluginId, setCopyPluginId] = React.useState<any>(null);
-  const [value, setvalue] = React.useState<any>();
-  const [valuess, setvaluess] = React.useState<any>();
+  const [value, setvalue] = React.useState<any>('');
+  const [valuess, setvaluess] = React.useState<any>('');
   type FieldType = {
-    AI工具名称?: string;
-    AI工具描述?: string;
+    AI工具名称?: any;
+    AI工具描述?: any;
   };
+  const Submits = () => {
+    if (value && valuess) {
+      copyPlugin({
+        userId: 1,
+        userToken: 2,
+        schoolId: 3,
+        memberId: 5,
+        pluginId: copyPluginId,
+        name: value,
+        note: valuess
+      }).then((res) => {
+        messageApi.open({
+          type: 'success',
+          content: '复制成功',
+        });
+        if (activeKey && activesKey) {
+          getAICardDetail({
+            userId: 1,
+            userToken: 2,
+            schoolId: 3,
+            memberId: 5,
+            domainId: activesKey,
+            modelTypeId: activeKey,
+            search: values,
+          }).then((res) => {
+            setData(res);
+          });
+        }
+        else if (activeKey && activesKey === null) {
+          getAICardDetail({
+            userId: 1,
+            userToken: 2,
+            schoolId: 3,
+            memberId: 5,
+            search: values,
+          }).then((res) => {
+            setData(res);
+          });
+        }
+      })
+      setOpens(false);
+      setvalue('');
+      setvaluess('');
+    } else {
 
+    }
+  }
   // const onFinish: FormProps<FieldType>['onFinish'] = (val) => {
   //   console.log('Success:', val);
   // };
@@ -131,59 +178,23 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
       }
       <Modal
         open={opens}
-        okText={'确定'}
-        cancelText={'取消'}
+        footer={false}
+        // okText={'确定'}
+        // cancelText={'取消'}
         title={'复制AI工具'}
+        // htmlType="submit"
+        destroyOnClose={true}
         onCancel={() => {
           setOpens(false);
         }}
-        onOk={() => {
-          if (value && valuess) {
-            copyPlugin({
-              userId: 1,
-              userToken: 2,
-              schoolId: 3,
-              memberId: 5,
-              pluginId: copyPluginId
-            }).then((res) => {
-              messageApi.open({
-                type: 'success',
-                content: '复制成功',
-              });
-              if (activeKey && activesKey) {
-                getAICardDetail({
-                  userId: 1,
-                  userToken: 2,
-                  schoolId: 3,
-                  memberId: 5,
-                  domainId: activesKey,
-                  modelTypeId: activeKey,
-                  search: values,
-                }).then((res) => {
-                  setData(res);
-                });
-              }
-              else if (activeKey && activesKey === null) {
-                getAICardDetail({
-                  userId: 1,
-                  userToken: 2,
-                  schoolId: 3,
-                  memberId: 5,
-                  search: values,
-                }).then((res) => {
-                  setData(res);
-                });
-              }
-            })
-            setOpens(false);
-          } else {
-
-          }
-        }}
+      // onOk={
+      //   Submits
+      // }
       >
         <Form
           name="basic"
           style={{ maxWidth: 800 }}
+          // preserve={false}
           // initialValues={{ remember: true }}
           // onFinish={onFinish}
           // onFinishFailed={onFinishFailed}
@@ -219,6 +230,15 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                 setvaluess(e);
               }}
               size="medium" />
+          </Form.Item>
+          <Form.Item className={styles.form}>
+            <Button className={styles.btn} type="text" htmlType="submit" onClick={() => { setOpens(false) }
+            }>
+              取消
+            </Button>
+            <Button className={styles.btns} type="primary" htmlType="submit" onClick={Submits}>
+              确定
+            </Button>
           </Form.Item>
         </Form>
       </Modal>
