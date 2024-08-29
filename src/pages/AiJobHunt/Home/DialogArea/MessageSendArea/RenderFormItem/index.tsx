@@ -1,17 +1,19 @@
 import { UploadOutlined } from '@ant-design/icons';
+import { useReactive } from 'ahooks';
+import { Tooltip } from 'antd';
+import classNames from 'classnames';
+import React, { useEffect } from 'react';
 import {
   Button,
   Cascader,
   DatePicker,
   Form,
   Input,
+  message,
   Select,
   Upload,
 } from 'SeenPc';
 import sf from 'SeenPc/dist/esm/globalStyle/global.less';
-import { useReactive } from 'ahooks';
-import classNames from 'classnames';
-import React, { useEffect } from 'react';
 import type { FieldProperties, Plugin } from '../../../../type';
 
 type Props = {
@@ -119,7 +121,36 @@ const RenderFormItem: React.FC<Props> = ({ formRef, plugin }) => {
             extraParams,
           },
         };
-        return (
+        return item?.fileConf ? (
+          <Upload
+            {...params}
+            accept={(item?.fileConf?.ext || [])
+              .map((item) => '.' + item)
+              .join(',')}
+            className={classNames(sf.sFlex, sf.sFlexGap10)}
+            beforeUpload={(file) => {
+              const isOverSize =
+                file.size / 1024 / 1024 > item.fileConf?.maxSize;
+              if (isOverSize) {
+                message.warning(
+                  '请上传不超过' + item.fileConf?.maxSize + 'MB的文件',
+                );
+                return Upload.LIST_IGNORE;
+              }
+              return true;
+            }}
+          >
+            <Tooltip
+              title={`上传${item?.fileConf?.ext.join(
+                '、',
+              )}类型文件，大小不超过${item?.fileConf?.maxSize}MB`}
+            >
+              <Button style={{ width: 104 }} icon={<UploadOutlined />}>
+                点击上传
+              </Button>
+            </Tooltip>
+          </Upload>
+        ) : (
           <Upload {...params} className={classNames(sf.sFlex, sf.sFlexGap10)}>
             <Button style={{ width: 104 }} icon={<UploadOutlined />}>
               点击上传

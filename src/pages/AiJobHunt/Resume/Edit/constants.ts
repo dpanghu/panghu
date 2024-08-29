@@ -191,6 +191,8 @@ export const formItemConfig: Record<
       formItems: FormItemType[][];
       draggable?: boolean;
       formName?: string;
+      maxItems?: number;
+      editableTitle?: boolean;
     }
   | FormItemType[][]
 > = {
@@ -218,8 +220,25 @@ export const formItemConfig: Record<
         cName: '年龄',
         name: 'age',
         className: 'form-gap',
-        rules: [{ required: true, message: '请输入年龄' }],
-        type: 'inputNumber',
+        rules: [
+          () => ({
+            validator(_, value) {
+              if (value === '') {
+                return Promise.reject('请输入年龄');
+              }
+              if (/^[1-9]\d*$/.exec(value)) {
+                if (Number(value) > 100 || Number(value) < 1) {
+                  return Promise.reject('年龄范围1-100');
+                } else {
+                  return Promise.resolve();
+                }
+              } else {
+                return Promise.reject('请输入整数');
+              }
+            },
+          }),
+        ],
+        type: 'input',
         elementConfig: {
           placeholder: '请输入年龄',
           className: 'basic-short-input',
@@ -328,16 +347,18 @@ export const formItemConfig: Record<
         },
         {
           cName: '薪资要求',
-          name: 'intentSalary',
+          name: 'salary',
           className: 'form-gap',
           rules: [
             { required: true, message: '请输入薪资' },
             {
-              max: 20,
+              max: 99999999,
+              min: 0,
+              type: 'number',
               message: ExceedMaxLength,
             },
           ],
-          type: 'input',
+          type: 'inputNumber',
           elementConfig: {
             placeholder: '请输入薪资',
             className: 'basic-short-input',
@@ -459,7 +480,7 @@ export const formItemConfig: Record<
       ],
       [
         {
-          name: 'description',
+          name: 'majorCourse',
           rules: [
             { required: true, message: '请输入经历描述' },
             {
@@ -683,17 +704,18 @@ export const formItemConfig: Record<
         {
           name: 'selfEvaluation',
           rules: [
-            { required: true, message: '请输入荣誉证书' },
+            { required: true, message: '请输入自我评价' },
             {
               max: 2000,
               message: ExceedMaxLength,
             },
           ],
           className: 'form-item-full-width',
-          type: 'textarea',
+          type: 'textareaWithAi',
           elementConfig: {
             placeholder: '自我评价应做到突出自身符合目标岗位要求',
             className: 'content-text-area',
+            pluginCode: 'resume_self',
           },
         },
       ],
@@ -853,14 +875,33 @@ export const formItemConfig: Record<
     name: '自定义模块',
     formName: 'selfDefList',
     draggable: true,
+    editableTitle: true,
+    maxItems: 3,
     formItems: [
       [
         {
-          cName: '公司名称',
+          cName: '模块名称',
+          name: 'moduleName',
+          className: 'form-gap',
+          rules: [
+            { required: true, message: '请输入模块名称' },
+            {
+              max: 10,
+              message: ExceedMaxLength,
+            },
+          ],
+          type: 'input',
+          elementConfig: {
+            placeholder: '请输入模块名称',
+            className: 'basic-short-input',
+          },
+        },
+        {
+          cName: '项目名称',
           name: 'projectName',
           className: 'form-gap',
           rules: [
-            { required: true, message: '请输入公司名称' },
+            { required: true, message: '请输入项目名称' },
             {
               max: 30,
               message: ExceedMaxLength,
@@ -868,7 +909,7 @@ export const formItemConfig: Record<
           ],
           type: 'input',
           elementConfig: {
-            placeholder: '请输入公司名称',
+            placeholder: '请输入项目名称',
             className: 'basic-short-input',
           },
         },
@@ -895,11 +936,10 @@ export const formItemConfig: Record<
             },
           ],
           className: 'form-item-full-width',
-          type: 'textareaWithAi',
+          type: 'textarea',
           elementConfig: {
             placeholder: '输入你的自定义内容',
             className: 'content-text-area',
-            pluginCode: 'resume_self',
           },
         },
       ],
