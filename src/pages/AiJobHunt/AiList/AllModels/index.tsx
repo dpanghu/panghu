@@ -8,6 +8,9 @@ import maohaoImg from '@/assets/images/maohao.png';
 import { message, Modal } from 'antd';
 import { history } from 'umi';
 import ScenePreview from '../../../AiModule/scenePreview';
+import type { FormProps } from 'SeenPc';
+import { Button, ComboBox, Form, Input } from 'SeenPc';
+import { set } from 'lodash';
 
 const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey: string | null; scrollKey: string | null; values: any | null }> = ({ itemss, activeKey, activesKey, scrollKey, values }) => {
 
@@ -106,24 +109,140 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
   // const handleEditClick = () => {
   //   console.log('修改')
   // }
+  const [opens, setOpens] = React.useState<any>(false);
+  const [copyPluginId, setCopyPluginId] = React.useState<any>(null);
+  const [value, setvalue] = React.useState<any>('');
+  const [valuess, setvaluess] = React.useState<any>('');
+  type FieldType = {
+    AI工具名称?: any;
+    AI工具描述?: any;
+  };
+  const Submits = () => {
+    if (value && valuess) {
+      copyPlugin({
+        userId: 1,
+        userToken: 2,
+        schoolId: 3,
+        memberId: 5,
+        pluginId: copyPluginId,
+        name: value,
+        note: valuess
+      }).then((res) => {
+        messageApi.open({
+          type: 'success',
+          content: '复制成功',
+        });
+        if (activeKey && activesKey) {
+          getAICardDetail({
+            userId: 1,
+            userToken: 2,
+            schoolId: 3,
+            memberId: 5,
+            domainId: activesKey,
+            modelTypeId: activeKey,
+            search: values,
+          }).then((res) => {
+            setData(res);
+          });
+        }
+        else if (activeKey && activesKey === null) {
+          getAICardDetail({
+            userId: 1,
+            userToken: 2,
+            schoolId: 3,
+            memberId: 5,
+            search: values,
+          }).then((res) => {
+            setData(res);
+          });
+        }
+      })
+      setOpens(false);
+      setvalue('');
+      setvaluess('');
+    } else {
+
+    }
+  }
+  // const onFinish: FormProps<FieldType>['onFinish'] = (val) => {
+  //   console.log('Success:', val);
+  // };
+
+  // const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
+  //   console.log('Failed:', errorInfo);
+  // };
   return (
     <div ref={contentRef}>
       {
-        open && <ScenePreview id={id} onCancel={()=> { setOpen(false) }} onOk={()=> { setOpen(false) }}></ScenePreview>
+        open && <ScenePreview id={id} onCancel={() => { setOpen(false) }} onOk={() => { setOpen(false) }}></ScenePreview>
       }
+      <Modal
+        open={opens}
+        footer={false}
+        // okText={'确定'}
+        // cancelText={'取消'}
+        title={'复制AI工具'}
+        // htmlType="submit"
+        destroyOnClose={true}
+        onCancel={() => {
+          setOpens(false);
+        }}
+      // onOk={
+      //   Submits
+      // }
+      >
+        <Form
+          name="basic"
+          style={{ maxWidth: 800 }}
+          // preserve={false}
+          // initialValues={{ remember: true }}
+          // onFinish={onFinish}
+          // onFinishFailed={onFinishFailed}
+          autoComplete="off"
+        >
+          <Form.Item<FieldType>
+            label="AI工具名称"
+            name="AI工具名称"
+            rules={[{ required: true, message: 'AI工具名称不可为空' }]}
+          >
+            <Input style={{ width: '370px', marginLeft: '1px' }}
+              value={value}
+              allowClear={true}
+              maxLength={10}
+              placeholder={'请输入AI工具名称'}
+              onChange={(e: any) => {
+                setvalue(e);
+              }}
+              size="medium" />
+          </Form.Item>
+
+          <Form.Item<FieldType>
+            label="AI工具描述"
+            name="AI工具描述"
+            rules={[{ required: true, message: 'AI工具描述不可为空' }]}
+          >
+            <Input style={{ width: '370px', marginLeft: '1px' }}
+              value={valuess}
+              maxLength={100}
+              allowClear={true}
+              placeholder={'请输入AI工具描述内容'}
+              onChange={(e: any) => {
+                setvaluess(e);
+              }}
+              size="medium" />
+          </Form.Item>
+          <Form.Item className={styles.form}>
+            <Button className={styles.btn} type="text" htmlType="submit" onClick={() => { setOpens(false) }
+            }>
+              取消
+            </Button>
+            <Button className={styles.btns} type="primary" htmlType="submit" onClick={Submits}>
+              确定
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
       {contextHolder}
-      {/* {itemss.map((item, index) => (
-        <div className='Card' key={index} data-key={item.key} style={{ fontWeight: 500, fontSize: '20px', color: 'gray' }}><span style={{ marginRight: '8px' }}>{item.icon}</span>{item.label}</div>
-      ))} */}
-      {/* <Row>
-        {data.map((item, index) => (
-          <Col key={index} className={styles.col}>
-            <Card title={item.name} extra={<Button onClick={handleEditClick} icon="" size="small">修改</Button>} bordered={true} hoverable={true} className={styles.card}>
-              <div className={styles.cardContent}>{item.note}</div>
-            </Card>
-          </Col>
-        ))}
-      </Row> */}
       <div className={styles.cardGrid}>
         {data.map((item: any) => (
           <Card.Grid key={item.id} className={styles.card} hoverable={true}>
@@ -133,7 +252,7 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
               </div>
               <div className={styles.right}>
                 <div className={styles.cardPicture}>
-                  <img onClick={()=> {
+                  <img onClick={() => {
                     console.log('222222222222');
                     setOpen(true);
                     setId(item.id);
@@ -363,42 +482,8 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                               borderRadius: '4px',
                             },
                             onClick: () => {
-                              copyPlugin({
-                                userId: 1,
-                                userToken: 2,
-                                schoolId: 3,
-                                memberId: 5,
-                                pluginId: item.id
-                              }).then((res) => {
-                                messageApi.open({
-                                  type: 'success',
-                                  content: '复制成功',
-                                });
-                                if (activeKey && activesKey) {
-                                  getAICardDetail({
-                                    userId: 1,
-                                    userToken: 2,
-                                    schoolId: 3,
-                                    memberId: 5,
-                                    domainId: activesKey,
-                                    modelTypeId: activeKey,
-                                    search: values,
-                                  }).then((res) => {
-                                    setData(res);
-                                  });
-                                }
-                                else if (activeKey && activesKey === null) {
-                                  getAICardDetail({
-                                    userId: 1,
-                                    userToken: 2,
-                                    schoolId: 3,
-                                    memberId: 5,
-                                    search: values,
-                                  }).then((res) => {
-                                    setData(res);
-                                  });
-                                }
-                              })
+                              setOpens(true);
+                              setCopyPluginId(item.id);
                             },
                           },
                           {
@@ -480,7 +565,7 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
           </Card.Grid>
         ))}
       </div>
-    </div>
+    </div >
   )
 };
 

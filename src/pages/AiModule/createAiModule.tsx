@@ -10,9 +10,10 @@ import selectImg from '@/assets/images/selectImgs.png';
 import radioImgs from '@/assets/images/radioImgs.png';
 import checkboxImgs from '@/assets/images/checkboxImgs.png';
 import { history } from 'umi';
-import { saveAiModule, iconList } from '@/services/aiModule';
+import { saveAiModule, iconList, getPluginDetail } from '@/services/aiModule';
 import { getAIProductList, getAllAIModel } from '@/services/aiJobHunt';
 import { CloseOutlined, DeleteOutlined, LeftOutlined } from '@ant-design/icons';
+import { trim } from 'lodash';
 
 type IState = {
   status: any
@@ -86,10 +87,68 @@ const Resume: React.FC = ({ }) => {
     }).then((el: any) => {
       state.domainData = el;
     });
+    if(window.sessionStorage.getItem('pluginId') !== 'null') {
+      getPluginDetail({
+        id: window.sessionStorage.getItem('pluginId'),
+      }).then((res: any)=> {
+        console.log(res);
+        state.baseData = {
+          note: res.plugin.note,
+          name: res.plugin.name,
+          tips: res.plugin.tips,
+          id: res.plugin.id,
+        }
+        state.iconImg = res.plugin.icon;
+        let arr: any = [];
+        let jsonData: any = JSON.parse(res.param?.params);
+        jsonData && jsonData.map((el: any)=> {
+          if(el.elementType == 'input') {
+            arr.push({
+              title: el.displayName,
+              length: el.maxLength,
+              type: 'text',
+              limit: 0,
+            })
+          }else if(el.elementType == 'select') {
+            arr.push({
+              title: el.displayName,
+              length: el.maxLength,
+              type: 'select',
+              option: el.options,
+            })
+          }else if(el.elementType == 'treeSelect' || el.elementType == 'radio') {
+            arr.push({
+              title: el.displayName,
+              length: el.maxLength,
+              type: 'radio',
+              option: el.options,
+            })  
+          }else if(el.elementType == 'selectCheck' || el.elementType == 'checkbox') {
+            arr.push({
+              title: el.displayName,
+              length: el.maxLength,
+              type: 'checkbox',
+              option: el.options,
+            })  
+          }
+        })
+        state.data = arr;
+        console.log(jsonData);
+      })
+    }
   });
 
   const save = () => {
     let paramsArr: any = [];
+    let newArr: any = [];
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions, array-callback-return
+    state.data && state.data.map((element: any,index: any) => {
+      newArr.push({
+        id: `ai${index}`,
+        name: element.title
+      })
+    });
+    console.log(JSON.stringify(newArr));
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions, array-callback-return
     state.data && state.data.map((item: any, index: any) => {
       if (item.type === 'text') {
@@ -118,7 +177,7 @@ const Resume: React.FC = ({ }) => {
           required: 'true',
           displayName: item.title,
           decimalLength: 0,
-          elementType: 'treeSelect',
+          elementType: 'radio',
           dataType: 'string',
           options: item.option,
         });
@@ -128,18 +187,32 @@ const Resume: React.FC = ({ }) => {
           required: 'true',
           displayName: item.title,
           decimalLength: 0,
-          elementType: 'selectCheck',
+          elementType: 'checkbox',
           dataType: 'string',
           options: item.option,
         });
       }
     })
+    let newportfolio: any = state.saveData.portfolio;
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    let portfolios: any = extractContentBetweenDoubleBraces(state.saveData.portfolio);
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions, array-callback-return
+    portfolios && portfolios.map((el: any) => {
+      // eslint-disable-next-line eqeqeq
+      let finddata: any = newArr.find((els: any) => els.name == el.trim());
+      console.log('find',JSON.stringify(finddata));
+      if(finddata !== void 0) {  
+        newportfolio = newportfolio.replace(el, finddata.id);  
+      }
+    })
+    console.log('mew',newportfolio);
     let send = {
       ...state.baseData,
       userId: '1',
       memberId: '1',
       schoolId: '1',
       ...state.saveData,
+      portfolios: newportfolio,
       icon: state.iconImg,
       params: JSON.stringify(paramsArr),
     }
@@ -151,6 +224,20 @@ const Resume: React.FC = ({ }) => {
       history.push('/aiJobHunt/aiList');
     })
   }
+
+  const extractContentBetweenDoubleBraces = (str: any) => {  
+    const regex = /{{([^}]*?)}}/g;  
+    let matches = str.match(regex);  
+  
+    // 如果存在匹配项，则映射每个匹配项以仅提取括号内的内容  
+    if (matches) {  
+        // 映射matches数组，对于每个匹配项，使用replace方法移除'{{'和'}}'  
+        return matches.map((match: any) => match.replace(/{{|}}/g, ''));  
+    }  
+  
+    // 如果没有匹配项，返回一个空数组  
+    return [];  
+}  
 
   const renderData = (item: any, index: any) => {
     switch (item.type) {
@@ -176,6 +263,12 @@ const Resume: React.FC = ({ }) => {
           state.tabId = '1';
           state.chooseData = item;
         }}>
+          <div style={{ position:"absolute",bottom: 10, right: 14, color: 'white' }} onClick={()=> {
+            message.success('操作成功');
+            let clone: any = state.data;
+            clone.splice(index, 0, item); // 在索引为2的位置插入元素5
+            state.data = clone;
+          }}>复制</div>
           <div className={styles.close} onClick={() => {
             const datas: any = state.data;
             let delIndex = datas.findIndex((el: any) => el.id === item.id);
@@ -215,6 +308,12 @@ const Resume: React.FC = ({ }) => {
           state.tabId = '1';
           state.chooseData = item;
         }}>
+          <div style={{ position:"absolute",bottom: 10, right: 14, color: 'white' }} onClick={()=> {
+            message.success('操作成功');
+            let clone: any = state.data;
+            clone.splice(index, 0, item); // 在索引为2的位置插入元素5
+            state.data = clone;
+          }}>复制</div>
           <div className={styles.close} onClick={() => {
             const datas: any = state.data;
             let delIndex = datas.findIndex((el: any) => el.id === item.id);
@@ -261,6 +360,12 @@ const Resume: React.FC = ({ }) => {
           state.tabId = '1';
           state.chooseData = item;
         }}>
+          <div style={{ position:"absolute",bottom: 10, right: 14, color: 'white' }} onClick={()=> {
+            message.success('操作成功');
+            let clone: any = state.data;
+            clone.splice(index, 0, item); // 在索引为2的位置插入元素5
+            state.data = clone;
+          }}>复制</div>
           <div className={styles.close} onClick={() => {
             const datas: any = state.data;
             let delIndex = datas.findIndex((el: any) => el.id === item.id);
@@ -304,6 +409,12 @@ const Resume: React.FC = ({ }) => {
           state.tabId = '1';
           state.chooseData = item;
         }}>
+          <div style={{ position:"absolute",bottom: 10, right: 14, color: 'white' }} onClick={()=> {
+            message.success('操作成功');
+            let clone: any = state.data;
+            clone.splice(index, 0, item); // 在索引为2的位置插入元素5
+            state.data = clone;
+          }}>复制</div>
           <div className={styles.close} onClick={() => {
             const datas: any = state.data;
             let delIndex = datas.findIndex((el: any) => el.id === item.id);
@@ -434,7 +545,7 @@ const Resume: React.FC = ({ }) => {
           state.iconImg = chooseIcon.icon;
         }}
         onCancel={() => {
-          state.open1 = false;
+          state.open2 = false;
         }}>
            <div style={{ display:'flex',flexWrap:'wrap' }}>
              {
@@ -478,7 +589,7 @@ const Resume: React.FC = ({ }) => {
                 <Select option={state.option} value={state.portfolioOption} style={{ width: 179 }} onChange={(e: any) => { state.portfolioOption = e }}></Select>
                 <Button type='primary' onClick={() => {
                   let portfolioOptionValue: any = state.option.find((ids: any) => ids.value === state.portfolioOption);
-                  state.saveData.portfolio = state.saveData.portfolio + portfolioOptionValue.label;
+                  state.saveData.portfolio = state.saveData.portfolio + `{{ ${portfolioOptionValue.label} }}`;
                 }} style={{ marginLeft: 16 }}>插入</Button>
               </div>
               <Input value={state.saveData.portfolio} type='textarea' onChange={(e: any) => {
@@ -509,14 +620,15 @@ const Resume: React.FC = ({ }) => {
         }}
       >
         <div style={{ paddingLeft: 25, marginTop: 30, marginBottom: 30 }}>
+        <div style={{ display: 'flex', alignItems: 'center', marginTop: 10 }}>
+            <div style={{ minWidth: 42, marginRight: 10 }}><span style={{ color: 'red', marginRight: 7 }}>*</span>标签</div>
+            <Input value={state.modalData.name} onChange={(e: any) => { state.modalData.name = e }} placeholder={'请输入label值'}></Input>
+          </div>
           <div style={{ display: 'flex', alignItems: 'center', marginTop: 10 }}>
-            <div style={{ minWidth: 42, marginRight: 10 }}><span style={{ color: 'red', marginRight: 7 }}>*</span>key</div>
+            <div style={{ minWidth: 42, marginRight: 10 }}><span style={{ color: 'red', marginRight: 7 }}>*</span>值</div>
             <Input value={state.modalData.keys} onChange={(e: any) => { state.modalData.keys = e }} placeholder={'请输入key值'}></Input>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', marginTop: 10 }}>
-            <div style={{ minWidth: 42, marginRight: 10 }}><span style={{ color: 'red', marginRight: 7 }}>*</span>label</div>
-            <Input value={state.modalData.name} onChange={(e: any) => { state.modalData.name = e }} placeholder={'请输入value值'}></Input>
-          </div>
+  
         </div>
       </Modal>
       <div className={styles.content}>
@@ -552,7 +664,6 @@ const Resume: React.FC = ({ }) => {
               console.log('触发了');
               state.draggleData.type = 4;
             }}>
-
               <img src={checkboxImgs}></img>
               <div style={{ marginTop: 12, fontSize: 14 }}>点列式</div>
             </div>
@@ -618,7 +729,7 @@ const Resume: React.FC = ({ }) => {
               <div className={styles.setTitle}>场景设置<span style={{ marginLeft: 8, fontSize: 13, color: 'rgba(0,0,0,0.6)' }}>（填写场景基础信息）</span></div>
               <div className={styles.textBox}>
                 <h3><span style={{ color: 'red', marginRight: 5 }}>*</span>场景标题</h3>
-                <Input value={state.baseData.name} style={{ width: 175 }} onChange={(e: any) => {
+                <Input value={state.baseData.name} maxLength={20} style={{ width: 175 }} onChange={(e: any) => {
                   state.baseData.name = e;
                 }}></Input>
               </div>
@@ -719,7 +830,7 @@ const Resume: React.FC = ({ }) => {
                         state.open = true;
                         state.modalData = {};
                       }}>添加选项</div>
-                      <div style={{ display:'flex' }}>
+                      <div style={{ display:'flex',flexWrap:'wrap' }}>
                           {
                             state.chooseData.option && state.chooseData.option.map((item: any,index: any)=> {
                               return <Tag color="blue" onClose={(e: any)=> {
@@ -746,28 +857,12 @@ const Resume: React.FC = ({ }) => {
                   <div className={styles.textBox} style={{ alignItems: 'flex-start' }}>
                     <h3 style={{ display: 'flex', justifyContent: 'flex-end', marginRight: 20, minWidth: 56, marginTop: 10, width: 60 }}>数据配置</h3>
                     <div style={{ width: 175, display: 'flex', flexDirection: 'column' }}>
-                      {/* <Selects style={{ width: '100%' }} value={state.baseData.limit}>
-                        {
-                          state.chooseData.option && state.chooseData.option.map((el: any, index: any) => {
-                            return <Selects.Option key={el.id} value={el.value}><div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                              <div>{el.label}</div>
-                              <DeleteOutlined className={styles.deleteIcon} onClick={(e: any) => {
-                                e.stopPropagation()
-                                const chooseDataClone: any = state.chooseData;
-                                chooseDataClone.option.splice(index, 1);
-                                state.chooseData = chooseDataClone;
-                                message.success('删除成功');
-                              }} style={{ fontSize: 16, zIndex: 999 }} />
-                            </div></Selects.Option>
-                          })
-                        }
-                      </Selects> */}
                        <Select option={state.chooseData.option} style={{ width: '100%' }} value={state.baseData.limit}></Select>
                       <div style={{ fontSize: 14, color: '#5A73FF', marginTop: 10, cursor: 'pointer' }} onClick={() => {
                         state.open = true;
                         state.modalData = {};
                       }}>添加选项</div>
-                      <div style={{ display:'flex' }}>
+                      <div style={{ display:'flex',flexWrap:'wrap' }}>
                           {
                             state.chooseData.option && state.chooseData.option.map((item: any,index: any)=> {
                               return <Tag color="blue" onClose={(e: any)=> {
@@ -794,28 +889,11 @@ const Resume: React.FC = ({ }) => {
                   <div className={styles.textBox} style={{ alignItems: 'flex-start' }}>
                     <h3 style={{ display: 'flex', justifyContent: 'flex-end', marginRight: 20, minWidth: 56, marginTop: 10, width: 60 }}>数据配置</h3>
                     <div style={{ width: 175, display: 'flex', flexDirection: 'column' }}>
-                    <Select option={state.chooseData.option} style={{ width: '100%' }} value={state.baseData.limit}></Select>
-                      {/* <Selects style={{ width: '100%' }} value={state.baseData.limit}>
-                        {
-                          state.chooseData.option && state.chooseData.option.map((el: any, index: any) => {
-                            return <Selects.Option key={el.id} value={el.value}><div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                              <div>{el.label}</div>
-                              <DeleteOutlined className={styles.deleteIcon} onClick={(e: any) => {
-                                e.stopPropagation()
-                                const chooseDataClone: any = state.chooseData;
-                                chooseDataClone.option.splice(index, 1);
-                                state.chooseData = chooseDataClone;
-                                message.success('删除成功');
-                              }} style={{ fontSize: 16, zIndex: 999 }} />
-                            </div></Selects.Option>
-                          })
-                        }
-                      </Selects> */}
                       <div style={{ fontSize: 14, color: '#5A73FF', marginTop: 10, cursor: 'pointer' }} onClick={() => {
                         state.open = true;
                         state.modalData = {};
                       }}>添加选项</div>
-                      <div style={{ display:'flex' }}>
+                      <div style={{ display:'flex',flexWrap:'wrap' }}>
                           {
                             state.chooseData.option && state.chooseData.option.map((item: any,index: any)=> {
                               return <Tag color="blue" onClose={(e: any)=> {
