@@ -1,12 +1,9 @@
 import React from 'react';
 import styles from './scenePreview.less';
 import { useReactive, useMount } from 'ahooks';
-import { Input, Select, ComboBox, Button } from 'SeenPc';
+import { Input, Select, ComboBox } from 'SeenPc';
 import { getPluginDetail } from '@/services/aiModule';
-import confings from '@/assets/images/configs.png';
-import { message, Modal } from 'antd';
-import aiimg from '@/assets/images/rebotIcon.png';
-import { history } from 'umi';
+import { Modal } from 'antd';
 
 interface TState {
   curTheme: any;
@@ -87,7 +84,7 @@ const JobHunt: React.FC = (props: any) => {
 
   return (
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    <Modal footer={false} width={445} open={true} onCancel={()=> { props.onCancel && props.onCancel() }} onOk={()=> { props.onOk && props.onOk() }}>
+    <Modal footer={false} width={435} open={true} onCancel={()=> { props.onCancel && props.onCancel() }} onOk={()=> { props.onOk && props.onOk() }}>
     <div className={styles.aicontainer}>
       <div className={styles.left_content}>
           <div className={styles.left_top}>
