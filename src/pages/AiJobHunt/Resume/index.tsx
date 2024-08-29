@@ -59,7 +59,7 @@ const Resume: React.FC = ({}) => {
       const resumeContent = JSON.parse(
         res.xaiResume.content as string,
       ) as IResumeContent;
-      state.resumeData = {
+      const formatData = {
         ...res,
         xaiResume: {
           ...res.xaiResume,
@@ -76,6 +76,17 @@ const Resume: React.FC = ({}) => {
           },
         },
       };
+      if (typeof resumeContent.intentPosition === 'string') {
+        try {
+          const parsedPosition = JSON.parse(resumeContent.intentPosition);
+          resumeContent.intentPosition = parsedPosition;
+          formatData.xaiResume.content.intentPosition = parsedPosition;
+        } catch (err) {
+          console.log('空运行');
+        }
+      }
+
+      state.resumeData = formatData;
       state.resumeInfo = resumeContent;
       // 获取求职意向json，存在model中
       fetch(res.postUrl!)
