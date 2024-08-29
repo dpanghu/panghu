@@ -115,14 +115,14 @@ const Resume: React.FC = ({ }) => {
               type: 'select',
               option: el.options,
             })
-          }else if(el.elementType == 'treeSelect') {
+          }else if(el.elementType == 'treeSelect' || el.elementType == 'radio') {
             arr.push({
               title: el.displayName,
               length: el.maxLength,
               type: 'radio',
               option: el.options,
             })  
-          }else if(el.elementType == 'selectCheck') {
+          }else if(el.elementType == 'selectCheck' || el.elementType == 'checkbox') {
             arr.push({
               title: el.displayName,
               length: el.maxLength,
@@ -167,7 +167,7 @@ const Resume: React.FC = ({ }) => {
           required: 'true',
           displayName: item.title,
           decimalLength: 0,
-          elementType: 'treeSelect',
+          elementType: 'radio',
           dataType: 'string',
           options: item.option,
         });
@@ -177,7 +177,7 @@ const Resume: React.FC = ({ }) => {
           required: 'true',
           displayName: item.title,
           decimalLength: 0,
-          elementType: 'selectCheck',
+          elementType: 'checkbox',
           dataType: 'string',
           options: item.option,
         });

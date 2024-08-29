@@ -61,7 +61,62 @@ const renderPreview = (item: any) => {
           ></ComboBox>
         </div>
       );
+    case 'radio':
+      return (
+        <div className={styles.previewBox}>
+          <div className={styles.previewTitle}>{item.displayName}</div>
+          <ComboBox
+            style={{ width: '100%' }}
+            onChange={(e: any) => {
+              item.value = e.target.value;
+            }}
+            value={item.value}
+            options={item.options}
+          ></ComboBox>
+        </div>
+      );
     case 'selectCheck':
+      return (
+        <div className={styles.previewBox}>
+          <div className={styles.previewTitle}>{item.displayName}</div>
+          <div className={styles.previewCheckBox}>
+            {item.options &&
+              item.options.map((items: any) => {
+                return (
+                  <div
+                    onClick={() => {
+                      if (item.value === void 0) {
+                        item.value = [];
+                        item.value.push(items.value);
+                      } else {
+                        if (item.value?.includes(items.value)) {
+                          console.log(JSON.stringify(item.value));
+                          let delIndex: any = item.value.findIndex(
+                            (el: any) => el === items.value,
+                          );
+                          console.log(delIndex);
+                          item.value.splice(delIndex, 1);
+                        } else {
+                          item.value.push(items.value);
+                        }
+                      }
+                    }}
+                    key={items.id}
+                    style={{
+                      border: item.value?.includes(items.value)
+                        ? '1px solid rgb(86, 114, 255)'
+                        : '1px solid rgba(0, 0, 0, 0.25)',
+                    }}
+                    className={styles.previewCheck}
+                  >
+                    {items.label}
+                  </div>
+                );
+              })}
+          </div>
+        </div>
+      );
+    case 'checkbox':
       return (
         <div className={styles.previewBox}>
           <div className={styles.previewTitle}>{item.displayName}</div>
