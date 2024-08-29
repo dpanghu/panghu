@@ -13,6 +13,7 @@ import { history } from 'umi';
 import { saveAiModule, iconList, getPluginDetail } from '@/services/aiModule';
 import { getAIProductList, getAllAIModel } from '@/services/aiJobHunt';
 import { CloseOutlined, DeleteOutlined, LeftOutlined } from '@ant-design/icons';
+import { trim } from 'lodash';
 
 type IState = {
   status: any
@@ -139,6 +140,15 @@ const Resume: React.FC = ({ }) => {
 
   const save = () => {
     let paramsArr: any = [];
+    let newArr: any = [];
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions, array-callback-return
+    state.data && state.data.map((element: any,index: any) => {
+      newArr.push({
+        id: `ai${index}`,
+        name: element.title
+      })
+    });
+    console.log(JSON.stringify(newArr));
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions, array-callback-return
     state.data && state.data.map((item: any, index: any) => {
       if (item.type === 'text') {
@@ -183,12 +193,26 @@ const Resume: React.FC = ({ }) => {
         });
       }
     })
+    let newportfolio: any = state.saveData.portfolio;
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    let portfolios: any = extractContentBetweenDoubleBraces(state.saveData.portfolio);
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions, array-callback-return
+    portfolios && portfolios.map((el: any) => {
+      // eslint-disable-next-line eqeqeq
+      let finddata: any = newArr.find((els: any) => els.name == el.trim());
+      console.log('find',JSON.stringify(finddata));
+      if(finddata !== void 0) {  
+        newportfolio = newportfolio.replace(el, finddata.id);  
+      }
+    })
+    console.log('mew',newportfolio);
     let send = {
       ...state.baseData,
       userId: '1',
       memberId: '1',
       schoolId: '1',
       ...state.saveData,
+      portfolios: newportfolio,
       icon: state.iconImg,
       params: JSON.stringify(paramsArr),
     }
@@ -200,6 +224,20 @@ const Resume: React.FC = ({ }) => {
       history.push('/aiJobHunt/aiList');
     })
   }
+
+  const extractContentBetweenDoubleBraces = (str: any) => {  
+    const regex = /{{([^}]*?)}}/g;  
+    let matches = str.match(regex);  
+  
+    // 如果存在匹配项，则映射每个匹配项以仅提取括号内的内容  
+    if (matches) {  
+        // 映射matches数组，对于每个匹配项，使用replace方法移除'{{'和'}}'  
+        return matches.map((match: any) => match.replace(/{{|}}/g, ''));  
+    }  
+  
+    // 如果没有匹配项，返回一个空数组  
+    return [];  
+}  
 
   const renderData = (item: any, index: any) => {
     switch (item.type) {
@@ -551,7 +589,7 @@ const Resume: React.FC = ({ }) => {
                 <Select option={state.option} value={state.portfolioOption} style={{ width: 179 }} onChange={(e: any) => { state.portfolioOption = e }}></Select>
                 <Button type='primary' onClick={() => {
                   let portfolioOptionValue: any = state.option.find((ids: any) => ids.value === state.portfolioOption);
-                  state.saveData.portfolio = state.saveData.portfolio + portfolioOptionValue.label;
+                  state.saveData.portfolio = state.saveData.portfolio + `{{ ${portfolioOptionValue.label} }}`;
                 }} style={{ marginLeft: 16 }}>插入</Button>
               </div>
               <Input value={state.saveData.portfolio} type='textarea' onChange={(e: any) => {
