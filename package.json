@@ -3,6 +3,7 @@
   "author": "jyying <jinyuy@seentao.com>",
   "scripts": {
     "build": "max build",
+    "build-proe": "max build",
     "build-test": "max build",
     "dev": "max dev",
     "format": "prettier --cache --write .",
