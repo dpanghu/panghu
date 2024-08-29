@@ -146,9 +146,8 @@ const MessageSendArea: React.FC<Props> = ({
           value={state.message}
           placeholder={state.placeholder}
           onChange={(e) => {
-            if (state?.curPlugin?.needInput) {
-              state.message = e.target.value;
-            }
+            if (state?.curPlugin && !state?.curPlugin?.needInput) return;
+            state.message = e.target.value;
           }}
         />
         <div className={styles['input-footer']}>
