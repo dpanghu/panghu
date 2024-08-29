@@ -46,7 +46,7 @@ export function getCommonData() {
   if (Object.keys(qs)?.length === 0) {
     commonData = JSON.parse(window.sessionStorage.getItem('commonDatas') as any || '{}');
   } else {
-    const { schoolMemberId ,schoolId, userId, userName, memberId, userToken, userType, classId  } = qs;
+    const { schoolMemberId ,schoolId, userId, userName, memberId, userToken, userType, classId, platformCode  } = qs;
     commonData = {
       schoolMemberId,
       schoolId,
@@ -55,7 +55,8 @@ export function getCommonData() {
       memberId,
       userToken,
       userType,
-      classId
+      classId,
+      platformCode
     }
     window.sessionStorage.setItem('commonDatas', JSON.stringify(commonData));
   }
