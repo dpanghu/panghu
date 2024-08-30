@@ -44,7 +44,9 @@ export function getCommonData() {
   let qs: any = getQueryParam();
   let commonData: any = {};
   if (Object.keys(qs)?.length === 0) {
-    commonData = JSON.parse(window.sessionStorage.getItem('commonDatas') as any || '{}');
+    commonData = JSON.parse(
+      (window.sessionStorage.getItem('commonDatas') as any) || '{}',
+    );
   } else {
     // const { schoolMemberId ,schoolId, userId, userName, memberId, userToken, userType, classId, platformCode  } = qs;
     // commonData = {
@@ -62,7 +64,6 @@ export function getCommonData() {
     commonData = qs;
   }
   return commonData;
-  
 }
 
 // 分隔符转驼峰命名
