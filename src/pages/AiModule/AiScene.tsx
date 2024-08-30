@@ -13,6 +13,7 @@ import { history } from 'umi';
 import styles from './AiScene.less';
 import EventSourceStream from '../AiJobHunt/Home/DialogArea/EventSourceStream';
 import { isArray } from 'lodash';
+import SpeechInputComponent from '../Recognition/index';
 
 interface TState {
   curTheme: any;
@@ -400,6 +401,7 @@ const JobHunt: React.FC = () => {
                 </div>}
             </span>
           </div>}
+          <SpeechInputComponent></SpeechInputComponent>
         </div>
       </div>
     </div>
