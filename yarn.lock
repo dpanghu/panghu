@@ -10891,12 +10891,11 @@ react-router@6.3.0:
   dependencies:
     history "^5.2.0"
 
-<<<<<<< HEAD
 react-speech-recognition@^3.10.0:
   version "3.10.0"
   resolved "https://repo.yyrd.com/artifactory/api/npm/seentao-npm-all/react-speech-recognition/-/react-speech-recognition-3.10.0.tgz#7aa43bb28d78b92671864dabba3a70489ccad27b"
   integrity sha512-EVSr4Ik8l9urwdPiK2r0+ADrLyDDrjB0qBRdUWO+w2MfwEBrj6NuRmy1GD3x7BU/V6/hab0pl8Lupen0zwlJyw==
-=======
+
 react-syntax-highlighter@^15.5.0:
   version "15.5.0"
   resolved "https://repo.yyrd.com/artifactory/api/npm/seentao-npm-all/react-syntax-highlighter/-/react-syntax-highlighter-15.5.0.tgz#4b3eccc2325fa2ec8eff1e2d6c18fa4a9e07ab20"
@@ -10907,7 +10906,6 @@ react-syntax-highlighter@^15.5.0:
     lowlight "^1.17.0"
     prismjs "^1.27.0"
     refractor "^3.6.0"
->>>>>>> 7314481ac767440e51cbab5926e26d6bbcc15ea0
 
 react-use-measure@^2.1.1:
   version "2.1.1"
