@@ -1,6 +1,7 @@
 import recentRecordPng from '@/assets/images/recent_record.png';
+import { getConvertParamId } from '@/services/aiJobHunt';
 import { useReactive } from 'ahooks';
-import React from 'react';
+import React, { useEffect } from 'react';
 import AnalysisSummary from './AnalysisSummary';
 import FileUpload from './FileUpload';
 import styles from './index.less';
@@ -8,11 +9,13 @@ import styles from './index.less';
 interface TState {
   showSummary: boolean;
   summaryData: RecordItem;
+  paramsId: string;
 }
 
 const DocumentSummary: React.FC = () => {
   const state = useReactive<TState>({
     showSummary: true,
+    paramsId: '',
     summaryData: {
       attachmentName: '冲刺教育学_removed.pdf',
       attachmentSuffixname: 'pdf',
@@ -40,6 +43,21 @@ const DocumentSummary: React.FC = () => {
     state.summaryData = dataSource;
   };
 
+  const extraParams = JSON.parse(
+    window.sessionStorage.getItem('queryParams') || '{}',
+  );
+
+  const getParamId = async () => {
+    try {
+      const result = await getConvertParamId(extraParams);
+      state.paramsId = result;
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    getParamId();
+  }, []);
+
   return (
     <div className={styles.DocumentSummaryContainer}>
       <div className={styles.header}>
@@ -56,7 +74,7 @@ const DocumentSummary: React.FC = () => {
           {state.showSummary ? (
             <AnalysisSummary summaryData={state.summaryData} />
           ) : (
-            <FileUpload onChange={changeContent} />
+            <FileUpload onChange={changeContent} paramsId={state.paramsId} />
           )}
         </div>
       </div>

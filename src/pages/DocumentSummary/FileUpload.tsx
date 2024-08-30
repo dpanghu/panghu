@@ -5,20 +5,17 @@ import { useReactive } from 'ahooks';
 import { Spin } from 'antd';
 import { RcFile } from 'antd/es/upload';
 import React from 'react';
-import { useModel } from 'umi';
 import styles from './FileUpload.less';
 
 interface TProps {
   onChange: (dataSource: RecordItem) => void;
+  paramsId: string;
 }
 
-const FileUpload: React.FC<TProps> = ({ onChange }) => {
+const FileUpload: React.FC<TProps> = ({ onChange, paramsId }) => {
   const extraParams = JSON.parse(
     window.sessionStorage.getItem('queryParams') || '{}',
   );
-  const { paramsId } = useModel('DocumentSummary.model', (model) => ({
-    paramsId: model.paramsId,
-  }));
   const state = useReactive({
     attachmentId: '',
     loading: false,

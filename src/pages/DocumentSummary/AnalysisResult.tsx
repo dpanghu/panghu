@@ -1,4 +1,4 @@
-import MindMap from '@/components/MindMap';
+import MindMap from '@/components/MindMap/index1';
 import { useReactive } from 'ahooks';
 import { Tabs } from 'antd';
 import React from 'react';
