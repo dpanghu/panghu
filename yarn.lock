@@ -7432,6 +7432,11 @@ jquery@^3.5.1:
   resolved "https://repo.yyrd.com/artifactory/api/npm/seentao-npm-all/jquery/-/jquery-3.7.1.tgz#083ef98927c9a6a74d05a6af02806566d16274de"
   integrity sha512-m4avr8yL8kmFN8psrbFFFmB/If14iN5o9nw/NgnnM+kybDJpRsAynV2BsfpTYrTRysYUdADVD7CkUUizgkpLfg==
 
+js-audio-recorder@^1.0.7:
+  version "1.0.7"
+  resolved "https://repo.yyrd.com/artifactory/api/npm/seentao-npm-all/js-audio-recorder/-/js-audio-recorder-1.0.7.tgz#01501cb9eb143d57994b42bd5ae97974fda18908"
+  integrity sha512-JiDODCElVHGrFyjGYwYyNi7zCbKk9va9C77w+zCPMmi4C6ix7zsX2h3ddHugmo4dOTOTCym9++b/wVW9nC0IaA==
+
 js-base64@3.7.7:
   version "3.7.7"
   resolved "https://repo.yyrd.com/artifactory/api/npm/seentao-npm-all/js-base64/-/js-base64-3.7.7.tgz"

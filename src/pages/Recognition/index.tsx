@@ -1,66 +1,64 @@
-import { CheckCard } from '@ant-design/pro-components';
-import React, { useRef, useState } from 'react'; 
-import { Button } from 'SeenPc'; 
+import React, { useRef, useState, useEffect } from 'react';  
+import Recorder from 'js-audio-recorder';
+import { Button } from 'antd';  
   
-const Recorder = () => {  
-  const audioRef = useRef(null);  
-  const [isRecording, setIsRecording] = useState(false);
-  const [chunks, setChunks] = useState<any>([]);
-  const [blobUrl, setBlobUrl] = useState(null);  
+const AudioRecorderComponent = () => {  
+  const [isRecording, setIsRecording] = useState(false);  
+  const recorder: any = useRef(null);  
   
-  const startRecording = async () => {  
-    try {  
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });  
-      const audioContext = new AudioContext();  
-      const mediaRecorder = new MediaRecorder(stream);  ;  
+  useEffect(() => {  
+    // 初始化Recorder实例  
+    recorder.current = new Recorder({  
+      sampleBits: 16,                 // 采样位数，默认是16  
+      sampleRate: 44100,              // 采样率，默认是44100  
+      numChannels: 1,                 // 声道，默认是1  
+      // 编码格式  
+      encodeType: 'mp3',              // 默认是'mp3'，如果想要wav格式，可以设为'wav'  
+      mimeType: 'audio/mpeg',  
+    });  
   
-      mediaRecorder.ondataavailable = (e: any) => {  
-        console.log('触发中');
-        chunks.push(e.data);
-        setChunks(chunks);
-      };  
+    // 监听录音完成  
+    recorder.current.onfinish = () => {  
+      // 录音完成后获取音频文件  
+      const audioUrl = recorder.current.getBlobURL();  
+      console.log('Audio recorded:', audioUrl);  
+      // 这里可以播放、下载或发送到服务器  
+    };  
   
-      mediaRecorder.onstop = () => {  
-        console.log('11111111111111111111111111111');
-        const blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });  
-        setBlobUrl(URL.createObjectURL(blob));  
-      };  
+    // 清理  
+    return () => {  
+      recorder.current.stop();  
+      recorder.current.dispose();  
+      recorder.current = null;  
+    };  
+  }, []);  
   
-      setIsRecording(true);  
-      mediaRecorder.start();  
-      console.log('222222222222222');
-      // 清理  
-      return () => {  
-        mediaRecorder.stop();  
-        stream.getTracks().forEach(track => track.stop());  
-        audioContext.close();  
-        setIsRecording(false);  
-      };  
-    } catch (err) {  
-      console.error('Error accessing media devices.', err);  
-    }  
+  const handleStartRecording = () => {  
+    navigator.mediaDevices.getUserMedia({ audio: true })  
+      .then(stream => {  
+        recorder.current.record(stream);  
+        setIsRecording(true);  
+      })  
+      .catch(err => {  
+        
+        console.error('Error accessing media devices.', err);  
+      });  
   };  
   
-  const stopRecording = () => {  
-    console.log('123213232');
-    console.log('结果',JSON.stringify(chunks));
-    const blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });  
-    setBlobUrl(URL.createObjectURL(blob));  
-    // 这里通常只需要调用停止的清理函数，但在本例中我们简化处理  
-    // 实际应用中，你需要根据`startRecording`返回的清理函数来处理  
+  const handleStopRecording = () => {  
+    recorder.current.stop();  
     setIsRecording(false);  
   };  
   
   return (  
     <div>  
       {isRecording ? (  
-        <Button onClick={stopRecording}>停止录音</Button>  
+        <Button onClick={handleStopRecording}>停止录音</Button>  
       ) : (  
-        <Button onClick={startRecording}>开始录音</Button>  
+        <Button onClick={handleStartRecording}>开始录音</Button>  
       )}  
-      {blobUrl && <a href={blobUrl} download="recording.ogg">下载录音</a>}  
     </div>  
   );  
 };  
   
-export default Recorder;
+export default AudioRecorderComponent;
