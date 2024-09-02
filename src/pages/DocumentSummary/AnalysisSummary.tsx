@@ -8,15 +8,19 @@ interface TProps {
 }
 
 const AnalysisSummary: React.FC<TProps> = ({ summaryData }) => {
+  console.log(summaryData);
+
   return (
     <div className={styles.AnalysisSummaryContainer}>
       <div className={styles.fileContent}>
         <FilePreview
           learnUrl={
-            'https://oss-public.seentao.com/webapps/canvas/index.html?file=https://dbe3-public.oss-cn-beijing.aliyuncs.com/yozo/output/2024/08/28/MjQwODI4NDIyODU2MDM5/index.json'
+            // 'https://oss-public.seentao.com/webapps/canvas/index.html?file=https://dbe3-public.oss-cn-beijing.aliyuncs.com/yozo/output/2024/08/28/MjQwODI4NDIyODU2MDM5/index.json'
+            // 'https://dbe3-public.oss-cn-beijing.aliyuncs.com/bus-runner/1702694505366681/task/1724824319946/教学设计活动-班会.pdf'
+            summaryData.ossViewUrl
           }
-          materialId={'925928795930828800'}
-          fileName="附件：Gitlab配置开启双因子快速指南.docx"
+          materialId={summaryData.materialId}
+          fileName={summaryData.attachmentName}
         />
       </div>
       <div className={styles.AIcontent}>

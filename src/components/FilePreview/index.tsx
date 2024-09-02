@@ -14,11 +14,7 @@ const FilePreview: React.FC<TProps> = (props) => {
     learnUrl.split('.').pop() == 'pdf' ? (
       <PdfView filename={fileName} url={learnUrl} />
     ) : (
-      <FileViewer
-        attachmentId={materialId + ''}
-        file={learnUrl}
-        url={learnUrl}
-      />
+      <FileViewer attachmentId={materialId} url={learnUrl} />
     )
   ) : (
     <div>暂时没有可预览的文档</div>

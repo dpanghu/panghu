@@ -1,5 +1,5 @@
 import Hierarchy from '@antv/hierarchy';
-import { Cell, Graph, Path } from '@antv/x6';
+import { Cell, Graph, Node, Path } from '@antv/x6';
 import { useMount } from 'ahooks';
 import React from 'react';
 type TDateSource = {
@@ -29,7 +29,44 @@ interface HierarchyResult {
   children?: HierarchyResult[];
 }
 
+// 定义节点
 const MindMap: React.FC<TProps> = ({ dataSource }) => {
+  const findChildrenById = (node: RecordItem, id: string) => {
+    // 检查当前节点的 id 是否匹配传入的 id
+    if (node.id === id) {
+      // 如果匹配，返回当前节点的所有子节点
+      return node.children || [];
+    }
+
+    // 如果当前节点有子节点，递归查找
+    if (node.children && node.children.length > 0) {
+      for (let child of node.children) {
+        const result: RecordItem[] = findChildrenById(child, id);
+        if (result.length > 0) {
+          return result;
+        }
+      }
+    }
+    // 如果没有找到匹配的 id，返回空数组
+    return [];
+  };
+
+  const getAllIds = (nodes: RecordItem[]) => {
+    const ids: string[] = [];
+
+    function traverse(node: RecordItem) {
+      // 将当前节点的 id 添加到 ids 数组中
+      ids.push(node.id);
+      // 如果当前节点有子节点，递归遍历每个子节点
+      if (node.children && node.children.length > 0) {
+        node.children.forEach((child: any) => traverse(child));
+      }
+    }
+    // 遍历传入的节点数组
+    nodes.forEach((node) => traverse(node));
+    return ids;
+  };
+
   const initMindMap = () => {
     // 中心主题
     Graph.registerNode(
@@ -72,9 +109,9 @@ const MindMap: React.FC<TProps> = ({ dataSource }) => {
             refY2: -8,
             width: 16,
             height: 16,
-            // 'xlink:href':
-            //   'https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*SYCuQ6HHs5cAAAAAAAAAAAAAARQnAQ',
-            // event: 'add:topic',
+            'xlink:href':
+              'https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*SYCuQ6HHs5cAAAAAAAAAAAAAARQnAQ',
+            event: 'add:topic',
             // class: 'topic-image',
           },
           label: {
@@ -274,17 +311,44 @@ const MindMap: React.FC<TProps> = ({ dataSource }) => {
       },
     });
 
-    graph.on('node:collapse', ({ node }: any) => {
-      node.toggleCollapse();
-      const collapsed = node.isCollapsed();
-      const cells = node.getDescendants();
-      cells.forEach((node: any) => {
-        if (collapsed) {
-          node.hide();
-        } else {
-          node.show();
-        }
+    const toggleCollapse = (node: any, collapsed?: boolean) => {
+      const target = collapsed == null ? !node.collapsed : collapsed;
+      // if (!target) {
+      //   node.attr('buttonSign', {
+      //     d: 'M 1 5 9 5 M 5 1 5 9',
+      //     strokeWidth: 1.6,
+      //   });
+      // } else {
+      //   node.attr('buttonSign', {
+      //     d: 'M 2 5 8 5',
+      //     strokeWidth: 1.8,
+      //   });
+      // }
+      node.visible = false;
+      node.collapsed = target;
+    };
+
+    graph.on('add:topic', ({ node }: { node: Node }) => {
+      const { id } = node;
+      const result = findChildrenById(data, id);
+      const ids: string[] = getAllIds(result);
+      node.setZIndex(99);
+      // node.isVisible() ? node.hide() : node.show();
+      ids.forEach((item) => {
+        const cell = graph.getCellById(item);
+        // cell.isVisible() ? cell.hide() : cell.show();
+        cell.toggleVisible();
       });
+      // node.visible = true;
+      // const collapsed = node.isCollapsed();
+      // const cells = node.getDescendants();
+      // cells.forEach((node: any) => {
+      //   if (collapsed) {
+      //     node.hide();
+      //   } else {
+      //     node.show();
+      //   }
+      // });
     });
 
     const render = () => {
