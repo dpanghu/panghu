@@ -403,6 +403,9 @@ const JobHunt: React.FC = () => {
           </div>}
           {/* <SpeechInputComponent></SpeechInputComponent> */}
         </div>
+        {/* <div className={styles.right_list}>
+          <div className={styles.right_head}></div>
+        </div> */}
       </div>
     </div>
   );
