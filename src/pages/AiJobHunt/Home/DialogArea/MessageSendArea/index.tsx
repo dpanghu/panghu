@@ -57,7 +57,7 @@ const MessageSendArea: React.FC<Props> = ({
       return;
     }
 
-    if (!state.message) {
+    if (!state.message && state.curPlugin?.needInput) {
       message.warning('请输入内容');
       return;
     }
@@ -145,12 +145,15 @@ const MessageSendArea: React.FC<Props> = ({
           }}
           value={state.message}
           placeholder={state.placeholder}
-          onChange={(e) => (state.message = e.target.value)}
+          onChange={(e) => {
+            if (state?.curPlugin && !state?.curPlugin?.needInput) return;
+            state.message = e.target.value;
+          }}
         />
         <div className={styles['input-footer']}>
           <span
             className={classNames({
-              [styles['over-length']]: state.message.length >= 2000,
+              [styles['over-length']]: state.message.length > 2000,
             })}
           >
             {state.message.length}/2000

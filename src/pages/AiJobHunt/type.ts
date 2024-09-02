@@ -21,6 +21,7 @@ export type Plugin = {
   name: string;
   note: string;
   portfolio: string;
+  needInput: 0 | 1;
   paramMetadataList: FieldProperties[];
 };
 
@@ -50,6 +51,10 @@ export interface FieldProperties {
   options?: FieldOptions[]; // 下拉选项（仅当控件类型是select或selectCheck时）
   required?: boolean; // 是否必填
   treeSelectOptionsUrl?: string;
+  fileConf?: {
+    ext: string[];
+    maxSize: number;
+  };
 }
 
 export interface SubmitMessage {
@@ -77,6 +82,7 @@ interface IEducationBackground {
   graduationEndTime: string;
   graduationStartTime: string;
   major: string;
+  majorCourse: string;
   schoolName: string;
   description: string;
 }
@@ -113,7 +119,6 @@ export interface IResumeContent {
   nativePlace?: string;
   intentPosition?: string;
   workNature?: string;
-  intentPositionValue?: string;
 }
 
 interface IResume {

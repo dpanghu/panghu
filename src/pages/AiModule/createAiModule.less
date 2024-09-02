@@ -6,6 +6,16 @@
     background: linear-gradient(132deg, #D8DDFF 0%, #E6EDFD 17%, #E2E6FF 27%, #E0E6FF 34%, #CBD4FF 55%, #B8C0FF 71%, #A3ACFF 100%);
     padding: 16px;
     :global {
+        :where(.css-2mh66p).ant-tabs {
+            height: 100% !important;
+        }
+        :where(.css-2mh66p).ant-tabs >.ant-tabs-nav, :where(.css-2mh66p).ant-tabs >div>.ant-tabs-nav {
+            position: relative;
+            display: flex;
+            flex: none;
+            height: 100% !important;
+            align-items: center;
+        }
         :where(.css-dev-only-do-not-override-2mh66p).ant-tabs >.ant-tabs-nav .ant-tabs-nav-list, :where(.css-dev-only-do-not-override-2mh66p).ant-tabs >div>.ant-tabs-nav .ant-tabs-nav-list {
             position: relative;
             display: flex;
@@ -70,7 +80,7 @@
     display: flex;
     flex-direction: column;
     width: 90%;
-    padding: 30px;
+    padding: 37px 25px 40px 25px;
     border: none;
     background: rgba(90,115,255,0.5);
     border-radius: 8px;
@@ -83,7 +93,7 @@
     position: relative;
     flex-direction: column;
     width: 90%;
-    padding: 30px;
+    padding: 37px 25px 40px 25px;
     border: none;
     background: rgba(170,126,255,0.5);
     border-radius: 8px;
@@ -171,7 +181,7 @@ line-height: 22px;
     display: flex;
     flex-direction: column;
     width: 90%;
-    padding: 30px;
+    padding: 37px 25px 40px 25px;
     position: relative;
     border: none;
     background: rgba(255,152,55,0.5);
@@ -190,7 +200,7 @@ line-height: 22px;
     display: flex;
     flex-direction: column;
     width: 90%;
-    padding: 30px;
+    padding: 37px 25px 40px 25px;
     position: relative;
     border: none;
     background: rgba(255,39,57,0.5);

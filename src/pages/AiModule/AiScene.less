@@ -5,12 +5,28 @@
     flex-direction: column;
     position: relative;
     min-height: 100vh;
+
     :global {
         :where(.css-dev-only-do-not-override-2mh66p).ant-checkbox-checked .ant-checkbox-inner {
             background-color: #5672ff !important;
             border-color: #5672ff;
             border: none !important;
         }
+    }
+
+    .right_list {
+        width: 300px;
+        display: flex;
+        flex-direction: column;
+        background: linear-gradient( 135deg, #F9F9FF 0%, #F0F1FE 100%);
+        box-shadow: 1px 0px 0px 0px rgba(72,79,152,0.05);
+        border-radius: 0px 8px 8px 0px;
+    }
+
+    .right_head {
+        display: flex;
+        width: 100%;
+
     }
 
     .mid_content {
@@ -21,7 +37,7 @@
         flex-direction: column;
         position: relative;
         padding-right: 28px;
-        background: linear-gradient( 133deg, #E5F0FF 0%, #E9E9FF 100%);
+        background: linear-gradient(133deg, #E5F0FF 0%, #E9E9FF 100%);
     }
 
     .head {
@@ -65,17 +81,54 @@
     .warning {
         padding: 16px;
         font-family: PingFangSC, PingFang SC;
-font-weight: 500;
-font-size: 24px;
-color: #272648;
-line-height: 33px;
-font-style: normal;
-background-image: url('../../assets/images/stubac.png');
-background-size: 100% 100%;
-background-repeat: no-repeat;
-object-fit: cover;
-width: 100%;
-min-height: 129px;
+        font-weight: 500;
+        font-size: 24px;
+        color: #272648;
+        line-height: 33px;
+        font-style: normal;
+        background-image: url('../../assets/images/stubac.png');
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+        object-fit: cover;
+        width: 100%;
+        min-height: 129px;
+    }
+
+    .texts {
+        font-family: PingFangSC, PingFang SC;
+        font-weight: 400;
+        font-size: 14px;
+        color: #272648;
+        line-height: 24px;
+    }
+
+    .warnings {
+        padding: 26px 16px 18px 30px;
+        font-family: PingFangSC, PingFang SC;
+        font-weight: 400;
+        font-size: 14px;
+        color: #272648;
+        line-height: 17px;
+        color: #272648;
+        border-radius: 8px;
+        font-style: normal;
+        width: 100%;
+        background: white;
+        white-space: pre-wrap;
+    }
+    .finallText {
+        padding: 26px 16px 18px 30px;
+        font-family: PingFangSC, PingFang SC;
+        font-weight: 400;
+        font-size: 14px;
+        color: #272648;
+        line-height: 17px;
+        color: #272648;
+        border-radius: 8px;
+        font-style: normal;
+        width: 100%;
+        background: white;
+        white-space: pre-wrap;
     }
 
     .content {
@@ -101,12 +154,12 @@ min-height: 129px;
 
 .subwarning {
     font-family: PingFangSC, PingFang SC;
-font-weight: 400;
-font-size: 14px;
-color: #272648;
-line-height: 28px;
-font-style: normal;
-margin-top: 8px;
+    font-weight: 400;
+    font-size: 14px;
+    color: #272648;
+    line-height: 28px;
+    font-style: normal;
+    margin-top: 8px;
 }
 
 .container {
@@ -276,6 +329,7 @@ margin-top: 8px;
     font-size: 14px;
     color: #333333;
     line-height: 22px;
+
     &:hover {
         opacity: 0.7;
     }
