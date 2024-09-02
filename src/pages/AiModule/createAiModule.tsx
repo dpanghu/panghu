@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import { useMount, useReactive } from 'ahooks';
 import React from 'react';
 import styles from './createAiModule.less';
@@ -91,17 +92,15 @@ const Resume: React.FC = ({ }) => {
       getPluginDetail({
         id: window.sessionStorage.getItem('pluginId'),
       }).then((res: any)=> {
-        console.log(res);
-        state.baseData = {
-          note: res.plugin.note,
-          name: res.plugin.name,
-          tips: res.plugin.tips,
-          id: res.plugin.id,
-        }
-        state.iconImg = res.plugin.icon;
         let arr: any = [];
+        let portfoliosClone: any = [];
         let jsonData: any = JSON.parse(res.param?.params);
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         jsonData && jsonData.map((el: any)=> {
+          portfoliosClone.push({
+            id: el.name,
+            name: el.displayName,
+          });
           if(el.elementType == 'input') {
             arr.push({
               title: el.displayName,
@@ -133,7 +132,31 @@ const Resume: React.FC = ({ }) => {
           }
         })
         state.data = arr;
-        console.log(jsonData);
+        
+        state.baseData = {
+          note: res.plugin.note,
+          name: res.plugin.name,
+          tips: res.plugin.tips,
+          id: res.plugin.id,
+        }
+        let newportfolio: any = res.plugin.portfolio;
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
+        let portfoliosArr: any = extractContentBetweenDoubleBraces(res.plugin.portfolio);
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+        portfoliosArr && portfoliosArr.map((el: any) => {
+          // eslint-disable-next-line
+          let finddata: any = portfoliosClone.find((els: any) => els.id == el.trim());
+          console.log('find',JSON.stringify(finddata));
+          if(finddata !== void 0) {  
+            newportfolio = newportfolio.replace(el, finddata.name);  
+          }
+        })
+        state.saveData = {
+          modelTypeId: res.plugin.modelTypeId,
+          domainId: res.plugin.domainId,
+          portfolio: newportfolio
+        }
+        state.iconImg = res.plugin.icon;
       })
     }
   });
@@ -212,7 +235,7 @@ const Resume: React.FC = ({ }) => {
       memberId: '1',
       schoolId: '1',
       ...state.saveData,
-      portfolios: newportfolio,
+      portfolio: newportfolio,
       icon: state.iconImg,
       params: JSON.stringify(paramsArr),
     }
