@@ -122,8 +122,10 @@ const ImageAnnotator: React.FC<ImageAnnotatorProps> = ({ imageSrc, annotations, 
     }, [annotations, isMark, isBlue, scale]);
 
     useEffect(() => {
-        if (imgRef.current && canvasRef.current) {
+        if (imgRef.current) {
             imgRef.current.style.transform = `rotate(${angle}deg) scale(${scale})`;
+        }
+        if (canvasRef.current && (isMark || isBlue)) { // 确保 canvas 应该出现时才设置 transform
             const canvas = canvasRef.current;
             const img = imgRef.current;
 
@@ -133,7 +135,7 @@ const ImageAnnotator: React.FC<ImageAnnotatorProps> = ({ imageSrc, annotations, 
 
             drawAnnotations();
         }
-    }, [angle, scale, drawAnnotations]);
+    }, [angle, scale, drawAnnotations, isMark, isBlue]);
 
     useEffect(() => {
         if (!canvasRef.current || !imgRef.current) return;
