@@ -134,7 +134,7 @@ const AiOCR: React.FC = ({ }) => {
     const props: any = {
         name: 'file',
         seenOss: {
-            url: '/bus-xai/dbe3.private.params.upload.get',
+            url: '/api/bus-xai/dbe3.private.params.upload.get',
             extraParams
         },
         beforeUpload: (file: any) => {
