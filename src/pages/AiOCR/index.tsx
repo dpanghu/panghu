@@ -37,7 +37,6 @@ type TState = {
     isValid: boolean;
     angle: any;
     timer: any;
-    isErr: any;
 }
 const AiOCR: React.FC = ({ }) => {
     const [scale, setScale] = useState(1);
@@ -57,7 +56,6 @@ const AiOCR: React.FC = ({ }) => {
         isValid: false,
         angle: {},
         timer: null,
-        isErr: {},
     });
     const handleZoomOut = () => {
         let newScale = scale - 0.1;
@@ -186,22 +184,16 @@ const AiOCR: React.FC = ({ }) => {
         state.isSelect = id
         state.imgUrl = url
         state.isrec = true;
-        if (note.length > 0) {
-            state.IdentifyData = JSON.parse(note)
-            state.isErr[id] = 1
-        } else {
-            state.IdentifyData = []
-            state.isErr[id] = 0
-        }
+        state.IdentifyData = JSON.parse(note)
     }
 
     const delImage = (index: any) => {
         deletePic({ picUid: state.isSelect }).then(res => {
-            if (index < 0) {
+            if(index < 0){
                 getImageLists()
                 return
             }
-            let item = state.preData[index]
+            let item = state.preData.filter(item => item.note)[index]
             selectImage(item.picUid, item.url, item.note)
             getImageLists()
         })
@@ -318,10 +310,10 @@ const AiOCR: React.FC = ({ }) => {
 
                 </div>
                 {
-                    state.preData && state.preData.length > 0 && (
+                    state.preData.filter(item => item.note) && state.preData.filter(item => item.note).length > 0 && (
                         <div className={styles.imageLists}>
-                            {state.preData.map((item: any, index: any) => (
-                                <div className={state.isSelect === item.picUid ? styles.checkImageList : styles.imageList} key={item.id} onClick={() => selectImage(item.picUid, item.url, item.note || [])}>
+                            {state.preData.filter((item) => item.note).map((item: any, index: any) => (
+                                <div className={state.isSelect === item.picUid ? styles.checkImageList : styles.imageList} key={item.id} onClick={() => selectImage(item.picUid, item.url, item.note)}>
                                     <div className={styles.imageIndex}>{index + 1}</div>
                                     <div className={styles.imageDel} onClick={() => delImage(index - 1)}><CloseCircleFilled /></div>
                                     <img src={item.url} alt="" style={{ transform: `rotate(${state.angle[item.picUid] || 0}deg)` }} />
