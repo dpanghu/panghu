@@ -171,18 +171,29 @@ const DocumentSummary: React.FC = () => {
         window.open(result as string, '_self');
       }
       if (state.exportParams.mindMapChecked) {
-        state.graph?.toPNG((dataUri: string) => {
-          // 下载
-          // DataUri.downloadDataUri(
-          //   dataUri,
-          //   `${state.summaryData.attachmentName.replace(
-          //     /\.[^/.]+$/,
-          //     '',
-          //   )}-脑图.png
-          //   }`,
-          // );
-          DataUri.downloadDataUri(dataUri, '脑图.png');
-        });
+        state.graph?.toPNG(
+          (dataUri: string) => {
+            // 下载
+            // DataUri.downloadDataUri(
+            //   dataUri,
+            //   `${state.summaryData.attachmentName.replace(
+            //     /\.[^/.]+$/,
+            //     '',
+            //   )}-脑图.png
+            //   }`,
+            // );
+            DataUri.downloadDataUri(dataUri, '脑图.png');
+          },
+          {
+            width: 1920,
+            height: 1080,
+            quality: 1,
+            padding: {
+              top: 20,
+              bottom: 20,
+            },
+          },
+        );
       }
       message.success('导出成功');
       state.exportParams.popupOpen = false;
