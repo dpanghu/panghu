@@ -30,6 +30,7 @@
     "js-audio-recorder": "^1.0.7",
     "js-base64": "3.7.7",
     "lodash": "4.17.21",
+    "nanoid": "^5.0.7",
     "qs": "6.12.3",
     "react-beautiful-dnd": "13.1.1",
     "react-doc-viewer": "^0.1.14",

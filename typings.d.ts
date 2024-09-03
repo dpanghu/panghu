@@ -1,2 +1,2 @@
 import '@umijs/max/typings';
-declare module '@antv/hierarchy';
+declare module '@antv__hierarchy';

@@ -1,7 +1,18 @@
+import { sliceString } from '@/utils/utils';
 import Hierarchy from '@antv/hierarchy';
-import { Cell, Graph, Node, Path } from '@antv/x6';
+import { Cell, Graph, Path } from '@antv/x6';
 import { useMount } from 'ahooks';
-import React from 'react';
+import { nanoid } from 'nanoid';
+import React, { useRef } from 'react';
+import styles from './index.less';
+
+import collapseIcon from '@/assets/images/mind_collapse_icon.png';
+import fitContentIcon from '@/assets/images/mind_fitContent_icon.png';
+import fullscreenIcon from '@/assets/images/mind_fullscreen_icon.png';
+import zoomInIcon from '@/assets/images/mind_zoomIn_icon.png';
+import zoomOutIcon from '@/assets/images/mind_zoomOut_icon.png';
+import { Divider } from 'antd';
+
 type TDateSource = {
   name: string;
   children?: TDateSource[];
@@ -10,6 +21,7 @@ type TDateSource = {
 
 interface TProps {
   dataSource: TDateSource;
+  getMindGraph?: (graphT: Graph) => void;
 }
 
 interface MindMapData {
@@ -30,7 +42,8 @@ interface HierarchyResult {
 }
 
 // 定义节点
-const MindMap: React.FC<TProps> = ({ dataSource }) => {
+const MindMap: React.FC<TProps> = ({ dataSource, getMindGraph }) => {
+  const graphRef = useRef<Graph | null>(null);
   const findChildrenById = (node: RecordItem, id: string) => {
     // 检查当前节点的 id 是否匹配传入的 id
     if (node.id === id) {
@@ -65,6 +78,59 @@ const MindMap: React.FC<TProps> = ({ dataSource }) => {
     // 遍历传入的节点数组
     nodes.forEach((node) => traverse(node));
     return ids;
+  };
+
+  const traversalTreeData = (
+    dataSource: RecordItem[],
+    result: RecordItem[],
+  ) => {
+    dataSource.forEach((item) => {
+      const newItem = {
+        id: nanoid(),
+        type: 'topic-child',
+        label: item.name,
+        width: 60,
+        height: 30,
+        children: [],
+      };
+      result.push(newItem);
+      if (item.children?.length) {
+        traversalTreeData(item.children, newItem.children);
+      }
+    });
+    return result;
+  };
+
+  // 将数据格式化为标准格式
+  const formatData = (dataSource: RecordItem) => {
+    let result: RecordItem = [];
+    if (dataSource.name) {
+      result = {
+        id: nanoid(),
+        type: 'topic',
+        label: sliceString(dataSource.name, 7, '...'),
+        title: dataSource.name,
+        width: 160,
+        height: 50,
+      };
+    }
+    if (dataSource.children?.length) {
+      result.children = dataSource.children.map((item: RecordItem) => {
+        const childrenArr: RecordItem[] = [];
+        return {
+          id: nanoid(),
+          type: 'topic-branch',
+          label: sliceString(item.name, 7, '...'),
+          title: item.name,
+          width: 120,
+          height: 40,
+          children: item.children?.length
+            ? traversalTreeData(item.children, childrenArr)
+            : [],
+        };
+      });
+    }
+    return result;
   };
 
   const initMindMap = () => {
@@ -109,9 +175,9 @@ const MindMap: React.FC<TProps> = ({ dataSource }) => {
             refY2: -8,
             width: 16,
             height: 16,
-            'xlink:href':
-              'https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*SYCuQ6HHs5cAAAAAAAAAAAAAARQnAQ',
-            event: 'add:topic',
+            // 'xlink:href':
+            //   'https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*SYCuQ6HHs5cAAAAAAAAAAAAAARQnAQ',
+            // event: 'add:topic',
             // class: 'topic-image',
           },
           label: {
@@ -165,6 +231,7 @@ const MindMap: React.FC<TProps> = ({ dataSource }) => {
           label: {
             fontSize: 14,
             fill: '#9D72F0',
+            ellipsis: true, // 文本超出显示范围时，自动添加省略号
           },
         },
       },
@@ -200,11 +267,14 @@ const MindMap: React.FC<TProps> = ({ dataSource }) => {
             fontSize: 14,
             fill: '#262626',
             textVerticalAnchor: 'bottom',
+            textAnchor: 'start',
+            ellipsis: true, // 文本超出显示范围时，自动添加省略号
+            breakWord: true, // 是否截断单词
           },
           line: {
             stroke: '#DCCAFF',
             strokeWidth: 2,
-            d: 'M 0 15 L 60 15',
+            d: 'M 0 15 L 160 15',
           },
         },
       },
@@ -255,46 +325,7 @@ const MindMap: React.FC<TProps> = ({ dataSource }) => {
       true,
     );
 
-    const data: MindMapData = {
-      id: '1',
-      type: 'topic',
-      label: '中心主题',
-      width: 160,
-      height: 50,
-      children: [
-        {
-          id: '1-1',
-          type: 'topic-branch',
-          label: '分支主题1',
-          width: 100,
-          height: 40,
-          children: [
-            {
-              id: '1-1-1',
-              type: 'topic-child',
-              label: '子主题1',
-              width: 60,
-              height: 30,
-            },
-            {
-              id: '1-1-2',
-              type: 'topic-child',
-              label: '子主题2',
-              width: 60,
-              height: 30,
-            },
-          ],
-        },
-        {
-          id: '1-2',
-          type: 'topic-branch',
-          label: '分支主题2',
-          width: 100,
-          height: 40,
-        },
-      ],
-    };
-
+    const data: any = formatData(dataSource);
     const graph = new Graph({
       container: document.getElementById('MindMapContainer')!,
       connecting: {
@@ -302,6 +333,10 @@ const MindMap: React.FC<TProps> = ({ dataSource }) => {
       },
       selecting: {
         enabled: true,
+      },
+      scaling: {
+        min: 0.25,
+        max: 2,
       },
       panning: true,
       mousewheel: true,
@@ -311,45 +346,31 @@ const MindMap: React.FC<TProps> = ({ dataSource }) => {
       },
     });
 
-    const toggleCollapse = (node: any, collapsed?: boolean) => {
-      const target = collapsed == null ? !node.collapsed : collapsed;
-      // if (!target) {
-      //   node.attr('buttonSign', {
-      //     d: 'M 1 5 9 5 M 5 1 5 9',
-      //     strokeWidth: 1.6,
-      //   });
-      // } else {
-      //   node.attr('buttonSign', {
-      //     d: 'M 2 5 8 5',
-      //     strokeWidth: 1.8,
-      //   });
-      // }
-      node.visible = false;
-      node.collapsed = target;
-    };
+    graphRef.current = graph;
+    getMindGraph && getMindGraph(graph);
 
-    graph.on('add:topic', ({ node }: { node: Node }) => {
-      const { id } = node;
-      const result = findChildrenById(data, id);
-      const ids: string[] = getAllIds(result);
-      node.setZIndex(99);
-      // node.isVisible() ? node.hide() : node.show();
-      ids.forEach((item) => {
-        const cell = graph.getCellById(item);
-        // cell.isVisible() ? cell.hide() : cell.show();
-        cell.toggleVisible();
-      });
-      // node.visible = true;
-      // const collapsed = node.isCollapsed();
-      // const cells = node.getDescendants();
-      // cells.forEach((node: any) => {
-      //   if (collapsed) {
-      //     node.hide();
-      //   } else {
-      //     node.show();
-      //   }
-      // });
-    });
+    // graph.on('add:topic', ({ node }: { node: Node }) => {
+    //   const { id } = node;
+    //   const result = findChildrenById(data, id);
+    //   const ids: string[] = getAllIds(result);
+    //   node.setZIndex(99);
+    //   // node.isVisible() ? node.hide() : node.show();
+    //   ids.forEach((item) => {
+    //     const cell = graph.getCellById(item);
+    //     // cell.isVisible() ? cell.hide() : cell.show();
+    //     cell.toggleVisible();
+    //   });
+    //   // node.visible = true;
+    //   // const collapsed = node.isCollapsed();
+    //   // const cells = node.getDescendants();
+    //   // cells.forEach((node: any) => {
+    //   //   if (collapsed) {
+    //   //     node.hide();
+    //   //   } else {
+    //   //     node.show();
+    //   //   }
+    //   // });
+    // });
 
     const render = () => {
       const result: HierarchyResult = Hierarchy.mindmap(data, {
@@ -424,10 +445,32 @@ const MindMap: React.FC<TProps> = ({ dataSource }) => {
       };
       traverse(result);
       graph.resetCells(cells);
+      graphRef.current?.zoomToFit();
       graph.centerContent();
     };
 
     render();
+  };
+
+  const handleZoomOut = () => {
+    const zoom = graphRef.current?.zoom() || 1;
+    graphRef.current?.zoomTo(zoom + 0.25, {
+      minScale: 0.25,
+      maxScale: 2,
+    });
+  };
+
+  const handleZoomIn = () => {
+    const zoom = graphRef.current?.zoom() || 1;
+    graphRef.current?.zoomTo(zoom - 0.25, {
+      minScale: 0.25,
+      maxScale: 2,
+    });
+  };
+
+  const handleFitContent = () => {
+    graphRef.current?.zoomToFit();
+    graphRef.current?.centerContent();
   };
 
   useMount(() => {
@@ -435,8 +478,25 @@ const MindMap: React.FC<TProps> = ({ dataSource }) => {
   });
 
   return (
-    <div id="MindMapContainer" style={{ width: '100%', height: '100%' }}>
-      index
+    <div className={styles.mindMapContent}>
+      <div
+        id="MindMapContainer"
+        style={{ width: '100%', height: '100%' }}
+      ></div>
+      <div className={styles.toolBar}>
+        <div className={styles.iconBox}>
+          <img src={fitContentIcon} alt="" onClick={handleFitContent} />
+          <Divider type="vertical" />
+          <img src={collapseIcon} alt="" />
+          <Divider type="vertical" />
+          <img src={zoomInIcon} alt="" onClick={handleZoomIn} />
+          <Divider type="vertical" />
+          <img src={zoomOutIcon} alt="" onClick={handleZoomOut} />
+        </div>
+        <div className={styles.fullscreenIcon}>
+          <img src={fullscreenIcon} alt="" />
+        </div>
+      </div>
     </div>
   );
 };

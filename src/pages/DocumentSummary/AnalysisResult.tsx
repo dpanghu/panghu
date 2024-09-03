@@ -7,17 +7,22 @@ import Markdown from './Mind';
 
 interface TProps {
   summaryData: RecordItem;
+  getActiveTabKey: (key: string) => void;
+  getMindGraph: (graph: any) => void;
 }
 
-const AnalysisResult: React.FC<TProps> = ({ summaryData }) => {
-  console.log(summaryData);
-
+const AnalysisResult: React.FC<TProps> = ({
+  summaryData,
+  getActiveTabKey,
+  getMindGraph,
+}) => {
   const state = useReactive({
     activeKey: '1',
   });
 
   const onChange = (key: string) => {
     state.activeKey = key;
+    getActiveTabKey(key);
   };
 
   return (
@@ -43,7 +48,10 @@ const AnalysisResult: React.FC<TProps> = ({ summaryData }) => {
         {state.activeKey === '1' ? (
           <Markdown content={summaryData?.summary} />
         ) : (
-          <MindMap dataSource={JSON.parse(summaryData?.mindMap || '{}')} />
+          <MindMap
+            dataSource={JSON.parse(summaryData?.mindMap || '{}')}
+            getMindGraph={getMindGraph}
+          />
         )}
       </div>
     </div>
