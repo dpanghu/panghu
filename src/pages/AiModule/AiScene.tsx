@@ -3,16 +3,16 @@ import aiimg from '@/assets/images/rebotIcon.png';
 import { getPluginDetail } from '@/services/aiModule';
 import { getQueryParam } from '@/utils/utils';
 import { Button, ComboBox, Input, Select } from 'SeenPc';
-import { useMount, useReactive, useCreation, useUpdateEffect } from 'ahooks';
-import classNames from 'classnames';
 import sf from 'SeenPc/dist/esm/globalStyle/global.less';
+import { useCreation, useMount, useReactive, useUpdateEffect } from 'ahooks';
 import { message } from 'antd';
-import Typewriter, { type TypewriterClass } from 'typewriter-effect';
-import React, { useMemo, useRef } from 'react';
-import { history } from 'umi';
-import styles from './AiScene.less';
-import EventSourceStream from '../AiJobHunt/Home/DialogArea/EventSourceStream';
+import classNames from 'classnames';
 import { isArray } from 'lodash';
+import React, { useMemo, useRef } from 'react';
+import Typewriter, { type TypewriterClass } from 'typewriter-effect';
+import { history } from 'umi';
+import EventSourceStream from '../AiJobHunt/Home/DialogArea/EventSourceStream';
+import styles from './AiScene.less';
 // import SpeechInputComponent from '../Recognition/index';
 
 interface TState {
@@ -189,7 +189,7 @@ const JobHunt: React.FC = () => {
     editId: '',
     isLoading: false,
     isTyping: false,
-    allow: "",
+    allow: '',
     aiData: {},
     editName: '',
     visible: false,
@@ -228,9 +228,10 @@ const JobHunt: React.FC = () => {
       if (state.allow[0] === '1') {
         let sendData: any = {};
         // eslint-disable-next-line @typescript-eslint/no-unused-expressions, array-callback-return
-        state.data && state.data.map((item: any) => {
-          sendData[item.name] = item.value;
-        })
+        state.data &&
+          state.data.map((item: any) => {
+            sendData[item.name] = item.value;
+          });
         state.visible = true;
         state.isLoading = true;
         typewriterStrCache.current = '';
@@ -267,11 +268,11 @@ const JobHunt: React.FC = () => {
         ).run();
       } else {
         message.warning('请先勾选并同意《AI内容生成功能使用说明》');
-        return
+        return;
       }
     } else {
       message.warning('请先勾选并同意《AI内容生成功能使用说明》');
-      return
+      return;
     }
   };
 
@@ -288,6 +289,8 @@ const JobHunt: React.FC = () => {
         res.plugin?.code === 'aiInterviewer'
       ) {
         history.push('/aiJobHunt');
+      } else if (res.plugin?.code === 'word_sumary') {
+        history.push('/documentSummary');
       } else {
         state.data = JSON.parse(res.param?.params);
         state.aiData = res;
@@ -322,9 +325,14 @@ const JobHunt: React.FC = () => {
               })}
           </div>
           <div className={styles.left_bottom}>
-            <Button type="primary" onClick={() => {
-              send();
-            }}>AI生成</Button>
+            <Button
+              type="primary"
+              onClick={() => {
+                send();
+              }}
+            >
+              AI生成
+            </Button>
             <div
               style={{ display: 'flex', alignItems: 'center', marginTop: 8 }}
             >
@@ -362,45 +370,50 @@ const JobHunt: React.FC = () => {
               </div>
             </div>
           </div>
-          {state.visible && <div>
-            <span className={classNames(sf.sFs14, sf.sFwBold)}>
-              {isTypeFinished ? <div className={styles.warningBox} style={{ marginTop: 24 }}>
-                <img
-                  src={aiimg}
-                  style={{ width: 24, height: 24, marginRight: 16 }}
-                ></img>
-                <div className={styles.finallText}>
-                {typewriterStrCache.current}
-                  {/* <pre className={styles.texts} style={{ whiteSpace: 'pre-wrap', margin: 0, color: '#272648', fontSize: 14, lineHeight: '24px',fontWeight: 400 }}>
+          {state.visible && (
+            <div>
+              <span className={classNames(sf.sFs14, sf.sFwBold)}>
+                {isTypeFinished ? (
+                  <div className={styles.warningBox} style={{ marginTop: 24 }}>
+                    <img
+                      src={aiimg}
+                      style={{ width: 24, height: 24, marginRight: 16 }}
+                    ></img>
+                    <div className={styles.finallText}>
+                      {typewriterStrCache.current}
+                      {/* <pre className={styles.texts} style={{ whiteSpace: 'pre-wrap', margin: 0, color: '#272648', fontSize: 14, lineHeight: '24px',fontWeight: 400 }}>
                     {typewriterStrCache.current}
                   </pre> */}
-                </div>
-              </div> :
-                <div className={styles.warningBox} style={{ marginTop: 24 }}>
-                  <img
-                    src={aiimg}
-                    style={{ width: 24, height: 24, marginRight: 16 }}
-                  ></img>
-                  <div className={styles.warnings}>
-                    <Typewriter
-                      onInit={(typewriter: TypewriterClass) => {
-                        state.isTyping = true;
-                        typeWriter.current = typewriter;
-                        typewriter
-                          .typeString('')
-                          .start()
-                          .callFunction(() => {
-                            state.isTyping = false;
-                          });
-                      }}
-                      options={{
-                        delay: 25,
-                      }}
-                    />
+                    </div>
                   </div>
-                </div>}
-            </span>
-          </div>}
+                ) : (
+                  <div className={styles.warningBox} style={{ marginTop: 24 }}>
+                    <img
+                      src={aiimg}
+                      style={{ width: 24, height: 24, marginRight: 16 }}
+                    ></img>
+                    <div className={styles.warnings}>
+                      <Typewriter
+                        onInit={(typewriter: TypewriterClass) => {
+                          state.isTyping = true;
+                          typeWriter.current = typewriter;
+                          typewriter
+                            .typeString('')
+                            .start()
+                            .callFunction(() => {
+                              state.isTyping = false;
+                            });
+                        }}
+                        options={{
+                          delay: 25,
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
+              </span>
+            </div>
+          )}
           {/* <SpeechInputComponent></SpeechInputComponent> */}
         </div>
         {/* <div className={styles.right_list}>

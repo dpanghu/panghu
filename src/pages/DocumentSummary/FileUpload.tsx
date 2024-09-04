@@ -24,12 +24,14 @@ const FileUpload: React.FC<TProps> = ({ onChange, paramsId }) => {
   const uploadData = async () => {
     try {
       state.loading = true;
-      const result: RecordItem = await uploadSummary({
-        paramId: paramsId,
-        attachmentId: state.attachmentId,
-        ...extraParams,
-      });
-      onChange(result);
+      setTimeout(async () => {
+        const result: RecordItem = await uploadSummary({
+          paramId: paramsId,
+          attachmentId: state.attachmentId,
+          ...extraParams,
+        });
+        onChange(result);
+      }, 1000);
     } finally {
       state.loading = false;
     }
@@ -62,6 +64,7 @@ const FileUpload: React.FC<TProps> = ({ onChange, paramsId }) => {
       };
       const attachmentId = await getAttachmentId(params);
       state.attachmentId = attachmentId;
+      window.open((file as any).key, '_blank');
       uploadData();
     },
   };
