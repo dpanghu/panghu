@@ -24,14 +24,12 @@ const FileUpload: React.FC<TProps> = ({ onChange, paramsId }) => {
   const uploadData = async () => {
     try {
       state.loading = true;
-      setTimeout(async () => {
-        const result: RecordItem = await uploadSummary({
-          paramId: paramsId,
-          attachmentId: state.attachmentId,
-          ...extraParams,
-        });
-        onChange(result);
-      }, 1000);
+      const result: RecordItem = await uploadSummary({
+        paramId: paramsId,
+        attachmentId: state.attachmentId,
+        ...extraParams,
+      });
+      onChange(result);
     } finally {
       state.loading = false;
     }
@@ -39,9 +37,9 @@ const FileUpload: React.FC<TProps> = ({ onChange, paramsId }) => {
 
   const DraggerProps: CustomUploadProps = {
     dragger: true,
-    accept: '.doc,.docx,.pdf,.DOC,.DOCX,.PDF',
-    allowFileType: ['doc', 'docx', 'pdf', 'DOC', 'DOCX', 'PDF'],
-    allowFileSize: 2,
+    accept: '.pdf,.PDF',
+    allowFileType: ['pdf', 'PDF'],
+    allowFileSize: 1,
     // action: 'https://tapi.seentao.com/bus-xai/dbe3.private.params.upload.get',
     // data: extraParams,
     seenOss: {
@@ -64,7 +62,6 @@ const FileUpload: React.FC<TProps> = ({ onChange, paramsId }) => {
       };
       const attachmentId = await getAttachmentId(params);
       state.attachmentId = attachmentId;
-      window.open((file as any).key, '_blank');
       uploadData();
     },
   };
