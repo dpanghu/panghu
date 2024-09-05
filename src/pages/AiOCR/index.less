@@ -42,6 +42,28 @@
             display: flex;
             justify-content: center;
             align-items: center;
+
+            .rightErr {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                img {
+                    height: 24px;
+                    width: 24px;
+                    margin-bottom: 16px;
+                }
+
+                font-family: PingFangSC,
+                PingFang SC;
+                font-weight: 500;
+                font-size: 14px;
+                color: #333333;
+                line-height: 21px;
+                text-align: left;
+                font-style: normal;
+
+            }
         }
 
         .recResult {
@@ -287,7 +309,8 @@
 
             img {
                 width: 100%;
-                max-height: 60%;
+                max-height: 80%;
+                object-fit: contain;
             }
 
             .imageIndex {

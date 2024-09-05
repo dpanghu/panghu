@@ -111,13 +111,14 @@ const ImageAnnotator: React.FC<ImageAnnotatorProps> = ({ imageSrc, annotations, 
             if (isBlue) {
                 ctx.stroke();
             }
-
-            // 绘制文字
-            ctx.fillStyle = 'black';
-            ctx.font = `${14 * scale}px DFPHaiBaoW12`;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(words, (location.left + location.width / 2) * scale, (location.top + location.height / 2) * scale);
+            if (isMark) {
+                // 绘制文字
+                ctx.fillStyle = 'black';
+                ctx.font = `${14 * scale}px DFPHaiBaoW12`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(words, (location.left + location.width / 2) * scale, (location.top + location.height / 2) * scale);
+            }
         });
     }, [annotations, isMark, isBlue, scale]);
 

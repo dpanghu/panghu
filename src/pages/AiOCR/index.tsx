@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import styles from './index.less';
 import { deletePic, getImageList, TextRecognition, uploadPic } from '@/services/aiOCR';
 import { useMount, useReactive } from 'ahooks';
@@ -16,7 +16,6 @@ import copy from '@/assets/images/copy@2x.png';
 import refresh from '@/assets/images/refresh@2x.png';
 import success from '@/assets/images/success@2x.png';
 import err from '@/assets/images/err@2x.png';
-import axios from 'axios';
 import { getConvertParamId } from '@/services/aiJobHunt';
 import ImageAnnotator from './ImageAnnotator';
 import { CloseCircleFilled } from '@ant-design/icons';
@@ -37,6 +36,7 @@ type TState = {
     isValid: boolean;
     angle: any;
     timer: any;
+    isChooseFirst: boolean;
 }
 const AiOCR: React.FC = ({ }) => {
     const [scale, setScale] = useState(1);
@@ -56,6 +56,7 @@ const AiOCR: React.FC = ({ }) => {
         isValid: false,
         angle: {},
         timer: null,
+        isChooseFirst: true,
     });
     const handleZoomOut = () => {
         let newScale = scale - 0.1;
@@ -91,6 +92,7 @@ const AiOCR: React.FC = ({ }) => {
             clearTimeout(state.timer);
         }
         const newTimer = setTimeout(() => {
+            state.isChooseFirst = false
             postTextRecognition(state.imgUrl, state.isSelect, state.angle[state.isSelect])
         }, 4000);
 
@@ -98,17 +100,23 @@ const AiOCR: React.FC = ({ }) => {
     }
     const refreshText = () => {
         state.IdentifyData = [];
-        postTextRecognition(state.imgUrl, state.isSelect, 0)
+        state.isChooseFirst = false
+        postTextRecognition(state.imgUrl, state.isSelect, state.angle[state.isSelect])
     }
     const postTextRecognition = async (url: any, picUid: any, rotationAngle: any) => {
         state.isLoading = true;
         try {
-            await TextRecognition({ url, picUid, rotationAngle });
+            const recognitionResult = await TextRecognition({ url, picUid, rotationAngle });
             const res = await getImageList();
             state.preData = res;
             const { id, url: imageUrl, note } = state.preData[0];
-            selectImage(id, imageUrl, note);
+            if (state.isChooseFirst) {
+                selectImage(id, imageUrl, rotationAngle, note);
+            } else {
+                selectImage(picUid, url, rotationAngle, recognitionResult)
+            }
         } catch (err) {
+            message.error("识别失败，请重新尝试！");
             console.error("An error occurred during text recognition:", err);
         } finally {
             state.isLoading = false;
@@ -138,10 +146,10 @@ const AiOCR: React.FC = ({ }) => {
             extraParams
         },
         beforeUpload: (file: any) => {
-            const allowedFormats = ['image/jpeg', 'image/png', 'image/bmp', 'image/jpg'];
+            const allowedFormats = ['image/jpeg', 'image/png', 'image/jpg'];
 
             if (!allowedFormats.includes(file.type)) {
-                message.warning('请上传图片，支持jpg,jpeg,png,bmp格式')
+                message.warning('请上传图片，支持jpg,jpeg,png格式')
                 return false;
             }
             const maxSize = 1 * 1024 * 1024;
@@ -154,7 +162,8 @@ const AiOCR: React.FC = ({ }) => {
         },
 
         onChange(info: any) {
-            if (state.preData.filter((item) => item.note).length > 19) {
+            console.log(state.preData)
+            if (state.preData.length > 19) {
                 message.warning('图片已满，请删除图片后，再上传')
                 return
             }
@@ -162,12 +171,12 @@ const AiOCR: React.FC = ({ }) => {
             state.isSelect = ""
             const { status } = info.file;
             if (status === 'done') {
-                // message.success(`${info.file.name} file uploaded successfully.`);
+                console.log(`${info.file.name} file uploaded successfully.`);
                 state.isrec = true;
                 state.isLoading = true;
                 uploadPics(info.file.key)
             } else if (status === 'error') {
-                message.error(`${info.file.name} file upload failed.`);
+                message.error(`${info.file.name} 上传失败`);
             }
         },
         onDrop(e) {
@@ -177,39 +186,47 @@ const AiOCR: React.FC = ({ }) => {
     const getImageLists = () => {
         getImageList().then(res => {
             state.preData = res
+            state.preData.map((item) => {
+                state.angle[item.picUid] = item.rotationAngle
+            })
         })
     }
-    const selectImage = (id: any, url: any, note: any) => {
+    const selectImage = (id: any, url: any, rotationAngle: any, note: any) => {
         setScale(1)
         state.isSelect = id
         state.imgUrl = url
+        state.angle[state.isSelect] = rotationAngle
         state.isrec = true;
-        state.IdentifyData = JSON.parse(note)
+        if (typeof note === 'string') {
+            state.IdentifyData = JSON.parse(note);
+        } else {
+            state.IdentifyData = note || [];
+        }
     }
 
     const delImage = (index: any) => {
         deletePic({ picUid: state.isSelect }).then(res => {
-            if(index < 0){
+            if (index < 0) {
                 getImageLists()
                 return
             }
-            let item = state.preData.filter(item => item.note)[index]
-            selectImage(item.picUid, item.url, item.note)
+            let item = state.preData[index]
+            selectImage(item.picUid, item.url, item.rotationAngle, item.note)
             getImageLists()
         })
     }
 
     const handleChange = (e: any) => {
-        state.message = e.target.value
-        const inputWords = state.message.split(/\s+/).filter((word: any) => word.trim() !== "");
-        const dataWords = state.IdentifyData.map((item: any) => item.words);
-        const isValid = inputWords.every((word: any) => dataWords.includes(word));
+        state.message = e.target.value;
+        const inputChars = state.message.split('').filter((char: any) => char.trim() !== "");
+        const allDataChars = state.IdentifyData.flatMap((item: any) => item.words.split('')).filter((char: any) => char.trim() !== "");
+        const isValid = inputChars.some((char: any) => allDataChars.includes(char));
         if (isValid) {
-            state.isValid = true
+            state.isValid = true;
         } else {
-            state.isValid = false
+            state.isValid = false;
         }
-    }
+    };
 
     useMount(() => {
         const queryParams = JSON.parse(
@@ -230,7 +247,7 @@ const AiOCR: React.FC = ({ }) => {
             <div className={styles.bottom}>
                 <div className={styles.content}>
                     <div className={state.isrec ? styles.aleft : styles.left}>
-                        {state.isrec && state.preData.filter(item => item.note).length > 0 ? (
+                        {state.isrec && state.preData.length > 0 ? (
                             <div className={styles.imageAnnotator}>
                                 <ImageAnnotator
                                     imageSrc={state.imgUrl}
@@ -279,8 +296,8 @@ const AiOCR: React.FC = ({ }) => {
                             <img src={rotate} alt="" onClick={changeAngle} />
                         </div>
                     </div>
-                    {state.isrec && state.preData.filter(item => item.note).length > 0 && (<div className={styles.right}>
-                        <div className={state.isLoading ? styles.lRightResult : styles.rightResult}>
+                    {state.isrec && state.preData.length > 0 && (<div className={styles.right}>
+                        <div className={state.isLoading || state.IdentifyData.length === 0 ? styles.lRightResult : styles.rightResult}>
                             {state.isLoading && <Spin tip="正在识别中"></Spin>}
                             {state.IdentifyData.length > 0 && <div className={styles.rightItem}>
                                 <div className={styles.rightIndex}>序号</div>
@@ -290,6 +307,10 @@ const AiOCR: React.FC = ({ }) => {
                                 <div className={styles.rightIndex}>{index + 1}</div>
                                 <div>{item.words}</div>
                             </div>))}
+                            {state.IdentifyData.length === 0 && !state.isLoading && <div className={styles.rightErr}>
+                                <img src={err} />
+                                <div>未识别图片文字</div>
+                            </div>}
                         </div>
                         {
                             state.isCheck && (
@@ -310,13 +331,15 @@ const AiOCR: React.FC = ({ }) => {
 
                 </div>
                 {
-                    state.preData.filter(item => item.note) && state.preData.filter(item => item.note).length > 0 && (
+                    state.preData && state.preData.length > 0 && (
                         <div className={styles.imageLists}>
-                            {state.preData.filter((item) => item.note).map((item: any, index: any) => (
-                                <div className={state.isSelect === item.picUid ? styles.checkImageList : styles.imageList} key={item.id} onClick={() => selectImage(item.picUid, item.url, item.note)}>
+                            {state.preData.map((item: any, index: any) => (
+                                <div className={state.isSelect === item.picUid ? styles.checkImageList : styles.imageList} key={item.id} onClick={() => selectImage(item.picUid, item.url, item.rotationAngle, item.note || [])}>
                                     <div className={styles.imageIndex}>{index + 1}</div>
                                     <div className={styles.imageDel} onClick={() => delImage(index - 1)}><CloseCircleFilled /></div>
-                                    <img src={item.url} alt="" style={{ transform: `rotate(${state.angle[item.picUid] || 0}deg)` }} />
+                                    <img src={item.url} alt="" style={{
+                                        transform: `rotate(${state.angle[item.picUid]}deg)`
+                                    }} />
                                 </div>
                             ))}
                             <div className={styles.imageUpload}>
