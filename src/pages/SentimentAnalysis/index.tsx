@@ -1,11 +1,14 @@
-
+import {
+  exampleRandom,
+  paramPlatformId,
+  pluginCreate,
+} from '@/services/sentimentAnalysis';
 import { getSessionStorage } from '@/utils/utils';
 import { useMount } from 'ahooks';
 import { Button, Slider } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
 import React, { useState } from 'react';
 import styles from './index.less';
-import { exampleRandom, paramPlatformId, pluginCreate } from '@/services/sentimentAnalysis';
 
 const SentimentAnalysis: React.FC = () => {
   const [platformId, setPlatformId] = useState('');
@@ -176,7 +179,7 @@ const SentimentAnalysis: React.FC = () => {
           </div>
           <div className={styles?.contentInfoRight}>
             <div className={styles?.contentInfoRightTitle}>情感分析结果</div>
-            {(analyzeInfo?.sentiment && inputValue) || !inputValue ? (
+            {
               <div className={styles?.contentInfoRightCard}>
                 <img
                   src={require('@/assets/images/sentiment.png')}
@@ -236,12 +239,7 @@ const SentimentAnalysis: React.FC = () => {
                   </div>
                 </div>
               </div>
-            ) : (
-              <div className={styles?.mainError}>
-                <img src={require('@/assets/images/icon-closeCircleFill.png')} width={24} />
-                <div className={styles?.mainErrorContent}>分析失败</div>
-              </div>
-            )}
+            }
           </div>
         </div>
       </div>
