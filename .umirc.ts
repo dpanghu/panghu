@@ -46,6 +46,12 @@ export default defineConfig({
       layout: false,
     },
     {
+      path: '/aiAtlas',
+      component: '@/pages/AiAtlas',
+      title: 'AI图谱生成',
+      layout: false,
+    },
+    {
       path: '/aiJobHunt',
       component: '@/pages/AiJobHunt',
       layout: false,
@@ -72,6 +78,7 @@ export default defineConfig({
         },
       ],
     },
+
     {
       component: '@/pages/404',
     },
