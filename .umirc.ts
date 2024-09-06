@@ -11,7 +11,6 @@ export default defineConfig({
   layout: {
     title: 'XAI',
   },
-  esbuildMinifyIIFE: true,
   routes: [
     {
       path: '/',
@@ -51,12 +50,6 @@ export default defineConfig({
       path: '/sentimentAnalysis',
       component: '@/pages/SentimentAnalysis',
       title: 'AI情感分析',
-      layout: false,
-    },
-    {
-      path: '/wenshengVoice',
-      component: '@/pages/WenshengVoice',
-      title: 'AI文生语音',
       layout: false,
     },
     {
