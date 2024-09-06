@@ -88,14 +88,15 @@ const WenshengVoice: React.FC = () => {
     const {
       data: { url },
     } = JSON.parse(volumeResult);
-    console.log(url, speed, pitch, volume, per, text);
-
     state.speedValue = speed;
     state.toneValue = pitch;
     state.voiceType = per;
     state.volumeValue = volume;
     state.voiceText = text;
     state.voiceUrl = url;
+    state.durationRest = 0;
+    state.playFinished = false;
+    timerRef.current && clearInterval(timerRef.current);
   };
 
   const getAIVoice = async () => {

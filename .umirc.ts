@@ -11,6 +11,7 @@ export default defineConfig({
   layout: {
     title: 'XAI',
   },
+  esbuildMinifyIIFE: true,
   routes: [
     {
       path: '/',
