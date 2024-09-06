@@ -1,3 +1,4 @@
+import playIcon from '@/assets/images/wenshengVoice/play.png';
 import suspendPng from '@/assets/images/wenshengVoice/suspend.png';
 import voice1Png from '@/assets/images/wenshengVoice/voice1.png';
 import voice2Png from '@/assets/images/wenshengVoice/voice2.png';
@@ -23,6 +24,7 @@ interface TState {
   voicePlaying: boolean;
   durationAll: number;
   durationRest: number;
+  playFinished: boolean;
 }
 
 const WenshengVoice: React.FC = () => {
@@ -34,8 +36,9 @@ const WenshengVoice: React.FC = () => {
     volumeValue: 3,
     voiceUrl: '',
     voicePlaying: false,
-    durationAll: 1,
+    durationAll: 0,
     durationRest: 0,
+    playFinished: false,
   });
   const playerRef = useRef<any>(null);
   const voiceMap = [
@@ -111,6 +114,9 @@ const WenshengVoice: React.FC = () => {
     if (!playerRef.current) {
       return;
     }
+    if (!state.voiceUrl) {
+      return;
+    }
     state.voicePlaying = !state.voicePlaying;
   };
 
@@ -119,6 +125,11 @@ const WenshengVoice: React.FC = () => {
   };
 
   const handlePlay = () => {
+    // 判断是否已经播放完一遍
+    if (state.playFinished) {
+      state.durationRest = 0;
+      state.playFinished = false;
+    }
     timerRef.current = setInterval(() => {
       state.durationRest += 0.01;
     }, 10);
@@ -128,14 +139,11 @@ const WenshengVoice: React.FC = () => {
     timerRef.current && clearInterval(timerRef.current);
   };
 
-  const handleStart = () => {
-    state.durationRest = 0;
-  };
-
   const handleEnded = () => {
     state.voicePlaying = false;
     state.durationRest = state.durationAll;
     timerRef.current && clearInterval(timerRef.current);
+    state.playFinished = true;
   };
 
   return (
@@ -258,7 +266,7 @@ const WenshengVoice: React.FC = () => {
               draggable={false}
             />
             <img
-              src={suspendPng}
+              src={!state.voicePlaying ? suspendPng : playIcon}
               alt=""
               className={styles.suspendPng}
               onClick={handlePlayVideo}
@@ -274,7 +282,6 @@ const WenshengVoice: React.FC = () => {
               onPlay={handlePlay}
               onReady={initPlayer}
               onEnded={handleEnded}
-              onStart={handleStart}
             />
             <Progress
               className={styles.progressBox}
