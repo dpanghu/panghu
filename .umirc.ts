@@ -34,6 +34,18 @@ export default defineConfig({
       component: '@/pages/AiOCR',
     },
     {
+      path: '/aiJobHunt/AiSurveyQuestionnaire',
+      component: '@/pages/AiJobHunt/AiSurveyQuestionnaire',
+      title: 'XAI | ai调查问卷',
+      layout: false,
+    },
+    {
+      path: '/aiJobHunt/AiLearnPlan',
+      component: '@/pages/AiJobHunt/AiLearnPlan',
+      title: 'XAI | ai学习规划',
+      layout: false,
+    },
+    {
       path: '/aiJobHunt/AiList',
       component: '@/pages/AiJobHunt/AiList',
       title: 'XAI | ai列表',
