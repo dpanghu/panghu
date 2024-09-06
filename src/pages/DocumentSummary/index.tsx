@@ -244,8 +244,8 @@ const DocumentSummary: React.FC = () => {
 
   const DraggerProps: CustomUploadProps = {
     dragger: false,
-    accept: '.doc,.docx,.pdf,.DOC,.DOCX,.PDF',
-    allowFileType: ['doc', 'docx', 'pdf', 'DOC', 'DOCX', 'PDF'],
+    accept: '.pdf,.PDF',
+    allowFileType: ['pdf', 'PDF'],
     allowFileSize: 1,
     seenOss: {
       url: '/api/bus-xai/dbe3.private.params.upload.get',

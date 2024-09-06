@@ -46,6 +46,12 @@ export default defineConfig({
       layout: false,
     },
     {
+      path: '/wenshengVoice',
+      component: '@/pages/WenshengVoice',
+      title: 'AI文生语音',
+      layout: false,
+    },
+    {
       path: '/aiJobHunt',
       component: '@/pages/AiJobHunt',
       layout: false,
@@ -84,7 +90,7 @@ export default defineConfig({
   npmClient: 'npm',
   proxy: {
     '/api/': {
-      target: 'https://tapi.seentao.com/',
+      target: 'https://dapi.seentao.com/',
       onProxyReq: function (req) {
         if (
           req.path.includes('/chat/stream') ||
