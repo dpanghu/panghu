@@ -172,15 +172,12 @@ const EditResume = React.forwardRef(({ resumeData, reload }: Props, ref) => {
         );
       case 'inputNumber':
         return (
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Input
-              type="number"
-              className={eleClassName}
-              placeholder={placeholder}
-            />
-            {/* seenpc inputnumber 不支持suffix */}
-            {suffix && <div style={{ marginLeft: 4 }}>{suffix}</div>}
-          </div>
+          <Input
+            type="number"
+            className={eleClassName}
+            addonAfter="元/月"
+            placeholder={placeholder}
+          />
         );
       case 'select':
         return (
