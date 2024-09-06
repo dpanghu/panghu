@@ -291,6 +291,10 @@ const JobHunt: React.FC = () => {
         history.push('/aiJobHunt');
       } else if (res.plugin?.code === 'word_sumary') {
         history.push('/documentSummary');
+      } else if (res.plugin?.code === 'tts') {
+        history.push('/wenshengVoice');
+      } else if (res.plugin?.code === 'sentAnalysis') {
+        history.push('/sentimentAnalysis');
       } else {
         state.data = JSON.parse(res.param?.params);
         state.aiData = res;
