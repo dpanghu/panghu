@@ -1,3 +1,4 @@
+import errorBg from '@/assets/images/wenshengVoice/errorIcon.png';
 import playIcon from '@/assets/images/wenshengVoice/play.png';
 import suspendPng from '@/assets/images/wenshengVoice/suspend.png';
 import voice1Png from '@/assets/images/wenshengVoice/voice1.png';
@@ -6,9 +7,9 @@ import voice3Png from '@/assets/images/wenshengVoice/voice3.png';
 import voice4Png from '@/assets/images/wenshengVoice/voice4.png';
 import voiceBg from '@/assets/images/wenshengVoice/voiceBg.png';
 import { randomExampleVolume, widgetDtcTTS } from '@/services/wenshengVoice';
-import { Button } from 'SeenPc';
+import { Button, message } from 'SeenPc';
 import { useReactive } from 'ahooks';
-import { Progress, Radio, Slider } from 'antd';
+import { Progress, Radio, Slider, Spin } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import React, { useRef } from 'react';
 import ReactPlayer from 'react-player';
@@ -25,6 +26,8 @@ interface TState {
   durationAll: number;
   durationRest: number;
   playFinished: boolean;
+  loading: boolean;
+  isError: boolean;
 }
 
 const WenshengVoice: React.FC = () => {
@@ -39,6 +42,8 @@ const WenshengVoice: React.FC = () => {
     durationAll: 0,
     durationRest: 0,
     playFinished: false,
+    loading: false,
+    isError: false,
   });
   const playerRef = useRef<any>(null);
   const voiceMap = [
@@ -80,35 +85,55 @@ const WenshengVoice: React.FC = () => {
   };
 
   const getRandomExampleVolume = async () => {
-    const result: RecordItem = await randomExampleVolume({
-      pluginCode: 'tts',
-    });
-    const { params: volumeParams, result: volumeResult } = result;
-    const { speed, pitch, volume, per, text } = JSON.parse(volumeParams);
-    const {
-      data: { url },
-    } = JSON.parse(volumeResult);
-    state.speedValue = speed;
-    state.toneValue = pitch;
-    state.voiceType = per;
-    state.volumeValue = volume;
-    state.voiceText = text;
-    state.voiceUrl = url;
-    state.durationRest = 0;
-    state.playFinished = false;
-    timerRef.current && clearInterval(timerRef.current);
+    try {
+      state.loading = true;
+      state.isError = false;
+      const result: RecordItem = await randomExampleVolume({
+        pluginCode: 'tts',
+      });
+      const { params: volumeParams, result: volumeResult } = result;
+      const { speed, pitch, volume, per, text } = JSON.parse(volumeParams);
+      const {
+        data: { url },
+      } = JSON.parse(volumeResult);
+      state.speedValue = speed;
+      state.toneValue = pitch;
+      state.voiceType = per;
+      state.volumeValue = volume;
+      state.voiceText = text;
+      state.voiceUrl = url;
+      state.durationRest = 0;
+      state.playFinished = false;
+      timerRef.current && clearInterval(timerRef.current);
+    } catch (error) {
+      state.isError = true;
+    } finally {
+      state.loading = false;
+    }
   };
 
   const getAIVoice = async () => {
-    const result: RecordItem = await widgetDtcTTS({
-      text: state.voiceText || '111',
-      speed: state.speedValue,
-      per: state.voiceType,
-      pitch: state.toneValue,
-      volume: state.volumeValue,
-      //   ...extraParams,
-    });
-    state.voiceUrl = result.url;
+    if (!state.voiceText) {
+      message.warning('文本不能为空');
+      return;
+    }
+    try {
+      state.loading = true;
+      state.isError = false;
+      const result: RecordItem = await widgetDtcTTS({
+        text: state.voiceText,
+        speed: state.speedValue,
+        per: state.voiceType,
+        pitch: state.toneValue,
+        volume: state.volumeValue,
+        //   ...extraParams,
+      });
+      state.voiceUrl = result.url;
+    } catch (error) {
+      state.isError = true;
+    } finally {
+      state.loading = false;
+    }
   };
 
   const handlePlayVideo = () => {
@@ -120,6 +145,7 @@ const WenshengVoice: React.FC = () => {
     }
     state.voicePlaying = !state.voicePlaying;
   };
+  console.log(state.isError);
 
   const initPlayer = () => {
     state.durationAll = playerRef.current.getDuration();
@@ -259,54 +285,63 @@ const WenshengVoice: React.FC = () => {
         </div>
         <div className={styles.rightContent}>
           <div className={styles.title}>结果区</div>
-          <div className={styles.voiceMain}>
-            <img
-              src={voiceBg}
-              alt=""
-              className={styles.voiceBg}
-              draggable={false}
-            />
-            <img
-              src={!state.voicePlaying ? suspendPng : playIcon}
-              alt=""
-              className={styles.suspendPng}
-              onClick={handlePlayVideo}
-              draggable={false}
-            />
-            <ReactPlayer
-              ref={playerRef}
-              url={state.voiceUrl}
-              config={{}}
-              playing={state.voicePlaying}
-              style={{ display: 'none' }}
-              onPause={handlePauseVideo}
-              onPlay={handlePlay}
-              onReady={initPlayer}
-              onEnded={handleEnded}
-            />
-            <Progress
-              className={styles.progressBox}
-              percent={(state.durationRest / state.durationAll) * 100}
-              type="circle"
-              showInfo={false}
-              size={170}
-              strokeWidth={3}
-              strokeColor={{
-                '0%': '#92D1FE',
-                '50%': '#526FF2',
-                '100%': '#1234F5',
-              }}
-            />
-            <div className={styles.countdown}>
-              <div className={styles.deadline}>
-                {secondsToTimeShort(Math.round(state.durationRest))}
-              </div>
-              <span>/</span>
-              <div className={styles.deadline}>
-                {secondsToTimeShort(Math.round(state.durationAll))}
+          {state.loading ? (
+            <Spin tip="正在生成..." />
+          ) : state.isError ? (
+            <div className={styles.errorContainer}>
+              <img src={errorBg} alt="" />
+              <span>生成失败</span>
+            </div>
+          ) : (
+            <div className={styles.voiceMain}>
+              <img
+                src={voiceBg}
+                alt=""
+                className={styles.voiceBg}
+                draggable={false}
+              />
+              <img
+                src={!state.voicePlaying ? suspendPng : playIcon}
+                alt=""
+                className={styles.suspendPng}
+                onClick={handlePlayVideo}
+                draggable={false}
+              />
+              <ReactPlayer
+                ref={playerRef}
+                url={state.voiceUrl}
+                config={{}}
+                playing={state.voicePlaying}
+                style={{ display: 'none' }}
+                onPause={handlePauseVideo}
+                onPlay={handlePlay}
+                onReady={initPlayer}
+                onEnded={handleEnded}
+              />
+              <Progress
+                className={styles.progressBox}
+                percent={(state.durationRest / state.durationAll) * 100}
+                type="circle"
+                showInfo={false}
+                size={170}
+                strokeWidth={3}
+                strokeColor={{
+                  '0%': '#92D1FE',
+                  '50%': '#526FF2',
+                  '100%': '#1234F5',
+                }}
+              />
+              <div className={styles.countdown}>
+                <div className={styles.deadline}>
+                  {secondsToTimeShort(Math.round(state.durationRest))}
+                </div>
+                <span>/</span>
+                <div className={styles.deadline}>
+                  {secondsToTimeShort(Math.round(state.durationAll))}
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>
