@@ -221,13 +221,13 @@ const WenshengVoice: React.FC = () => {
               <div className={styles.process}>
                 <span className={styles.desc}>慢</span>
                 <Slider
-                  min={0}
+                  min={1}
                   max={15}
                   value={state.speedValue}
                   onChange={(e) => {
                     handleChangeSpeed(e, 'speedValue');
                   }}
-                  tooltip={{ formatter: null }}
+                  tooltip={{}}
                   style={{ flex: 1 }}
                   trackStyle={{
                     background: `linear-gradient(to right, rgb(90, 186, 255) 0%, rgb(93, 119, 249) 100%)`,
@@ -241,13 +241,13 @@ const WenshengVoice: React.FC = () => {
               <div className={styles.process}>
                 <span className={styles.desc}>轻</span>
                 <Slider
-                  min={0}
+                  min={1}
                   max={15}
                   value={state.toneValue}
                   onChange={(e) => {
                     handleChangeSpeed(e, 'toneValue');
                   }}
-                  tooltip={{ formatter: null }}
+                  tooltip={{}}
                   style={{ flex: 1 }}
                   trackStyle={{
                     background: `linear-gradient(to right, rgb(90, 186, 255) 0%, rgb(93, 119, 249) 100%)`,
@@ -261,13 +261,13 @@ const WenshengVoice: React.FC = () => {
               <div className={styles.process}>
                 <span className={styles.desc}>低</span>
                 <Slider
-                  min={0}
+                  min={1}
                   max={9}
                   value={state.volumeValue}
                   onChange={(e) => {
                     handleChangeSpeed(e, 'volumeValue');
                   }}
-                  tooltip={{ formatter: null }}
+                  tooltip={{}}
                   style={{ flex: 1 }}
                   trackStyle={{
                     background: `linear-gradient(to right, rgb(90, 186, 255) 0%, rgb(93, 119, 249) 100%)`,
