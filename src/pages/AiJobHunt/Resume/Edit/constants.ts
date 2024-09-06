@@ -355,13 +355,14 @@ export const formItemConfig: Record<
               max: 99999999,
               min: 0,
               type: 'number',
-              message: ExceedMaxLength,
+              message: '请输入正确薪资',
             },
           ],
           type: 'inputNumber',
           elementConfig: {
             placeholder: '请输入薪资',
             className: 'basic-short-input',
+            suffix: '元/月',
           },
         },
         {
