@@ -185,3 +185,10 @@ export function fullscreen(fullscreenState: any, docElm: any) {
     enterFullscreen(docElm);
   }
 }
+
+// 获取sessionStorage
+export const getSessionStorage = (key: string) => {
+  return window.sessionStorage.getItem(key) === 'undefined'
+    ? undefined
+    : JSON.parse(window.sessionStorage.getItem(key) || '{}');
+};

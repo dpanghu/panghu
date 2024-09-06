@@ -45,6 +45,13 @@ export default defineConfig({
       title: 'AI文档总结',
       layout: false,
     },
+    // ai情感分析  
+    {
+      path: '/sentimentAnalysis',
+      component: '@/pages/SentimentAnalysis',
+      title: 'AI情感分析',
+      layout: false,
+    },
     {
       path: '/aiJobHunt',
       component: '@/pages/AiJobHunt',
