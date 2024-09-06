@@ -6,6 +6,16 @@
     background: linear-gradient(132deg, #D8DDFF 0%, #E6EDFD 17%, #E2E6FF 27%, #E0E6FF 34%, #CBD4FF 55%, #B8C0FF 71%, #A3ACFF 100%);
     padding: 16px;
     :global {
+        :where(.css-2mh66p).ant-tabs {
+            height: 100% !important;
+        }
+        :where(.css-2mh66p).ant-tabs >.ant-tabs-nav, :where(.css-2mh66p).ant-tabs >div>.ant-tabs-nav {
+            position: relative;
+            display: flex;
+            flex: none;
+            height: 100% !important;
+            align-items: center;
+        }
         :where(.css-dev-only-do-not-override-2mh66p).ant-tabs >.ant-tabs-nav .ant-tabs-nav-list, :where(.css-dev-only-do-not-override-2mh66p).ant-tabs >div>.ant-tabs-nav .ant-tabs-nav-list {
             position: relative;
             display: flex;

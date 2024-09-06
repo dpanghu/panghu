@@ -3,11 +3,17 @@ import aiimg from '@/assets/images/rebotIcon.png';
 import { getPluginDetail } from '@/services/aiModule';
 import { getQueryParam } from '@/utils/utils';
 import { Button, ComboBox, Input, Select } from 'SeenPc';
-import { useMount, useReactive } from 'ahooks';
+import sf from 'SeenPc/dist/esm/globalStyle/global.less';
+import { useCreation, useMount, useReactive, useUpdateEffect } from 'ahooks';
 import { message } from 'antd';
-import React from 'react';
+import classNames from 'classnames';
+import { isArray } from 'lodash';
+import React, { useMemo, useRef } from 'react';
+import Typewriter, { type TypewriterClass } from 'typewriter-effect';
 import { history } from 'umi';
+import EventSourceStream from '../AiJobHunt/Home/DialogArea/EventSourceStream';
 import styles from './AiScene.less';
+// import SpeechInputComponent from '../Recognition/index';
 
 interface TState {
   curTheme: any;
@@ -17,8 +23,11 @@ interface TState {
   data: any;
   allow: any;
   aiData: any;
+  isLoading: any;
+  visible: any;
+  isTyping: any;
+  typewriterArrCache: any;
 }
-9;
 
 const renderPreview = (item: any) => {
   switch (item.elementType) {
@@ -32,6 +41,10 @@ const renderPreview = (item: any) => {
             type={Number(item.maxLength) < 30 ? 'default' : 'textarea'}
             style={{ width: '100%' }}
             placeholder={item.desc}
+            value={item.value}
+            onChange={(e: any) => {
+              item.value = e;
+            }}
           ></Input>
         </div>
       );
@@ -44,10 +57,27 @@ const renderPreview = (item: any) => {
             value={item.value}
             placeholder={item.desc}
             option={item.options}
+            onChange={(e: any) => {
+              item.value = e;
+            }}
           ></Select>
         </div>
       );
     case 'treeSelect':
+      return (
+        <div className={styles.previewBox}>
+          <div className={styles.previewTitle}>{item.displayName}</div>
+          <ComboBox
+            style={{ width: '100%' }}
+            onChange={(e: any) => {
+              item.value = e.target.value;
+            }}
+            value={item.value}
+            options={item.options}
+          ></ComboBox>
+        </div>
+      );
+    case 'radio':
       return (
         <div className={styles.previewBox}>
           <div className={styles.previewTitle}>{item.displayName}</div>
@@ -102,19 +132,149 @@ const renderPreview = (item: any) => {
           </div>
         </div>
       );
+    case 'checkbox':
+      return (
+        <div className={styles.previewBox}>
+          <div className={styles.previewTitle}>{item.displayName}</div>
+          <div className={styles.previewCheckBox}>
+            {item.options &&
+              item.options.map((items: any) => {
+                return (
+                  <div
+                    onClick={() => {
+                      if (item.value === void 0) {
+                        item.value = [];
+                        item.value.push(items.value);
+                      } else {
+                        if (item.value?.includes(items.value)) {
+                          console.log(JSON.stringify(item.value));
+                          let delIndex: any = item.value.findIndex(
+                            (el: any) => el === items.value,
+                          );
+                          console.log(delIndex);
+                          item.value.splice(delIndex, 1);
+                        } else {
+                          item.value.push(items.value);
+                        }
+                      }
+                    }}
+                    key={items.id}
+                    style={{
+                      border: item.value?.includes(items.value)
+                        ? '1px solid rgb(86, 114, 255)'
+                        : '1px solid rgba(0, 0, 0, 0.25)',
+                    }}
+                    className={styles.previewCheck}
+                  >
+                    {items.label}
+                  </div>
+                );
+              })}
+          </div>
+        </div>
+      );
   }
 };
 
 const JobHunt: React.FC = () => {
+  const queryData = useCreation(() => {
+    return JSON.parse(window.sessionStorage.getItem('commonDatas') || '{}');
+  }, []);
+  const typeWriter = useRef<TypewriterClass | null>(null);
+  const typewriterStrCache = useRef<string>('');
   const state = useReactive<TState>({
     curTheme: undefined,
     dialogList: [],
+    typewriterArrCache: [],
     editId: '',
+    isLoading: false,
+    isTyping: false,
     allow: '',
     aiData: {},
     editName: '',
+    visible: false,
     data: [],
   });
+
+  // 是否完成对话
+  const isTypeFinished = useMemo(() => {
+    return (
+      state.typewriterArrCache.length === 0 &&
+      !state.isTyping &&
+      !state.isLoading
+    );
+  }, [state.typewriterArrCache, state.isLoading, state.isTyping]);
+
+  useUpdateEffect(() => {
+    if (
+      (state.typewriterArrCache.length > 0 || state.isLoading) &&
+      !state.isTyping &&
+      typeWriter.current
+    ) {
+      state.isTyping = true;
+      const curStr: string = state.typewriterArrCache.shift()! || '';
+      typewriterStrCache.current += curStr;
+      typeWriter
+        .current!.typeString(curStr)
+        .start()
+        .callFunction(() => {
+          state.isTyping = false;
+        });
+    }
+  }, [state.isTyping]);
+
+  const send = () => {
+    if (isArray(state.allow)) {
+      if (state.allow[0] === '1') {
+        let sendData: any = {};
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions, array-callback-return
+        state.data &&
+          state.data.map((item: any) => {
+            sendData[item.name] = item.value;
+          });
+        state.visible = true;
+        state.isLoading = true;
+        typewriterStrCache.current = '';
+        let qsData = {
+          ...queryData,
+          pluginCode: state.aiData.plugin?.code,
+          qsParams: sendData,
+        };
+        new EventSourceStream(
+          '/api/bus-xai/xai/plugin/create/stream',
+          {
+            method: 'POST',
+            data: qsData,
+            headers: {
+              'Content-Type': 'application/json',
+              Accept: 'text/event-stream',
+            },
+          },
+          {
+            // 结束，包括接收完毕所有数据、报错、关闭链接
+            onFinished: () => {
+              state.isLoading = false;
+            },
+            onError: (error) => {
+              console.log(error);
+            },
+            // 接收到数据
+            receiveMessage: (data) => {
+              if (data) {
+                state.typewriterArrCache.push(data!.answer);
+              }
+            },
+          },
+        ).run();
+      } else {
+        message.warning('请先勾选并同意《AI内容生成功能使用说明》');
+        return;
+      }
+    } else {
+      message.warning('请先勾选并同意《AI内容生成功能使用说明》');
+      return;
+    }
+  };
 
   useMount(() => {
     let qsData: any = getQueryParam();
@@ -129,6 +289,8 @@ const JobHunt: React.FC = () => {
         res.plugin?.code === 'aiInterviewer'
       ) {
         history.push('/aiJobHunt');
+      } else if (res.plugin?.code === 'word_sumary') {
+        history.push('/documentSummary');
       } else {
         state.data = JSON.parse(res.param?.params);
         state.aiData = res;
@@ -163,7 +325,14 @@ const JobHunt: React.FC = () => {
               })}
           </div>
           <div className={styles.left_bottom}>
-            <Button type="primary">AI生成</Button>
+            <Button
+              type="primary"
+              onClick={() => {
+                send();
+              }}
+            >
+              AI生成
+            </Button>
             <div
               style={{ display: 'flex', alignItems: 'center', marginTop: 8 }}
             >
@@ -201,7 +370,55 @@ const JobHunt: React.FC = () => {
               </div>
             </div>
           </div>
+          {state.visible && (
+            <div>
+              <span className={classNames(sf.sFs14, sf.sFwBold)}>
+                {isTypeFinished ? (
+                  <div className={styles.warningBox} style={{ marginTop: 24 }}>
+                    <img
+                      src={aiimg}
+                      style={{ width: 24, height: 24, marginRight: 16 }}
+                    ></img>
+                    <div className={styles.finallText}>
+                      {typewriterStrCache.current}
+                      {/* <pre className={styles.texts} style={{ whiteSpace: 'pre-wrap', margin: 0, color: '#272648', fontSize: 14, lineHeight: '24px',fontWeight: 400 }}>
+                    {typewriterStrCache.current}
+                  </pre> */}
+                    </div>
+                  </div>
+                ) : (
+                  <div className={styles.warningBox} style={{ marginTop: 24 }}>
+                    <img
+                      src={aiimg}
+                      style={{ width: 24, height: 24, marginRight: 16 }}
+                    ></img>
+                    <div className={styles.warnings}>
+                      <Typewriter
+                        onInit={(typewriter: TypewriterClass) => {
+                          state.isTyping = true;
+                          typeWriter.current = typewriter;
+                          typewriter
+                            .typeString('')
+                            .start()
+                            .callFunction(() => {
+                              state.isTyping = false;
+                            });
+                        }}
+                        options={{
+                          delay: 25,
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
+              </span>
+            </div>
+          )}
+          {/* <SpeechInputComponent></SpeechInputComponent> */}
         </div>
+        {/* <div className={styles.right_list}>
+          <div className={styles.right_head}></div>
+        </div> */}
       </div>
     </div>
   );

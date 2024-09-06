@@ -157,6 +157,7 @@ const EditResume = React.forwardRef(({ resumeData, reload }: Props, ref) => {
       options,
       style,
       pluginCode,
+      suffix,
     } = elementConfig;
     const eleClassName = itemClassName ? styles[itemClassName] : undefined;
 
@@ -174,6 +175,7 @@ const EditResume = React.forwardRef(({ resumeData, reload }: Props, ref) => {
           <Input
             type="number"
             className={eleClassName}
+            addonAfter="元/月"
             placeholder={placeholder}
           />
         );

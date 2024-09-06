@@ -44,23 +44,26 @@ export function getCommonData() {
   let qs: any = getQueryParam();
   let commonData: any = {};
   if (Object.keys(qs)?.length === 0) {
-    commonData = JSON.parse(window.sessionStorage.getItem('commonDatas') as any || '{}');
+    commonData = JSON.parse(
+      (window.sessionStorage.getItem('commonDatas') as any) || '{}',
+    );
   } else {
-    const { schoolMemberId ,schoolId, userId, userName, memberId, userToken, userType, classId  } = qs;
-    commonData = {
-      schoolMemberId,
-      schoolId,
-      userId,
-      userName,
-      memberId,
-      userToken,
-      userType,
-      classId
-    }
-    window.sessionStorage.setItem('commonDatas', JSON.stringify(commonData));
+    // const { schoolMemberId ,schoolId, userId, userName, memberId, userToken, userType, classId, platformCode  } = qs;
+    // commonData = {
+    //   schoolMemberId,
+    //   schoolId,
+    //   userId,
+    //   userName,
+    //   memberId,
+    //   userToken,
+    //   userType,
+    //   classId,
+    //   platformCode
+    // }
+    window.sessionStorage.setItem('commonDatas', JSON.stringify(qs));
+    commonData = qs;
   }
   return commonData;
-  
 }
 
 // 分隔符转驼峰命名
@@ -115,4 +118,70 @@ export function downloadFile(url: string) {
   const link = document.createElement('a');
   link.href = url;
   link.click();
+}
+
+/**
+ * 从0开始截取字符串str到maxLength最大长度
+ * @param  {number} maxLength       最大长度
+ * @param  {String} [replace='...'] 替代值
+ * @return {[type]}                 [description]
+ */
+export function sliceString(str: string, maxLength: number, replace = '...') {
+  if (typeof str !== 'string') {
+    return str;
+  }
+
+  if (!str) {
+    return '';
+  }
+
+  if (str.length > maxLength) {
+    return `${str.slice(0, maxLength)}${replace}`;
+  }
+
+  return str;
+}
+
+function enterFullscreen(docElm: any) {
+  if (docElm.requestFullscreen) {
+    docElm.requestFullscreen();
+  } else if (docElm.msRequestFullscreen) {
+    docElm.msRequestFullscreen();
+  } else if (docElm.mozRequestFullScreen) {
+    docElm.mozRequestFullScreen();
+  } else if (docElm.webkitRequestFullScreen) {
+    docElm.webkitRequestFullScreen();
+  }
+}
+function exitFullscreen() {
+  let cfs = document as any;
+  if (cfs.exitFullscreen) {
+    cfs.exitFullscreen();
+  } else if (cfs.msExitFullscreen) {
+    cfs.msExitFullscreen();
+  } else if (cfs.mozCancelFullScreen) {
+    cfs.mozCancelFullScreen();
+  } else if (cfs.webkitCancelFullScreen) {
+    cfs.webkitCancelFullScreen();
+  }
+}
+
+export function isFullscreen() {
+  let cfs = document as any;
+  return (
+    cfs.fullscreenElement ||
+    cfs.msFullscreenElement ||
+    cfs.mozFullScreenElement ||
+    cfs.webkitFullscreenElement ||
+    false
+  );
+}
+
+//全屏
+export function fullscreen(fullscreenState: any, docElm: any) {
+  if (isFullscreen()) {
+    exitFullscreen();
+  } else {
+    enterFullscreen(docElm);
+  }
 }

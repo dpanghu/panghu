@@ -151,7 +151,7 @@ const ResumePreview: React.FC<Props> = ({ resumeInfo }) => {
           <Col span={4} offset={1} style={{ textAlign: 'center' }}>
             <span className={styles['info-title']}>期望薪资：</span>
             <span className={styles['info-content']}>
-              {resumeInfo?.salary || '-'}
+              {resumeInfo?.salary || '-'}元/月
             </span>
           </Col>
           <Col span={4} offset={1} style={{ textAlign: 'center' }}>
@@ -341,7 +341,9 @@ const ResumePreview: React.FC<Props> = ({ resumeInfo }) => {
           {resumeInfo?.selfDefList?.map((item) => (
             <div className={styles['self-def']} key={item.moduleName}>
               <h4>
-                <span>{item.moduleName}</span>
+                <span className={styles['self-def-bg']}>
+                  <span>{item.moduleName}</span>
+                </span>
                 <div></div>
               </h4>
               <div
