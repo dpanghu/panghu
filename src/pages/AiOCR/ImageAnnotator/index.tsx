@@ -16,13 +16,12 @@ interface Annotation {
 interface ImageAnnotatorProps {
     imageSrc: string;
     annotations: Annotation[];
-    isMark: boolean;
-    isBlue: boolean;
-    angle: number;
+    isMark?: boolean;
+    isBlue?: boolean;
+    angle?: number;
     scale: number;
 }
-
-const ImageAnnotator: React.FC<ImageAnnotatorProps> = ({ imageSrc, annotations, isMark, isBlue, angle, scale }) => {
+const ImageAnnotator: React.FC<ImageAnnotatorProps> = ({ imageSrc, annotations, isMark = false, isBlue = false, angle = 0, scale }) => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const imgRef = useRef<HTMLImageElement | null>(null);
     const [isDragging, setIsDragging] = useState(false);
@@ -39,34 +38,36 @@ const ImageAnnotator: React.FC<ImageAnnotatorProps> = ({ imageSrc, annotations, 
             }
         };
     }, []);
-
     useEffect(() => {
         if (imgRef.current) {
             imgRef.current.style.transform = `scale(${scale})`;
         }
     }, [scale]);
 
-    const handleMouseDown = (event: any) => {
-        setIsDragging(true);
-        setMouseStart({ x: event.clientX, y: event.clientY });
-        const rect = imgRef.current.getBoundingClientRect();
-        setImgStart({ x: rect.left, y: rect.top });
+    const handleMouseDown = (event: React.MouseEvent) => {
+        event.preventDefault(); // 阻止默认的图片拖拽行为
+        if (scale > 1) { // 只有放大时才能拖拽
+            setIsDragging(true);
+            setMouseStart({ x: event.clientX, y: event.clientY });
+            const rect = imgRef.current.getBoundingClientRect();
+            setImgStart({ x: rect.left, y: rect.top });
+        }
     };
-
-    const handleMouseMove = (event: any) => {
+    const handleMouseMove = (event: React.MouseEvent) => {
         if (!isDragging) return;
+        event.preventDefault(); // 阻止默认的图片拖拽行为
         const dx = event.clientX - mouseStart.x;
         const dy = event.clientY - mouseStart.y;
         const newLeft = imgStart.x + dx;
         const newTop = imgStart.y + dy;
-        imgRef.current.style.transform = `translate(${newLeft}px, ${newTop}px) scale(${scale})`;
+        imgRef.current.style.transform = `translate(${newLeft}px, ${newTop}px) rotate(${angle}deg) scale(${scale})`;
         if (canvasRef.current) {
-            canvasRef.current.style.transform = `translate(${newLeft}px, ${newTop}px) scale(${scale})`;
+            canvasRef.current.style.transform = `translate(${newLeft}px, ${newTop}px) rotate(${angle}deg) scale(${scale})`;
         }
     };
-
-    const handleMouseUp = () => {
+    const handleMouseUp = (event: React.MouseEvent) => {
         setIsDragging(false);
+        event.preventDefault();
         drawAnnotations(); // 重新绘制注释
     };
 
@@ -126,9 +127,14 @@ const ImageAnnotator: React.FC<ImageAnnotatorProps> = ({ imageSrc, annotations, 
         if (imgRef.current) {
             imgRef.current.style.transform = `rotate(${angle}deg) scale(${scale})`;
         }
-        if (canvasRef.current && (isMark || isBlue)) { // 确保 canvas 应该出现时才设置 transform
+        if (canvasRef.current && (isMark || isBlue)) {
             const canvas = canvasRef.current;
             const img = imgRef.current;
+            const currentTransform = img.style.transform;
+            const translateMatch = currentTransform.match(/translate\((-?\d+)px, (-?\d+)px\)/);
+            const currentLeft = translateMatch ? parseInt(translateMatch[1], 10) : 0;
+            const currentTop = translateMatch ? parseInt(translateMatch[2], 10) : 0;
+            setImgStart({ x: currentLeft, y: currentTop });
 
             canvas.width = img.naturalWidth * scale;
             canvas.height = img.naturalHeight * scale;
@@ -156,6 +162,7 @@ const ImageAnnotator: React.FC<ImageAnnotatorProps> = ({ imageSrc, annotations, 
 
     return (
         <div className={styles.annotator}
+            style={{ cursor: scale > 1 ? 'grab' : 'default' }}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}

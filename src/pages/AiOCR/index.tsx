@@ -37,6 +37,7 @@ type TState = {
     angle: any;
     timer: any;
     isChooseFirst: boolean;
+    isPreset: boolean;
 }
 const AiOCR: React.FC = ({ }) => {
     const [scale, setScale] = useState(1);
@@ -57,6 +58,7 @@ const AiOCR: React.FC = ({ }) => {
         angle: {},
         timer: null,
         isChooseFirst: true,
+        isPreset: false,
     });
     const handleZoomOut = () => {
         let newScale = scale - 0.1;
@@ -93,7 +95,7 @@ const AiOCR: React.FC = ({ }) => {
         }
         const newTimer = setTimeout(() => {
             state.isChooseFirst = false
-            postTextRecognition(state.imgUrl, state.isSelect, state.angle[state.isSelect])
+            postTextRecognition(state.imgUrl, state.isSelect, state.angle[state.isSelect], state.isPreset)
         }, 4000);
 
         state.timer = newTimer;
@@ -101,22 +103,23 @@ const AiOCR: React.FC = ({ }) => {
     const refreshText = () => {
         state.IdentifyData = [];
         state.isChooseFirst = false
-        postTextRecognition(state.imgUrl, state.isSelect, state.angle[state.isSelect])
+        postTextRecognition(state.imgUrl, state.isSelect, state.angle[state.isSelect], state.isPreset)
     }
-    const postTextRecognition = async (url: any, picUid: any, rotationAngle: any) => {
+    const postTextRecognition = async (url: any, picUid: any, rotationAngle: any, isPreset: any) => {
         state.isLoading = true;
         try {
-            const recognitionResult = await TextRecognition({ url, picUid, rotationAngle });
+            const recognitionResults = await TextRecognition({ url, picUid, rotationAngle, isPreset });
+            const recognitionResult = recognitionResults.note
+            const recognitionUrl = recognitionResults.url;
             const res = await getImageList();
             state.preData = res;
-            const { id, url: imageUrl, note } = state.preData[0];
+            const { id, url: imageUrl, note, Preset } = state.preData[0];
             if (state.isChooseFirst) {
-                selectImage(id, imageUrl, rotationAngle, note);
+                selectImage(id, imageUrl, rotationAngle, note, Preset);
             } else {
-                selectImage(picUid, url, rotationAngle, recognitionResult)
+                selectImage(picUid, recognitionUrl, rotationAngle, recognitionResult, isPreset)
             }
         } catch (err) {
-            message.error("识别失败，请重新尝试！");
             console.error("An error occurred during text recognition:", err);
         } finally {
             state.isLoading = false;
@@ -131,7 +134,7 @@ const AiOCR: React.FC = ({ }) => {
             getImageList().then(res => {
                 state.preData = res
                 state.imgUrl = state.preData[0].url
-                postTextRecognition(state.preData[0].url, state.preData[0].id, 0)
+                postTextRecognition(state.preData[0].url, state.preData[0].picUid, 0, state.preData[0].isPreset ? 1 : 0)
             })
         })
     }
@@ -191,8 +194,9 @@ const AiOCR: React.FC = ({ }) => {
             })
         })
     }
-    const selectImage = (id: any, url: any, rotationAngle: any, note: any) => {
+    const selectImage = (id: any, url: any, rotationAngle: any, note: any, isPreset: any) => {
         setScale(1)
+        state.isPreset = isPreset
         state.isSelect = id
         state.imgUrl = url
         state.angle[state.isSelect] = rotationAngle
@@ -205,13 +209,17 @@ const AiOCR: React.FC = ({ }) => {
     }
 
     const delImage = (index: any) => {
+        if(state.isPreset == true) return
         deletePic({ picUid: state.isSelect }).then(res => {
             if (index < 0) {
+                if (state.preData.length > 1) {
+                    selectImage(state.preData[1].picUid, state.preData[1].url, state.preData[1].rotationAngle, state.preData[1].note, state.preData[1].isPreset)
+                }
                 getImageLists()
                 return
             }
             let item = state.preData[index]
-            selectImage(item.picUid, item.url, item.rotationAngle, item.note)
+            selectImage(item.picUid, item.url, item.rotationAngle, item.note, item.isPreset)
             getImageLists()
         })
     }
@@ -254,7 +262,7 @@ const AiOCR: React.FC = ({ }) => {
                                     annotations={state.IdentifyData}
                                     isMark={state.isMark}
                                     isBlue={state.isBlue}
-                                    angle={state.angle[state.isSelect] || 0}
+                                    angle={0}
                                     scale={scale}
                                 />
                             </div>
@@ -334,12 +342,10 @@ const AiOCR: React.FC = ({ }) => {
                     state.preData && state.preData.length > 0 && (
                         <div className={styles.imageLists}>
                             {state.preData.map((item: any, index: any) => (
-                                <div className={state.isSelect === item.picUid ? styles.checkImageList : styles.imageList} key={item.id} onClick={() => selectImage(item.picUid, item.url, item.rotationAngle, item.note || [])}>
+                                <div className={state.isSelect === item.picUid ? styles.checkImageList : styles.imageList} key={item.id} onClick={() => selectImage(item.picUid, item.url, item.rotationAngle, item.note || [], item.isPreset)}>
                                     <div className={styles.imageIndex}>{index + 1}</div>
                                     <div className={styles.imageDel} onClick={() => delImage(index - 1)}><CloseCircleFilled /></div>
-                                    <img src={item.url} alt="" style={{
-                                        transform: `rotate(${state.angle[item.picUid]}deg)`
-                                    }} />
+                                    <img src={item.url} alt="" />
                                 </div>
                             ))}
                             <div className={styles.imageUpload}>
