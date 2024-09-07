@@ -1,5 +1,6 @@
 // ai图谱
 import React from 'react';
+import Loading from './components/Loading';
 import styles from './index.less';
 
 type Props = {};
@@ -14,8 +15,10 @@ const AiAtlas: React.FC<Props> = ({}) => {
           </div>
         </div>
         <div className={styles['area-atlas-container']}>
-          <header></header>
-          <section></section>
+          <header>知识图谱</header>
+          <section>
+            <Loading loadingMessage="待生成知识图谱" />
+          </section>
         </div>
       </section>
     </div>
