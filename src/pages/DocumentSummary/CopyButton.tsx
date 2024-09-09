@@ -1,7 +1,13 @@
 import copyIconPng from '@/assets/images/copyIcon.png';
 import { message } from 'SeenPc';
 
-const CopyButton = ({ content }: { content: string }) => {
+const CopyButton = ({
+  content,
+  cssStyles,
+}: {
+  content: string;
+  cssStyles?: RecordItem;
+}) => {
   const onCopy = async () => {
     if (navigator.clipboard && window.isSecureContext) {
       return window.navigator?.clipboard
@@ -43,6 +49,7 @@ const CopyButton = ({ content }: { content: string }) => {
         position: 'absolute',
         top: 5,
         right: 5,
+        ...(cssStyles || {}),
       }}
       onClick={onCopy}
     />

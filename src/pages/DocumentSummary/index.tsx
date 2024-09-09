@@ -1,8 +1,8 @@
 import deleteIcon from '@/assets/images/close.png';
+import fileIcon from '@/assets/images/fileIcon.png';
 import iconCircleIcon from '@/assets/images/icon-exclamation-circle.png';
 import PDFIcon from '@/assets/images/icon-file_PDF.png';
 import WordIcon from '@/assets/images/icon-file_word.png';
-import recentRecordPng from '@/assets/images/recent_record_blue.png';
 import CustomUpload, { CustomUploadProps } from '@/components/CustomUpload';
 import { getConvertParamId } from '@/services/aiJobHunt';
 import {
@@ -171,26 +171,22 @@ const DocumentSummary: React.FC = () => {
         window.open(result as string, '_self');
       }
       if (state.exportParams.mindMapChecked) {
+        let attachmentName = state.summaryData?.attachmentName?.replace(
+          /\.[^/.]+$/,
+          '',
+        );
+        attachmentName = attachmentName + '-思维导图' + '.png';
         state.graph?.toPNG(
           (dataUri: string) => {
-            // 下载
-            // DataUri.downloadDataUri(
-            //   dataUri,
-            //   `${state.summaryData.attachmentName.replace(
-            //     /\.[^/.]+$/,
-            //     '',
-            //   )}-脑图.png
-            //   }`,
-            // );
-            DataUri.downloadDataUri(dataUri, '脑图.png');
+            DataUri.downloadDataUri(dataUri, attachmentName);
           },
           {
-            width: 1920,
-            height: 1080,
+            width: 3840,
+            height: 2160,
             quality: 1,
             padding: {
-              top: 20,
-              bottom: 20,
+              top: 40,
+              bottom: 40,
             },
           },
         );
@@ -284,6 +280,7 @@ const DocumentSummary: React.FC = () => {
       state.activeTabKey === '2' ? 'introductionChecked' : 'mindMapChecked'
     ] = false;
   }, [state.activeTabKey]);
+  console.log(state.activeTabKey);
 
   return (
     <Spin
@@ -300,7 +297,7 @@ const DocumentSummary: React.FC = () => {
           <div className={styles.title}>AI文档总结</div>
           <div className={styles.action}>
             <div className={styles.recordLast}>
-              <img src={recentRecordPng} alt="" />
+              {/* <img src={recentRecordPng} alt="" /> */}
               <Popconfirm
                 onOpenChange={(e) => {
                   handleVisibleChange(e, 'record');
@@ -315,7 +312,7 @@ const DocumentSummary: React.FC = () => {
                 open={state.recentlyRecordModal}
                 title={
                   <div className={styles.PopupContent} style={{ height: 388 }}>
-                    <div className={styles.header}>最近记录</div>
+                    <div className={styles.header}>我的文档库</div>
                     <div className={styles.recordMain}>
                       {state.summaryList?.map((item) => (
                         <div
@@ -377,7 +374,10 @@ const DocumentSummary: React.FC = () => {
                   </div>
                 }
               >
-                <span>最近记录</span>
+                <span className={styles.fileTitle}>
+                  <img src={fileIcon} alt="" />
+                  我的文档库
+                </span>
               </Popconfirm>
             </div>
 

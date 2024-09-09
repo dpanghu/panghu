@@ -7,6 +7,7 @@ export async function widgetDtcTTS<T>(params?: RecordItem): Promise<T> {
     method: 'POST',
     params,
     isJSON: true,
+    hiddenLoading: true,
   });
 }
 
