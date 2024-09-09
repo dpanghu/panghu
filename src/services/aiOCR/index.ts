@@ -15,6 +15,40 @@ export async function TextRecognition(params?: RecordItem) {
     method: 'POST',
     params,
     isJSON: true,
+    hiddenLoading: true,
+  });
+}
+
+//果蔬识别
+export async function FruitRecognition(params?: RecordItem) {
+  return $axios.request({
+    url: '/widget/xai/pic/fruit',
+    method: 'POST',
+    params,
+    isJSON: true,
+    hiddenLoading: true,
+  });
+}
+
+//车牌识别
+export async function CarRecognition(params?: RecordItem) {
+  return $axios.request({
+    url: '/widget/xai/pic/carplate',
+    method: 'POST',
+    params,
+    isJSON: true,
+    hiddenLoading: true,
+  });
+}
+
+//物体识别
+export async function ObjectRecognition(params?: RecordItem) {
+  return $axios.request({
+    url: '/widget/xai/pic/general',
+    method: 'POST',
+    params,
+    isJSON: true,
+    hiddenLoading: true,
   });
 }
 

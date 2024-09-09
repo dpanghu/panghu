@@ -20,6 +20,7 @@ interface ImageAnnotatorProps {
   isBlue?: boolean;
   angle?: number;
   scale: number;
+  disabled?: boolean;
 }
 const ImageAnnotator: React.FC<ImageAnnotatorProps> = ({
   imageSrc,
@@ -28,6 +29,7 @@ const ImageAnnotator: React.FC<ImageAnnotatorProps> = ({
   isBlue = false,
   angle = 0,
   scale,
+  disabled = false,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const imgRef = useRef<HTMLImageElement | null>(null);
@@ -101,6 +103,7 @@ const ImageAnnotator: React.FC<ImageAnnotatorProps> = ({
 
   const handleMouseDown = (event: React.MouseEvent) => {
     event.preventDefault(); // 阻止默认的图片拖拽行为
+    if (disabled) return
     if (scale > 1) {
       // 只有放大时才能拖拽
       setIsDragging(true);
@@ -115,6 +118,7 @@ const ImageAnnotator: React.FC<ImageAnnotatorProps> = ({
     }
   };
   const handleMouseMove = (event: React.MouseEvent) => {
+    if (disabled) return
     if (!isDragging) return;
     event.preventDefault(); // 阻止默认的图片拖拽行为
     const dx = event.clientX - mouseStart.x;
@@ -127,6 +131,7 @@ const ImageAnnotator: React.FC<ImageAnnotatorProps> = ({
     }
   };
   const handleMouseUp = (event: React.MouseEvent) => {
+    if (disabled) return
     setIsDragging(false);
     event.preventDefault();
     drawAnnotations(); // 重新绘制注释
@@ -259,7 +264,7 @@ const ImageAnnotator: React.FC<ImageAnnotatorProps> = ({
     <div
       ref={imgContainerRef}
       className={styles.annotator}
-      style={{ cursor: scale > 1 ? 'grab' : 'default' }}
+      style={{ cursor: scale > 1 && !disabled ? 'grab' : 'default' }}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}

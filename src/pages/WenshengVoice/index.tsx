@@ -129,6 +129,7 @@ const WenshengVoice: React.FC = () => {
         //   ...extraParams,
       });
       state.voiceUrl = result.url;
+      state.durationRest = 0;
     } catch (error) {
       state.isError = true;
     } finally {
