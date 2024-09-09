@@ -291,6 +291,22 @@ const JobHunt: React.FC = () => {
         history.push('/aiJobHunt');
       } else if (res.plugin?.code === 'word_sumary') {
         history.push('/documentSummary');
+      } else if (res.plugin?.code === 'tts') {
+        history.push('/wenshengVoice');
+      } else if (res.plugin?.code === 'sentAnalysis') {
+        history.push('/sentimentAnalysis');
+      }
+      else if (res.plugin?.code === 'ocr') {
+        history.push('/OCR');
+      }
+      else if (res.plugin?.code === 'general') {
+        history.push('/OR');
+      }
+      else if (res.plugin?.code === 'fruit') {
+        history.push('/FVR');
+      } 
+      else if (res.plugin?.code === 'carPlate') {
+        history.push('/LPR');
       } else {
         state.data = JSON.parse(res.param?.params);
         state.aiData = res;
