@@ -35,6 +35,22 @@ export default defineConfig({
       component: '@/pages/AiOCR',
     },
     {
+      path: '/FVR',
+      layout: false,
+      component: '@/pages/AiFVR',
+    },
+    {
+      path:'/LPR',
+      layout: false,
+      component:'@/pages/AiLPR'
+    },
+    {
+      path:'/OR',
+      layout: false,
+      component:'@/pages/AiOR'
+
+    },
+    {
       path: '/aiJobHunt/AiList',
       component: '@/pages/AiJobHunt/AiList',
       title: 'XAI | ai列表',

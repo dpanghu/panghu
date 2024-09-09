@@ -45,7 +45,7 @@ type TState = {
   isChooseFirst: boolean;
   isPreset: boolean;
 };
-const AiOCR: React.FC = ({}) => {
+const AiOCR: React.FC = ({ }) => {
   const [scale, setScale] = useState(1);
   const state = useReactive<TState>({
     preData: [],
@@ -322,6 +322,24 @@ const AiOCR: React.FC = ({}) => {
       }
     }
     if (file) {
+      let allowedFormats = ['image/jpeg', 'image/png', 'image/jpg'];
+
+      if (!allowedFormats.includes(file.type)) {
+        message.warning('请上传图片，支持jpg,jpeg,png格式');
+        return;
+      }
+      let maxSize = 1 * 1024 * 1024;
+      if (file.size > maxSize) {
+        message.warning('图片过大，请上传1MB以内图片');
+        return;
+      }
+      if (state.preData.length > 19) {
+        message.warning('图片已满，请删除图片后，再上传');
+        return;
+      }
+      state.IdentifyData = [];
+      state.isrec = true;
+      state.isLoading = true;
       let param = new FormData();
       param.append('file', file);
       uploads({
@@ -381,9 +399,9 @@ const AiOCR: React.FC = ({}) => {
                 onMouseLeave={() => (state.isHover = false)}
               >
                 <div className={styles.text} onPaste={handlePaste}>
-                  支持jpg、jpeg、png、bmp,1MB以内
+                  支持jpg、jpeg、png,1MB以内
                   <br />
-                  图片拖到这里
+                  将图片拖到这里
                   <br />
                   或按【ctrl+v】粘贴到这里
                   <br />
