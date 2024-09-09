@@ -631,9 +631,14 @@ const Resume: React.FC = ({ }) => {
         okText={'保存'}
         onOk={() => {
           const chooseDatas: any = state.chooseData;
+          let allow: any = chooseDatas.find((element: any)=> element.label = state.modalData.name);
+          if(allow !== void 0) {
+            message.warning('该标签已经存在，请修改之后再保存');
+            return
+          }
           chooseDatas.option.push({
             label: state.modalData.name,
-            value: state.modalData.keys,
+            value: state.modalData.name,
           })
           message.success('保存成功');
           state.open = false;
@@ -647,10 +652,10 @@ const Resume: React.FC = ({ }) => {
             <div style={{ minWidth: 42, marginRight: 10 }}><span style={{ color: 'red', marginRight: 7 }}>*</span>标签</div>
             <Input value={state.modalData.name} onChange={(e: any) => { state.modalData.name = e }} placeholder={'请输入label值'}></Input>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', marginTop: 10 }}>
+          {/* <div style={{ display: 'flex', alignItems: 'center', marginTop: 10 }}>
             <div style={{ minWidth: 42, marginRight: 10 }}><span style={{ color: 'red', marginRight: 7 }}>*</span>值</div>
             <Input value={state.modalData.keys} onChange={(e: any) => { state.modalData.keys = e }} placeholder={'请输入key值'}></Input>
-          </div>
+          </div> */}
   
         </div>
       </Modal>
