@@ -46,6 +46,12 @@ export default defineConfig({
       layout: false,
     },
     {
+      path: '/aiJobHunt/AiPersonalPortrait',
+      component: '@/pages/AiJobHunt/AiPersonalPortrait',
+      title: 'XAI | ai个人画像',
+      layout: false,
+    },
+    {
       path: '/aiJobHunt/AiList',
       component: '@/pages/AiJobHunt/AiList',
       title: 'XAI | ai列表',
