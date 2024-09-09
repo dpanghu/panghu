@@ -185,7 +185,7 @@ const PdfView: React.FC<Props> = (props: Props) => {
   };
 
   const pageZoomOut = () => {
-    if (pageWidth <= 600) {
+    if (pageWidth <= 300) {
       return;
     }
     const w = pageWidth / 1.2;
@@ -193,6 +193,9 @@ const PdfView: React.FC<Props> = (props: Props) => {
     // this.setState({ pageWidth: pageWidth })
   };
   const pageZoomIn = () => {
+    if (pageWidth <= 1200) {
+      return;
+    }
     const w = pageWidth * 1.2;
     setPageWidth(w);
     // this.setState({ pageWidth: pageWidth })
