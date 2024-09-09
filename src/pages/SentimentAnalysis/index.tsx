@@ -101,10 +101,10 @@ const SentimentAnalysis: React.FC = () => {
   // };
 
   // 情感极性分类置信度
-  const handleCoefficientValue = (val: any) => {
-    console.log(val);
-    setCoefficientValue(val);
-  };
+  // const handleCoefficientValue = (val: any) => {
+  //   console.log(val);
+  //   setCoefficientValue(val);
+  // };
 
   const handleChange = (e: any) => {
     // console.log(e.target.value);
@@ -206,7 +206,7 @@ const SentimentAnalysis: React.FC = () => {
                       min={0}
                       max={1}
                       value={coefficientValue}
-                      onChange={handleCoefficientValue}
+                      // onChange={handleCoefficientValue}
                       marks={marks1}
                       // defaultValue={0.5}
                       className={styles?.splider2}
