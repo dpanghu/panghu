@@ -169,6 +169,7 @@ const SentimentAnalysis: React.FC = () => {
                 rows={10}
                 maxLength={120}
                 showCount
+                style={{ resize: 'none' }}
               />
               <div className={styles?.footerBtn}>
                 <Button type="primary" onClick={handleAnalyze}>
@@ -184,7 +185,7 @@ const SentimentAnalysis: React.FC = () => {
                 <img
                   src={require('@/assets/images/sentiment.png')}
                   width={'50%'}
-                  style={{ marginBottom: '22px',}}
+                  style={{ marginBottom: '22px' }}
                 />
                 <div className={styles?.card} style={{ marginBottom: '16px' }}>
                   <div>情感极性</div>
