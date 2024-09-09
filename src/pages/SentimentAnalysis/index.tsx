@@ -96,9 +96,9 @@ const SentimentAnalysis: React.FC = () => {
   };
 
   // 情感极性
-  const handleSentiment = (val: any) => {
-    setSentimentValue(val);
-  };
+  // const handleSentiment = (val: any) => {
+  //   setSentimentValue(val);
+  // };
 
   // 情感极性分类置信度
   const handleCoefficientValue = (val: any) => {
@@ -167,7 +167,7 @@ const SentimentAnalysis: React.FC = () => {
                 value={inputValue}
                 onChange={(e) => handleChange(e)}
                 rows={10}
-                maxLength={240}
+                maxLength={120}
                 showCount
               />
               <div className={styles?.footerBtn}>
@@ -184,14 +184,14 @@ const SentimentAnalysis: React.FC = () => {
                 <img
                   src={require('@/assets/images/sentiment.png')}
                   width={'50%'}
-                  style={{ marginBottom: '22px' }}
+                  style={{ marginBottom: '22px',}}
                 />
                 <div className={styles?.card} style={{ marginBottom: '16px' }}>
                   <div>情感极性</div>
                   <div className={styles?.cardContent}>
                     <Slider
                       value={sentimentValue}
-                      onChange={handleSentiment}
+                      // onChange={handleSentiment}
                       marks={marks}
                       defaultValue={50}
                       className={styles?.splider}
@@ -219,6 +219,7 @@ const SentimentAnalysis: React.FC = () => {
                       src={require('@/assets/images/smail1.png')}
                       width={40}
                       className={preColorCls}
+                      style={{ marginRight: '12px' }}
                     />
                     <div className={styles?.cardSliderContent}>
                       <Slider
@@ -226,7 +227,7 @@ const SentimentAnalysis: React.FC = () => {
                         defaultValue={50}
                         min={0}
                         max={100}
-                        onChange={setValue}
+                        // onChange={setValue}
                         value={value}
                         // style={{ position: 'relative', width: '85%' }}
                       />
@@ -235,6 +236,7 @@ const SentimentAnalysis: React.FC = () => {
                       src={require('@/assets/images/cry2.png')}
                       width={40}
                       className={preColorCls}
+                      style={{ marginLeft: '16px' }}
                     />
                   </div>
                 </div>
