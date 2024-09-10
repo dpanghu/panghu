@@ -3,7 +3,7 @@ import styles from './index.less';
 import { deletePic, FruitRecognition, getImageList, uploadPic, uploads } from '@/services/aiOCR';
 import { useMount, useReactive } from 'ahooks';
 import { Upload } from 'SeenPc';
-import { Input, message, Spin } from 'antd';
+import { Input, message, Modal, Spin } from 'antd';
 const { Dragger } = Upload;
 import zoomOut from '@/assets/images/zoomOut@2x.png';
 import zoomIn from '@/assets/images/zoomIn@2x.png';
@@ -173,20 +173,38 @@ const AiFVR: React.FC = ({ }) => {
     }
 
     const delImage = (index: any) => {
-        if (state.isPreset == true) return
-        deletePic({ picUid: state.isSelect }).then(res => {
-            if (index < 0) {
-                if (state.preData.length > 1) {
-                    selectImage(state.preData[1].picUid, state.preData[1].url, state.preData[1].note, state.preData[1].isPreset)
-                }
-                getImageLists()
-                return
-            }
-            let item = state.preData[index]
-            selectImage(item.picUid, item.url, item.note, item.isPreset)
-            getImageLists()
-        })
-    }
+        if (state.isPreset == true) return;
+        Modal.confirm({
+            title: '你确定要删除吗？',
+            okText: '确定',
+            cancelText: '取消',
+            onOk() {
+                deletePic({ picUid: state.isSelect }).then((res) => {
+                    if (index < 0) {
+                        if (state.preData.length > 1) {
+                            selectImage(
+                                state.preData[1].picUid,
+                                state.preData[1].url,
+                                state.preData[1].note,
+                                state.preData[1].isPreset,
+                            );
+                        }
+                        getImageLists();
+                        return;
+                    }
+                    let item = state.preData[index];
+                    selectImage(
+                        item.picUid,
+                        item.url,
+                        item.note,
+                        item.isPreset,
+                    );
+                    getImageLists();
+                });
+            },
+            onCancel() { },
+        });
+    };
 
     useMount(() => {
         const queryParams = JSON.parse(

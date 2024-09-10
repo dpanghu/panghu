@@ -43,7 +43,7 @@ const renderPreview = (item: any) => {
             showCount={true}
             type={Number(item.maxLength) < 30 ? 'default' : 'textarea'}
             style={{ width: '100%' }}
-            placeholder={item.desc}
+            placeholder={item.placeholder}
             value={item.value}
             onChange={(e: any) => {
               item.value = e;
@@ -64,7 +64,7 @@ const renderPreview = (item: any) => {
           <Select
             style={{ width: '100%' }}
             value={item.value}
-            placeholder={item.desc}
+            placeholder={item.placeholder}
             option={item.options}
             onChange={(e: any) => {
               item.value = e;
