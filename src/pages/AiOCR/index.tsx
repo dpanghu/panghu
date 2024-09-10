@@ -20,7 +20,7 @@ import {
 import { CloseCircleFilled } from '@ant-design/icons';
 import { useMount, useReactive } from 'ahooks';
 import { Input, message, Modal, Spin } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Upload } from 'SeenPc';
 import ImageAnnotator from './ImageAnnotator';
 import styles from './index.less';
@@ -47,6 +47,7 @@ type TState = {
 };
 const AiOCR: React.FC = ({ }) => {
   const [scale, setScale] = useState(1);
+  const [shouldPaste, setShouldPaste] = useState(false);
   const state = useReactive<TState>({
     preData: [],
     message: '',
@@ -317,69 +318,86 @@ const AiOCR: React.FC = ({ }) => {
         getImageLists();
       });
   });
-
-  const handlePaste = (event) => {
-    const items = (event.clipboardData || event.originalEvent.clipboardData)
-      .items;
-    let file = null;
-    for (let i = 0; i < items.length; i++) {
-      if (items[i].type.indexOf('image') !== -1) {
-        file = items[i].getAsFile();
-        break;
-      }
-    }
-    if (file) {
-      let allowedFormats = ['image/jpeg', 'image/png', 'image/jpg'];
-
-      if (!allowedFormats.includes(file.type)) {
-        message.warning('请上传图片，支持jpg,jpeg,png格式');
-        return;
-      }
-      let maxSize = 1 * 1024 * 1024;
-      if (file.size > maxSize) {
-        message.warning('图片过大，请上传1MB以内图片');
-        return;
-      }
-      if (state.preData.length > 19) {
-        message.warning('图片已满，请删除图片后，再上传');
-        return;
-      }
-      state.IdentifyData = [];
-      state.isrec = true;
-      state.isLoading = true;
-      let param = new FormData();
-      param.append('file', file);
-      uploads({
-        bucketNameType: 'pub',
-        ossResCategory: 'builder',
-        objectKey: `/res/task/${file.name}` || '',
-      })
-        .then((res) => {
-          // 处理fentch 的response
-          if (!res) {
-            message.error('获取OSS上传参数失败');
-            return Promise.reject('获取OSS上传参数失败');
-          } else {
-            const formData = new FormData();
-            Object.keys(res.tokenParams).forEach((key) => {
-              formData.append(key, res.tokenParams[key]);
-            });
-            formData.append('file', file);
-            fetch(res.endpoint, {
-              method: 'POST',
-              body: formData,
-            }).then((rst) => {
-              if (rst.ok) {
-                uploadPics(res.file_url);
-              }
-            });
-          }
-        })
-        .catch(() => {
-          return Promise.reject('获取OSS上传参数失败');
-        });
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if ((event.ctrlKey || event.metaKey) && event.key === 'v') {
+      setShouldPaste(true);
     }
   };
+  const handlePaste = (event: any) => {
+    if (shouldPaste) {
+      setShouldPaste(false);
+
+      const items = (event.clipboardData || event.originalEvent.clipboardData)
+        .items;
+      let file = null;
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf('image') !== -1) {
+          file = items[i].getAsFile();
+          break;
+        }
+      }
+      if (file) {
+        let allowedFormats = ['image/jpeg', 'image/png', 'image/jpg'];
+
+        if (!allowedFormats.includes(file.type)) {
+          message.warning('请上传图片，支持jpg,jpeg,png格式');
+          return;
+        }
+        let maxSize = 1 * 1024 * 1024;
+        if (file.size > maxSize) {
+          message.warning('图片过大，请上传1MB以内图片');
+          return;
+        }
+        if (state.preData.length > 19) {
+          message.warning('图片已满，请删除图片后，再上传');
+          return;
+        }
+        state.IdentifyData = [];
+        state.isrec = true;
+        state.isLoading = true;
+        let param = new FormData();
+        param.append('file', file);
+        uploads({
+          bucketNameType: 'pub',
+          ossResCategory: 'builder',
+          objectKey: `/res/task/${file.name}` || '',
+        })
+          .then((res) => {
+            // 处理fentch 的response
+            if (!res) {
+              message.error('获取OSS上传参数失败');
+              return Promise.reject('获取OSS上传参数失败');
+            } else {
+              const formData = new FormData();
+              Object.keys(res.tokenParams).forEach((key) => {
+                formData.append(key, res.tokenParams[key]);
+              });
+              formData.append('file', file);
+              fetch(res.endpoint, {
+                method: 'POST',
+                body: formData,
+              }).then((rst) => {
+                if (rst.ok) {
+                  uploadPics(res.file_url);
+                }
+              });
+            }
+          })
+          .catch(() => {
+            return Promise.reject('获取OSS上传参数失败');
+          });
+      }
+    }
+  };
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown as EventListener);
+    document.addEventListener('paste', handlePaste as EventListener);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown as EventListener);
+      document.removeEventListener('paste', handlePaste as EventListener);
+    };
+  }, [shouldPaste]);
 
   return (
     <div className={styles.aiOcr}>
@@ -400,12 +418,13 @@ const AiOCR: React.FC = ({ }) => {
               </div>
             ) : (
               <Dragger
+                className='dragger'
                 {...props}
                 showUploadList={false}
                 onMouseEnter={() => (state.isHover = true)}
                 onMouseLeave={() => (state.isHover = false)}
               >
-                <div className={styles.text} onPaste={handlePaste}>
+                <div className={styles.text}>
                   支持jpg、jpeg、png,1MB以内
                   <br />
                   将图片拖到这里
