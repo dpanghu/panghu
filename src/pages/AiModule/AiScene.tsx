@@ -34,16 +34,22 @@ const renderPreview = (item: any) => {
     case 'input':
       return (
         <div className={styles.previewBox}>
+          {
+            item.error === true && <div className={styles.errorBox}>未输入，请输入！</div>
+          }
           <div className={styles.previewTitle}>{item.displayName}</div>
           <Input
             maxLength={item.maxLength}
             showCount={true}
             type={Number(item.maxLength) < 30 ? 'default' : 'textarea'}
             style={{ width: '100%' }}
-            placeholder={item.desc}
+            placeholder={item.placeholder}
             value={item.value}
             onChange={(e: any) => {
               item.value = e;
+              if(e !== '') {
+                item.error = false;
+              }
             }}
           ></Input>
         </div>
@@ -51,14 +57,20 @@ const renderPreview = (item: any) => {
     case 'select':
       return (
         <div className={styles.previewBox}>
+          {
+            item.error === true && <div className={styles.errorBox}>未选择，请选择！</div>
+          }
           <div className={styles.previewTitle}>{item.displayName}</div>
           <Select
             style={{ width: '100%' }}
             value={item.value}
-            placeholder={item.desc}
+            placeholder={item.placeholder}
             option={item.options}
             onChange={(e: any) => {
               item.value = e;
+              if(e !== '') {
+                item.error = false;
+              }
             }}
           ></Select>
         </div>
@@ -66,11 +78,17 @@ const renderPreview = (item: any) => {
     case 'treeSelect':
       return (
         <div className={styles.previewBox}>
+          {
+            item.error === true && <div className={styles.errorBox}>未选择，请选择！</div>
+          }
           <div className={styles.previewTitle}>{item.displayName}</div>
           <ComboBox
             style={{ width: '100%' }}
             onChange={(e: any) => {
               item.value = e.target.value;
+              if(e !== '') {
+                item.error = false;
+              }
             }}
             value={item.value}
             options={item.options}
@@ -80,11 +98,17 @@ const renderPreview = (item: any) => {
     case 'radio':
       return (
         <div className={styles.previewBox}>
+          {
+            item.error === true && <div className={styles.errorBox}>未选择，请选择！</div>
+          }
           <div className={styles.previewTitle}>{item.displayName}</div>
           <ComboBox
             style={{ width: '100%' }}
             onChange={(e: any) => {
               item.value = e.target.value;
+              if(e !== '') {
+                item.error = false;
+              }
             }}
             value={item.value}
             options={item.options}
@@ -94,6 +118,9 @@ const renderPreview = (item: any) => {
     case 'selectCheck':
       return (
         <div className={styles.previewBox}>
+          {
+            item.error === true && <div className={styles.errorBox}>未选择，请选择！</div>
+          }
           <div className={styles.previewTitle}>{item.displayName}</div>
           <div className={styles.previewCheckBox}>
             {item.options &&
@@ -104,6 +131,7 @@ const renderPreview = (item: any) => {
                       if (item.value === void 0) {
                         item.value = [];
                         item.value.push(items.value);
+                        item.error = false;
                       } else {
                         if (item.value?.includes(items.value)) {
                           console.log(JSON.stringify(item.value));
@@ -114,6 +142,7 @@ const renderPreview = (item: any) => {
                           item.value.splice(delIndex, 1);
                         } else {
                           item.value.push(items.value);
+                          item.error = false;
                         }
                       }
                     }}
@@ -135,6 +164,9 @@ const renderPreview = (item: any) => {
     case 'checkbox':
       return (
         <div className={styles.previewBox}>
+          {
+            item.error === true && <div className={styles.errorBox}>未选择，请选择！</div>
+          }
           <div className={styles.previewTitle}>{item.displayName}</div>
           <div className={styles.previewCheckBox}>
             {item.options &&
@@ -224,48 +256,58 @@ const JobHunt: React.FC = () => {
   }, [state.isTyping]);
 
   const send = () => {
+    let error: any = false;
     if (isArray(state.allow)) {
       if (state.allow[0] === '1') {
         let sendData: any = {};
         // eslint-disable-next-line @typescript-eslint/no-unused-expressions, array-callback-return
         state.data &&
+          // eslint-disable-next-line array-callback-return
           state.data.map((item: any) => {
+            if (item.value === void 0 || item.value === '') {
+              item.error = true;
+              error = true;
+            }else {
+              item.error = false;
+            }
             sendData[item.name] = item.value;
           });
-        state.visible = true;
-        state.isLoading = true;
-        typewriterStrCache.current = '';
-        let qsData = {
-          ...queryData,
-          pluginCode: state.aiData.plugin?.code,
-          qsParams: sendData,
-        };
-        new EventSourceStream(
-          '/api/bus-xai/xai/plugin/create/stream',
-          {
-            method: 'POST',
-            data: qsData,
-            headers: {
-              'Content-Type': 'application/json',
-              Accept: 'text/event-stream',
+        if (error !== true) {
+          state.visible = true;
+          state.isLoading = true;
+          typewriterStrCache.current = '';
+          let qsData = {
+            ...queryData,
+            pluginCode: state.aiData.plugin?.code,
+            qsParams: sendData,
+          };
+          new EventSourceStream(
+            '/api/bus-xai/xai/plugin/create/stream',
+            {
+              method: 'POST',
+              data: qsData,
+              headers: {
+                'Content-Type': 'application/json',
+                Accept: 'text/event-stream',
+              },
             },
-          },
-          {
-            // 结束，包括接收完毕所有数据、报错、关闭链接
-            onFinished: () => {
-              state.isLoading = false;
+            {
+              // 结束，包括接收完毕所有数据、报错、关闭链接
+              onFinished: () => {
+                state.isLoading = false;
+              },
+              onError: (error) => {
+                console.log(error);
+              },
+              // 接收到数据
+              receiveMessage: (data) => {
+                if (data) {
+                  state.typewriterArrCache.push(data!.answer);
+                }
+              },
             },
-            onError: (error) => {
-              console.log(error);
-            },
-            // 接收到数据
-            receiveMessage: (data) => {
-              if (data) {
-                state.typewriterArrCache.push(data!.answer);
-              }
-            },
-          },
-        ).run();
+          ).run();
+        }
       } else {
         message.warning('请先勾选并同意《AI内容生成功能使用说明》');
         return;
@@ -304,7 +346,7 @@ const JobHunt: React.FC = () => {
       }
       else if (res.plugin?.code === 'fruit') {
         history.push('/FVR');
-      } 
+      }
       else if (res.plugin?.code === 'carPlate') {
         history.push('/LPR');
       } else {

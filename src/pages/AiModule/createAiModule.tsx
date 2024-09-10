@@ -13,8 +13,7 @@ import checkboxImgs from '@/assets/images/checkboxImgs.png';
 import { history } from 'umi';
 import { saveAiModule, iconList, getPluginDetail } from '@/services/aiModule';
 import { getAIProductList, getAllAIModel } from '@/services/aiJobHunt';
-import { CloseOutlined, DeleteOutlined, LeftOutlined } from '@ant-design/icons';
-import { trim } from 'lodash';
+import { CloseOutlined, LeftOutlined } from '@ant-design/icons';
 
 type IState = {
   status: any
@@ -178,6 +177,7 @@ const Resume: React.FC = ({ }) => {
         paramsArr.push({
           name: `ai${index}`,
           required: 'true',
+          placeholder: item.placeholder,
           displayName: item.title,
           decimalLength: 0,
           elementType: 'input',
@@ -188,6 +188,7 @@ const Resume: React.FC = ({ }) => {
         paramsArr.push({
           name: `ai${index}`,
           required: 'true',
+          placeholder: item.placeholder,
           displayName: item.title,
           decimalLength: 0,
           elementType: 'select',
@@ -631,7 +632,8 @@ const Resume: React.FC = ({ }) => {
         okText={'保存'}
         onOk={() => {
           const chooseDatas: any = state.chooseData;
-          let allow: any = chooseDatas.find((element: any)=> element.label = state.modalData.name);
+          console.log(JSON.stringify(chooseDatas.option));
+          let allow: any = chooseDatas.option.find((element: any)=> element.label === state.modalData.name);
           if(allow !== void 0) {
             message.warning('该标签已经存在，请修改之后再保存');
             return
@@ -798,8 +800,8 @@ const Resume: React.FC = ({ }) => {
                   </div>
                   <div className={styles.textBox}>
                     <h3 style={{ width: 60, display: 'flex', justifyContent: 'flex-end', marginRight: 20 }}><span style={{ color: 'red', marginRight: 5 }}>*</span>提示语</h3>
-                    <Input placeholder={'请输入预置提示语'} value={state.chooseData.desc} style={{ width: 175 }} onChange={(e: any) => {
-                      state.chooseData.desc = e;
+                    <Input placeholder={'请输入预置提示语'} value={state.chooseData.placeholder} style={{ width: 175 }} onChange={(e: any) => {
+                      state.chooseData.placeholder = e;
                     }}></Input>
                   </div>
                   <div className={styles.textBox}>
@@ -833,26 +835,14 @@ const Resume: React.FC = ({ }) => {
                   </div>
                   <div className={styles.textBox}>
                     <h3 style={{ width: 60, display: 'flex', justifyContent: 'flex-end', marginRight: 20 }}><span style={{ color: 'red', marginRight: 5 }}>*</span>提示语</h3>
-                    <Input placeholder={'请输入预置提示语'} value={state.chooseData.desc} style={{ width: 175 }} onChange={(e: any) => {
-                      state.chooseData.desc = e
+                    <Input placeholder={'请输入预置提示语'} value={state.chooseData.placeholder} style={{ width: 175 }} onChange={(e: any) => {
+                      state.chooseData.placeholder = e
                     }}></Input>
                   </div>
                   <div className={styles.textBox} style={{ alignItems: 'flex-start' }}>
                     <h3 style={{ display: 'flex', justifyContent: 'flex-end', marginRight: 20, minWidth: 56, marginTop: 10, width: 60 }}>数据配置</h3>
                     <div style={{ width: 175, display: 'flex', flexDirection: 'column' }}>
-                      <Select option={state.chooseData.option} style={{ width: '100%' }} value={state.baseData.limit}>
-                        {/* {
-                          state.chooseData.option && state.chooseData.option.map((el: any) => {
-                            return <Selects.Option key={el.id} value={el.value}><div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                              <div>{el.label}</div>
-                              {/* <DeleteOutlined className={styles.deleteIcon} onClick={(e: any) => {
-                                e.stopPropagation()
-                                const chooseDataClone: any = state.chooseData;
-                                chooseDataClone.option.splice(index, 1);
-                                state.chooseData = chooseDataClone;
-                                message.success('删除成功');
-                              }} style={{ fontSize: 16, zIndex: 999 }} /> */}
-                          
+                      <Select option={state.chooseData.option} style={{ width: '100%' }} value={state.baseData.limit}>         
                       </Select>
                       <div style={{ fontSize: 14, color: '#5A73FF', marginTop: 10, cursor:'pointer' }} onClick={() => {
                         state.open = true;
