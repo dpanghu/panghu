@@ -1,0 +1,32 @@
+.annotator {
+    width: 100%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    flex: 1;
+    overflow: hidden;
+
+    .img,
+    .canvas {
+        position: absolute;
+        /* 使元素重叠 */
+        top: 0;
+        left: 0;
+        width: 100%;
+        /* 填满父容器 */
+        height: 100%;
+        /* 填满父容器 */
+        object-fit: contain;
+        /* 保持图片比例 */
+
+    }
+
+    .canvas {
+        z-index: 1;
+    }
+
+    .img {
+        z-index: 0;
+    }
+
+}

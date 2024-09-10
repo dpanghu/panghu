@@ -21,3 +21,39 @@ export async function uploadSummary<T>(params?: RecordItem): Promise<T> {
     timeout: 1000 * 60 * 10,
   });
 }
+
+// AI导出-导读
+export async function exportSummary<T>(params?: RecordItem): Promise<T> {
+  return $axios.request({
+    url: '/seentao/xai/word/summary/export',
+    method: 'POST',
+    params,
+  });
+}
+
+// AI查询列表
+export async function getSummaryList<T>(params?: RecordItem): Promise<T> {
+  return $axios.request({
+    url: '/seentao/xai/word/summary/list',
+    method: 'POST',
+    params,
+  });
+}
+
+// AI查询单条
+export async function getSummaryItem<T>(params?: RecordItem): Promise<T> {
+  return $axios.request({
+    url: '/seentao/xai/word/summary/get',
+    method: 'POST',
+    params,
+  });
+}
+
+// AI删除
+export async function delSummaryItem<T>(params?: RecordItem): Promise<T> {
+  return $axios.request({
+    url: '/seentao/xai/word/summary/del',
+    method: 'POST',
+    params,
+  });
+}

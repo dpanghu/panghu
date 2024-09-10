@@ -80,6 +80,14 @@ const CustomUpload: React.FC<CustomUploadProps> = ({
       return false;
     }
 
+    // 校验文件名长度 不超过50个字
+    console.log(file.name.replace(/\.[^/.]+$/, ''));
+
+    if (file.name.replace(/\.[^/.]+$/, '')?.length > 50) {
+      message.error(`文件名称不能超过50个字符`);
+      return false;
+    }
+
     return true;
   };
 

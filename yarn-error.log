@@ -1,8 +1,8 @@
 Arguments: 
-  C:\Program Files\nodejs\node.exe C:\Program Files\nodejs\node_modules\yarn\bin\yarn.js add @types/@antv/hierarchy
+  C:\Program Files\nodejs\node.exe C:\Program Files\nodejs\node_modules\yarn\bin\yarn.js start
 
 PATH: 
-  C:\Program Files (x86)\Common Files\Oracle\Java\javapath;E:\python\Scripts\;E:\python\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;E:\nvm;C:\Program Files\nodejs;E:\git\Git\cmd;E:\bandizip\;E:\TortoiseGit\bin;C:\AudSQL2008\Tools;E:\UFCPAS4\SysBPL;E:\微信开发者工具\微信web开发者工具\dll;E:\java1.8\bin;E:\java1.8\bin;E:\SVN\bin;C:\Users\zhangkejing\AppData\Local\Microsoft\WindowsApps;E:\nvm;C:\Program Files\nodejs;E:\vs code\Microsoft VS Code\bin;;E:\PyCharm\App\PyCharm Community Edition 2022.2.3\bin;;E:\webStorm\WebStorm 2024.1\bin;
+  C:\Users\zhangkejing\bin;E:\git\Git\mingw64\bin;E:\git\Git\usr\local\bin;E:\git\Git\usr\bin;E:\git\Git\usr\bin;E:\git\Git\mingw64\bin;E:\git\Git\usr\bin;C:\Users\zhangkejing\bin;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;E:\python\Scripts;E:\python;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0;C:\WINDOWS\System32\OpenSSH;E:\nvm;C:\Program Files\nodejs;E:\git\Git\cmd;E:\bandizip;E:\TortoiseGit\bin;C:\AudSQL2008\Tools;E:\UFCPAS4\SysBPL;E:\微信开发者工具\微信web开发者工具\dll;E:\java1.8\bin;E:\java1.8\bin;E:\SVN\bin;C:\Users\zhangkejing\AppData\Local\Microsoft\WindowsApps;E:\nvm;C:\Program Files\nodejs;E:\vs code\Microsoft VS Code\bin;E:\PyCharm\App\PyCharm Community Edition 2022.2.3\bin;E:\webStorm\WebStorm 2024.1\bin;E:\git\Git\usr\bin\vendor_perl;E:\git\Git\usr\bin\core_perl
 
 Yarn version: 
   1.22.19
@@ -14,8 +14,12 @@ Platform:
   win32 x64
 
 Trace: 
-  Error: connect ETIMEDOUT 20.205.243.166:443
-      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1133:16)
+  SyntaxError: E:\a_seentao\bus_web\bus_xai_web\package.json: Unexpected token y in JSON at position 443
+      at JSON.parse (<anonymous>)
+      at E:\nvm\v16.0.0\node_modules\yarn\lib\cli.js:1629:59
+      at Generator.next (<anonymous>)
+      at step (E:\nvm\v16.0.0\node_modules\yarn\lib\cli.js:310:30)
+      at E:\nvm\v16.0.0\node_modules\yarn\lib\cli.js:321:13
 
 npm manifest: 
   {
@@ -23,6 +27,7 @@ npm manifest:
     "author": "jyying <jinyuy@seentao.com>",
     "scripts": {
       "build": "max build",
+      "build-proe": "max build",
       "build-test": "max build",
       "dev": "max dev",
       "format": "prettier --cache --write .",
@@ -33,10 +38,11 @@ npm manifest:
     },
     "dependencies": {
       "@ant-design/icons": "5.0.1",
-      "@ant-design/pro-components": "2.4.4",
+      "@ant-design/pro-components": "2.4.4",yarny
       "@antv/g6": "4.8.21",
       "@antv/x6": "1.34.6",
       "@microsoft/fetch-event-source": "2.0.1",
+      "@types/react-pdf": "^4.0.6",
       "@types/react-syntax-highlighter": "^15.5.13",
       "@umijs/max": "4.3.10",
       "SeenPc": "2.3.8",
@@ -45,13 +51,15 @@ npm manifest:
       "classnames": "2.5.1",
       "docx-preview": "^0.3.2",
       "highlight.js": "^11.10.0",
+      "js-audio-recorder": "^1.0.7",
       "js-base64": "3.7.7",
       "lodash": "4.17.21",
       "qs": "6.12.3",
       "react-beautiful-dnd": "13.1.1",
       "react-doc-viewer": "^0.1.14",
       "react-markdown": "^9.0.1",
-      "react-pdf": "^9.1.0",
+      "react-pdf": "^4.1.0",
+      "react-speech-recognition": "^3.10.0",
       "react-syntax-highlighter": "^15.5.0",
       "rehype-highlight": "^7.0.0",
       "typewriter-effect": "2.21.0"
@@ -2555,6 +2563,13 @@ Lockfile:
     resolved "https://repo.yyrd.com/artifactory/api/npm/seentao-npm-all/@types/parse-json/-/parse-json-4.0.2.tgz"
     integrity sha512-dISoDXWWQwUquiKsyZ4Ng+HX2KsPL7LyHKHQwgGFEA3IaKac4Obd+h2a/a6waisAoepJlBcx9paWqjA8/HVjCw==
   
+  "@types/pdfjs-dist@*":
+    version "2.10.378"
+    resolved "https://repo.yyrd.com/artifactory/api/npm/seentao-npm-all/@types/pdfjs-dist/-/pdfjs-dist-2.10.378.tgz#7f28ca75e43e88dd1d283f16c6786422df41063f"
+    integrity sha512-TRdIPqdsvKmPla44kVy4jv5Nt5vjMfVjbIEke1CRULIrwKNRC4lIiZvNYDJvbUMNCFPNIUcOKhXTyMJrX18IMA==
+    dependencies:
+      pdfjs-dist "*"
+  
   "@types/prop-types@*":
     version "15.7.12"
     resolved "https://repo.yyrd.com/artifactory/api/npm/seentao-npm-all/@types/prop-types/-/prop-types-15.7.12.tgz"
@@ -2577,6 +2592,14 @@ Lockfile:
     resolved "https://repo.yyrd.com/artifactory/api/npm/seentao-npm-all/@types/react-dom/-/react-dom-18.0.11.tgz"
     integrity sha512-O38bPbI2CWtgw/OoQoY+BRelw7uysmXbWvw3nLWO21H1HSh+GOlqPuXshJfjmpNlKiiSDG9cc1JZAaMmVdcTlw==
     dependencies:
+      "@types/react" "*"
+  
+  "@types/react-pdf@^4.0.6":
+    version "4.0.6"
+    resolved "https://repo.yyrd.com/artifactory/api/npm/seentao-npm-all/@types/react-pdf/-/react-pdf-4.0.6.tgz#cc96357d87ca72e21d8d4caec5956c62a3990abc"
+    integrity sha512-ZmtUA31L5AaF9PilB8cJ3PuGOHIiyWcHnCir7KOux1cDjfVH6VxiN/j7CcyX98U9hwlyN81bkqxeNWNuEc0a4w==
+    dependencies:
+      "@types/pdfjs-dist" "*"
       "@types/react" "*"
   
   "@types/react-reconciler@^0.26.7":
@@ -3434,12 +3457,12 @@ Lockfile:
       screenfull "^5.0.0"
       tslib "^2.4.1"
   
-  ajv-keywords@^3.5.2:
+  ajv-keywords@^3.1.0, ajv-keywords@^3.5.2:
     version "3.5.2"
     resolved "https://repo.yyrd.com/artifactory/api/npm/seentao-npm-all/ajv-keywords/-/ajv-keywords-3.5.2.tgz"
     integrity sha512-5p6WTN0DdTGVQk6VjcEju19IgaHudalcfabD7yhDGeA6bcQnmL+CpveLJq/3hvfwd1aof6L386Ougkx6RfyMIQ==
   
-  ajv@^6.10.0, ajv@^6.12.4, ajv@^6.12.5:
+  ajv@^6.1.0, ajv@^6.10.0, ajv@^6.12.4, ajv@^6.12.5:
     version "6.12.6"
     resolved "https://repo.yyrd.com/artifactory/api/npm/seentao-npm-all/ajv/-/ajv-6.12.6.tgz"
     integrity sha512-j3fVLgvTo527anyYyJOGTYJbG+vnnQYvE0m5mmkc1TK+nxAppkCLMIL0aZ4dblVCNoGShhm+kzE4ZUykBoMg4g==
@@ -7509,6 +7532,11 @@ Lockfile:
     resolved "https://repo.yyrd.com/artifactory/api/npm/seentao-npm-all/jquery/-/jquery-3.7.1.tgz#083ef98927c9a6a74d05a6af02806566d16274de"
     integrity sha512-m4avr8yL8kmFN8psrbFFFmB/If14iN5o9nw/NgnnM+kybDJpRsAynV2BsfpTYrTRysYUdADVD7CkUUizgkpLfg==
   
+  js-audio-recorder@^1.0.7:
+    version "1.0.7"
+    resolved "https://repo.yyrd.com/artifactory/api/npm/seentao-npm-all/js-audio-recorder/-/js-audio-recorder-1.0.7.tgz#01501cb9eb143d57994b42bd5ae97974fda18908"
+    integrity sha512-JiDODCElVHGrFyjGYwYyNi7zCbKk9va9C77w+zCPMmi4C6ix7zsX2h3ddHugmo4dOTOTCym9++b/wVW9nC0IaA==
+  
   js-base64@3.7.7:
     version "3.7.7"
     resolved "https://repo.yyrd.com/artifactory/api/npm/seentao-npm-all/js-base64/-/js-base64-3.7.7.tgz"
@@ -7580,6 +7608,13 @@ Lockfile:
     integrity sha512-SzoRg7ux5DWTII9J2qkrZrqV1gt+rTaoufMxEzXbS26Uid0NwaJd123HcoB80TgubEppxxIGdNxCx50fEoEWQA==
     dependencies:
       string-convert "^0.2.0"
+  
+  json5@^1.0.1:
+    version "1.0.2"
+    resolved "https://repo.yyrd.com/artifactory/api/npm/seentao-npm-all/json5/-/json5-1.0.2.tgz#63d98d60f21b313b77c4d6da18bfa69d80e1d593"
+    integrity sha512-g1MWMLBiz8FKi1e4w0UyVL3w+iJceWAFBAaBnnGKOpNa5f8TLktkbre1+s6oICydWAm+HRUGTmI+//xv2hvXYA==
+    dependencies:
+      minimist "^1.2.0"
   
   json5@^2.1.2, json5@^2.2.3:
     version "2.2.3"
@@ -7798,6 +7833,15 @@ Lockfile:
       through "^2.3.8"
       wrap-ansi "^7.0.0"
   
+  loader-utils@^1.0.0:
+    version "1.4.2"
+    resolved "https://repo.yyrd.com/artifactory/api/npm/seentao-npm-all/loader-utils/-/loader-utils-1.4.2.tgz#29a957f3a63973883eb684f10ffd3d151fec01a3"
+    integrity sha512-I5d00Pd/jwMD2QCduo657+YM/6L3KZu++pmX9VFncxaxvHcru9jx1lBaFft+r4Mt2jK0Yhp41XlRAihzPxHNCg==
+    dependencies:
+      big.js "^5.2.2"
+      emojis-list "^3.0.0"
+      json5 "^1.0.1"
+  
   loader-utils@^2.0.4:
     version "2.0.4"
     resolved "https://repo.yyrd.com/artifactory/api/npm/seentao-npm-all/loader-utils/-/loader-utils-2.0.4.tgz"
@@ -7940,7 +7984,7 @@ Lockfile:
     resolved "https://repo.yyrd.com/artifactory/api/npm/seentao-npm-all/maath/-/maath-0.10.8.tgz"
     integrity sha512-tRvbDF0Pgqz+9XUa4jjfgAQ8/aPKmQdWXilFu2tMy4GWj4NOsx99HlULO4IeREfbO3a0sA145DZYyvXPkybm0g==
   
-  make-cancellable-promise@^1.3.1:
+  make-cancellable-promise@^1.0.0, make-cancellable-promise@^1.3.1:
     version "1.3.2"
     resolved "https://repo.yyrd.com/artifactory/api/npm/seentao-npm-all/make-cancellable-promise/-/make-cancellable-promise-1.3.2.tgz#993c8c8b79cff13c74fa93de0bd8a17fe66685c1"
     integrity sha512-GCXh3bq/WuMbS+Ky4JBPW1hYTOU+znU+Q5m9Pu+pI8EoUqIHk9+tviOKC6/qhHh8C4/As3tzJ69IF32kdz85ww==
@@ -7965,7 +8009,7 @@ Lockfile:
     resolved "https://repo.yyrd.com/artifactory/api/npm/seentao-npm-all/make-error/-/make-error-1.3.6.tgz"
     integrity sha512-s8UhlNe7vPKomQhC1qFelMokr/Sc3AgNbso3n74mVPA5LTZwkB9NlXf4XPamLxJE8h0gh73rM94xvwRT2CVInw==
   
-  make-event-props@^1.6.0:
+  make-event-props@^1.1.0, make-event-props@^1.6.0:
     version "1.6.2"
     resolved "https://repo.yyrd.com/artifactory/api/npm/seentao-npm-all/make-event-props/-/make-event-props-1.6.2.tgz#c8e0e48eb28b9b808730de38359f6341de7ec5a2"
     integrity sha512-iDwf7mA03WPiR8QxvcVHmVWEPfMY1RZXerDVNCRYW7dUr2ppH3J58Rwb39/WG39yTZdRSxr3x+2v22tvI0VEvA==
@@ -8165,6 +8209,11 @@ Lockfile:
       trim-newlines "^3.0.0"
       type-fest "^0.18.0"
       yargs-parser "^20.2.3"
+  
+  merge-class-names@^1.1.1:
+    version "1.4.2"
+    resolved "https://repo.yyrd.com/artifactory/api/npm/seentao-npm-all/merge-class-names/-/merge-class-names-1.4.2.tgz#78d6d95ab259e7e647252a7988fd25a27d5a8835"
+    integrity sha512-bOl98VzwCGi25Gcn3xKxnR5p/WrhWFQB59MS/aGENcmUc6iSm96yrFDF0XSNurX9qN4LbJm0R9kfvsQ17i8zCw==
   
   merge-descriptors@1.0.1:
     version "1.0.1"
@@ -8488,6 +8537,11 @@ Lockfile:
       is-plain-obj "^1.1.0"
       kind-of "^6.0.3"
   
+  minimist@^1.2.0:
+    version "1.2.8"
+    resolved "https://repo.yyrd.com/artifactory/api/npm/seentao-npm-all/minimist/-/minimist-1.2.8.tgz#c1a464e7693302e082a075cee0c057741ac4772c"
+    integrity sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==
+  
   minipass@^3.0.0:
     version "3.3.6"
     resolved "https://repo.yyrd.com/artifactory/api/npm/seentao-npm-all/minipass/-/minipass-3.3.6.tgz#7bba384db3a1520d18c9c0e5251c3444e95dd94a"
@@ -8649,6 +8703,11 @@ Lockfile:
     version "1.0.0"
     resolved "https://repo.yyrd.com/artifactory/api/npm/seentao-npm-all/node-domexception/-/node-domexception-1.0.0.tgz"
     integrity sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==
+  
+  node-ensure@^0.0.0:
+    version "0.0.0"
+    resolved "https://repo.yyrd.com/artifactory/api/npm/seentao-npm-all/node-ensure/-/node-ensure-0.0.0.tgz#ecae764150de99861ec5c810fd5d096b183932a7"
+    integrity sha512-DRI60hzo2oKN1ma0ckc6nQWlHU69RH6xN0sjQTjMpChPfTYvKZdcQFfdYK2RWbJcKyUizSIy/l8OTGxMAM1QDw==
   
   node-fetch@^2.6.7:
     version "2.7.0"
@@ -9180,18 +9239,26 @@ Lockfile:
       safe-buffer "^5.0.1"
       sha.js "^2.4.8"
   
+  pdfjs-dist@*:
+    version "4.6.82"
+    resolved "https://repo.yyrd.com/artifactory/api/npm/seentao-npm-all/pdfjs-dist/-/pdfjs-dist-4.6.82.tgz#4f171289f1810f324cd17c58bc59bd5bd0e0db7e"
+    integrity sha512-BUOryeRFwvbLe0lOU6NhkJNuVQUp06WxlJVVCsxdmJ4y5cU3O3s3/0DunVdK1PMm7v2MUw52qKYaidhDH1Z9+w==
+    optionalDependencies:
+      canvas "^2.11.2"
+      path2d "^0.2.1"
+  
+  pdfjs-dist@2.1.266:
+    version "2.1.266"
+    resolved "https://repo.yyrd.com/artifactory/api/npm/seentao-npm-all/pdfjs-dist/-/pdfjs-dist-2.1.266.tgz#cded02268b389559e807f410d2a729db62160026"
+    integrity sha512-Jy7o1wE3NezPxozexSbq4ltuLT0Z21ew/qrEiAEeUZzHxMHGk4DUV1D7RuCXg5vJDvHmjX1YssN+we9QfRRgXQ==
+    dependencies:
+      node-ensure "^0.0.0"
+      worker-loader "^2.0.0"
+  
   pdfjs-dist@4.3.136:
     version "4.3.136"
     resolved "https://repo.yyrd.com/artifactory/api/npm/seentao-npm-all/pdfjs-dist/-/pdfjs-dist-4.3.136.tgz#09cd7f73da5bd0eaabc9067f07a6f91b1f0beb95"
     integrity sha512-gzfnt1qc4yA+U46golPGYtU4WM2ssqP2MvFjKga8GEKOrEnzRPrA/9jogLLPYHiA3sGBPJ+p7BdAq+ytmw3jEg==
-    optionalDependencies:
-      canvas "^2.11.2"
-      path2d "^0.2.0"
-  
-  pdfjs-dist@4.4.168:
-    version "4.4.168"
-    resolved "https://repo.yyrd.com/artifactory/api/npm/seentao-npm-all/pdfjs-dist/-/pdfjs-dist-4.4.168.tgz#4487716376a33c68753ed37f782ae91d1c9ef8fa"
-    integrity sha512-MbkAjpwka/dMHaCfQ75RY1FXX3IewBVu6NGZOcxerRFlaBiIkZmUoR0jotX5VUzYZEXAGzSFtknWs5xRKliXPA==
     optionalDependencies:
       canvas "^2.11.2"
       path2d "^0.2.0"
@@ -9689,7 +9756,7 @@ Lockfile:
       is-promise "^2.1.0"
       lie "^3.0.2"
   
-  prop-types@^15.5.10, prop-types@^15.6.0, prop-types@^15.7.2, prop-types@^15.8.1:
+  prop-types@^15.5.10, prop-types@^15.6.0, prop-types@^15.6.2, prop-types@^15.7.2, prop-types@^15.8.1:
     version "15.8.1"
     resolved "https://repo.yyrd.com/artifactory/api/npm/seentao-npm-all/prop-types/-/prop-types-15.8.1.tgz"
     integrity sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==
@@ -10902,19 +10969,17 @@ Lockfile:
       tiny-invariant "^1.0.0"
       warning "^4.0.0"
   
-  react-pdf@^9.1.0:
-    version "9.1.0"
-    resolved "https://repo.yyrd.com/artifactory/api/npm/seentao-npm-all/react-pdf/-/react-pdf-9.1.0.tgz#2a1456646d2eb4e4a246e83121d195775bbfa5dc"
-    integrity sha512-KhPDQE3QshkLdS3b48S5Bldv0N5flob6qwvsiADWdZOS5TMDaIrkRtEs+Dyl6ubRf2jTf9jWmFb6RjWu46lSSg==
+  react-pdf@^4.1.0:
+    version "4.2.0"
+    resolved "https://repo.yyrd.com/artifactory/api/npm/seentao-npm-all/react-pdf/-/react-pdf-4.2.0.tgz#b83a01eb070912522075b7a51aee7d63b2c912ed"
+    integrity sha512-Ao44mZszfPwtCUsrXHtXnhM+czTvPxfG5wqssbWgj2onL70TKSOKGzQfCH4csCnNDOKji/Pc/s0Og70/VOE+Rg==
     dependencies:
-      clsx "^2.0.0"
-      dequal "^2.0.3"
-      make-cancellable-promise "^1.3.1"
-      make-event-props "^1.6.0"
-      merge-refs "^1.3.0"
-      pdfjs-dist "4.4.168"
-      tiny-invariant "^1.0.0"
-      warning "^4.0.0"
+      "@babel/runtime" "^7.0.0"
+      make-cancellable-promise "^1.0.0"
+      make-event-props "^1.1.0"
+      merge-class-names "^1.1.1"
+      pdfjs-dist "2.1.266"
+      prop-types "^15.6.2"
   
   react-reconciler@^0.27.0:
     version "0.27.0"
@@ -10967,6 +11032,11 @@ Lockfile:
     integrity sha512-7Wh1DzVQ+tlFjkeo+ujvjSqSJmkt1+8JO+T5xklPlgrh70y7ogx75ODRW0ThWhY7S+6yEDks8TYrtQe/aoboBQ==
     dependencies:
       history "^5.2.0"
+  
+  react-speech-recognition@^3.10.0:
+    version "3.10.0"
+    resolved "https://repo.yyrd.com/artifactory/api/npm/seentao-npm-all/react-speech-recognition/-/react-speech-recognition-3.10.0.tgz#7aa43bb28d78b92671864dabba3a70489ccad27b"
+    integrity sha512-EVSr4Ik8l9urwdPiK2r0+ADrLyDDrjB0qBRdUWO+w2MfwEBrj6NuRmy1GD3x7BU/V6/hab0pl8Lupen0zwlJyw==
   
   react-syntax-highlighter@^15.5.0:
     version "15.5.0"
@@ -11373,6 +11443,14 @@ Lockfile:
     integrity sha512-UOShsPwz7NrMUqhR6t0hWjFduvOzbtv7toDH1/hIrfRNIDBnnBWd0CwJTGvTpngVlmwGCdP9/Zl/tVrDqcuYzQ==
     dependencies:
       loose-envify "^1.1.0"
+  
+  schema-utils@^0.4.0:
+    version "0.4.7"
+    resolved "https://repo.yyrd.com/artifactory/api/npm/seentao-npm-all/schema-utils/-/schema-utils-0.4.7.tgz#ba74f597d2be2ea880131746ee17d0a093c68187"
+    integrity sha512-v/iwU6wvwGK8HbU9yi3/nhGzP0yGSuhQMzL6ySiec1FSrZZDkhm4noOSWzrNFo/jEc+SJY6jRTwuwbSXJPDUnQ==
+    dependencies:
+      ajv "^6.1.0"
+      ajv-keywords "^3.1.0"
   
   schema-utils@^3.0.0, schema-utils@^3.1.1:
     version "3.3.0"
@@ -12924,6 +13002,14 @@ Lockfile:
     version "1.2.5"
     resolved "https://repo.yyrd.com/artifactory/api/npm/seentao-npm-all/word-wrap/-/word-wrap-1.2.5.tgz"
     integrity sha512-BN22B5eaMMI9UMtjrGd5g5eCYPpCPDUy0FJXbYsaT5zYxjFOckS53SQDE3pWkVoWpHXVb3BrYcEN4Twa55B5cA==
+  
+  worker-loader@^2.0.0:
+    version "2.0.0"
+    resolved "https://repo.yyrd.com/artifactory/api/npm/seentao-npm-all/worker-loader/-/worker-loader-2.0.0.tgz#45fda3ef76aca815771a89107399ee4119b430ac"
+    integrity sha512-tnvNp4K3KQOpfRnD20m8xltE3eWh89Ye+5oj7wXEEHKac1P4oZ6p9oTj8/8ExqoSBnk9nu5Pr4nKfQ1hn2APJw==
+    dependencies:
+      loader-utils "^1.0.0"
+      schema-utils "^0.4.0"
   
   "wrap-ansi-cjs@npm:wrap-ansi@^7.0.0", wrap-ansi@^7.0.0:
     version "7.0.0"

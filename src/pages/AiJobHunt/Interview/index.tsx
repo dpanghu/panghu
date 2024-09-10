@@ -9,12 +9,11 @@ import { downloadFile } from '@/utils/utils';
 import { Button, message } from 'SeenPc';
 import { useCreation, useMount, useReactive } from 'ahooks';
 import { Input, Modal } from 'antd';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Typewriter from 'typewriter-effect';
 import { history, useParams } from 'umi';
 import EventSourceStream from '../Home/DialogArea/EventSourceStream';
 import styles from './index.less';
-import PageLoading from '@/components/PageLoading';
 
 type TState = {
   data: any[];
@@ -29,7 +28,6 @@ type TState = {
   problemId: string;
   isLoading: boolean;
   isType: boolean;
-  btnLoading: boolean;
 };
 const Interview: React.FC = ({ }) => {
   const params = useParams<{ paramId?: string; themeId?: string }>();
@@ -49,7 +47,6 @@ const Interview: React.FC = ({ }) => {
     problemId: '',
     isLoading: false,
     isType: false,
-    btnLoading: false,
   });
   const submitUserAnswer = () => {
     state.isLoading = true;
@@ -73,14 +70,18 @@ const Interview: React.FC = ({ }) => {
       {
         // 结束，包括接收完毕所有数据、报错、关闭链接
         onFinished: () => {
-          state.isLoading = false;
-          state.btnLoading = false;
+          
         },
         onError: (error) => {
           console.log(error);
         },
         // 接收到数据
-        receiveMessage: () => { },
+        receiveMessage: (data) => {
+          if(data.isEnd){
+            console.log('11111')
+            state.isLoading = false;
+          }
+        },
       },
     ).run();
     state.answers = [
@@ -128,30 +129,21 @@ const Interview: React.FC = ({ }) => {
   }
   const handleShowReferenceAnswers = () => {
     if (state.isLoading) {
-      state.btnLoading = true;
+      message.warning('请先等待AI生成参考答案');
+      return;
     } else {
-      state.btnLoading = false;
       if (state.showReferenceAnswers) {
         state.showReferenceAnswers = false;
         state.showAIComments = false;
         state.ReferenceAnswers = [];
         state.AIComments = [];
       } else {
+        console.log('2222')
         getInterviewQuestionLists();
         state.showReferenceAnswers = true;
       }
     }
   };
-
-  const prevBtnLoading = useRef(false);
-
-  useEffect(() => {
-    if (!state.btnLoading && prevBtnLoading.current) {
-      getInterviewQuestionLists();
-      state.showReferenceAnswers = true;
-    }
-    prevBtnLoading.current = state.btnLoading;
-  }, [state.btnLoading]);
 
   const handleShowAIComments = () => {
     if (state.showAIComments) {
@@ -218,9 +210,6 @@ const Interview: React.FC = ({ }) => {
 
   return (
     <div className={styles.interviewContainer}>
-      {
-        state.btnLoading && <PageLoading />
-      }
       <div className={styles.top}>
         <div className={styles.topLeft}>
           <Button onClick={() => history.push('/aiJobHunt')}>
@@ -290,6 +279,13 @@ const Interview: React.FC = ({ }) => {
               </div>
             );
           })}
+          {state.showBtn && (
+            <div className={styles.aiBox}>
+              <div className={styles.box}>
+                本次面试已结束，感谢您参加此次面试，我们会尽快对您的表现进行评估并给出反馈
+              </div>
+            </div>
+          )}
           {state.showReferenceAnswers && (
             <div className={styles.aiAnswerBox}>
               <span>参考答案:</span>

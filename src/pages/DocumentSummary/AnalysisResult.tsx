@@ -1,24 +1,75 @@
-import MindMap from '@/components/MindMap/index1';
+import MindMap from '@/components/MindMap';
 import { useReactive } from 'ahooks';
 import { Tabs } from 'antd';
-import React from 'react';
+import React, { useEffect } from 'react';
 import styles from './AnalysisResult.less';
+import CopyButton from './CopyButton';
 import Markdown from './Mind';
 
 interface TProps {
   summaryData: RecordItem;
+  baseActiveKey: string;
+  isFullscreen?: boolean;
+  isExitFullscreen?: boolean;
+  getActiveTabKey: (key: string) => void;
+  getMindGraph: (graph: any) => void;
+  changeFullscreen?: (isFullscreen: boolean) => void;
 }
 
-const AnalysisResult: React.FC<TProps> = ({ summaryData }) => {
-  console.log(summaryData);
-
-  const state = useReactive({
-    activeKey: '2',
+const AnalysisResult: React.FC<TProps> = ({
+  summaryData,
+  getActiveTabKey,
+  getMindGraph,
+  changeFullscreen,
+  isFullscreen,
+  isExitFullscreen,
+  baseActiveKey,
+}) => {
+  const state = useReactive<any>({
+    activeKey: baseActiveKey || '1',
+    mindData: {},
   });
 
+  const formatData = () => {
+    const data = JSON.parse(summaryData?.mindMap || '{}');
+    if (data?.length) {
+      state.mindData = {
+        name: '文档总结',
+        children: data,
+      };
+    } else {
+      state.mindData = data;
+    }
+  };
   const onChange = (key: string) => {
     state.activeKey = key;
+    getActiveTabKey(key);
   };
+
+  const markdownToPlainText = (markdown: string) => {
+    return markdown
+      .replace(/#+\s/g, '') // 移除标题
+      .replace(/\n/g, ' ') // 移除换行符
+      .replace(/\*\*(.*?)\*\*/g, '$1') // 移除加粗标记
+      .replace(/\*(.*?)\*/g, '$1') // 移除斜体标记
+      .replace(/!\[(.*?)\]\((.*?)\)/g, '$1') // 移除图片链接
+      .replace(/\[(.*?)\]\((.*?)\)/g, '$1') // 移除普通链接
+      .replace(/`(.*?)`/g, '$1') // 移除代码标记
+      .replace(/__(.*?)__/g, '$1') // 移除下划线
+      .trim(); // 移除首尾空格
+  };
+
+  useEffect(() => {
+    formatData();
+  }, [summaryData]);
+
+  useEffect(() => {
+    state.activeKey = isExitFullscreen ? '2' : '1';
+  }, [isExitFullscreen]);
+  useEffect(() => {
+    formatData();
+    state.activeKey = baseActiveKey;
+  }, [baseActiveKey]);
 
   return (
     <div className={styles.AnalysisResultContainer}>
@@ -31,56 +82,36 @@ const AnalysisResult: React.FC<TProps> = ({ summaryData }) => {
             key: '1',
           },
           {
-            label: `脑图`,
+            label: `思维导图`,
             key: '2',
           },
         ]}
       />
+      {state.activeKey === '1' && (
+        <CopyButton
+          content={markdownToPlainText(summaryData?.summary || '') as string}
+          cssStyles={{
+            top: 10,
+            right: 10,
+          }}
+        />
+      )}
       <div
         className={styles.content}
         style={{ overflowY: state.activeKey === '1' ? 'auto' : 'visible' }}
       >
         {state.activeKey === '1' ? (
-          <Markdown
-            content={
-              '# P01:课程介绍和环境搭建\n' +
-              '[ **M** ] arkdown + E [ **ditor** ] = **Mditor**  \n' +
-              '> Mditor 是一个简洁、易于集成、方便扩展、期望舒服的编写 markdown 的编辑器，仅此而已... \n\n' +
-              '**这是加粗的文字**\n\n' +
-              '*这是倾斜的文字*`\n\n' +
-              '***这是斜体加粗的文字***\n\n' +
-              '~~这是加删除线的文字~~ \n\n' +
-              '`console.log(111)` \n\n' +
-              '# p02:来个Hello World 初始Vue3.0\n' +
-              '> aaaaaaaaa\n' +
-              '>> bbbbbbbbb\n' +
-              '>>> cccccccccc\n' +
-              '***\n\n\n' +
-              '# p03:Vue3.0基础知识讲解\n' +
-              '> aaaaaaaaa\n' +
-              '>> bbbbbbbbb\n' +
-              '>>> cccccccccc\n\n' +
-              '# p04:Vue3.0基础知识讲解\n' +
-              '> aaaaaaaaa\n' +
-              '>> bbbbbbbbb\n' +
-              '>>> cccccccccc\n\n' +
-              '#5 p05:Vue3.0基础知识讲解\n' +
-              '> aaaaaaaaa\n' +
-              '>> bbbbbbbbb\n' +
-              '>>> cccccccccc\n\n' +
-              '# p06:Vue3.0基础知识讲解\n' +
-              '> aaaaaaaaa\n' +
-              '>> bbbbbbbbb\n' +
-              '>>> cccccccccc\n\n' +
-              '# p07:Vue3.0基础知识讲解\n' +
-              '> aaaaaaaaa\n' +
-              '>> bbbbbbbbb\n' +
-              '>>> cccccccccc\n\n' +
-              '```var a=11; ```'
-            }
-          />
+          <Markdown content={summaryData?.summary} />
         ) : (
-          <MindMap dataSource={JSON.parse(summaryData?.mindMap || '{}')} />
+          Object.keys(state.mindData)?.length && (
+            <MindMap
+              dataSource={state.mindData}
+              getMindGraph={getMindGraph}
+              isFullscreen={isFullscreen}
+              changeFullscreen={changeFullscreen}
+              key={summaryData.id}
+            />
+          )
         )}
       </div>
     </div>

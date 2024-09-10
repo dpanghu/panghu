@@ -119,3 +119,76 @@ export function downloadFile(url: string) {
   link.href = url;
   link.click();
 }
+
+/**
+ * 从0开始截取字符串str到maxLength最大长度
+ * @param  {number} maxLength       最大长度
+ * @param  {String} [replace='...'] 替代值
+ * @return {[type]}                 [description]
+ */
+export function sliceString(str: string, maxLength: number, replace = '...') {
+  if (typeof str !== 'string') {
+    return str;
+  }
+
+  if (!str) {
+    return '';
+  }
+
+  if (str.length > maxLength) {
+    return `${str.slice(0, maxLength)}${replace}`;
+  }
+
+  return str;
+}
+
+function enterFullscreen(docElm: any) {
+  if (docElm.requestFullscreen) {
+    docElm.requestFullscreen();
+  } else if (docElm.msRequestFullscreen) {
+    docElm.msRequestFullscreen();
+  } else if (docElm.mozRequestFullScreen) {
+    docElm.mozRequestFullScreen();
+  } else if (docElm.webkitRequestFullScreen) {
+    docElm.webkitRequestFullScreen();
+  }
+}
+function exitFullscreen() {
+  let cfs = document as any;
+  if (cfs.exitFullscreen) {
+    cfs.exitFullscreen();
+  } else if (cfs.msExitFullscreen) {
+    cfs.msExitFullscreen();
+  } else if (cfs.mozCancelFullScreen) {
+    cfs.mozCancelFullScreen();
+  } else if (cfs.webkitCancelFullScreen) {
+    cfs.webkitCancelFullScreen();
+  }
+}
+
+export function isFullscreen() {
+  let cfs = document as any;
+  return (
+    cfs.fullscreenElement ||
+    cfs.msFullscreenElement ||
+    cfs.mozFullScreenElement ||
+    cfs.webkitFullscreenElement ||
+    false
+  );
+}
+
+//全屏
+export function fullscreen(fullscreenState: any, docElm: any) {
+  if (isFullscreen()) {
+    exitFullscreen();
+  } else {
+    enterFullscreen(docElm);
+  }
+}
+
+// 获取sessionStorage
+export const getSessionStorage = (key: string) => {
+  return window.sessionStorage.getItem(key) === 'undefined'
+    ? undefined
+    : JSON.parse(window.sessionStorage.getItem(key) || '{}');
+};

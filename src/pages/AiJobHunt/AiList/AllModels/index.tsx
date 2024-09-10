@@ -62,6 +62,7 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
           userToken: 2,
           schoolId: 3,
           memberId: 5,
+          modelTypeId: activeKey,
           search: values,
         }).then((res) => {
           setData(res);
@@ -90,6 +91,7 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
         userToken: 2,
         schoolId: 3,
         memberId: 5,
+        modelTypeId: activeKey,
         search: values,
       }).then((res) => {
         setData(res);
@@ -151,6 +153,7 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
             userToken: 2,
             schoolId: 3,
             memberId: 5,
+            modelTypeId: activeKey,
             search: values,
           }).then((res) => {
             setData(res);
@@ -343,6 +346,7 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                                     userToken: 2,
                                     schoolId: 3,
                                     memberId: 5,
+                                    modelTypeId: activeKey,
                                     search: values,
                                   }).then((res) => {
                                     setData(res);
@@ -395,6 +399,7 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                                         userToken: 2,
                                         schoolId: 3,
                                         memberId: 5,
+                                        modelTypeId: activeKey,
                                         search: values,
                                       }).then((res) => {
                                         setData(res);
@@ -534,6 +539,7 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                                         userToken: 2,
                                         schoolId: 3,
                                         memberId: 5,
+                                        modelTypeId: activeKey,
                                         search: values,
                                       }).then((res) => {
                                         setData(res);
