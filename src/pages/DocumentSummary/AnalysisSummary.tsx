@@ -7,6 +7,7 @@ import styles from './AnalysisSummary.less';
 
 interface TProps {
   summaryData: RecordItem;
+  baseActiveKey: string;
   getActiveTabKey: (key: string) => void;
   getMindGraph: (graph: any) => void;
 }
@@ -15,6 +16,7 @@ const AnalysisSummary: React.FC<TProps> = ({
   summaryData,
   getActiveTabKey,
   getMindGraph,
+  baseActiveKey,
 }) => {
   const state = useReactive<any>({
     mindData: {},
@@ -65,6 +67,7 @@ const AnalysisSummary: React.FC<TProps> = ({
           </div>
           <div className={styles.AIcontent}>
             <AnalysisResult
+              baseActiveKey={baseActiveKey}
               summaryData={summaryData}
               getActiveTabKey={getActiveTabKey}
               getMindGraph={getMindGraph}
