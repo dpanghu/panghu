@@ -198,15 +198,14 @@ const AiOCR: React.FC = ({ }) => {
         message.warning('图片过大，请上传1MB以内图片');
         return false;
       }
-
+      if (state.preData.length > 19) {
+        message.warning('图片已满，请删除图片后，再上传');
+        return false;
+      }
       return true;
     },
 
     onChange(info: any) {
-      if (state.preData.length > 19) {
-        message.warning('图片已满，请删除图片后，再上传');
-        return;
-      }
       state.IdentifyData = [];
       state.isSelect = '';
       const { status } = info.file;
