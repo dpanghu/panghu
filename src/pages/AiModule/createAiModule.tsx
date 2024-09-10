@@ -631,7 +631,8 @@ const Resume: React.FC = ({ }) => {
         okText={'保存'}
         onOk={() => {
           const chooseDatas: any = state.chooseData;
-          let allow: any = chooseDatas.find((element: any)=> element.label = state.modalData.name);
+          console.log(JSON.stringify(chooseDatas.option));
+          let allow: any = chooseDatas.option.find((element: any)=> element.label === state.modalData.name);
           if(allow !== void 0) {
             message.warning('该标签已经存在，请修改之后再保存');
             return
