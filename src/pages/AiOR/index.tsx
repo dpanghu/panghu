@@ -14,7 +14,7 @@ import {
 } from '@/services/aiOCR';
 import { CloseCircleFilled } from '@ant-design/icons';
 import { useMount, useReactive } from 'ahooks';
-import { message, Spin } from 'antd';
+import { message, Modal, Spin } from 'antd';
 import React, { useState } from 'react';
 import { Upload } from 'SeenPc';
 import styles from './index.less';
@@ -247,29 +247,37 @@ const AiOR: React.FC = ({ }) => {
 
     const delImage = (index: any) => {
         if (state.isPreset == true) return;
-        deletePic({ picUid: state.isSelect }).then((res) => {
-            if (index < 0) {
-                if (state.preData.length > 1) {
+        Modal.confirm({
+            title: '你确定要删除吗？',
+            okText: '确定',
+            cancelText: '取消',
+            onOk() {
+                deletePic({ picUid: state.isSelect }).then((res) => {
+                    if (index < 0) {
+                        if (state.preData.length > 1) {
+                            selectImage(
+                                state.preData[1].picUid,
+                                state.preData[1].url,
+                                state.preData[1].rotationAngle,
+                                state.preData[1].note,
+                                state.preData[1].isPreset,
+                            );
+                        }
+                        getImageLists();
+                        return;
+                    }
+                    let item = state.preData[index];
                     selectImage(
-                        state.preData[1].picUid,
-                        state.preData[1].url,
-                        state.preData[1].rotationAngle,
-                        state.preData[1].note,
-                        state.preData[1].isPreset,
+                        item.picUid,
+                        item.url,
+                        item.rotationAngle,
+                        item.note,
+                        item.isPreset,
                     );
-                }
-                getImageLists();
-                return;
-            }
-            let item = state.preData[index];
-            selectImage(
-                item.picUid,
-                item.url,
-                item.rotationAngle,
-                item.note,
-                item.isPreset,
-            );
-            getImageLists();
+                    getImageLists();
+                });
+            },
+            onCancel() { },
         });
     };
 
