@@ -26,3 +26,12 @@ export async function savePresetPageData<T>(params?: RecordItem): Promise<T> {
     params,
   });
 }
+
+// 查询插件编码对接的附件参数
+export async function getFileConf<T>(params?: RecordItem): Promise<T> {
+  return $axios.request({
+    url: '/xai/xai/plugin/param/fileconf/get',
+    method: 'POST',
+    params,
+  });
+}

@@ -4945,6 +4945,11 @@ dayjs@1.x, dayjs@^1.11.1, dayjs@^1.11.10, dayjs@^1.11.7, dayjs@^1.9.1:
   resolved "https://repo.yyrd.com/artifactory/api/npm/seentao-npm-all/dayjs/-/dayjs-1.11.12.tgz"
   integrity sha512-Rt2g+nTbLlDWZTwwrIXjy9MeiZmSDI375FvZs72ngxx8PDC6YXOeR3q5LAuPzjZQxhiWdRKac7RKV+YyQYfYIg==
 
+dayjs@^1.11.13:
+  version "1.11.13"
+  resolved "https://repo.yyrd.com/artifactory/api/npm/seentao-npm-all/dayjs/-/dayjs-1.11.13.tgz#92430b0139055c3ebb60150aa13e860a4b5a366c"
+  integrity sha512-oaMBel6gjolK862uaPQOVTA7q3TZhuSvuMQAAglQDOWYO9A91IrAOUJEyKVlqJlHE0vq5p5UXxzdPfMH/x6xNg==
+
 debounce@^1.2.1:
   version "1.2.1"
   resolved "https://repo.yyrd.com/artifactory/api/npm/seentao-npm-all/debounce/-/debounce-1.2.1.tgz"
