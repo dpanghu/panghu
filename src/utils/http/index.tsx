@@ -7,7 +7,7 @@ import type { AxiosInstance, AxiosResponse } from 'axios';
 import axios from 'axios';
 import { cloneDeep } from 'lodash';
 import qs from 'qs';
-import { transformFormData, getCommonData } from '../utils';
+import { getCommonData, transformFormData } from '../utils';
 import { CodeMessage } from './config';
 import { ContentType } from './enum';
 import type { CreateAxiosConfig } from './interface.d';
@@ -37,7 +37,7 @@ class Axios {
     let qsData = JSON.parse(
       window.sessionStorage.getItem('queryParams') || '{}',
     );
-    let commonData: any = getCommonData(); 
+    let commonData: any = getCommonData();
     conf.params = {
       ...qsData,
       ...conf.params,

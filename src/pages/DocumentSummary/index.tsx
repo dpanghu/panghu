@@ -11,6 +11,7 @@ import {
   getAttachmentId,
   getSummaryItem,
   getSummaryList,
+  resetWordAnalysis,
   uploadSummary,
 } from '@/services/documentSummary';
 import { getFileMajorType } from '@/utils/contants';
@@ -243,6 +244,24 @@ const DocumentSummary: React.FC = () => {
       changeContent(result);
     } finally {
       state.uploadLoading = false;
+      state.showActionBtns = false;
+      state.showSummary = false;
+    }
+  };
+
+  const resetAnalysis = async (params: RecordItem) => {
+    try {
+      state.showSummary = false;
+      state.showActionBtns = true;
+      const result: any = await resetWordAnalysis({
+        wordSummaryId: params.id,
+        isPreset: params.isPreset,
+      });
+      changeContent(result);
+      // state.showSummary = true;
+    } catch (error) {
+      state.showSummary = false;
+      state.showActionBtns = false;
     }
   };
 
@@ -353,7 +372,9 @@ const DocumentSummary: React.FC = () => {
                                   ? '解析中,请等待'
                                   : item.status === 2
                                   ? '解析成功'
-                                  : '解析失败,请重新上传'}
+                                  : item.status === 0
+                                  ? '待解析'
+                                  : '解析失败'}
                               </div>
                             </div>
                             {item.status === 2 && (
@@ -364,6 +385,26 @@ const DocumentSummary: React.FC = () => {
                                 }}
                               >
                                 立即查看
+                              </div>
+                            )}
+                            {item.status === 3 && (
+                              <div
+                                className={styles.readBtn}
+                                onClick={() => {
+                                  resetAnalysis(item);
+                                }}
+                              >
+                                重新解析
+                              </div>
+                            )}
+                            {item.status === 0 && (
+                              <div
+                                className={styles.readBtn}
+                                onClick={() => {
+                                  resetAnalysis(item);
+                                }}
+                              >
+                                立即解析
                               </div>
                             )}
                           </div>
@@ -391,7 +432,7 @@ const DocumentSummary: React.FC = () => {
           </div>
 
           <div className={styles.btns} id="actionBtnContainer">
-            {state.showActionBtns && (
+            {state.showActionBtns && state.showSummary && (
               <>
                 <CustomUpload {...DraggerProps}>
                   <Button disabled={!state.showSummary}>上传</Button>

@@ -107,6 +107,7 @@ const PresetData: React.FC<TProps> = ({}) => {
       limit: 9999,
       resId: state.attachmentId,
     });
+    message.success(`上传成功`);
     queryFileList();
   };
 
@@ -114,7 +115,7 @@ const PresetData: React.FC<TProps> = ({}) => {
     dragger: false,
     accept: state.fileConf.ext.map((item) => '.' + item).join(','),
     allowFileType: state.fileConf.ext,
-    allowFileSize: 1,
+    allowFileSize: state.fileConf.maxSize,
     // action: 'https://tapi.seentao.com/bus-xai/dbe3.private.params.upload.get',
     // data: extraParams,
     seenOss: {
