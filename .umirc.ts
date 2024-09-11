@@ -11,6 +11,7 @@ export default defineConfig({
   layout: {
     title: 'XAI',
   },
+  esbuildMinifyIIFE: true,
   routes: [
     {
       path: '/',
@@ -34,6 +35,39 @@ export default defineConfig({
       component: '@/pages/AiOCR',
     },
     {
+      path: '/aiJobHunt/AiSurveyQuestionnaire',
+      component: '@/pages/AiJobHunt/AiSurveyQuestionnaire',
+      title: 'XAI | ai调查问卷',
+      layout: false,
+    },
+    {
+      path: '/aiJobHunt/AiLearnPlan',
+      component: '@/pages/AiJobHunt/AiLearnPlan',
+      title: 'XAI | ai学习规划',
+      layout: false,
+    },
+    {
+      path: '/aiJobHunt/AiPersonalPortrait',
+      component: '@/pages/AiJobHunt/AiPersonalPortrait',
+      title: 'XAI | ai个人画像',
+      layout: false,
+    },
+    {
+      path: '/FVR',
+      layout: false,
+      component: '@/pages/AiFVR',
+    },
+    {
+      path: '/LPR',
+      layout: false,
+      component: '@/pages/AiLPR',
+    },
+    {
+      path: '/OR',
+      layout: false,
+      component: '@/pages/AiOR',
+    },
+    {
       path: '/aiJobHunt/AiList',
       component: '@/pages/AiJobHunt/AiList',
       title: 'XAI | ai列表',
@@ -43,6 +77,25 @@ export default defineConfig({
       path: '/documentSummary',
       component: '@/pages/DocumentSummary',
       title: 'AI文档总结',
+      layout: false,
+    },
+    // ai情感分析
+    {
+      path: '/sentimentAnalysis',
+      component: '@/pages/SentimentAnalysis',
+      title: 'AI情感分析',
+      layout: false,
+    },
+    {
+      path: '/wenshengVoice',
+      component: '@/pages/WenshengVoice',
+      title: 'AI文生语音',
+      layout: false,
+    },
+    {
+      path: '/presetData',
+      component: '@/pages/PresetData',
+      title: '预置数据',
       layout: false,
     },
     {

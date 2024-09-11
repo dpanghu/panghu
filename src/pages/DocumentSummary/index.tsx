@@ -1,8 +1,8 @@
 import deleteIcon from '@/assets/images/close.png';
+import fileIcon from '@/assets/images/fileIcon.png';
 import iconCircleIcon from '@/assets/images/icon-exclamation-circle.png';
 import PDFIcon from '@/assets/images/icon-file_PDF.png';
 import WordIcon from '@/assets/images/icon-file_word.png';
-import recentRecordPng from '@/assets/images/recent_record_blue.png';
 import CustomUpload, { CustomUploadProps } from '@/components/CustomUpload';
 import { getConvertParamId } from '@/services/aiJobHunt';
 import {
@@ -27,6 +27,7 @@ import styles from './index.less';
 
 interface TState {
   showSummary: boolean;
+  showActionBtns: boolean;
   summaryData: RecordItem;
   paramsId: string;
   delModalOpen: boolean;
@@ -62,6 +63,7 @@ const DocumentSummary: React.FC = () => {
     recentlyRecordModal: false,
     activeTabKey: '1',
     graph: null,
+    showActionBtns: false,
   });
   const timerOutRef = useRef<any>(null);
   const ossViewUrlRef = useRef<any>('0');
@@ -74,6 +76,7 @@ const DocumentSummary: React.FC = () => {
       // state.showSummary = !!result.length;
       if (!result.length) {
         state.showSummary = false;
+        state.showActionBtns = false;
       }
       if (mount) {
         return;
@@ -88,6 +91,7 @@ const DocumentSummary: React.FC = () => {
 
   const changeContent = (dataSource: RecordItem) => {
     state.showSummary = true;
+    state.showActionBtns = true;
     state.summaryData = dataSource;
     querySummaryList();
     // 轮询 get接口 判断附件预览转换是否完成 ossViewUrl为0时 可能是未转换成功，也可能是文档不支持预览 所以设置1min最大轮询时长
@@ -171,26 +175,22 @@ const DocumentSummary: React.FC = () => {
         window.open(result as string, '_self');
       }
       if (state.exportParams.mindMapChecked) {
+        let attachmentName = state.summaryData?.attachmentName?.replace(
+          /\.[^/.]+$/,
+          '',
+        );
+        attachmentName = attachmentName + '-思维导图' + '.png';
         state.graph?.toPNG(
           (dataUri: string) => {
-            // 下载
-            // DataUri.downloadDataUri(
-            //   dataUri,
-            //   `${state.summaryData.attachmentName.replace(
-            //     /\.[^/.]+$/,
-            //     '',
-            //   )}-脑图.png
-            //   }`,
-            // );
-            DataUri.downloadDataUri(dataUri, '脑图.png');
+            DataUri.downloadDataUri(dataUri, attachmentName);
           },
           {
-            width: 1920,
-            height: 1080,
+            width: 3840,
+            height: 2160,
             quality: 1,
             padding: {
-              top: 20,
-              bottom: 20,
+              top: 40,
+              bottom: 40,
             },
           },
         );
@@ -212,6 +212,7 @@ const DocumentSummary: React.FC = () => {
   const handleChangeSummary = async (id: string) => {
     try {
       state.showSummary = true;
+      state.showActionBtns = true;
       const result: RecordItem[] = await getSummaryItem({ id });
       state.summaryData = result;
       state.recentlyRecordModal = false;
@@ -223,6 +224,9 @@ const DocumentSummary: React.FC = () => {
       state.recentlyRecordModal = value;
     } else if (type === 'export') {
       state.exportParams.popupOpen = value;
+    }
+    if (value) {
+      querySummaryList(true);
     }
   };
 
@@ -244,8 +248,8 @@ const DocumentSummary: React.FC = () => {
 
   const DraggerProps: CustomUploadProps = {
     dragger: false,
-    accept: '.doc,.docx,.pdf,.DOC,.DOCX,.PDF',
-    allowFileType: ['doc', 'docx', 'pdf', 'DOC', 'DOCX', 'PDF'],
+    accept: '.pdf,.PDF',
+    allowFileType: ['pdf', 'PDF'],
     allowFileSize: 1,
     seenOss: {
       url: '/api/bus-xai/dbe3.private.params.upload.get',
@@ -267,6 +271,8 @@ const DocumentSummary: React.FC = () => {
       };
       const attachmentId = await getAttachmentId(params);
       state.attachmentId = attachmentId;
+      state.showSummary = false;
+      state.showActionBtns = true;
       uploadData();
     },
   };
@@ -286,249 +292,258 @@ const DocumentSummary: React.FC = () => {
   }, [state.activeTabKey]);
 
   return (
-    <Spin
-      tip="文档解析中，请稍等！"
-      spinning={state.uploadLoading}
-      size="large"
-      wrapperClassName="spinContainer"
+    <div
+      className={styles.DocumentSummaryContainer}
+      id="DocumentSummaryContainer"
     >
-      <div
-        className={styles.DocumentSummaryContainer}
-        id="DocumentSummaryContainer"
-      >
-        <div className={styles.header}>
-          <div className={styles.title}>AI文档总结</div>
-          <div className={styles.action}>
-            <div className={styles.recordLast}>
-              <img src={recentRecordPng} alt="" />
-              <Popconfirm
-                onOpenChange={(e) => {
-                  handleVisibleChange(e, 'record');
-                }}
-                placement="bottom"
-                icon={null}
-                getPopupContainer={() =>
-                  document.getElementById('actionBtnContainer') as HTMLElement
-                }
-                trigger={'click'}
-                zIndex={99999}
-                open={state.recentlyRecordModal}
-                title={
-                  <div className={styles.PopupContent} style={{ height: 388 }}>
-                    <div className={styles.header}>最近记录</div>
-                    <div className={styles.recordMain}>
-                      {state.summaryList?.map((item) => (
-                        <div
-                          className={classNames(
-                            styles.panel,
-                            item.id === state.summaryData.id &&
-                              styles.activePanelMain,
-                          )}
-                          key={item.id}
-                        >
-                          <img
-                            src={
-                              ['pdf', 'PDF'].includes(item.attachmentSuffixname)
-                                ? PDFIcon
-                                : WordIcon
-                            }
-                            alt=""
-                            className={styles.fileTypeIcon}
-                          />
-                          <div className={styles.fileItem}>
-                            <div className={styles.fileName}>
-                              {item.attachmentName}
-                            </div>
-                            <div className={styles.fileDetail}>
-                              <div className={styles.size}>
-                                <div>1.65MB</div>
-                                <div>
-                                  {item.status === 1
-                                    ? '解析中'
-                                    : item.status === 2
-                                    ? '解析成功'
-                                    : '解析失败'}
-                                </div>
+      <div className={styles.header}>
+        <div className={styles.title}>AI文档总结</div>
+        <div className={styles.action}>
+          <div className={styles.recordLast}>
+            {/* <img src={recentRecordPng} alt="" /> */}
+            <Popconfirm
+              onOpenChange={(e) => {
+                handleVisibleChange(e, 'record');
+              }}
+              placement="bottom"
+              icon={null}
+              getPopupContainer={() =>
+                document.getElementById('actionBtnContainer') as HTMLElement
+              }
+              trigger={'click'}
+              zIndex={99999}
+              open={state.recentlyRecordModal}
+              title={
+                <div className={styles.PopupContent} style={{ height: 388 }}>
+                  <div className={styles.header}>我的文档库</div>
+                  <div className={styles.recordMain}>
+                    {state.summaryList?.map((item) => (
+                      <div
+                        className={classNames(
+                          styles.panel,
+                          item.id === state.summaryData.id &&
+                            styles.activePanelMain,
+                        )}
+                        key={item.id}
+                      >
+                        <img
+                          src={
+                            ['pdf', 'PDF'].includes(item.attachmentSuffixname)
+                              ? PDFIcon
+                              : WordIcon
+                          }
+                          alt=""
+                          className={styles.fileTypeIcon}
+                        />
+                        <div className={styles.fileItem}>
+                          <div className={styles.fileName}>
+                            {item.attachmentName}
+                          </div>
+                          <div className={styles.fileDetail}>
+                            <div className={styles.size}>
+                              <div>
+                                {!item.attachmentSize
+                                  ? '-'
+                                  : `${Math.round(
+                                      item.attachmentSize / 1024,
+                                    )}KB`}
                               </div>
-                              {item.status === 2 && (
-                                <div
-                                  className={styles.readBtn}
-                                  onClick={() => {
-                                    handleChangeSummary(item.id);
-                                  }}
-                                >
-                                  立即查看
-                                </div>
-                              )}
+                              <div>
+                                {item.status === 1
+                                  ? '解析中,请等待'
+                                  : item.status === 2
+                                  ? '解析成功'
+                                  : '解析失败,请重新上传'}
+                              </div>
                             </div>
-                            <img
-                              onClick={() => {
-                                state.delModalOpen = true;
-                                state.delSummaryId = item.id;
+                            {item.status === 2 && (
+                              <div
+                                className={styles.readBtn}
+                                onClick={() => {
+                                  handleChangeSummary(item.id);
+                                }}
+                              >
+                                立即查看
+                              </div>
+                            )}
+                          </div>
+                          <img
+                            onClick={() => {
+                              state.delModalOpen = true;
+                              state.delSummaryId = item.id;
+                            }}
+                            src={deleteIcon}
+                            alt=""
+                            className={styles.deleteIcon}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              }
+            >
+              <span className={styles.fileTitle}>
+                <img src={fileIcon} alt="" />
+                我的文档库
+              </span>
+            </Popconfirm>
+          </div>
+
+          <div className={styles.btns} id="actionBtnContainer">
+            {state.showActionBtns && (
+              <>
+                <CustomUpload {...DraggerProps}>
+                  <Button disabled={!state.showSummary}>上传</Button>
+                </CustomUpload>
+                <Button
+                  disabled={!state.showSummary}
+                  onClick={() => {
+                    state.delSummaryId = state.summaryData?.id;
+                    state.delModalOpen = true;
+                  }}
+                >
+                  删除
+                </Button>
+                <Popconfirm
+                  placement="bottomRight"
+                  open={state.exportParams.popupOpen}
+                  icon={null}
+                  onCancel={resetPopupContent}
+                  getPopupContainer={() =>
+                    document.getElementById('actionBtnContainer') as HTMLElement
+                  }
+                  trigger={'click'}
+                  zIndex={99999}
+                  onOpenChange={(e) => {
+                    handleVisibleChange(e, 'export');
+                  }}
+                  title={
+                    <div
+                      className={styles.PopupContent}
+                      style={{ height: 290 }}
+                    >
+                      <div className={styles.header}>导出</div>
+                      <div className={styles.content}>
+                        <div className={styles.row}>
+                          <Checkbox
+                            disabled
+                            checked={state.exportParams.introductionChecked}
+                            onChange={(e) => {
+                              onChangeCheckbox(e, '1');
+                            }}
+                          >
+                            <span className={styles.title}>导读</span>
+                          </Checkbox>
+                          <div className={styles.select}>
+                            <span>文档格式</span>
+                            <Select
+                              style={{ width: 'calc(100% - 80px)' }}
+                              onChange={(value) => {
+                                state.exportParams.introduction = value;
                               }}
-                              src={deleteIcon}
-                              alt=""
-                              className={styles.deleteIcon}
+                              value={state.exportParams.introduction}
+                              option={[
+                                { label: '.docx', value: '.docx' },
+                                { label: '.pdf', value: '.pdf' },
+                              ]}
                             />
                           </div>
                         </div>
-                      ))}
-                    </div>
-                  </div>
-                }
-              >
-                <span>最近记录</span>
-              </Popconfirm>
-            </div>
-
-            <div className={styles.btns} id="actionBtnContainer">
-              {state.showSummary && (
-                <>
-                  <CustomUpload {...DraggerProps}>
-                    <Button>上传</Button>
-                  </CustomUpload>
-                  <Button
-                    onClick={() => {
-                      state.delSummaryId = state.summaryData?.id;
-                      state.delModalOpen = true;
-                    }}
-                  >
-                    删除
-                  </Button>
-                  <Popconfirm
-                    placement="bottomRight"
-                    open={state.exportParams.popupOpen}
-                    icon={null}
-                    onCancel={resetPopupContent}
-                    getPopupContainer={() =>
-                      document.getElementById(
-                        'actionBtnContainer',
-                      ) as HTMLElement
-                    }
-                    trigger={'click'}
-                    zIndex={99999}
-                    onOpenChange={(e) => {
-                      handleVisibleChange(e, 'export');
-                    }}
-                    title={
-                      <div
-                        className={styles.PopupContent}
-                        style={{ height: 290 }}
-                      >
-                        <div className={styles.header}>导出</div>
-                        <div className={styles.content}>
-                          <div className={styles.row}>
-                            <Checkbox
-                              disabled
-                              checked={state.exportParams.introductionChecked}
-                              onChange={(e) => {
-                                onChangeCheckbox(e, '1');
+                        <div className={styles.row}>
+                          <Checkbox
+                            disabled
+                            checked={state.exportParams.mindMapChecked}
+                            onChange={(e) => {
+                              onChangeCheckbox(e, '2');
+                            }}
+                          >
+                            <span className={styles.title}>脑图</span>
+                          </Checkbox>
+                          <div className={styles.select}>
+                            <span>文档格式</span>
+                            <Select
+                              style={{ width: 'calc(100% - 80px)' }}
+                              onChange={(value) => {
+                                state.exportParams.mindMap = value;
                               }}
-                            >
-                              <span className={styles.title}>导读</span>
-                            </Checkbox>
-                            <div className={styles.select}>
-                              <span>文档格式</span>
-                              <Select
-                                style={{ width: 'calc(100% - 80px)' }}
-                                onChange={(value) => {
-                                  state.exportParams.introduction = value;
-                                }}
-                                value={state.exportParams.introduction}
-                                option={[
-                                  { label: '.docx', value: '.docx' },
-                                  { label: '.pdf', value: '.pdf' },
-                                ]}
-                              />
-                            </div>
+                              value={state.exportParams.mindMap}
+                              option={[
+                                // { label: '.jpg', value: '.jpg' },
+                                { label: '.png', value: '.png' },
+                              ]}
+                            />
                           </div>
-                          <div className={styles.row}>
-                            <Checkbox
-                              disabled
-                              checked={state.exportParams.mindMapChecked}
-                              onChange={(e) => {
-                                onChangeCheckbox(e, '2');
-                              }}
-                            >
-                              <span className={styles.title}>脑图</span>
-                            </Checkbox>
-                            <div className={styles.select}>
-                              <span>文档格式</span>
-                              <Select
-                                style={{ width: 'calc(100% - 80px)' }}
-                                onChange={(value) => {
-                                  state.exportParams.mindMap = value;
-                                }}
-                                value={state.exportParams.mindMap}
-                                option={[
-                                  // { label: '.jpg', value: '.jpg' },
-                                  { label: '.png', value: '.png' },
-                                ]}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                        <div className={styles.footer}>
-                          <Button onClick={resetPopupContent}>取消</Button>
-                          <Button type="primary" onClick={exportPopupContent}>
-                            确认
-                          </Button>
                         </div>
                       </div>
-                    }
+                      <div className={styles.footer}>
+                        <Button onClick={resetPopupContent}>取消</Button>
+                        <Button type="primary" onClick={exportPopupContent}>
+                          确认
+                        </Button>
+                      </div>
+                    </div>
+                  }
+                >
+                  <Button
+                    disabled={!state.showSummary}
+                    onClick={() => {
+                      state.exportParams.popupOpen = true;
+                    }}
                   >
-                    <Button
-                      onClick={() => {
-                        state.exportParams.popupOpen = true;
-                      }}
-                    >
-                      导出
-                    </Button>
-                  </Popconfirm>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-        <div className={styles.main}>
-          <div className={styles.content}>
-            {state.showSummary ? (
-              <AnalysisSummary
-                summaryData={state.summaryData}
-                getActiveTabKey={getActiveTabKey}
-                getMindGraph={getMindGraph}
-              />
-            ) : (
-              <FileUpload onChange={changeContent} paramsId={state.paramsId} />
+                    导出
+                  </Button>
+                </Popconfirm>
+              </>
             )}
           </div>
         </div>
-        <Modal
-          title={null}
-          footer={null}
-          open={state.delModalOpen}
-          getContainer={() =>
-            document.getElementById('DocumentSummaryContainer') as HTMLElement
-          }
-          maskClosable={false}
-          centered
-          onCancel={() => {
-            state.delModalOpen = false;
-          }}
-        >
-          <div className={styles.delModalContent}>
-            <div className={styles.title}>
-              <img src={iconCircleIcon} alt="" />
-              <span>确定要删除本记录吗?</span>
-            </div>
-            <span>删除后不可撤回，请确定是否删除？</span>
-            <Button type="primary" onClick={deleteSummaryItem}>
-              确定
-            </Button>
-          </div>
-        </Modal>
       </div>
-    </Spin>
+      <div className={styles.main}>
+        <div className={styles.content}>
+          {state.showSummary ? (
+            <AnalysisSummary
+              summaryData={state.summaryData}
+              getActiveTabKey={getActiveTabKey}
+              getMindGraph={getMindGraph}
+              baseActiveKey={state.activeTabKey}
+            />
+          ) : state.showActionBtns ? (
+            <Spin
+              tip="文档解析中，请稍等！"
+              spinning={state.uploadLoading}
+              size="large"
+            />
+          ) : (
+            <FileUpload onChange={changeContent} paramsId={state.paramsId} />
+          )}
+        </div>
+      </div>
+      <Modal
+        title={null}
+        footer={null}
+        open={state.delModalOpen}
+        getContainer={() =>
+          document.getElementById('DocumentSummaryContainer') as HTMLElement
+        }
+        maskClosable={false}
+        centered
+        onCancel={() => {
+          state.delModalOpen = false;
+        }}
+      >
+        <div className={styles.delModalContent}>
+          <div className={styles.title}>
+            <img src={iconCircleIcon} alt="" />
+            <span>确定要删除本记录吗?</span>
+          </div>
+          <span>删除后不可撤回，请确定是否删除？</span>
+          <Button type="primary" onClick={deleteSummaryItem}>
+            确定
+          </Button>
+        </div>
+      </Modal>
+    </div>
   );
 };
 

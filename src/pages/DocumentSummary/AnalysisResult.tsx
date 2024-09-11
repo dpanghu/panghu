@@ -3,10 +3,12 @@ import { useReactive } from 'ahooks';
 import { Tabs } from 'antd';
 import React, { useEffect } from 'react';
 import styles from './AnalysisResult.less';
+import CopyButton from './CopyButton';
 import Markdown from './Mind';
 
 interface TProps {
   summaryData: RecordItem;
+  baseActiveKey: string;
   isFullscreen?: boolean;
   isExitFullscreen?: boolean;
   getActiveTabKey: (key: string) => void;
@@ -21,9 +23,10 @@ const AnalysisResult: React.FC<TProps> = ({
   changeFullscreen,
   isFullscreen,
   isExitFullscreen,
+  baseActiveKey,
 }) => {
   const state = useReactive<any>({
-    activeKey: '1',
+    activeKey: baseActiveKey || '1',
     mindData: {},
   });
 
@@ -43,6 +46,19 @@ const AnalysisResult: React.FC<TProps> = ({
     getActiveTabKey(key);
   };
 
+  const markdownToPlainText = (markdown: string) => {
+    return markdown
+      .replace(/#+\s/g, '') // 移除标题
+      .replace(/\n/g, ' ') // 移除换行符
+      .replace(/\*\*(.*?)\*\*/g, '$1') // 移除加粗标记
+      .replace(/\*(.*?)\*/g, '$1') // 移除斜体标记
+      .replace(/!\[(.*?)\]\((.*?)\)/g, '$1') // 移除图片链接
+      .replace(/\[(.*?)\]\((.*?)\)/g, '$1') // 移除普通链接
+      .replace(/`(.*?)`/g, '$1') // 移除代码标记
+      .replace(/__(.*?)__/g, '$1') // 移除下划线
+      .trim(); // 移除首尾空格
+  };
+
   useEffect(() => {
     formatData();
   }, [summaryData]);
@@ -50,6 +66,10 @@ const AnalysisResult: React.FC<TProps> = ({
   useEffect(() => {
     state.activeKey = isExitFullscreen ? '2' : '1';
   }, [isExitFullscreen]);
+  useEffect(() => {
+    formatData();
+    state.activeKey = baseActiveKey;
+  }, [baseActiveKey]);
 
   return (
     <div className={styles.AnalysisResultContainer}>
@@ -62,11 +82,20 @@ const AnalysisResult: React.FC<TProps> = ({
             key: '1',
           },
           {
-            label: `脑图`,
+            label: `思维导图`,
             key: '2',
           },
         ]}
       />
+      {state.activeKey === '1' && (
+        <CopyButton
+          content={markdownToPlainText(summaryData?.summary || '') as string}
+          cssStyles={{
+            top: 10,
+            right: 10,
+          }}
+        />
+      )}
       <div
         className={styles.content}
         style={{ overflowY: state.activeKey === '1' ? 'auto' : 'visible' }}
@@ -74,13 +103,15 @@ const AnalysisResult: React.FC<TProps> = ({
         {state.activeKey === '1' ? (
           <Markdown content={summaryData?.summary} />
         ) : (
-          <MindMap
-            dataSource={state.mindData}
-            getMindGraph={getMindGraph}
-            isFullscreen={isFullscreen}
-            changeFullscreen={changeFullscreen}
-            key={summaryData.id}
-          />
+          Object.keys(state.mindData)?.length && (
+            <MindMap
+              dataSource={state.mindData}
+              getMindGraph={getMindGraph}
+              isFullscreen={isFullscreen}
+              changeFullscreen={changeFullscreen}
+              key={summaryData.id}
+            />
+          )
         )}
       </div>
     </div>

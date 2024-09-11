@@ -45,7 +45,7 @@
           width: 16px;
         }
         > span {
-          color: #5a73ff;
+          // color: #5a73ff;
           font-size: 14px;
           line-height: 16px;
         }
@@ -153,11 +153,13 @@
                   align-items: center;
                   min-width: 230px;
                   .size {
-                    column-gap: 24px;
                     display: flex;
                     > div {
                       font-size: 12px;
                       color: #999;
+                      &:nth-child(1) {
+                        width: 60px;
+                      }
                     }
                   }
                   .readBtn {
@@ -175,6 +177,15 @@
           .activePanelMain {
             background: #eef1ff;
           }
+        }
+      }
+      .fileTitle {
+        display: flex;
+        align-items: center;
+        column-gap: 2px;
+        > img {
+          width: 16px;
+          margin-top: 1px;
         }
       }
       :global {

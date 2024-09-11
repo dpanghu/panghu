@@ -362,7 +362,7 @@ export const formItemConfig: Record<
           elementConfig: {
             placeholder: '请输入薪资',
             className: 'basic-short-input',
-            suffix: '元/月',
+            addonAfter: '元/月',
           },
         },
         {

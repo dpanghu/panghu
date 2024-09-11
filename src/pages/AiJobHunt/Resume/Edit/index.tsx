@@ -157,7 +157,7 @@ const EditResume = React.forwardRef(({ resumeData, reload }: Props, ref) => {
       options,
       style,
       pluginCode,
-      suffix,
+      addonAfter,
     } = elementConfig;
     const eleClassName = itemClassName ? styles[itemClassName] : undefined;
 
@@ -172,15 +172,12 @@ const EditResume = React.forwardRef(({ resumeData, reload }: Props, ref) => {
         );
       case 'inputNumber':
         return (
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Input
-              type="number"
-              className={eleClassName}
-              placeholder={placeholder}
-            />
-            {/* seenpc inputnumber 不支持suffix */}
-            {suffix && <div style={{ marginLeft: 4 }}>{suffix}</div>}
-          </div>
+          <Input
+            type="number"
+            addonAfter={addonAfter}
+            className={eleClassName}
+            placeholder={placeholder}
+          />
         );
       case 'select':
         return (
