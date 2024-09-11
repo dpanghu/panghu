@@ -125,7 +125,7 @@ const AiFVR: React.FC = ({ }) => {
                 message.warning('上传的图片不符合要求，请重新选择合适的图片')
                 return false;
             }
-            const maxSize = 2 * 1024 * 1024;
+            const maxSize = 1 * 1024 * 1024;
             if (file.size > maxSize) {
                 message.warning('上传的图片不符合要求，请重新选择合适的图片');
                 return false;
@@ -243,12 +243,12 @@ const AiFVR: React.FC = ({ }) => {
                 let allowedFormats = ['image/jpeg', 'image/png', 'image/jpg'];
 
                 if (!allowedFormats.includes(file.type)) {
-                    message.warning('请上传图片，支持jpg,jpeg,png格式');
+                    message.warning('上传的图片不符合要求，请重新选择合适的图片');
                     return;
                 }
-                let maxSize = 2 * 1024 * 1024;
+                let maxSize = 1 * 1024 * 1024;
                 if (file.size > maxSize) {
-                    message.warning('图片过大，请上传2MB以内图片');
+                    message.warning('上传的图片不符合要求，请重新选择合适的图片');
                     return;
                 }
                 if (state.preData.length > 19) {
@@ -326,7 +326,7 @@ const AiFVR: React.FC = ({ }) => {
                                 onMouseLeave={() => state.isHover = false}
                             >
                                 <div className={styles.text}>
-                                    支持jpg、jpeg、png,2MB以内
+                                    支持jpg、jpeg、png,1MB以内
                                     <br />
                                     将图片拖到这里
                                     <br />
