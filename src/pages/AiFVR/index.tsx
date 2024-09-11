@@ -125,7 +125,7 @@ const AiFVR: React.FC = ({ }) => {
                 message.warning('上传的图片不符合要求，请重新选择合适的图片')
                 return false;
             }
-            const maxSize = 1 * 1024 * 1024;
+            const maxSize = 2 * 1024 * 1024;
             if (file.size > maxSize) {
                 message.warning('上传的图片不符合要求，请重新选择合适的图片');
                 return false;
@@ -246,9 +246,9 @@ const AiFVR: React.FC = ({ }) => {
                     message.warning('请上传图片，支持jpg,jpeg,png格式');
                     return;
                 }
-                let maxSize = 1 * 1024 * 1024;
+                let maxSize = 2 * 1024 * 1024;
                 if (file.size > maxSize) {
-                    message.warning('图片过大，请上传1MB以内图片');
+                    message.warning('图片过大，请上传2MB以内图片');
                     return;
                 }
                 if (state.preData.length > 19) {
