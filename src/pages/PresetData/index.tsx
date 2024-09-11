@@ -1,7 +1,19 @@
 import logoImg from '@/assets/images/logo.jpg';
-import { Button, Table } from 'SeenPc';
-import { Layout } from 'antd';
-import React from 'react';
+import CustomUpload, { CustomUploadProps } from '@/components/CustomUpload';
+import { getAttachmentId } from '@/services/documentSummary';
+import {
+  delPresetPageData,
+  getFileConf,
+  getPresetPageData,
+  savePresetPageData,
+} from '@/services/presetData';
+import { getFileMajorType } from '@/utils/contants';
+import { getResourceById } from '@/utils/utils';
+import { Button, message } from 'SeenPc';
+import { useReactive } from 'ahooks';
+import { Layout, Table } from 'antd';
+import { RcFile } from 'antd/es/upload';
+import React, { useEffect } from 'react';
 import styles from './index.less';
 const { Header, Sider, Content } = Layout;
 // import qs from 'qs';
@@ -11,13 +23,29 @@ interface TProps {
 }
 
 interface TState {
-  currentMenu: string;
+  fileConf: {
+    ext: string[];
+    maxSize: number;
+  };
+  attachmentId: string;
+  fileList: RecordItem[];
 }
 
 const PresetData: React.FC<TProps> = ({}) => {
   const { projectName, attachmentScope, taskName } = JSON.parse(
     (window.sessionStorage.getItem('preset_data') as any) || '{}',
   );
+  const extraParams = JSON.parse(
+    window.sessionStorage.getItem('queryParams') || '{}',
+  );
+  const state = useReactive<TState>({
+    fileConf: {
+      ext: [],
+      maxSize: 1,
+    },
+    attachmentId: '',
+    fileList: [],
+  });
 
   const menu = [
     {
@@ -25,23 +53,93 @@ const PresetData: React.FC<TProps> = ({}) => {
       value: '预置数据',
     },
   ];
+  const queryFileList = async () => {
+    const result: any = await getPresetPageData({
+      pluginCode: 'word_sumary',
+      limit: 9999,
+      pageNum: 1,
+    });
+    state.fileList = result?.data;
+  };
+  const handleDeleteFile = async (id: string) => {
+    await delPresetPageData({ id });
+    message.success('删除成功');
+    queryFileList();
+  };
 
   const columns = [
     {
       title: '文件名',
-      dataIndex: 'attachmentName',
-    },
-    {
-      title: '文件大小',
-      dataIndex: 'attachmentSize',
+      dataIndex: 'resName',
     },
     {
       title: '操作',
       dataIndex: 'action',
+      render: (_: any, record: RecordItem) => {
+        return (
+          <div style={{ display: 'flex', columnGap: 12 }}>
+            <a
+              onClick={() => {
+                window.open(getResourceById(record.resId), '_self');
+              }}
+            >
+              下载
+            </a>
+            <a onClick={() => handleDeleteFile(record.id)}>删除</a>
+          </div>
+        );
+      },
     },
   ];
 
-  const data: RecordItem[] = [];
+  const queryFileConf = async () => {
+    const result: any = await getFileConf({ pluginCode: 'word_sumary' });
+    state.fileConf = result;
+  };
+
+  const saveFile = async () => {
+    await savePresetPageData({
+      pluginCode: 'word_sumary',
+      resId: state.attachmentId,
+    });
+    queryFileList();
+  };
+
+  const DraggerProps: CustomUploadProps = {
+    dragger: false,
+    accept: state.fileConf.ext.map((item) => '.' + item).join(','),
+    allowFileType: state.fileConf.ext,
+    allowFileSize: 1,
+    // action: 'https://tapi.seentao.com/bus-xai/dbe3.private.params.upload.get',
+    // data: extraParams,
+    seenOss: {
+      url: '/api/bus-xai/dbe3.private.params.upload.get',
+      extraParams,
+    },
+    customUploadSuccess: async (file: RcFile) => {
+      // 附件上传成功后 去获取attachmentId
+      const attachmentType = (file.name as any)
+        .split('.')
+        .pop()
+        .toLocaleLowerCase();
+      const params = {
+        attachmentUrl: (file as any).key,
+        attachmentName: file.name,
+        attachmentCategory: getFileMajorType(attachmentType),
+        attachmentSize: file.size,
+        isConvert: 1,
+        suffixName: attachmentType,
+      };
+      const attachmentId = await getAttachmentId(params);
+      state.attachmentId = attachmentId;
+      saveFile();
+    },
+  };
+
+  useEffect(() => {
+    queryFileList();
+    queryFileConf();
+  }, []);
 
   return (
     <Layout className={styles.presetDataContainer}>
@@ -70,11 +168,18 @@ const PresetData: React.FC<TProps> = ({}) => {
         </Header>
         <Content className={styles.main}>
           <div className={styles.actionBtn}>
-            <Button type="primary" style={{}}>
-              上传
-            </Button>
+            <CustomUpload {...DraggerProps}>
+              <Button type="primary" style={{}}>
+                上传
+              </Button>
+            </CustomUpload>
           </div>
-          <Table rowKey="id" columns={columns} dataSource={data} />
+          <Table
+            pagination={false}
+            rowKey="id"
+            columns={columns}
+            dataSource={state.fileList}
+          />
         </Content>
       </Layout>
     </Layout>

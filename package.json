@@ -25,6 +25,7 @@
     "ahooks": "3.8.0",
     "antd": "5.4.0",
     "classnames": "2.5.1",
+    "dayjs": "^1.11.13",
     "docx-preview": "^0.3.2",
     "highlight.js": "^11.10.0",
     "js-audio-recorder": "^1.0.7",

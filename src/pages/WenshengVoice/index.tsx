@@ -255,7 +255,7 @@ const WenshengVoice: React.FC = () => {
             <div className={styles.speed}>
               <span className={styles.type}>音调</span>
               <div className={styles.process}>
-                <span className={styles.desc}>轻</span>
+                <span className={styles.desc}>低</span>
                 <Slider
                   min={1}
                   max={15}
@@ -269,13 +269,13 @@ const WenshengVoice: React.FC = () => {
                     background: `linear-gradient(to right, rgb(90, 186, 255) 0%, rgb(93, 119, 249) 100%)`,
                   }}
                 />
-                <span className={styles.desc}>重</span>
+                <span className={styles.desc}>高</span>
               </div>
             </div>
             <div className={styles.speed}>
               <span className={styles.type}>音量</span>
               <div className={styles.process}>
-                <span className={styles.desc}>低</span>
+                <span className={styles.desc}>小</span>
                 <Slider
                   min={1}
                   max={9}
@@ -289,7 +289,7 @@ const WenshengVoice: React.FC = () => {
                     background: `linear-gradient(to right, rgb(90, 186, 255) 0%, rgb(93, 119, 249) 100%)`,
                   }}
                 />
-                <span className={styles.desc}>高</span>
+                <span className={styles.desc}>大</span>
               </div>
             </div>
           </div>

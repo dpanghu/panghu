@@ -192,3 +192,8 @@ export const getSessionStorage = (key: string) => {
     ? undefined
     : JSON.parse(window.sessionStorage.getItem(key) || '{}');
 };
+
+// 根据资源id返回资源
+export const getResourceById = (sourceId: string) => {
+  return sourceId ? `/api/dbe3/res/download/${sourceId}` : undefined;
+};
