@@ -50,8 +50,8 @@ const WenshengVoice: React.FC = () => {
   });
   const playerRef = useRef<any>(null);
   const voiceMap = [
-    { label: '沉稳男声', img: voice1Png, key: '1' },
-    { label: '青年男声', img: voice2Png, key: '3' },
+    { label: '沉稳男声', img: voice1Png, key: '3' },
+    { label: '青年男声', img: voice2Png, key: '1' },
     { label: '通用女声', img: voice3Png, key: '0' },
     { label: '活泼童声', img: voice4Png, key: '4' },
   ];
