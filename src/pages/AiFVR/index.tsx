@@ -201,6 +201,7 @@ const AiFVR: React.FC = ({ }) => {
                         item.isPreset,
                     );
                     getImageLists();
+                    message.success('删除成功');
                 });
             },
             onCancel() { },
