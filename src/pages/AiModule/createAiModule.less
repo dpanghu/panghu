@@ -5,27 +5,34 @@
     min-height: 100vh;
     background: linear-gradient(132deg, #D8DDFF 0%, #E6EDFD 17%, #E2E6FF 27%, #E0E6FF 34%, #CBD4FF 55%, #B8C0FF 71%, #A3ACFF 100%);
     padding: 16px;
+
     :global {
         :where(.css-2mh66p).ant-tabs {
             height: 100% !important;
         }
-        :where(.css-2mh66p).ant-tabs >.ant-tabs-nav, :where(.css-2mh66p).ant-tabs >div>.ant-tabs-nav {
+
+        :where(.css-2mh66p).ant-tabs>.ant-tabs-nav,
+        :where(.css-2mh66p).ant-tabs>div>.ant-tabs-nav {
             position: relative;
             display: flex;
             flex: none;
             height: 100% !important;
             align-items: center;
         }
-        :where(.css-dev-only-do-not-override-2mh66p).ant-tabs >.ant-tabs-nav .ant-tabs-nav-list, :where(.css-dev-only-do-not-override-2mh66p).ant-tabs >div>.ant-tabs-nav .ant-tabs-nav-list {
+
+        :where(.css-dev-only-do-not-override-2mh66p).ant-tabs>.ant-tabs-nav .ant-tabs-nav-list,
+        :where(.css-dev-only-do-not-override-2mh66p).ant-tabs>div>.ant-tabs-nav .ant-tabs-nav-list {
             position: relative;
             display: flex;
             width: 100%;
             justify-content: center;
             transition: opacity 0.3s;
         }
+
         :where(.css-dev-only-do-not-override-2mh66p).ant-tabs {
             height: 100%;
         }
+
         :where(.css-dev-only-do-not-override-2mh66p).ant-tabs .ant-tabs-tab {
             position: relative;
             display: inline-flex;
@@ -39,7 +46,8 @@
             justify-content: center;
             cursor: pointer;
         }
-        :where(.css-dev-only-do-not-override-2mh66p).ant-tabs >.ant-tabs-nav {
+
+        :where(.css-dev-only-do-not-override-2mh66p).ant-tabs>.ant-tabs-nav {
             height: 100%;
             margin-bottom: 0px;
         }
@@ -63,6 +71,7 @@
     ;
     height: 100%;
 }
+
 .close {
     position: absolute;
     display: flex;
@@ -76,18 +85,20 @@
     top: 0;
     border-radius: 0px 8px 0px 8px;
 }
+
 .inputBox {
     display: flex;
     flex-direction: column;
     width: 90%;
     padding: 37px 25px 40px 25px;
     border: none;
-    background: rgba(90,115,255,0.5);
+    background: rgba(90, 115, 255, 0.5);
     border-radius: 8px;
     cursor: pointer;
     margin-top: 30px;
     position: relative;
 }
+
 .selectBox {
     display: flex;
     position: relative;
@@ -95,10 +106,11 @@
     width: 90%;
     padding: 37px 25px 40px 25px;
     border: none;
-    background: rgba(170,126,255,0.5);
+    background: rgba(170, 126, 255, 0.5);
     border-radius: 8px;
     cursor: pointer;
     margin-top: 30px;
+
     :global {
         :where(.css-dev-only-do-not-override-2mh66p).ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
             width: 100%;
@@ -107,12 +119,14 @@
         }
     }
 }
+
 .previewBox {
     display: flex;
     flex-direction: column;
     width: 100%;
     margin-top: 20px;
 }
+
 .middleHead {
     width: 100%;
     height: 70px;
@@ -124,20 +138,22 @@
     justify-content: space-between;
     border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
+
 .previewCheckBox {
     display: flex;
     flex-wrap: wrap;
     width: 100%;
 }
+
 .previewCheck {
     background: #FFFFFF;
-border-radius: 4px;
-border: 1px solid rgba(0,0,0,0.25);
-font-family: PingFangSC, PingFang SC;
-font-weight: 400;
-font-size: 14px;
-color: #333333;
-line-height: 22px;
+    border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.25);
+    font-family: PingFangSC, PingFang SC;
+    font-weight: 400;
+    font-size: 14px;
+    color: #333333;
+    line-height: 22px;
     width: 28%;
     cursor: pointer;
     display: flex;
@@ -147,19 +163,22 @@ line-height: 22px;
     margin-bottom: 8px;
     margin-right: 8px;
 }
+
 .previewTitle {
     width: 100%;
     color: #333;
     font-weight: 700;
     font-size: 14px;
-    margin-bottom:8px;
+    margin-bottom: 8px;
 }
+
 .textBox {
     display: flex;
     width: 86%;
     margin-top: 16px;
     align-items: center;
     padding-right: 16px;
+
     h3 {
         font-size: 14px;
         color: #333333;
@@ -168,6 +187,7 @@ line-height: 22px;
         display: flex;
     }
 }
+
 .setTitle {
     width: 85%;
     font-weight: 600;
@@ -177,6 +197,7 @@ line-height: 22px;
     align-items: center;
     margin-top: 30px;
 }
+
 .radioBox {
     display: flex;
     flex-direction: column;
@@ -184,10 +205,11 @@ line-height: 22px;
     padding: 37px 25px 40px 25px;
     position: relative;
     border: none;
-    background: rgba(255,152,55,0.5);
+    background: rgba(255, 152, 55, 0.5);
     border-radius: 8px;
     cursor: pointer;
     margin-top: 30px;
+
     :global {
         :where(.css-dev-only-do-not-override-2mh66p).ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
             width: 100%;
@@ -196,17 +218,19 @@ line-height: 22px;
         }
     }
 }
-.checkboxBox{
+
+.checkboxBox {
     display: flex;
     flex-direction: column;
     width: 90%;
     padding: 37px 25px 40px 25px;
     position: relative;
     border: none;
-    background: rgba(255,39,57,0.5);
+    background: rgba(255, 39, 57, 0.5);
     border-radius: 8px;
     cursor: pointer;
     margin-top: 30px;
+
     :global {
         :where(.css-dev-only-do-not-override-2mh66p).ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
             width: 100%;
@@ -215,6 +239,7 @@ line-height: 22px;
         }
     }
 }
+
 .right {
     width: 340px;
     display: flex;
@@ -255,6 +280,17 @@ line-height: 22px;
     border-radius: 8px;
 }
 
+.file_text {
+    font-family: PingFangSC, PingFang SC;
+    font-weight: 400;
+    font-size: 14px;
+    color: #333333;
+    z-index: 999;
+    line-height: 21px;
+    width: 100%;
+    padding-left: 76px;
+}
+
 .left_box {
     display: flex;
     flex-direction: column;
@@ -266,6 +302,9 @@ line-height: 22px;
     border: 1px solid #f1f1f1;
     border-radius: 8px;
     padding: 13px 20px 13px 20px;
+    width: 84px;
+    height: 82px;
+
     img {
         width: 25px;
         height: 25px;

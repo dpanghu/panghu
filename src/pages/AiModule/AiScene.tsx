@@ -1,6 +1,14 @@
+import closes from '@/assets/images/closes.png';
 import confings from '@/assets/images/configs.png';
+import duihua from '@/assets/images/duihua.png';
 import aiimg from '@/assets/images/rebotIcon.png';
-import { getPluginDetail } from '@/services/aiModule';
+import { getConvertParamId } from '@/services/aiJobHunt/index';
+import {
+  deleteHistory,
+  getHistory,
+  getHistoryDetail,
+  getPluginDetail,
+} from '@/services/aiModule';
 import { getQueryParam } from '@/utils/utils';
 import { Button, ComboBox, Input, Select } from 'SeenPc';
 import sf from 'SeenPc/dist/esm/globalStyle/global.less';
@@ -24,7 +32,10 @@ interface TState {
   allow: any;
   aiData: any;
   isLoading: any;
+  messageArr: any;
+  patams: any;
   visible: any;
+  excludeId: any;
   isTyping: any;
   typewriterArrCache: any;
 }
@@ -219,12 +230,15 @@ const JobHunt: React.FC = () => {
     dialogList: [],
     typewriterArrCache: [],
     editId: '',
+    messageArr: [],
+    excludeId: '',
     isLoading: false,
     isTyping: false,
     allow: '',
     aiData: {},
     editName: '',
     visible: false,
+    patams: '',
     data: [],
   });
 
@@ -255,6 +269,21 @@ const JobHunt: React.FC = () => {
     }
   }, [state.isTyping]);
 
+  const getHistoryList = (params: any, type: any) => {
+    getHistory({
+      paramId: params,
+      limit: 999999999,
+      pageNum: 1,
+    }).then((res: any) => {
+      if (type === 1) {
+        if (res.data.length !== 0) {
+          res.data[res.data.length - 1].active = true;
+        }
+      }
+      state.messageArr = res.data || [];
+    });
+  };
+
   const send = () => {
     let error: any = false;
     if (isArray(state.allow)) {
@@ -278,6 +307,7 @@ const JobHunt: React.FC = () => {
           typewriterStrCache.current = '';
           let qsData = {
             ...queryData,
+            paramId: state.patams,
             pluginCode: state.aiData.plugin?.code,
             qsParams: sendData,
           };
@@ -295,6 +325,7 @@ const JobHunt: React.FC = () => {
               // 结束，包括接收完毕所有数据、报错、关闭链接
               onFinished: () => {
                 state.isLoading = false;
+                getHistoryList(state.patams, 1);
               },
               onError: (error) => {
                 console.log(error);
@@ -302,6 +333,7 @@ const JobHunt: React.FC = () => {
               // 接收到数据
               receiveMessage: (data) => {
                 if (data) {
+                  console.log('2222222222', data.answer);
                   state.typewriterArrCache.push(data!.answer);
                 }
               },
@@ -319,7 +351,12 @@ const JobHunt: React.FC = () => {
   };
 
   useMount(() => {
+    getConvertParamId({}).then((res: any) => {
+      getHistoryList(res);
+      state.patams = res;
+    });
     let qsData: any = getQueryParam();
+    window.sessionStorage.setItem('commonDatas', JSON.stringify(qsData));
     // 如果是预置数据界面，不需要调用接口
     if (qsData.isPreset) {
       history.push('/presetData');
@@ -350,6 +387,13 @@ const JobHunt: React.FC = () => {
         history.push('/FVR');
       } else if (res.plugin?.code === 'carPlate') {
         history.push('/LPR');
+      } else if (res.plugin?.code === 'intelligence') {
+        history.push('/aiAtlas');
+      } else if (res.plugin?.modelTypeId === '12') {
+        history.push({
+          path: '',
+        });
+        history.push(`/AiSceneImg`);
       } else {
         state.data = JSON.parse(res.param?.params);
         state.aiData = res;
@@ -371,7 +415,12 @@ const JobHunt: React.FC = () => {
             <div
               className={styles.confing_text}
               onClick={() => {
-                message.warning('该功能暂未开放');
+                exampleRandom({
+                  pluginCode: 'pictotext',
+                  excludeId: state.excludeId,
+                }).then((res: any)=> {
+                   console.log(res);
+                })
               }}
             >
               填入示例
@@ -475,9 +524,58 @@ const JobHunt: React.FC = () => {
           )}
           {/* <SpeechInputComponent></SpeechInputComponent> */}
         </div>
-        {/* <div className={styles.right_list}>
-          <div className={styles.right_head}></div>
-        </div> */}
+        <div className={styles.right_list}>
+          <div className={styles.right_head}>对话记录</div>
+          {state.messageArr &&
+            state.messageArr.map((el: any) => {
+              return (
+                <div
+                  key={el.id}
+                  onClick={() => {
+                    getHistoryDetail({
+                      themeId: el.id,
+                    }).then((res: any) => {
+                      console.log(res);
+                    });
+                  }}
+                  style={{ background: el.active ? 'white' : 'none' }}
+                  className={styles.messageBox}
+                >
+                  <div>
+                    <img
+                      src={duihua}
+                      style={{ width: 16, height: 14, marginRight: 6 }}
+                    ></img>
+                    {el.name}
+                  </div>
+                  <img
+                    onClick={(e: any) => {
+                      e.stopPropagation();
+                      deleteHistory({
+                        themeId: el.id,
+                      }).then(() => {
+                        message.success('操作成功');
+                        state.visible = false;
+                        getHistoryList(state.patams, 2);
+                      });
+                    }}
+                    src={closes}
+                    style={{ cursor: 'pointer', width: 14, height: 14 }}
+                  ></img>
+                  {/* {
+                  el.active ? <img onClick={()=> {
+                    deleteHistory({
+                      themeId: el.id,
+                    }).then(()=> {
+                      message.success('操作成功');
+                      getHistoryList(state.patams,2);
+                    })
+                  }} src={closes} style={{ cursor: 'pointer', width: 14, height: 14 }}></img> :  <div></div>
+                } */}
+                </div>
+              );
+            })}
+        </div>
       </div>
     </div>
   );

@@ -8,7 +8,7 @@ import {
   savePresetPageData,
 } from '@/services/presetData';
 import { getFileMajorType } from '@/utils/contants';
-import { getResourceById } from '@/utils/utils';
+import { getQueryParam, getResourceById } from '@/utils/utils';
 import { Button, message } from 'SeenPc';
 import { useReactive } from 'ahooks';
 import { Layout, Table } from 'antd';
@@ -38,6 +38,7 @@ const PresetData: React.FC<TProps> = ({}) => {
   const extraParams = JSON.parse(
     window.sessionStorage.getItem('queryParams') || '{}',
   );
+  let qsData: any = getQueryParam();
   const state = useReactive<TState>({
     fileConf: {
       ext: [],
@@ -55,7 +56,7 @@ const PresetData: React.FC<TProps> = ({}) => {
   ];
   const queryFileList = async () => {
     const result: any = await getPresetPageData({
-      pluginCode: 'word_sumary',
+      pluginCode: qsData.code,
       limit: 9999,
       pageNum: 1,
     });
@@ -93,15 +94,20 @@ const PresetData: React.FC<TProps> = ({}) => {
   ];
 
   const queryFileConf = async () => {
-    const result: any = await getFileConf({ pluginCode: 'word_sumary' });
+    const result: any = await getFileConf({
+      pluginCode: qsData.code,
+      limit: 9999,
+    });
     state.fileConf = result;
   };
 
   const saveFile = async () => {
     await savePresetPageData({
-      pluginCode: 'word_sumary',
+      pluginCode: qsData.code,
+      limit: 9999,
       resId: state.attachmentId,
     });
+    message.success(`上传成功`);
     queryFileList();
   };
 
@@ -109,7 +115,7 @@ const PresetData: React.FC<TProps> = ({}) => {
     dragger: false,
     accept: state.fileConf.ext.map((item) => '.' + item).join(','),
     allowFileType: state.fileConf.ext,
-    allowFileSize: 1,
+    allowFileSize: state.fileConf.maxSize,
     // action: 'https://tapi.seentao.com/bus-xai/dbe3.private.params.upload.get',
     // data: extraParams,
     seenOss: {
