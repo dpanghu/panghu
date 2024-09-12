@@ -30,6 +30,16 @@ export default defineConfig({
       component: '@/pages/AiModule/AiScene',
     },
     {
+      path: '/AiScene',
+      layout: false,
+      component: '@/pages/AiModule/AiScene',
+    },
+    {
+      path: '/AiSceneImg',
+      layout: false,
+      component: '@/pages/AiModule/AiSceneImg',
+    },
+    {
       path: '/OCR',
       layout: false,
       component: '@/pages/AiOCR',
@@ -133,7 +143,7 @@ export default defineConfig({
   npmClient: 'npm',
   proxy: {
     '/api/': {
-      target: 'https://tapi.seentao.com/',
+      target: 'https://dapi.seentao.com/',
       onProxyReq: function (req) {
         if (
           req.path.includes('/chat/stream') ||

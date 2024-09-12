@@ -26,6 +26,7 @@
     "antd": "5.4.0",
     "classnames": "2.5.1",
     "docx-preview": "^0.3.2",
+    "seent-tools": "^0.0.35",
     "highlight.js": "^11.10.0",
     "js-audio-recorder": "^1.0.7",
     "js-base64": "3.7.7",

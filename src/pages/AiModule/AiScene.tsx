@@ -1,7 +1,8 @@
 import confings from '@/assets/images/configs.png';
 import aiimg from '@/assets/images/rebotIcon.png';
-import { getPluginDetail } from '@/services/aiModule';
+import { getPluginDetail, getHistory, getHistoryDetail, deleteHistory } from '@/services/aiModule';
 import { getQueryParam } from '@/utils/utils';
+import { getConvertParamId } from '@/services/aiJobHunt/index';
 import { Button, ComboBox, Input, Select } from 'SeenPc';
 import sf from 'SeenPc/dist/esm/globalStyle/global.less';
 import { useCreation, useMount, useReactive, useUpdateEffect } from 'ahooks';
@@ -11,6 +12,8 @@ import { isArray } from 'lodash';
 import React, { useMemo, useRef } from 'react';
 import Typewriter, { type TypewriterClass } from 'typewriter-effect';
 import { history } from 'umi';
+import duihua from '@/assets/images/duihua.png';
+import closes from '@/assets/images/closes.png';
 import EventSourceStream from '../AiJobHunt/Home/DialogArea/EventSourceStream';
 import styles from './AiScene.less';
 // import SpeechInputComponent from '../Recognition/index';
@@ -24,6 +27,8 @@ interface TState {
   allow: any;
   aiData: any;
   isLoading: any;
+  messageArr: any;
+  patams: any;
   visible: any;
   isTyping: any;
   typewriterArrCache: any;
@@ -47,7 +52,7 @@ const renderPreview = (item: any) => {
             value={item.value}
             onChange={(e: any) => {
               item.value = e;
-              if(e !== '') {
+              if (e !== '') {
                 item.error = false;
               }
             }}
@@ -68,7 +73,7 @@ const renderPreview = (item: any) => {
             option={item.options}
             onChange={(e: any) => {
               item.value = e;
-              if(e !== '') {
+              if (e !== '') {
                 item.error = false;
               }
             }}
@@ -86,7 +91,7 @@ const renderPreview = (item: any) => {
             style={{ width: '100%' }}
             onChange={(e: any) => {
               item.value = e.target.value;
-              if(e !== '') {
+              if (e !== '') {
                 item.error = false;
               }
             }}
@@ -106,7 +111,7 @@ const renderPreview = (item: any) => {
             style={{ width: '100%' }}
             onChange={(e: any) => {
               item.value = e.target.value;
-              if(e !== '') {
+              if (e !== '') {
                 item.error = false;
               }
             }}
@@ -219,12 +224,14 @@ const JobHunt: React.FC = () => {
     dialogList: [],
     typewriterArrCache: [],
     editId: '',
+    messageArr: [],
     isLoading: false,
     isTyping: false,
     allow: '',
     aiData: {},
     editName: '',
     visible: false,
+    patams: '',
     data: [],
   });
 
@@ -255,6 +262,21 @@ const JobHunt: React.FC = () => {
     }
   }, [state.isTyping]);
 
+  const getHistoryList = (params: any, type: any) => {
+    getHistory({
+      paramId: params,
+      limit: 999999999,
+      pageNum: 1,
+    }).then((res: any) => {
+      if (type === 1) {
+        if (res.data.length !== 0) {
+          res.data[res.data.length - 1].active = true;
+        }
+      }
+      state.messageArr = res.data || [];
+    })
+  }
+
   const send = () => {
     let error: any = false;
     if (isArray(state.allow)) {
@@ -267,7 +289,7 @@ const JobHunt: React.FC = () => {
             if (item.value === void 0 || item.value === '') {
               item.error = true;
               error = true;
-            }else {
+            } else {
               item.error = false;
             }
             sendData[item.name] = item.value;
@@ -278,6 +300,7 @@ const JobHunt: React.FC = () => {
           typewriterStrCache.current = '';
           let qsData = {
             ...queryData,
+            paramId: state.patams,
             pluginCode: state.aiData.plugin?.code,
             qsParams: sendData,
           };
@@ -295,6 +318,7 @@ const JobHunt: React.FC = () => {
               // 结束，包括接收完毕所有数据、报错、关闭链接
               onFinished: () => {
                 state.isLoading = false;
+                getHistoryList(state.patams, 1);
               },
               onError: (error) => {
                 console.log(error);
@@ -302,6 +326,7 @@ const JobHunt: React.FC = () => {
               // 接收到数据
               receiveMessage: (data) => {
                 if (data) {
+                  console.log('2222222222', data.answer);
                   state.typewriterArrCache.push(data!.answer);
                 }
               },
@@ -319,7 +344,12 @@ const JobHunt: React.FC = () => {
   };
 
   useMount(() => {
+    getConvertParamId({}).then((res: any) => {
+      getHistoryList(res);
+      state.patams = res;
+    })
     let qsData: any = getQueryParam();
+    window.sessionStorage.setItem('commonDatas', JSON.stringify(qsData));
     getPluginDetail({
       id: qsData.imageId,
       userId: '1',
@@ -349,7 +379,17 @@ const JobHunt: React.FC = () => {
       }
       else if (res.plugin?.code === 'carPlate') {
         history.push('/LPR');
-      } else {
+      } 
+      else if (res.plugin?.code === 'aiAtlas') {
+        history.push('/aiAtlas');
+      } 
+      else if (res.plugin?.modelTypeId === '12') {
+        history.push({
+          path: ''
+        })
+        history.push(`/AiSceneImg`);
+      } 
+      else {
         state.data = JSON.parse(res.param?.params);
         state.aiData = res;
       }
@@ -474,9 +514,45 @@ const JobHunt: React.FC = () => {
           )}
           {/* <SpeechInputComponent></SpeechInputComponent> */}
         </div>
-        {/* <div className={styles.right_list}>
-          <div className={styles.right_head}></div>
-        </div> */}
+        <div className={styles.right_list}>
+          <div className={styles.right_head}>对话记录</div>
+          {
+            state.messageArr && state.messageArr.map((el: any) => {
+              return <div key={el.id} onClick={() => {
+                getHistoryDetail({
+                  themeId: el.id
+                }).then((res: any) => {
+                  console.log(res);
+                })
+              }} style={{ background: el.active ? 'white' : 'none' }} className={styles.messageBox}>
+                <div>
+                  <img src={duihua} style={{ width: 16, height: 14, marginRight: 6 }}></img>
+                  {el.name}
+                </div>
+                <img onClick={(e: any) => {
+                  e.stopPropagation();
+                  deleteHistory({
+                    themeId: el.id,
+                  }).then(() => {
+                    message.success('操作成功');
+                    state.visible = false;
+                    getHistoryList(state.patams, 2);
+                  })
+                }} src={closes} style={{ cursor: 'pointer', width: 14, height: 14 }}></img>
+                {/* {
+                  el.active ? <img onClick={()=> {
+                    deleteHistory({
+                      themeId: el.id,
+                    }).then(()=> {
+                      message.success('操作成功');
+                      getHistoryList(state.patams,2);
+                    })
+                  }} src={closes} style={{ cursor: 'pointer', width: 14, height: 14 }}></img> :  <div></div>
+                } */}
+              </div>
+            })
+          }
+        </div>
       </div>
     </div>
   );
