@@ -80,3 +80,11 @@ export async function recogNizeResult<T>(params?: RecordItem): Promise<T> {
     params,
   });
 }
+
+export async function getFileUrl<T>(params?: RecordItem): Promise<T> {
+  return $axios.request({
+    url: '/widget/xai/ptt/upload/get',
+    method: 'POST',
+    params,
+  });
+}

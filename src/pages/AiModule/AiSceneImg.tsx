@@ -1,24 +1,25 @@
 import confings from '@/assets/images/configs.png';
 import aiimg from '@/assets/images/rebotIcon.png';
-import { getPluginDetail, getHistory, saveImg, getPresetAnswer, recogNize, recogNizeResult } from '@/services/aiModule';
+import { getPluginDetail, saveImg, getPresetAnswer, recogNize, recogNizeResult, getFileUrl } from '@/services/aiModule';
 import { getConvertParamId } from '@/services/aiJobHunt/index';
 import { Button, ComboBox, Input, Select, Upload } from 'SeenPc';
 import sf from 'SeenPc/dist/esm/globalStyle/global.less';
 import { useCreation, useMount, useReactive, useUpdateEffect } from 'ahooks';
 import { message } from 'antd';
 import classNames from 'classnames';
+import { exampleRandom } from '@/services/sentimentAnalysis';
 import tushengwen from '@/assets/images/tushengwen.png';
 import uploadspng from '@/assets/images/uploads.png';
 import React, { useMemo, useRef } from 'react';
 import Typewriter, { type TypewriterClass } from 'typewriter-effect';
 import EventSourceStream from '../AiJobHunt/Home/DialogArea/EventSourceStream';
 import styles from './AiSceneImg.less';
-import style from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark';
 // import SpeechInputComponent from '../Recognition/index';
 const { Dragger } = Upload;
 interface TState {
     curTheme: any;
     dialogList: any;
+    excludeId: any;
     editId: string;
     editName: string;
     imgId: any;
@@ -52,6 +53,7 @@ const JobHunt: React.FC = () => {
         baseData: [],
         typewriterArrCache: [],
         editId: '',
+        excludeId: '',
         messageArr: [],
         isLoading: false,
         isTyping: false,
@@ -363,12 +365,12 @@ const JobHunt: React.FC = () => {
     // }, [state.isTyping]);
 
     const send = () => {
-        // let messages: any = state.data.find((element: any) => element.elementType === 'input');
+        let messages: any = state.data.find((element: any) => element.elementType === 'input');
         // let checks: any = state.data.find((element: any) => element.elementType === 'checkbox');
-        // state.messageList.push({
-        //     data: messages.value,
-        //     type: 1
-        // });
+        state.messageList.push({
+            data: messages.value,
+            type: 1
+        });
         recogNize({
             paramId: state.patams,
             id: state.imgId,
@@ -393,8 +395,8 @@ const JobHunt: React.FC = () => {
                             paramId: state.patams,
                             pluginCode: 'pictotext',
                             qsParams: sendData,
-                            // userMessage: messages.value
-                            userMessage: '根据图片内容，创作一首包含标题和内容的'
+                            userMessage: messages.value
+                            // userMessage: '根据图片内容，创作一首包含标题和内容的'
                         };
                         new EventSourceStream(
                             '/api/bus-xai/xai/plugin/create/stream',
@@ -417,7 +419,6 @@ const JobHunt: React.FC = () => {
                                 // 接收到数据
                                 receiveMessage: (data) => {
                                     if (data) {
-                                        console.log('2222222222', data.answer);
                                         state.typewriterArrCache.push(data!.answer);
                                     }
                                 },
@@ -533,14 +534,25 @@ const JobHunt: React.FC = () => {
                         <div
                             className={styles.confing_text}
                             onClick={() => {
-                                message.warning('该功能暂未开放');
+                                exampleRandom({
+                                    pluginCode: 'pictotext',
+                                    excludeId: state.excludeId,
+                                  }).then((res: any)=> {
+                                     state.imgId = JSON.parse(res.params)?.picId;
+                                     state.excludeId = res.id;
+                                     getFileUrl({
+                                        id: JSON.parse(res.params)?.picId
+                                     }).then((res1: any)=> {
+                                        state.imgUrl = res1.picUrl;
+                                     })
+                                  })
                             }}
                         >
-                            填入示例
+                            随机示例
                         </div>
                     </div>
                     <div className={styles.left_top}>
-                        <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
+                        {/* <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
                             <Button icon={<img src={uploadspng} style={{ width: 16, height: 16, marginRight: 4 }}></img>} style={{ width: 92, marginTop: 12 }} size={'small'} type='primary'>上传图片</Button>
                             <Dragger {...imgProps} showUploadList={false}>
                                 <div className={styles.previewBox} style={{ width: '100%', height: 178, display: 'flex', marginTop: 8, justifyContent: 'center', flexDirection: 'column', cursor: 'pointer', color: '#333333', fontSize: 14, lineHeight: '21px' }}>
@@ -555,7 +567,7 @@ const JobHunt: React.FC = () => {
                                     }
                                 </div>
                             </Dragger>
-                        </div>
+                        </div> */}
                         {state.data &&
                             state.data.map((item: any) => {
                                 return renderPreview(item);
@@ -607,7 +619,12 @@ const JobHunt: React.FC = () => {
                                 state.baseData && state.baseData.map((el: any, index: any) => {
                                     return <div key={el.id} style={{ borderBottom: index === state.baseData.length - 1 ? 'none' : '1px solid #F0E8FF' }} className={styles.titleBox}>
                                         <div>{el.example}</div>
-                                        <div className={styles.basetest}>试一试</div>
+                                        <div className={styles.basetest} onClick={()=> {
+                                            let inputs: any = state.data.find((element: any)=> element.elementType === 'input');
+                                            if(inputs !== void 0) {
+                                                inputs.value = el.example;
+                                            }
+                                        }}>试一试</div>
                                     </div>
                                 })
                             }

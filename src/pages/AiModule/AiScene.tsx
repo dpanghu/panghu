@@ -1,6 +1,7 @@
 import confings from '@/assets/images/configs.png';
 import aiimg from '@/assets/images/rebotIcon.png';
 import { getPluginDetail, getHistory, getHistoryDetail, deleteHistory } from '@/services/aiModule';
+import { exampleRandom } from '@/services/sentimentAnalysis';
 import { getQueryParam } from '@/utils/utils';
 import { getConvertParamId } from '@/services/aiJobHunt/index';
 import { Button, ComboBox, Input, Select } from 'SeenPc';
@@ -30,6 +31,7 @@ interface TState {
   messageArr: any;
   patams: any;
   visible: any;
+  excludeId: any;
   isTyping: any;
   typewriterArrCache: any;
 }
@@ -225,6 +227,7 @@ const JobHunt: React.FC = () => {
     typewriterArrCache: [],
     editId: '',
     messageArr: [],
+    excludeId: '',
     isLoading: false,
     isTyping: false,
     allow: '',
@@ -411,7 +414,12 @@ const JobHunt: React.FC = () => {
             <div
               className={styles.confing_text}
               onClick={() => {
-                message.warning('该功能暂未开放');
+                exampleRandom({
+                  pluginCode: 'pictotext',
+                  excludeId: state.excludeId,
+                }).then((res: any)=> {
+                   console.log(res);
+                })
               }}
             >
               填入示例
