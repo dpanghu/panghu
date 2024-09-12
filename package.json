@@ -21,13 +21,12 @@
     "@types/react-pdf": "^4.0.6",
     "@types/react-syntax-highlighter": "^15.5.13",
     "@umijs/max": "4.3.10",
-    "SeenPc": "2.3.8",
+    "SeenPc": "2.3.9",
     "ahooks": "3.8.0",
     "antd": "5.4.0",
     "classnames": "2.5.1",
     "dayjs": "^1.11.13",
     "docx-preview": "^0.3.2",
-    "seent-tools": "^0.0.35",
     "highlight.js": "^11.10.0",
     "js-audio-recorder": "^1.0.7",
     "js-base64": "3.7.7",
@@ -42,6 +41,7 @@
     "react-speech-recognition": "^3.10.0",
     "react-syntax-highlighter": "^15.5.0",
     "rehype-highlight": "^7.0.0",
+    "seent-tools": "^0.0.35",
     "typewriter-effect": "2.21.0"
   },
   "devDependencies": {

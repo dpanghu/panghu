@@ -1,9 +1,15 @@
+import closes from '@/assets/images/closes.png';
 import confings from '@/assets/images/configs.png';
+import duihua from '@/assets/images/duihua.png';
 import aiimg from '@/assets/images/rebotIcon.png';
-import { getPluginDetail, getHistory, getHistoryDetail, deleteHistory } from '@/services/aiModule';
-import { exampleRandom } from '@/services/sentimentAnalysis';
-import { getQueryParam } from '@/utils/utils';
 import { getConvertParamId } from '@/services/aiJobHunt/index';
+import {
+  deleteHistory,
+  getHistory,
+  getHistoryDetail,
+  getPluginDetail,
+} from '@/services/aiModule';
+import { getQueryParam } from '@/utils/utils';
 import { Button, ComboBox, Input, Select } from 'SeenPc';
 import sf from 'SeenPc/dist/esm/globalStyle/global.less';
 import { useCreation, useMount, useReactive, useUpdateEffect } from 'ahooks';
@@ -13,8 +19,6 @@ import { isArray } from 'lodash';
 import React, { useMemo, useRef } from 'react';
 import Typewriter, { type TypewriterClass } from 'typewriter-effect';
 import { history } from 'umi';
-import duihua from '@/assets/images/duihua.png';
-import closes from '@/assets/images/closes.png';
 import EventSourceStream from '../AiJobHunt/Home/DialogArea/EventSourceStream';
 import styles from './AiScene.less';
 // import SpeechInputComponent from '../Recognition/index';
@@ -277,8 +281,8 @@ const JobHunt: React.FC = () => {
         }
       }
       state.messageArr = res.data || [];
-    })
-  }
+    });
+  };
 
   const send = () => {
     let error: any = false;
@@ -350,7 +354,7 @@ const JobHunt: React.FC = () => {
     getConvertParamId({}).then((res: any) => {
       getHistoryList(res);
       state.patams = res;
-    })
+    });
     let qsData: any = getQueryParam();
     window.sessionStorage.setItem('commonDatas', JSON.stringify(qsData));
     // 如果是预置数据界面，不需要调用接口
@@ -383,17 +387,14 @@ const JobHunt: React.FC = () => {
         history.push('/FVR');
       } else if (res.plugin?.code === 'carPlate') {
         history.push('/LPR');
-      } 
-      else if (res.plugin?.code === 'aiAtlas') {
+      } else if (res.plugin?.code === 'intelligence') {
         history.push('/aiAtlas');
-      } 
-      else if (res.plugin?.modelTypeId === '12') {
+      } else if (res.plugin?.modelTypeId === '12') {
         history.push({
-          path: ''
-        })
+          path: '',
+        });
         history.push(`/AiSceneImg`);
-      } 
-      else {
+      } else {
         state.data = JSON.parse(res.param?.params);
         state.aiData = res;
       }
@@ -525,30 +526,43 @@ const JobHunt: React.FC = () => {
         </div>
         <div className={styles.right_list}>
           <div className={styles.right_head}>对话记录</div>
-          {
-            state.messageArr && state.messageArr.map((el: any) => {
-              return <div key={el.id} onClick={() => {
-                getHistoryDetail({
-                  themeId: el.id
-                }).then((res: any) => {
-                  console.log(res);
-                })
-              }} style={{ background: el.active ? 'white' : 'none' }} className={styles.messageBox}>
-                <div>
-                  <img src={duihua} style={{ width: 16, height: 14, marginRight: 6 }}></img>
-                  {el.name}
-                </div>
-                <img onClick={(e: any) => {
-                  e.stopPropagation();
-                  deleteHistory({
-                    themeId: el.id,
-                  }).then(() => {
-                    message.success('操作成功');
-                    state.visible = false;
-                    getHistoryList(state.patams, 2);
-                  })
-                }} src={closes} style={{ cursor: 'pointer', width: 14, height: 14 }}></img>
-                {/* {
+          {state.messageArr &&
+            state.messageArr.map((el: any) => {
+              return (
+                <div
+                  key={el.id}
+                  onClick={() => {
+                    getHistoryDetail({
+                      themeId: el.id,
+                    }).then((res: any) => {
+                      console.log(res);
+                    });
+                  }}
+                  style={{ background: el.active ? 'white' : 'none' }}
+                  className={styles.messageBox}
+                >
+                  <div>
+                    <img
+                      src={duihua}
+                      style={{ width: 16, height: 14, marginRight: 6 }}
+                    ></img>
+                    {el.name}
+                  </div>
+                  <img
+                    onClick={(e: any) => {
+                      e.stopPropagation();
+                      deleteHistory({
+                        themeId: el.id,
+                      }).then(() => {
+                        message.success('操作成功');
+                        state.visible = false;
+                        getHistoryList(state.patams, 2);
+                      });
+                    }}
+                    src={closes}
+                    style={{ cursor: 'pointer', width: 14, height: 14 }}
+                  ></img>
+                  {/* {
                   el.active ? <img onClick={()=> {
                     deleteHistory({
                       themeId: el.id,
@@ -558,9 +572,9 @@ const JobHunt: React.FC = () => {
                     })
                   }} src={closes} style={{ cursor: 'pointer', width: 14, height: 14 }}></img> :  <div></div>
                 } */}
-              </div>
-            })
-          }
+                </div>
+              );
+            })}
         </div>
       </div>
     </div>
