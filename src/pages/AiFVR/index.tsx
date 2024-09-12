@@ -130,7 +130,7 @@ const AiFVR: React.FC = ({ }) => {
                 message.warning('上传的图片不符合要求，请重新选择合适的图片');
                 return false;
             }
-            if (state.preData.length > 19) {
+            if (state.preData.length > 9) {
                 message.warning('图片已满，请删除图片后，再上传')
                 return false
             }
@@ -252,7 +252,7 @@ const AiFVR: React.FC = ({ }) => {
                     message.warning('上传的图片不符合要求，请重新选择合适的图片');
                     return;
                 }
-                if (state.preData.length > 19) {
+                if (state.preData.length > 9) {
                     message.warning('图片已满，请删除图片后，再上传');
                     return;
                 }
