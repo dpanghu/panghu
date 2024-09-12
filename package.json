@@ -21,7 +21,7 @@
     "@types/react-pdf": "^4.0.6",
     "@types/react-syntax-highlighter": "^15.5.13",
     "@umijs/max": "4.3.10",
-    "SeenPc": "2.3.9",
+    "SeenPc": "2.3.11",
     "ahooks": "3.8.0",
     "antd": "5.4.0",
     "classnames": "2.5.1",
