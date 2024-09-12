@@ -196,6 +196,7 @@ const SentimentAnalysis: React.FC = () => {
                       marks={marks}
                       defaultValue={50}
                       className={styles?.splider}
+                      tooltip={{open: false}}
                     />
                   </div>
                 </div>
@@ -210,6 +211,7 @@ const SentimentAnalysis: React.FC = () => {
                       marks={marks1}
                       // defaultValue={0.5}
                       className={styles?.splider2}
+                      tooltip={{open: false}}
                     />
                   </div>
                 </div>
@@ -230,6 +232,7 @@ const SentimentAnalysis: React.FC = () => {
                         max={100}
                         // onChange={setValue}
                         value={value}
+                        tooltip={{open: false}}
                         // style={{ position: 'relative', width: '85%' }}
                       />
                     </div>

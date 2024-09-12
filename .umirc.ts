@@ -68,15 +68,14 @@ export default defineConfig({
       component: '@/pages/AiFVR',
     },
     {
-      path:'/LPR',
+      path: '/LPR',
       layout: false,
-      component:'@/pages/AiLPR'
+      component: '@/pages/AiLPR',
     },
     {
-      path:'/OR',
+      path: '/OR',
       layout: false,
-      component:'@/pages/AiOR'
-
+      component: '@/pages/AiOR',
     },
     {
       path: '/aiJobHunt/AiList',
@@ -103,7 +102,18 @@ export default defineConfig({
       title: 'AI文生语音',
       layout: false,
     },
-
+    {
+      path: '/presetData',
+      component: '@/pages/PresetData',
+      title: '预置数据',
+      layout: false,
+    },
+    {
+      path: '/aiAtlas',
+      component: '@/pages/AiAtlas',
+      title: 'AI图谱生成',
+      layout: false,
+    },
     {
       path: '/aiJobHunt',
       component: '@/pages/AiJobHunt',
@@ -131,6 +141,7 @@ export default defineConfig({
         },
       ],
     },
+
     {
       component: '@/pages/404',
     },

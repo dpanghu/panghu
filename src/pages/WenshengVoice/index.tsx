@@ -6,12 +6,13 @@ import voice2Png from '@/assets/images/wenshengVoice/voice2.png';
 import voice3Png from '@/assets/images/wenshengVoice/voice3.png';
 import voice4Png from '@/assets/images/wenshengVoice/voice4.png';
 import voiceBg from '@/assets/images/wenshengVoice/voiceBg.png';
+import { getConvertParamId } from '@/services/aiJobHunt';
 import { randomExampleVolume, widgetDtcTTS } from '@/services/wenshengVoice';
 import { Button, message } from 'SeenPc';
 import { useReactive } from 'ahooks';
 import { Progress, Radio, Slider, Spin } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import ReactPlayer from 'react-player';
 import styles from './index.less';
 
@@ -28,6 +29,7 @@ interface TState {
   playFinished: boolean;
   loading: boolean;
   isError: boolean;
+  paramsId: string;
 }
 
 const WenshengVoice: React.FC = () => {
@@ -44,11 +46,12 @@ const WenshengVoice: React.FC = () => {
     playFinished: false,
     loading: false,
     isError: false,
+    paramsId: '',
   });
   const playerRef = useRef<any>(null);
   const voiceMap = [
-    { label: '沉稳男声', img: voice1Png, key: '1' },
-    { label: '青年男声', img: voice2Png, key: '3' },
+    { label: '沉稳男声', img: voice1Png, key: '3' },
+    { label: '青年男声', img: voice2Png, key: '1' },
     { label: '通用女声', img: voice3Png, key: '0' },
     { label: '活泼童声', img: voice4Png, key: '4' },
   ];
@@ -57,6 +60,13 @@ const WenshengVoice: React.FC = () => {
   const extraParams = JSON.parse(
     window.sessionStorage.getItem('queryParams') || '{}',
   );
+
+  const getParamId = async () => {
+    try {
+      const result = await getConvertParamId(extraParams);
+      state.paramsId = result;
+    } catch (error) {}
+  };
 
   const secondsToTimeShort = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
@@ -126,6 +136,7 @@ const WenshengVoice: React.FC = () => {
         per: state.voiceType,
         pitch: state.toneValue,
         volume: state.volumeValue,
+        paramId: state.paramsId,
         //   ...extraParams,
       });
       state.voiceUrl = result.url;
@@ -146,7 +157,6 @@ const WenshengVoice: React.FC = () => {
     }
     state.voicePlaying = !state.voicePlaying;
   };
-  console.log(state.isError);
 
   const initPlayer = () => {
     state.durationAll = playerRef.current.getDuration();
@@ -173,6 +183,11 @@ const WenshengVoice: React.FC = () => {
     timerRef.current && clearInterval(timerRef.current);
     state.playFinished = true;
   };
+
+  useEffect(() => {
+    getParamId();
+    getRandomExampleVolume();
+  }, []);
 
   return (
     <div className={styles.WenshengVoiceContainer}>
@@ -240,7 +255,7 @@ const WenshengVoice: React.FC = () => {
             <div className={styles.speed}>
               <span className={styles.type}>音调</span>
               <div className={styles.process}>
-                <span className={styles.desc}>轻</span>
+                <span className={styles.desc}>低</span>
                 <Slider
                   min={1}
                   max={15}
@@ -254,13 +269,13 @@ const WenshengVoice: React.FC = () => {
                     background: `linear-gradient(to right, rgb(90, 186, 255) 0%, rgb(93, 119, 249) 100%)`,
                   }}
                 />
-                <span className={styles.desc}>重</span>
+                <span className={styles.desc}>高</span>
               </div>
             </div>
             <div className={styles.speed}>
               <span className={styles.type}>音量</span>
               <div className={styles.process}>
-                <span className={styles.desc}>低</span>
+                <span className={styles.desc}>小</span>
                 <Slider
                   min={1}
                   max={9}
@@ -274,7 +289,7 @@ const WenshengVoice: React.FC = () => {
                     background: `linear-gradient(to right, rgb(90, 186, 255) 0%, rgb(93, 119, 249) 100%)`,
                   }}
                 />
-                <span className={styles.desc}>高</span>
+                <span className={styles.desc}>大</span>
               </div>
             </div>
           </div>

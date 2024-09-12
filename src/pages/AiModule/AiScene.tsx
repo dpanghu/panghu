@@ -39,9 +39,9 @@ const renderPreview = (item: any) => {
     case 'input':
       return (
         <div className={styles.previewBox}>
-          {
-            item.error === true && <div className={styles.errorBox}>未输入，请输入！</div>
-          }
+          {item.error === true && (
+            <div className={styles.errorBox}>未输入，请输入！</div>
+          )}
           <div className={styles.previewTitle}>{item.displayName}</div>
           <Input
             maxLength={item.maxLength}
@@ -62,9 +62,9 @@ const renderPreview = (item: any) => {
     case 'select':
       return (
         <div className={styles.previewBox}>
-          {
-            item.error === true && <div className={styles.errorBox}>未选择，请选择！</div>
-          }
+          {item.error === true && (
+            <div className={styles.errorBox}>未选择，请选择！</div>
+          )}
           <div className={styles.previewTitle}>{item.displayName}</div>
           <Select
             style={{ width: '100%' }}
@@ -83,9 +83,9 @@ const renderPreview = (item: any) => {
     case 'treeSelect':
       return (
         <div className={styles.previewBox}>
-          {
-            item.error === true && <div className={styles.errorBox}>未选择，请选择！</div>
-          }
+          {item.error === true && (
+            <div className={styles.errorBox}>未选择，请选择！</div>
+          )}
           <div className={styles.previewTitle}>{item.displayName}</div>
           <ComboBox
             style={{ width: '100%' }}
@@ -103,9 +103,9 @@ const renderPreview = (item: any) => {
     case 'radio':
       return (
         <div className={styles.previewBox}>
-          {
-            item.error === true && <div className={styles.errorBox}>未选择，请选择！</div>
-          }
+          {item.error === true && (
+            <div className={styles.errorBox}>未选择，请选择！</div>
+          )}
           <div className={styles.previewTitle}>{item.displayName}</div>
           <ComboBox
             style={{ width: '100%' }}
@@ -123,9 +123,9 @@ const renderPreview = (item: any) => {
     case 'selectCheck':
       return (
         <div className={styles.previewBox}>
-          {
-            item.error === true && <div className={styles.errorBox}>未选择，请选择！</div>
-          }
+          {item.error === true && (
+            <div className={styles.errorBox}>未选择，请选择！</div>
+          )}
           <div className={styles.previewTitle}>{item.displayName}</div>
           <div className={styles.previewCheckBox}>
             {item.options &&
@@ -169,9 +169,9 @@ const renderPreview = (item: any) => {
     case 'checkbox':
       return (
         <div className={styles.previewBox}>
-          {
-            item.error === true && <div className={styles.errorBox}>未选择，请选择！</div>
-          }
+          {item.error === true && (
+            <div className={styles.errorBox}>未选择，请选择！</div>
+          )}
           <div className={styles.previewTitle}>{item.displayName}</div>
           <div className={styles.previewCheckBox}>
             {item.options &&
@@ -350,6 +350,11 @@ const JobHunt: React.FC = () => {
     })
     let qsData: any = getQueryParam();
     window.sessionStorage.setItem('commonDatas', JSON.stringify(qsData));
+    // 如果是预置数据界面，不需要调用接口
+    if (qsData.isPreset) {
+      history.push('/presetData');
+      return;
+    }
     getPluginDetail({
       id: qsData.imageId,
       userId: '1',
@@ -367,17 +372,13 @@ const JobHunt: React.FC = () => {
         history.push('/wenshengVoice');
       } else if (res.plugin?.code === 'sentAnalysis') {
         history.push('/sentimentAnalysis');
-      }
-      else if (res.plugin?.code === 'ocr') {
+      } else if (res.plugin?.code === 'ocr') {
         history.push('/OCR');
-      }
-      else if (res.plugin?.code === 'general') {
+      } else if (res.plugin?.code === 'general') {
         history.push('/OR');
-      }
-      else if (res.plugin?.code === 'fruit') {
+      } else if (res.plugin?.code === 'fruit') {
         history.push('/FVR');
-      }
-      else if (res.plugin?.code === 'carPlate') {
+      } else if (res.plugin?.code === 'carPlate') {
         history.push('/LPR');
       } 
       else if (res.plugin?.code === 'aiAtlas') {
