@@ -28,6 +28,7 @@ interface TState {
     data: any;
     baseData: any;
     allow: any;
+    introduce: any;
     aiData: any;
     imgUrl: any;
     isLoading: any;
@@ -51,6 +52,7 @@ const JobHunt: React.FC = () => {
     const typewriterStrCache = useRef<string>('');
     const state = useReactive<TState>({
         curTheme: undefined,
+        introduce: false,
         dialogList: [],
         baseData: [],
         typewriterArrCache: [],
@@ -151,6 +153,9 @@ const JobHunt: React.FC = () => {
                                 item.value = e;
                                 if (e !== '') {
                                     item.error = false;
+                                }
+                                if(e === '/') {
+                                    state.introduce = true;
                                 }
                             }}
                         ></Input>
@@ -452,7 +457,7 @@ const JobHunt: React.FC = () => {
                 }
             });
             console.log(';22222',JSON.stringify(clone));
-            state.data = JSON.parse(res.param?.params);
+            state.data = clone;
             state.aiData = res;
         });
     });
@@ -557,7 +562,8 @@ const JobHunt: React.FC = () => {
                             </div>
                         </div>
                     </div>
-                    <div className={styles.warningBox} style={{ marginTop: 20 }}>
+                    {
+                        state.introduce && <div className={styles.warningBox} style={{ marginTop: 20 }}>
                         <img
                             src={aiimg}
                             style={{ width: 24, height: 24, marginRight: 16 }}
@@ -573,6 +579,9 @@ const JobHunt: React.FC = () => {
                                             if (inputs !== void 0) {
                                                 inputs.value = el.example;
                                             }
+                                            let check: any = state.data.find((checks: any)=> checks.elementType === 'checkbox');
+                                            check.value = el.pointName;
+                                            
                                         }}>试一试</div>
                                     </div>
                                 })
@@ -580,6 +589,7 @@ const JobHunt: React.FC = () => {
 
                         </div>
                     </div>
+                    }
                     <div className={styles.messageList}>
                         {
                             state.messageList && state.messageList.map((item: any) => {
