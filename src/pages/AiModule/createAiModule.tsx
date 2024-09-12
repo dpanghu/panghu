@@ -522,7 +522,7 @@ const Resume: React.FC = ({ }) => {
                     const cloneData = state.data;
                     el.label = e;
                     state.data = cloneData;
-                  }} value={el.label} placeholder={'请输入'} style={{ width: 100, marginLeft: index === 0 ? 0 : 10 }}></Input>
+                  }} value={el.label} placeholder={'请输入'} style={{ marginLeft: index === 0 ? 0 : 10 }}></Input>
                 </div>
               })
             }

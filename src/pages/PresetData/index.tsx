@@ -11,13 +11,13 @@ import { getFileMajorType } from '@/utils/contants';
 import { getQueryParam, getResourceById } from '@/utils/utils';
 import { Button, message } from 'SeenPc';
 import { useReactive } from 'ahooks';
-import { Layout, Table } from 'antd';
+import { Layout, Modal, Table } from 'antd';
 import { RcFile } from 'antd/es/upload';
 import React, { useEffect } from 'react';
 import styles from './index.less';
 const { Header, Sider, Content } = Layout;
 // import qs from 'qs';
-
+import ReactJson from 'react-json-view';
 interface TProps {
   children?: React.ReactNode;
 }
@@ -29,6 +29,8 @@ interface TState {
   };
   attachmentId: string;
   fileList: RecordItem[];
+  resultOpen: boolean;
+  resultData: RecordItem;
 }
 
 const PresetData: React.FC<TProps> = ({}) => {
@@ -46,6 +48,8 @@ const PresetData: React.FC<TProps> = ({}) => {
     },
     attachmentId: '',
     fileList: [],
+    resultOpen: false,
+    resultData: {},
   });
 
   const menu = [
@@ -81,6 +85,14 @@ const PresetData: React.FC<TProps> = ({}) => {
           <div style={{ display: 'flex', columnGap: 12 }}>
             <a
               onClick={() => {
+                state.resultOpen = true;
+                state.resultData = record;
+              }}
+            >
+              解析结果
+            </a>
+            <a
+              onClick={() => {
                 window.open(getResourceById(record.resId), '_self');
               }}
             >
@@ -99,6 +111,31 @@ const PresetData: React.FC<TProps> = ({}) => {
       limit: 9999,
     });
     state.fileConf = result;
+  };
+
+  const syntaxHighlight = (json: any) => {
+    if (typeof json != 'string') {
+      json = JSON.stringify(json, undefined, 2);
+    }
+    json = json.replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>');
+    return json.replace(
+      /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
+      function (match: any) {
+        // let cls = 'color:#D19A66';
+        // if (/^"/.test(match)) {
+        //   if (/:$/.test(match)) {
+        //     cls = 'color:#F92A0F';
+        //   } else {
+        //     cls = 'color:#44C91B';
+        //   }
+        // } else if (/true|false/.test(match)) {
+        //   cls = 'color:#1B73C9';
+        // } else if (/null/.test(match)) {
+        //   cls = 'color:#C586C0';
+        // }
+        return { match };
+      },
+    );
   };
 
   const saveFile = async () => {
@@ -146,9 +183,11 @@ const PresetData: React.FC<TProps> = ({}) => {
     queryFileList();
     queryFileConf();
   }, []);
+  console.log(state.resultData);
+  console.log(JSON.parse(state.resultData?.note || '{}'));
 
   return (
-    <Layout className={styles.presetDataContainer}>
+    <Layout className={styles.presetDataContainer} id="presetDataContainer">
       <Sider className={styles.sider}>
         <div className={styles.logo}>
           <img src={logoImg} alt="" />
@@ -188,6 +227,27 @@ const PresetData: React.FC<TProps> = ({}) => {
           />
         </Content>
       </Layout>
+      <Modal
+        title="预置数据解析结果"
+        centered
+        width={650}
+        footer={null}
+        open={state.resultOpen}
+        onCancel={() => {
+          state.resultOpen = false;
+        }}
+        getContainer={() =>
+          document.getElementById('presetDataContainer') as HTMLElement
+        }
+      >
+        <ReactJson
+          displayDataTypes={false}
+          displayObjectSize={false}
+          src={JSON.parse(state.resultData?.note || '{}')}
+        />
+        {/* <pre>{syntaxHighlight(JSON.parse(state.resultData?.note || '{}'))}</pre> */}
+        {/* {JSON.stringify(JSON.parse(state.resultData?.note || '{}'))} */}
+      </Modal>
     </Layout>
   );
 };

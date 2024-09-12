@@ -2,6 +2,8 @@ import closes from '@/assets/images/closes.png';
 import confings from '@/assets/images/configs.png';
 import duihua from '@/assets/images/duihua.png';
 import aiimg from '@/assets/images/rebotIcon.png';
+import shouqi from '@/assets/images/shouqi.png';
+import zhankai from '@/assets/images/zhankai.png';
 import { getConvertParamId } from '@/services/aiJobHunt/index';
 import {
   deleteHistory,
@@ -36,6 +38,7 @@ interface TState {
   patams: any;
   visible: any;
   excludeId: any;
+  open: any;
   isTyping: any;
   typewriterArrCache: any;
 }
@@ -234,6 +237,7 @@ const JobHunt: React.FC = () => {
     excludeId: '',
     isLoading: false,
     isTyping: false,
+    open: false,
     allow: '',
     aiData: {},
     editName: '',
@@ -466,6 +470,7 @@ const JobHunt: React.FC = () => {
           </div>
         </div>
         <div className={styles.mid_content}>
+          <div style={{ position:'absolute',fontSize: 13, bottom: 18,color:'rgb(134, 142, 179)',fontWeight: 400, display: 'flex',alignSelf:'center' }}>所有内容均由人工智能模型输出，其内容的准确性和完整性无法保证，不代表我们的态度和观点。</div>
           <div className={styles.warningBox}>
             <img
               src={aiimg}
@@ -524,7 +529,9 @@ const JobHunt: React.FC = () => {
           )}
           {/* <SpeechInputComponent></SpeechInputComponent> */}
         </div>
-        <div className={styles.right_list}>
+        {
+          state.open === true ?   <div className={styles.right_list}>
+          <img src={shouqi} onClick={()=> { state.open = false; }} style={{ position:'absolute',width: 40, height: 40, top: 0, left: -20,cursor:'pointer' }}></img>
           <div className={styles.right_head}>对话记录</div>
           {state.messageArr &&
             state.messageArr.map((el: any) => {
@@ -575,7 +582,8 @@ const JobHunt: React.FC = () => {
                 </div>
               );
             })}
-        </div>
+        </div> : <img src={zhankai} onClick={()=> { state.open = true; }} style={{ position:'absolute',width: 40, height: 40, top: 0, right: 5,cursor:'pointer' }}></img>
+        }
       </div>
     </div>
   );
