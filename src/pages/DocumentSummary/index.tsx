@@ -256,6 +256,7 @@ const DocumentSummary: React.FC = () => {
       const result: any = await resetWordAnalysis({
         wordSummaryId: params.id,
         isPreset: params.isPreset,
+        paramId: state.paramsId,
       });
       changeContent(result);
       // state.showSummary = true;
