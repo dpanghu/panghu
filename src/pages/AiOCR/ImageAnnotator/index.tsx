@@ -270,7 +270,7 @@ const ImageAnnotator: React.FC<ImageAnnotatorProps> = ({
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
     >
-      <img ref={imgRef} src={imageSrc} alt="Annotated" className={styles.img} />
+      <img ref={imgRef} src={imageSrc} alt="" className={styles.img} />
       {(isMark || isBlue) && (
         <canvas ref={canvasRef} className={styles.canvas} />
       )}
