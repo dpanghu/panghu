@@ -1,4 +1,4 @@
-import { Input } from 'SeenPc';
+import { Input, message } from 'SeenPc';
 import React, { useEffect, useState } from 'react';
 import { LS_NAME } from '../constants';
 import styles from './index.less';
@@ -52,6 +52,10 @@ const TextContent: React.FC<Props> = ({
         <span>{value.length}/300</span>
         <div
           onClick={() => {
+            if (!value) {
+              message.warning('文本内容不能为空');
+              return;
+            }
             if (extractLoading) return;
             extractMsg(value);
           }}
