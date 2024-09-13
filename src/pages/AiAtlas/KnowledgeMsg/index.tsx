@@ -1,6 +1,6 @@
 import { GraphData } from '@antv/g6';
 import { uuid } from '@antv/x6/lib/util/string/uuid';
-import { Button, Input, Table } from 'SeenPc';
+import { Button, Input, Table, message } from 'SeenPc';
 import { useDeepCompareEffect, useReactive } from 'ahooks';
 import { InputRef } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
@@ -37,6 +37,10 @@ const EditableCell: React.FC<React.PropsWithChildren> = ({
   };
 
   const save = async () => {
+    if (state.value === '') {
+      message.warning('知识信息中内容不能为空，请填写内容');
+      return;
+    }
     try {
       toggleEdit();
       handleSave({ ...record, [dataIndex]: state.value });
@@ -132,6 +136,7 @@ const KnowledgeMsg: React.FC<Props> = ({
   });
 
   const operateRef = useRef<HTMLDivElement | null>();
+  const tableRef = useRef<HTMLDivElement | null>();
   const hoveredIndex = useRef<number>(-1);
   useDeepCompareEffect(() => {
     if (knowledgeInfo) {
@@ -177,6 +182,12 @@ const KnowledgeMsg: React.FC<Props> = ({
     },
   };
 
+  const checkEmpty = () => {
+    return state.dataSource.every(
+      (row) => row.entity1 !== '' && row.rel !== '' && row.entity2 !== '',
+    );
+  };
+
   return (
     <div className={styles['container']}>
       <div className={styles['body']}>
@@ -187,7 +198,7 @@ const KnowledgeMsg: React.FC<Props> = ({
           {extractLoading ? (
             <Loading loadingMessage="知识抽取中" />
           ) : knowledgeInfo ? (
-            <div className={styles['table-container']}>
+            <div className={styles['table-container']} ref={tableRef}>
               <Table
                 components={components}
                 rowKey={(item) => item.key}
@@ -262,7 +273,16 @@ const KnowledgeMsg: React.FC<Props> = ({
             disabled={graphLoading}
             type="primary"
             onClick={() => {
-              generateGraph(state.dataSource);
+              // @ts-ignore
+              if (tableRef.current?.querySelectorAll('input')?.length > 0) {
+                message.error('知识信息中有信息未确认');
+                return;
+              }
+              if (checkEmpty()) {
+                generateGraph(state.dataSource);
+              } else {
+                message.warning('知识信息中内容不能为空，请填写内容');
+              }
             }}
           >
             生成图谱{graphLoading ? '中' : ''}
