@@ -223,19 +223,24 @@ const KnowledgeMsg: React.FC<Props> = ({
                   hoveredIndex.current = -1;
                 }}
               >
+                {state.dataSource.length < 100 && (
+                  <div
+                    className={styles['operate-add']}
+                    onClick={() => {
+                      const newSource = [...state.dataSource];
+                      newSource.splice(hoveredIndex.current + 1, 0, {
+                        key: uuid(),
+                        entity1: '实体1',
+                        entity2: '实体2',
+                        rel: '关联',
+                      });
+                      state.dataSource = newSource;
+                    }}
+                  ></div>
+                )}
+
                 <div
-                  onClick={() => {
-                    const newSource = [...state.dataSource];
-                    newSource.splice(hoveredIndex.current + 1, 0, {
-                      key: uuid(),
-                      entity1: '实体1',
-                      entity2: '实体2',
-                      rel: '关联',
-                    });
-                    state.dataSource = newSource;
-                  }}
-                ></div>
-                <div
+                  className={styles['operate-del']}
                   onClick={() => {
                     state.dataSource = state.dataSource.filter(
                       (_, index) => index !== hoveredIndex.current,
