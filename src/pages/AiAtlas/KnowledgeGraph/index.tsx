@@ -13,7 +13,7 @@ type Props = {
 const KnowledgeGraph: React.FC<Props> = ({ data }) => {
   const graph = useRef<Graph | null>(null);
   const state = useReactive({
-    scale: 50,
+    scale: 100,
     isFullscreen: false,
   });
 
@@ -116,19 +116,19 @@ const KnowledgeGraph: React.FC<Props> = ({ data }) => {
   };
 
   const scaleIn = () => {
-    if (state.scale - 10 < 0) {
+    if (state.scale - 10 < 50) {
       return;
     }
-    graph.current?.zoomTo((state.scale + 50 - 10) / 100);
+    graph.current?.zoomTo((state.scale - 10) / 100);
     graph.current?.fitCenter();
     state.scale -= 10;
   };
 
   const scaleOut = () => {
-    if (state.scale + 10 > 100) {
+    if (state.scale + 10 > 200) {
       return;
     }
-    graph.current?.zoomTo((state.scale + 50 + 10) / 100);
+    graph.current?.zoomTo((state.scale + 10) / 100);
     graph.current?.fitCenter();
     state.scale += 10;
   };
