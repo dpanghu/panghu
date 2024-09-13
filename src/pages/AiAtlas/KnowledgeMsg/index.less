@@ -66,6 +66,16 @@
   bottom: 10px;
   left: 16px;
   padding-right: 24px;
+  :global {
+    .ant-table-tbody > tr > td,
+    .ant-table-thead > tr > th {
+      white-space: pre-wrap; /* css-2.1, 自从 1999 年 1 月 1 日起废弃 */
+      white-space: -moz-pre-wrap; /* Mozilla, 1999 年 - */
+      white-space: -pre-wrap; /* Opera 4-6 */
+      white-space: -o-pre-wrap; /* Opera 7 */
+      word-wrap: break-word; /* Internet Explorer 5.5+ */
+    }
+  }
 }
 
 .area-text-footer {
@@ -76,8 +86,7 @@
 .editable-cell-value-wrap {
   padding-inline-end: unset !important;
   overflow: hidden;
-  text-wrap: nowrap;
-  text-overflow: ellipsis;
+  text-wrap: break-word;
 }
 
 .operate-row {
