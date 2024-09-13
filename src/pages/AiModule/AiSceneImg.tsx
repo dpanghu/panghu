@@ -344,6 +344,10 @@ const JobHunt: React.FC = () => {
             if (state.allow[0] === '1') {
                 let messages: any = state.data.find((element: any) => element.elementType === 'input');
                 let checks: any = state.data.find((element: any) => element.elementType === 'checkbox');
+                if(messages.value === '' || messages.value === void 0) {
+                    message.warning('请输入描述场景');
+                    return;
+                }
                 state.messageList.push({
                     data: messages.value,
                     type: 1
