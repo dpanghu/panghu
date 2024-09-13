@@ -223,9 +223,9 @@ const renderPreview = (item: any) => {
 };
 
 const JobHunt: React.FC = () => {
-  const queryData = useCreation(() => {
-    return JSON.parse(window.sessionStorage.getItem('commonDatas') || '{}');
-  }, []);
+  // const queryData = useCreation(() => {
+  //   return JSON.parse(window.sessionStorage.getItem('commonDatas') || '{}');
+  // }, []);
   const typeWriter = useRef<TypewriterClass | null>(null);
   const typewriterStrCache = useRef<string>('');
   const state = useReactive<TState>({
@@ -309,6 +309,7 @@ const JobHunt: React.FC = () => {
           state.visible = true;
           state.isLoading = true;
           typewriterStrCache.current = '';
+          let queryData: any = JSON.parse(window.sessionStorage.getItem('commonDatas') || '{}')
           let qsData = {
             ...queryData,
             paramId: state.patams,
