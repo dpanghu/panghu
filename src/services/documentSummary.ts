@@ -64,6 +64,8 @@ export async function resetWordAnalysis<T>(params?: RecordItem): Promise<T> {
     url: '/seentao/xai/word/summary/analysis',
     method: 'POST',
     params,
-    hiddenLoading: false,
+    hiddenLoading: true,
+    hiddenErrorMessage: true,
+    timeout: 1000 * 60 * 2,
   });
 }

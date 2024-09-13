@@ -243,16 +243,21 @@ const DocumentSummary: React.FC = () => {
       // state.summaryData = result;
       // querySummaryList();
       changeContent(result);
-    } finally {
-      state.uploadLoading = false;
+      state.showActionBtns = true;
+      state.showSummary = true;
+    } catch (e) {
+      message.error('解析失败');
       state.showActionBtns = false;
       state.showSummary = false;
+    } finally {
+      state.uploadLoading = false;
     }
   };
 
   const resetAnalysis = async (params: RecordItem) => {
     try {
       state.showSummary = false;
+      state.uploadLoading = true;
       state.showActionBtns = true;
       const result: any = await resetWordAnalysis({
         wordSummaryId: params.id,
@@ -264,6 +269,8 @@ const DocumentSummary: React.FC = () => {
     } catch (error) {
       state.showSummary = false;
       state.showActionBtns = false;
+    } finally {
+      state.uploadLoading = false;
     }
   };
 
