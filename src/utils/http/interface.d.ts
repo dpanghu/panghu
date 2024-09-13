@@ -40,4 +40,8 @@ export interface CreateAxiosConfig extends AxiosRequestConfig {
    * 是否隐藏loading
    */
   hiddenLoading?: boolean;
+  /**
+   * 导入数据错误需要返回的url
+   */
+  needUrl?: boolean;
 }

@@ -41,18 +41,6 @@ export default defineConfig({
       layout: false,
     },
     {
-      path: '/aiJobHunt/AiLearnPlan',
-      component: '@/pages/AiJobHunt/AiLearnPlan',
-      title: 'XAI | ai学习规划',
-      layout: false,
-    },
-    {
-      path: '/aiJobHunt/AiPersonalPortrait',
-      component: '@/pages/AiJobHunt/AiPersonalPortrait',
-      title: 'XAI | ai个人画像',
-      layout: false,
-    },
-    {
       path: '/FVR',
       layout: false,
       component: '@/pages/AiFVR',

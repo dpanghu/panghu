@@ -37,7 +37,7 @@ class Axios {
     let qsData = JSON.parse(
       window.sessionStorage.getItem('queryParams') || '{}',
     );
-    let commonData: any = getCommonData(); 
+    let commonData: any = getCommonData();
     conf.params = {
       ...qsData,
       ...conf.params,
@@ -71,6 +71,9 @@ class Axios {
       Promise.reject(CodeMessage[401]);
       message.error(CodeMessage[401]);
       return errorResult401;
+    }
+    if (Number(code) !== 200 && conf.needUrl) {
+      return Promise.reject(res);
     }
     if (Number(code) !== 200) {
       if (!conf.hiddenErrorMessage) {
