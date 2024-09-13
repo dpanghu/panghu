@@ -55,6 +55,7 @@ const EditableCell: React.FC<React.PropsWithChildren> = ({
         onChange={(val) => (state.value = val)}
         onPressEnter={save}
         onBlur={save}
+        maxLength={20}
         style={{ width: '100%`' }}
       />
     ) : (
