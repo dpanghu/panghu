@@ -239,8 +239,8 @@ const AiOCR: React.FC = ({ }) => {
     isPreset: any,
   ) => {
     setScale(1);
-    state.isValid = false
-    state.message = ""
+    // state.isValid = false
+    // state.message = ""
     state.isPreset = isPreset;
     state.isSelect = id;
     state.imgUrl = url;
@@ -399,6 +399,21 @@ const AiOCR: React.FC = ({ }) => {
       document.removeEventListener('paste', handlePaste as EventListener);
     };
   }, [shouldPaste]);
+
+  useEffect(() => {
+    if (state.isCheck) {
+      const inputWords = state.message.split(' ').filter((word: any) => word.trim() !== '');
+      const allDataWords = state.IdentifyData.flatMap((item: any) => item.words.split(' '));
+      const isValid = inputWords.every((inputWord: any) =>
+        allDataWords.some((dataWord: any) => dataWord.includes(inputWord))
+      );
+      if (isValid) {
+        state.isValid = true;
+      } else {
+        state.isValid = false;
+      }
+    }
+  }, [state.isSelect]);
 
   return (
     <div className={styles.aiOcr}>
