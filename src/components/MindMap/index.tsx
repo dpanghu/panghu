@@ -1,7 +1,6 @@
 import deleteIcon from '@/assets/images/deleteIcon.png';
 import PDFIcon from '@/assets/images/icon-file_PDF.png';
 import WordIcon from '@/assets/images/icon-file_word.png';
-import collapseIcon from '@/assets/images/mind_collapse_icon.png';
 import fitContentIcon from '@/assets/images/mind_fitContent_icon.png';
 import fullscreenIcon from '@/assets/images/mind_fullscreen_icon.png';
 import zoomInIcon from '@/assets/images/mind_zoomIn_icon.png';
@@ -616,8 +615,8 @@ const MindMap: React.FC<TProps> = ({
       >
         <div className={styles.iconBox}>
           <img src={fitContentIcon} alt="" onClick={handleFitContent} />
-          <Divider type="vertical" />
-          <img src={collapseIcon} alt="" />
+          {/* <Divider type="vertical" />
+          <img src={collapseIcon} alt="" /> */}
           <Divider type="vertical" />
           <img src={zoomInIcon} alt="" onClick={handleZoomIn} />
           <Divider type="vertical" />
