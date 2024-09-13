@@ -11,10 +11,11 @@ import selectImg from '@/assets/images/selectImgs.png';
 import radioImgs from '@/assets/images/radioImgs.png';
 import checkboxImgs from '@/assets/images/checkboxImgs.png';
 import { history } from 'umi';
+import tushengwen from '@/assets/images/tushengwen.png';
+import uploadspng from '@/assets/images/uploads.png';
 import { saveAiModule, iconList, getPluginDetail } from '@/services/aiModule';
 import { getAIProductList, getAllAIModel } from '@/services/aiJobHunt';
-import { CloseOutlined, DeleteOutlined, LeftOutlined } from '@ant-design/icons';
-import { trim } from 'lodash';
+import { CloseOutlined, LeftOutlined } from '@ant-design/icons';
 
 type IState = {
   status: any
@@ -68,7 +69,7 @@ const Resume: React.FC = ({ }) => {
       userId: '1',
       memberId: '1',
       schoolId: '1',
-    }).then((res: any)=> {
+    }).then((res: any) => {
       console.log(res);
       // state.iconImg = res[0]?.icon;
       // res[0].choose = true;
@@ -88,51 +89,57 @@ const Resume: React.FC = ({ }) => {
     }).then((el: any) => {
       state.domainData = el;
     });
-    if(window.sessionStorage.getItem('pluginId') !== 'null') {
+    if (window.sessionStorage.getItem('pluginId') !== 'null') {
       getPluginDetail({
         id: window.sessionStorage.getItem('pluginId'),
-      }).then((res: any)=> {
+      }).then((res: any) => {
         let arr: any = [];
         let portfoliosClone: any = [];
         let jsonData: any = JSON.parse(res.param?.params);
         // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-        jsonData && jsonData.map((el: any)=> {
+        jsonData && jsonData.map((el: any) => {
           portfoliosClone.push({
             id: el.name,
             name: el.displayName,
           });
-          if(el.elementType == 'input') {
+          if (el.elementType == 'input') {
             arr.push({
               title: el.displayName,
               length: el.maxLength,
               type: 'text',
               limit: 0,
             })
-          }else if(el.elementType == 'select') {
+          } else if (el.elementType == 'file') {
+            arr.push({
+              title: el.displayName,
+              length: el.maxLength,
+              type: 'file',
+            })
+          } else if (el.elementType == 'select') {
             arr.push({
               title: el.displayName,
               length: el.maxLength,
               type: 'select',
               option: el.options,
             })
-          }else if(el.elementType == 'treeSelect' || el.elementType == 'radio') {
+          } else if (el.elementType == 'treeSelect' || el.elementType == 'radio') {
             arr.push({
               title: el.displayName,
               length: el.maxLength,
               type: 'radio',
               option: el.options,
-            })  
-          }else if(el.elementType == 'selectCheck' || el.elementType == 'checkbox') {
+            })
+          } else if (el.elementType == 'selectCheck' || el.elementType == 'checkbox') {
             arr.push({
               title: el.displayName,
               length: el.maxLength,
               type: 'checkbox',
               option: el.options,
-            })  
+            })
           }
         })
         state.data = arr;
-        
+
         state.baseData = {
           note: res.plugin.note,
           name: res.plugin.name,
@@ -146,9 +153,9 @@ const Resume: React.FC = ({ }) => {
         portfoliosArr && portfoliosArr.map((el: any) => {
           // eslint-disable-next-line
           let finddata: any = portfoliosClone.find((els: any) => els.id == el.trim());
-          console.log('find',JSON.stringify(finddata));
-          if(finddata !== void 0) {  
-            newportfolio = newportfolio.replace(el, finddata.name);  
+          console.log('find', JSON.stringify(finddata));
+          if (finddata !== void 0) {
+            newportfolio = newportfolio.replace(el, finddata.name);
           }
         })
         state.saveData = {
@@ -165,7 +172,7 @@ const Resume: React.FC = ({ }) => {
     let paramsArr: any = [];
     let newArr: any = [];
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions, array-callback-return
-    state.data && state.data.map((element: any,index: any) => {
+    state.data && state.data.map((element: any, index: any) => {
       newArr.push({
         id: `ai${index}`,
         name: element.title
@@ -178,6 +185,7 @@ const Resume: React.FC = ({ }) => {
         paramsArr.push({
           name: `ai${index}`,
           required: 'true',
+          placeholder: item.placeholder,
           displayName: item.title,
           decimalLength: 0,
           elementType: 'input',
@@ -188,6 +196,7 @@ const Resume: React.FC = ({ }) => {
         paramsArr.push({
           name: `ai${index}`,
           required: 'true',
+          placeholder: item.placeholder,
           displayName: item.title,
           decimalLength: 0,
           elementType: 'select',
@@ -214,6 +223,15 @@ const Resume: React.FC = ({ }) => {
           dataType: 'string',
           options: item.option,
         });
+      }else if (item.type === 'file') {
+        paramsArr.push({
+          name: `ai${index}`,
+          required: 'true',
+          displayName: item.title,
+          decimalLength: 0,
+          elementType: 'file',
+          dataType: 'string',
+        });
       }
     })
     let newportfolio: any = state.saveData.portfolio;
@@ -223,12 +241,12 @@ const Resume: React.FC = ({ }) => {
     portfolios && portfolios.map((el: any) => {
       // eslint-disable-next-line eqeqeq
       let finddata: any = newArr.find((els: any) => els.name == el.trim());
-      console.log('find',JSON.stringify(finddata));
-      if(finddata !== void 0) {  
-        newportfolio = newportfolio.replace(el, finddata.id);  
+      console.log('find', JSON.stringify(finddata));
+      if (finddata !== void 0) {
+        newportfolio = newportfolio.replace(el, finddata.id);
       }
     })
-    console.log('mew',newportfolio);
+    console.log('mew', newportfolio);
     let send = {
       ...state.baseData,
       userId: '1',
@@ -248,19 +266,19 @@ const Resume: React.FC = ({ }) => {
     })
   }
 
-  const extractContentBetweenDoubleBraces = (str: any) => {  
-    const regex = /{{([^}]*?)}}/g;  
-    let matches = str.match(regex);  
-  
+  const extractContentBetweenDoubleBraces = (str: any) => {
+    const regex = /{{([^}]*?)}}/g;
+    let matches = str.match(regex);
+
     // 如果存在匹配项，则映射每个匹配项以仅提取括号内的内容  
-    if (matches) {  
-        // 映射matches数组，对于每个匹配项，使用replace方法移除'{{'和'}}'  
-        return matches.map((match: any) => match.replace(/{{|}}/g, ''));  
-    }  
-  
+    if (matches) {
+      // 映射matches数组，对于每个匹配项，使用replace方法移除'{{'和'}}'  
+      return matches.map((match: any) => match.replace(/{{|}}/g, ''));
+    }
+
     // 如果没有匹配项，返回一个空数组  
-    return [];  
-}  
+    return [];
+  }
 
   const renderData = (item: any, index: any) => {
     switch (item.type) {
@@ -270,13 +288,14 @@ const Resume: React.FC = ({ }) => {
         }} onDrop={() => {
           if (state.draggleData.type === 5) {
             if (index !== state.moveStartIndex) {
+              console.log('22222222',state.moveStartIndex);
               let cloneData: any = state.data;
               let mid: any = {};
               mid = cloneData[index - 1]
               cloneData[index - 1] = cloneData[state.moveStartIndex - 1];
               cloneData[state.moveStartIndex - 1] = mid;
               state.data = cloneData;
-              console.log('start', state.data);
+              console.log('start', JSON.stringify(state.data));
             }
           }
         }} onDragStart={() => {
@@ -286,7 +305,7 @@ const Resume: React.FC = ({ }) => {
           state.tabId = '1';
           state.chooseData = item;
         }}>
-          <div style={{ position:"absolute",bottom: 10, right: 14, color: 'white' }} onClick={()=> {
+          <div style={{ position: "absolute", bottom: 10, right: 14, color: 'white' }} onClick={() => {
             message.success('操作成功');
             let clone: any = state.data;
             clone.splice(index, 0, item); // 在索引为2的位置插入元素5
@@ -308,6 +327,48 @@ const Resume: React.FC = ({ }) => {
             item.title = e;
           }} style={{ width: '100%' }} size='large' value={item.title} placeholder={'请输入标题'}></Input>
           <Input type='textarea' value={item.value} placeholder={'此处为内容输入区，此处不支持预置'} style={{ marginTop: 15, width: '100%', background: 'white' }}></Input>
+        </div>
+      case 'file':
+        return <div className={styles.inputBox} onDragOver={(e: any) => {
+          e.preventDefault();
+        }} onDrop={() => {
+          // if (state.draggleData.type === 5) {
+          //   if (index !== state.moveStartIndex) {
+          //     let cloneData: any = state.data;
+          //     let mid: any = {};
+          //     mid = cloneData[index - 1]
+          //     cloneData[index - 1] = cloneData[state.moveStartIndex - 1];
+          //     cloneData[state.moveStartIndex - 1] = mid;
+          //     state.data = cloneData;
+          //     console.log('start', state.data);
+          //   }
+          // }
+        }} onDragStart={() => {
+          state.draggleData.type = 5;
+          state.moveStartIndex = index;
+        }} draggable onClick={() => {
+          state.tabId = '1';
+          state.chooseData = item;
+        }}>
+          <div style={{ position: "absolute", bottom: 10, right: 14, color: 'white' }} onClick={() => {
+            message.success('操作成功');
+            let clone: any = state.data;
+            clone.splice(index, 0, item); // 在索引为2的位置插入元素5
+            state.data = clone;
+          }}>复制</div>
+          <div className={styles.close} onClick={() => {
+            const datas: any = state.data;
+            let delIndex = datas.findIndex((el: any) => el.id === item.id);
+            datas.splice(delIndex, 1);
+            // eslint-disable-next-line array-callback-return
+            datas.map((items: any, index: any) => {
+              items.id = index;
+            });
+            state.data = datas;
+          }}>
+            <CloseOutlined style={{ color: '#5A73FF', fontWeight: 600 }} />
+          </div>
+          <div style={{ color:'white',fontSize: 18,display:'flex',justifyContent:'center' }}>图片组件</div>
         </div>
       case 'select':
         return <div draggable onDragStart={() => {
@@ -331,7 +392,7 @@ const Resume: React.FC = ({ }) => {
           state.tabId = '1';
           state.chooseData = item;
         }}>
-          <div style={{ position:"absolute",bottom: 10, right: 14, color: 'white' }} onClick={()=> {
+          <div style={{ position: "absolute", bottom: 10, right: 14, color: 'white' }} onClick={() => {
             message.success('操作成功');
             let clone: any = state.data;
             clone.splice(index, 0, item); // 在索引为2的位置插入元素5
@@ -383,7 +444,7 @@ const Resume: React.FC = ({ }) => {
           state.tabId = '1';
           state.chooseData = item;
         }}>
-          <div style={{ position:"absolute",bottom: 10, right: 14, color: 'white' }} onClick={()=> {
+          <div style={{ position: "absolute", bottom: 10, right: 14, color: 'white' }} onClick={() => {
             message.success('操作成功');
             let clone: any = state.data;
             clone.splice(index, 0, item); // 在索引为2的位置插入元素5
@@ -432,7 +493,7 @@ const Resume: React.FC = ({ }) => {
           state.tabId = '1';
           state.chooseData = item;
         }}>
-          <div style={{ position:"absolute",bottom: 10, right: 14, color: 'white' }} onClick={()=> {
+          <div style={{ position: "absolute", bottom: 10, right: 14, color: 'white' }} onClick={() => {
             message.success('操作成功');
             let clone: any = state.data;
             clone.splice(index, 0, item); // 在索引为2的位置插入元素5
@@ -461,7 +522,7 @@ const Resume: React.FC = ({ }) => {
                     const cloneData = state.data;
                     el.label = e;
                     state.data = cloneData;
-                  }} value={el.label} placeholder={'请输入'} style={{ width: 100, marginLeft: index === 0 ? 0 : 10 }}></Input>
+                  }} value={el.label} placeholder={'请输入'} style={{ marginLeft: index === 0 ? 0 : 10 }}></Input>
                 </div>
               })
             }
@@ -519,6 +580,15 @@ const Resume: React.FC = ({ }) => {
         });
         state.data = datas;
         break;
+      case 6:
+        datas.push({
+          type: 'file',
+          value: '',
+          title: '',
+          id: datas.length + 1,
+        });
+        state.data = datas;
+        break;
     }
   }
 
@@ -539,6 +609,16 @@ const Resume: React.FC = ({ }) => {
           <div className={styles.previewTitle}>{item.title}</div>
           <ComboBox style={{ width: '100%' }} value={item.value} options={item.option}></ComboBox>
         </div>
+      case 'file':
+        return <div style={{ width:'100%',display:'flex',flexDirection:'column' }}>
+          <Button icon={<img src={uploadspng} style={{ width: 16,height: 16,marginRight: 4 }}></img>} style={{ width: 92,marginTop: 12 }} size={'small'} type='primary'>上传图片</Button>
+          <div className={styles.previewBox} style={{ width: 291,height: 163,display:'flex',marginTop: 8,justifyContent:'center',flexDirection:'column',cursor:'pointer',color:'#333333',fontSize: 14,lineHeight:'21px' }}>
+          <img src={tushengwen} style={{ position:'absolute',width:'291px',height: 163 }}></img>
+          <div className={styles.file_text}>支持jpg、jpeg、png、1MB以内</div>
+          <div className={styles.file_text}>或按【ctrl+v】粘贴到这里</div>
+          <div className={styles.file_text}>或点击此处【上传】</div>
+        </div>
+        </div>
       case 'checkbox':
         return <div className={styles.previewBox}>
           <div className={styles.previewTitle}>{item.title}</div>
@@ -558,36 +638,36 @@ const Resume: React.FC = ({ }) => {
       <Modal open={state.open2} title={'图标选择'} width={822} maskClosable={false} cancelText={'取消'}
         okText={'确定'}
         onOk={() => {
-          let chooseIcon: any = state.iconData.find((item: any)=> item.choose === true);
-          if(chooseIcon === void 0) {
+          let chooseIcon: any = state.iconData.find((item: any) => item.choose === true);
+          if (chooseIcon === void 0) {
             message.warning('请至少选择一个图标');
             return;
           }
-          console.log('choose',chooseIcon);
+          console.log('choose', chooseIcon);
           state.open2 = false;
           state.iconImg = chooseIcon.icon;
         }}
         onCancel={() => {
           state.open2 = false;
         }}>
-           <div style={{ display:'flex',flexWrap:'wrap' }}>
-             {
-              state.iconData && state.iconData.map((el: any)=> {
-                return <div onClick={()=> {
-                  let cloneIcon: any = state.iconData;
-                  cloneIcon.forEach((element: any) => {
-                    element.choose = false;
-                  });
-                  el.choose = true;
-                  console.log('staef',JSON.stringify(cloneIcon));
-                  state.iconData = cloneIcon;
-                }} key={el.id} style={{ width: 70, height: 70,marginTop: 24,marginLeft: 24, cursor:'pointer', boxShadow:'0 2px 6px 0 rgba(0,0,0,.15)',padding: 5,borderRadius: 3,border: el.choose ? '1px solid rgb(86, 114, 255)' : 'none' }}>
-                   <img src={el.icon} style={{ width:"100%",height:'100%' }}></img>
-                </div>
-              })
-             }
-           </div>
-        </Modal>
+        <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+          {
+            state.iconData && state.iconData.map((el: any) => {
+              return <div onClick={() => {
+                let cloneIcon: any = state.iconData;
+                cloneIcon.forEach((element: any) => {
+                  element.choose = false;
+                });
+                el.choose = true;
+                console.log('staef', JSON.stringify(cloneIcon));
+                state.iconData = cloneIcon;
+              }} key={el.id} style={{ width: 70, height: 70, marginTop: 24, marginLeft: 24, cursor: 'pointer', boxShadow: '0 2px 6px 0 rgba(0,0,0,.15)', padding: 5, borderRadius: 3, border: el.choose ? '1px solid rgb(86, 114, 255)' : 'none' }}>
+                <img src={el.icon} style={{ width: "100%", height: '100%' }}></img>
+              </div>
+            })
+          }
+        </div>
+      </Modal>
       <Modal open={state.open1} title={'保存'} width={600} maskClosable={false} cancelText={'取消'}
         okText={'保存'}
         onOk={() => {
@@ -631,9 +711,15 @@ const Resume: React.FC = ({ }) => {
         okText={'保存'}
         onOk={() => {
           const chooseDatas: any = state.chooseData;
+          console.log(JSON.stringify(chooseDatas.option));
+          let allow: any = chooseDatas.option.find((element: any) => element.label === state.modalData.name);
+          if (allow !== void 0) {
+            message.warning('该标签已经存在，请修改之后再保存');
+            return
+          }
           chooseDatas.option.push({
             label: state.modalData.name,
-            value: state.modalData.keys,
+            value: state.modalData.name,
           })
           message.success('保存成功');
           state.open = false;
@@ -643,15 +729,15 @@ const Resume: React.FC = ({ }) => {
         }}
       >
         <div style={{ paddingLeft: 25, marginTop: 30, marginBottom: 30 }}>
-        <div style={{ display: 'flex', alignItems: 'center', marginTop: 10 }}>
+          <div style={{ display: 'flex', alignItems: 'center', marginTop: 10 }}>
             <div style={{ minWidth: 42, marginRight: 10 }}><span style={{ color: 'red', marginRight: 7 }}>*</span>标签</div>
             <Input value={state.modalData.name} onChange={(e: any) => { state.modalData.name = e }} placeholder={'请输入label值'}></Input>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', marginTop: 10 }}>
+          {/* <div style={{ display: 'flex', alignItems: 'center', marginTop: 10 }}>
             <div style={{ minWidth: 42, marginRight: 10 }}><span style={{ color: 'red', marginRight: 7 }}>*</span>值</div>
             <Input value={state.modalData.keys} onChange={(e: any) => { state.modalData.keys = e }} placeholder={'请输入key值'}></Input>
-          </div>
-  
+          </div> */}
+
         </div>
       </Modal>
       <div className={styles.content}>
@@ -689,6 +775,13 @@ const Resume: React.FC = ({ }) => {
             }}>
               <img src={checkboxImgs}></img>
               <div style={{ marginTop: 12, fontSize: 14 }}>点列式</div>
+            </div>
+            <div className={styles.left_box} draggable onDragStart={() => {
+              console.log('触发了');
+              state.draggleData.type = 6;
+            }}>
+              <img src={checkboxImgs}></img>
+              <div style={{ marginTop: 12, fontSize: 14 }}>图片</div>
             </div>
           </div>
         </div>
@@ -771,13 +864,13 @@ const Resume: React.FC = ({ }) => {
               <div className={styles.textBox}>
                 <h3 style={{ width: 90 }}><span style={{ color: 'red', marginRight: 5 }}>*</span>场景图标</h3>
                 {
-                  state.iconImg === '' ? <span style={{ fontSize: 14, color: '#5A73FF', marginLeft: 0, cursor: 'pointer' }} onClick={()=> { 
+                  state.iconImg === '' ? <span style={{ fontSize: 14, color: '#5A73FF', marginLeft: 0, cursor: 'pointer' }} onClick={() => {
                     state.open2 = true;
-                   }}>点击选择</span> : <>
+                  }}>点击选择</span> : <>
                     <img src={state.iconImg} style={{ width: 40, height: 40, borderRadius: 2 }}></img>
-                    <span onClick={()=> {
+                    <span onClick={() => {
                       state.open2 = true;
-                    }} style={{ fontSize: 14,cursor: 'pointer', color: '#5A73FF', marginLeft: 15 }}>替换</span>
+                    }} style={{ fontSize: 14, cursor: 'pointer', color: '#5A73FF', marginLeft: 15 }}>替换</span>
                   </>
                 }
               </div>
@@ -793,8 +886,8 @@ const Resume: React.FC = ({ }) => {
                   </div>
                   <div className={styles.textBox}>
                     <h3 style={{ width: 60, display: 'flex', justifyContent: 'flex-end', marginRight: 20 }}><span style={{ color: 'red', marginRight: 5 }}>*</span>提示语</h3>
-                    <Input placeholder={'请输入预置提示语'} value={state.chooseData.desc} style={{ width: 175 }} onChange={(e: any) => {
-                      state.chooseData.desc = e;
+                    <Input placeholder={'请输入预置提示语'} value={state.chooseData.placeholder} style={{ width: 175 }} onChange={(e: any) => {
+                      state.chooseData.placeholder = e;
                     }}></Input>
                   </div>
                   <div className={styles.textBox}>
@@ -828,44 +921,32 @@ const Resume: React.FC = ({ }) => {
                   </div>
                   <div className={styles.textBox}>
                     <h3 style={{ width: 60, display: 'flex', justifyContent: 'flex-end', marginRight: 20 }}><span style={{ color: 'red', marginRight: 5 }}>*</span>提示语</h3>
-                    <Input placeholder={'请输入预置提示语'} value={state.chooseData.desc} style={{ width: 175 }} onChange={(e: any) => {
-                      state.chooseData.desc = e
+                    <Input placeholder={'请输入预置提示语'} value={state.chooseData.placeholder} style={{ width: 175 }} onChange={(e: any) => {
+                      state.chooseData.placeholder = e
                     }}></Input>
                   </div>
                   <div className={styles.textBox} style={{ alignItems: 'flex-start' }}>
                     <h3 style={{ display: 'flex', justifyContent: 'flex-end', marginRight: 20, minWidth: 56, marginTop: 10, width: 60 }}>数据配置</h3>
                     <div style={{ width: 175, display: 'flex', flexDirection: 'column' }}>
                       <Select option={state.chooseData.option} style={{ width: '100%' }} value={state.baseData.limit}>
-                        {/* {
-                          state.chooseData.option && state.chooseData.option.map((el: any) => {
-                            return <Selects.Option key={el.id} value={el.value}><div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                              <div>{el.label}</div>
-                              {/* <DeleteOutlined className={styles.deleteIcon} onClick={(e: any) => {
-                                e.stopPropagation()
-                                const chooseDataClone: any = state.chooseData;
-                                chooseDataClone.option.splice(index, 1);
-                                state.chooseData = chooseDataClone;
-                                message.success('删除成功');
-                              }} style={{ fontSize: 16, zIndex: 999 }} /> */}
-                          
                       </Select>
-                      <div style={{ fontSize: 14, color: '#5A73FF', marginTop: 10, cursor:'pointer' }} onClick={() => {
+                      <div style={{ fontSize: 14, color: '#5A73FF', marginTop: 10, cursor: 'pointer' }} onClick={() => {
                         state.open = true;
                         state.modalData = {};
                       }}>添加选项</div>
-                      <div style={{ display:'flex',flexWrap:'wrap' }}>
-                          {
-                            state.chooseData.option && state.chooseData.option.map((item: any,index: any)=> {
-                              return <Tag color="blue" onClose={(e: any)=> {
-                                e.stopPropagation();
-                                e.preventDefault();
-                                const chooseDataClone: any = state.chooseData;
-                                chooseDataClone.option.splice(index, 1);
-                                state.chooseData = chooseDataClone;
-                                message.success('删除成功');
-                              }} key={item.id} closable style={{ marginTop: 12 }}>{item.label}</Tag>
-                            })
-                          }
+                      <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                        {
+                          state.chooseData.option && state.chooseData.option.map((item: any, index: any) => {
+                            return <Tag color="blue" onClose={(e: any) => {
+                              e.stopPropagation();
+                              e.preventDefault();
+                              const chooseDataClone: any = state.chooseData;
+                              chooseDataClone.option.splice(index, 1);
+                              state.chooseData = chooseDataClone;
+                              message.success('删除成功');
+                            }} key={item.id} closable style={{ marginTop: 12 }}>{item.label}</Tag>
+                          })
+                        }
                       </div>
                     </div>
                   </div>
@@ -880,24 +961,24 @@ const Resume: React.FC = ({ }) => {
                   <div className={styles.textBox} style={{ alignItems: 'flex-start' }}>
                     <h3 style={{ display: 'flex', justifyContent: 'flex-end', marginRight: 20, minWidth: 56, marginTop: 10, width: 60 }}>数据配置</h3>
                     <div style={{ width: 175, display: 'flex', flexDirection: 'column' }}>
-                       <Select option={state.chooseData.option} style={{ width: '100%' }} value={state.baseData.limit}></Select>
+                      <Select option={state.chooseData.option} style={{ width: '100%' }} value={state.baseData.limit}></Select>
                       <div style={{ fontSize: 14, color: '#5A73FF', marginTop: 10, cursor: 'pointer' }} onClick={() => {
                         state.open = true;
                         state.modalData = {};
                       }}>添加选项</div>
-                      <div style={{ display:'flex',flexWrap:'wrap' }}>
-                          {
-                            state.chooseData.option && state.chooseData.option.map((item: any,index: any)=> {
-                              return <Tag color="blue" onClose={(e: any)=> {
-                                e.stopPropagation();
-                                e.preventDefault();
-                                const chooseDataClone: any = state.chooseData;
-                                chooseDataClone.option.splice(index, 1);
-                                state.chooseData = chooseDataClone;
-                                message.success('删除成功');
-                              }} key={item.id} closable style={{ marginTop: 12 }}>{item.label}</Tag>
-                            })
-                          }
+                      <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                        {
+                          state.chooseData.option && state.chooseData.option.map((item: any, index: any) => {
+                            return <Tag color="blue" onClose={(e: any) => {
+                              e.stopPropagation();
+                              e.preventDefault();
+                              const chooseDataClone: any = state.chooseData;
+                              chooseDataClone.option.splice(index, 1);
+                              state.chooseData = chooseDataClone;
+                              message.success('删除成功');
+                            }} key={item.id} closable style={{ marginTop: 12 }}>{item.label}</Tag>
+                          })
+                        }
                       </div>
                     </div>
                   </div>
@@ -916,20 +997,20 @@ const Resume: React.FC = ({ }) => {
                         state.open = true;
                         state.modalData = {};
                       }}>添加选项</div>
-                      <div style={{ display:'flex',flexWrap:'wrap' }}>
-                          {
-                            state.chooseData.option && state.chooseData.option.map((item: any,index: any)=> {
-                              return <Tag color="blue" onClose={(e: any)=> {
-                                e.stopPropagation();
-                                e.preventDefault();
-                                const chooseDataClone: any = state.chooseData;
-                                chooseDataClone.option.splice(index, 1);
-                                state.chooseData = chooseDataClone;
-                                message.success('删除成功');
-                              }} key={item.id} closable style={{ marginTop: 12 }}>{item.label}</Tag>
-                            })
-                          }
-                    </div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                        {
+                          state.chooseData.option && state.chooseData.option.map((item: any, index: any) => {
+                            return <Tag color="blue" onClose={(e: any) => {
+                              e.stopPropagation();
+                              e.preventDefault();
+                              const chooseDataClone: any = state.chooseData;
+                              chooseDataClone.option.splice(index, 1);
+                              state.chooseData = chooseDataClone;
+                              message.success('删除成功');
+                            }} key={item.id} closable style={{ marginTop: 12 }}>{item.label}</Tag>
+                          })
+                        }
+                      </div>
                     </div>
                   </div>
                 </> : <></>

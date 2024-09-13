@@ -8,6 +8,7 @@ import Markdown from './Mind';
 
 interface TProps {
   summaryData: RecordItem;
+  baseActiveKey: string;
   isFullscreen?: boolean;
   isExitFullscreen?: boolean;
   getActiveTabKey: (key: string) => void;
@@ -22,9 +23,10 @@ const AnalysisResult: React.FC<TProps> = ({
   changeFullscreen,
   isFullscreen,
   isExitFullscreen,
+  baseActiveKey,
 }) => {
   const state = useReactive<any>({
-    activeKey: '1',
+    activeKey: baseActiveKey || '1',
     mindData: {},
   });
 
@@ -64,6 +66,10 @@ const AnalysisResult: React.FC<TProps> = ({
   useEffect(() => {
     state.activeKey = isExitFullscreen ? '2' : '1';
   }, [isExitFullscreen]);
+  useEffect(() => {
+    formatData();
+    state.activeKey = baseActiveKey;
+  }, [baseActiveKey]);
 
   return (
     <div className={styles.AnalysisResultContainer}>
@@ -97,13 +103,15 @@ const AnalysisResult: React.FC<TProps> = ({
         {state.activeKey === '1' ? (
           <Markdown content={summaryData?.summary} />
         ) : (
-          <MindMap
-            dataSource={state.mindData}
-            getMindGraph={getMindGraph}
-            isFullscreen={isFullscreen}
-            changeFullscreen={changeFullscreen}
-            key={summaryData.id}
-          />
+          Object.keys(state.mindData)?.length && (
+            <MindMap
+              dataSource={state.mindData}
+              getMindGraph={getMindGraph}
+              isFullscreen={isFullscreen}
+              changeFullscreen={changeFullscreen}
+              key={summaryData.id}
+            />
+          )
         )}
       </div>
     </div>

@@ -95,7 +95,6 @@ const CustomUpload: React.FC<CustomUploadProps> = ({
     const { status } = info.file;
     if (status === 'done') {
       customUploadSuccess && customUploadSuccess(info.file);
-      message.success(`上传成功`);
     } else if (status === 'error') {
       customUploadFail && customUploadFail();
     }

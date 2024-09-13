@@ -124,7 +124,6 @@ const SentimentAnalysis: React.FC = () => {
       console.log(res);
       const result1 = (res && JSON.parse(res)) || {};
       setAnalyzeInfo(result1);
-
       let sentiment1 = 0;
       switch (result1?.sentiment) {
         case '2':
@@ -148,6 +147,7 @@ const SentimentAnalysis: React.FC = () => {
 
   useMount(() => {
     getParamPlatformId();
+    handleExample();
   });
 
   return (
@@ -180,7 +180,7 @@ const SentimentAnalysis: React.FC = () => {
           </div>
           <div className={styles?.contentInfoRight}>
             <div className={styles?.contentInfoRightTitle}>情感分析结果</div>
-            {
+            {analyzeInfo?.sentiment ? (
               <div className={styles?.contentInfoRightCard}>
                 <img
                   src={require('@/assets/images/sentiment.png')}
@@ -196,6 +196,7 @@ const SentimentAnalysis: React.FC = () => {
                       marks={marks}
                       defaultValue={50}
                       className={styles?.splider}
+                      tooltip={{open: false}}
                     />
                   </div>
                 </div>
@@ -210,6 +211,7 @@ const SentimentAnalysis: React.FC = () => {
                       marks={marks1}
                       // defaultValue={0.5}
                       className={styles?.splider2}
+                      tooltip={{open: false}}
                     />
                   </div>
                 </div>
@@ -230,6 +232,7 @@ const SentimentAnalysis: React.FC = () => {
                         max={100}
                         // onChange={setValue}
                         value={value}
+                        tooltip={{open: false}}
                         // style={{ position: 'relative', width: '85%' }}
                       />
                     </div>
@@ -242,7 +245,15 @@ const SentimentAnalysis: React.FC = () => {
                   </div>
                 </div>
               </div>
-            }
+            ) : (
+              <div className={styles?.mainError}>
+                <img
+                  src={require('@/assets/images/icon-closeCircleFill.png')}
+                  width={24}
+                />
+                <div className={styles?.mainErrorContent}>分析失败</div>
+              </div>
+            )}
           </div>
         </div>
       </div>

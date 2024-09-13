@@ -57,3 +57,15 @@ export async function delSummaryItem<T>(params?: RecordItem): Promise<T> {
     params,
   });
 }
+
+// 重新解析
+export async function resetWordAnalysis<T>(params?: RecordItem): Promise<T> {
+  return $axios.request({
+    url: '/seentao/xai/word/summary/analysis',
+    method: 'POST',
+    params,
+    hiddenLoading: true,
+    hiddenErrorMessage: true,
+    timeout: 1000 * 60 * 2,
+  });
+}

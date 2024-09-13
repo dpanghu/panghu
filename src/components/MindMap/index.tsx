@@ -1,7 +1,6 @@
 import deleteIcon from '@/assets/images/deleteIcon.png';
 import PDFIcon from '@/assets/images/icon-file_PDF.png';
 import WordIcon from '@/assets/images/icon-file_word.png';
-import collapseIcon from '@/assets/images/mind_collapse_icon.png';
 import fitContentIcon from '@/assets/images/mind_fitContent_icon.png';
 import fullscreenIcon from '@/assets/images/mind_fullscreen_icon.png';
 import zoomInIcon from '@/assets/images/mind_zoomIn_icon.png';
@@ -12,7 +11,7 @@ import { Cell, Graph, Path } from '@antv/x6';
 import { useMount } from 'ahooks';
 import { Divider } from 'antd';
 import { nanoid } from 'nanoid';
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import styles from './index.less';
 
 type TDateSource = {
@@ -494,6 +493,94 @@ const MindMap: React.FC<TProps> = ({
     initMindMap();
   });
 
+  useEffect(() => {
+    const data: any = formatData(dataSource);
+    const render = () => {
+      const result: HierarchyResult = Hierarchy.mindmap(data, {
+        direction: 'H',
+        getHeight(d: MindMapData) {
+          return d.height;
+        },
+        getWidth(d: MindMapData) {
+          return d.width;
+        },
+        getHGap() {
+          return 40;
+        },
+        getVGap() {
+          return 20;
+        },
+        getSide: () => {
+          return 'right';
+        },
+      });
+      const cells: Cell[] = [];
+      const traverse = (hierarchyItem: HierarchyResult) => {
+        if (hierarchyItem) {
+          const { data, children } = hierarchyItem;
+          if (!graphRef.current) {
+            return;
+          }
+          cells.push(
+            graphRef.current.createNode({
+              id: data.id,
+              shape: data.type,
+              x: hierarchyItem.x,
+              y: hierarchyItem.y,
+              width: data.width,
+              height: data.height,
+              label: data.label,
+              type: data.type,
+            }),
+          );
+          if (children) {
+            children.forEach((item: HierarchyResult) => {
+              const { id, data } = item;
+              if (!graphRef.current) {
+                return;
+              }
+              cells.push(
+                graphRef.current.createEdge({
+                  shape: 'mindmap-edge',
+                  source: {
+                    cell: hierarchyItem.id,
+                    anchor:
+                      data.type === 'topic-child'
+                        ? {
+                            name: 'right',
+                            args: {
+                              dx: -16,
+                            },
+                          }
+                        : {
+                            name: 'center',
+                            args: {
+                              dx: '25%',
+                            },
+                          },
+                  },
+                  target: {
+                    cell: id,
+                    anchor: {
+                      name: 'left',
+                    },
+                  },
+                }),
+              );
+              traverse(item);
+            });
+          }
+        }
+      };
+      traverse(result);
+      graphRef.current?.resetCells(cells);
+      graphRef.current?.zoomToFit();
+      graphRef.current?.centerContent();
+    };
+
+    render();
+  }, [dataSource]);
+
   return (
     <div className={styles.mindMapContent}>
       {isFullscreen && (
@@ -528,8 +615,8 @@ const MindMap: React.FC<TProps> = ({
       >
         <div className={styles.iconBox}>
           <img src={fitContentIcon} alt="" onClick={handleFitContent} />
-          <Divider type="vertical" />
-          <img src={collapseIcon} alt="" />
+          {/* <Divider type="vertical" />
+          <img src={collapseIcon} alt="" /> */}
           <Divider type="vertical" />
           <img src={zoomInIcon} alt="" onClick={handleZoomIn} />
           <Divider type="vertical" />

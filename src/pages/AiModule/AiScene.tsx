@@ -1,6 +1,16 @@
+import closes from '@/assets/images/closes.png';
 import confings from '@/assets/images/configs.png';
+import duihua from '@/assets/images/duihua.png';
 import aiimg from '@/assets/images/rebotIcon.png';
-import { getPluginDetail } from '@/services/aiModule';
+import shouqi from '@/assets/images/shouqi.png';
+import zhankai from '@/assets/images/zhankai.png';
+import { getConvertParamId } from '@/services/aiJobHunt/index';
+import {
+  deleteHistory,
+  getHistory,
+  getHistoryDetail,
+  getPluginDetail,
+} from '@/services/aiModule';
 import { getQueryParam } from '@/utils/utils';
 import { Button, ComboBox, Input, Select } from 'SeenPc';
 import sf from 'SeenPc/dist/esm/globalStyle/global.less';
@@ -24,7 +34,11 @@ interface TState {
   allow: any;
   aiData: any;
   isLoading: any;
+  messageArr: any;
+  patams: any;
   visible: any;
+  excludeId: any;
+  open: any;
   isTyping: any;
   typewriterArrCache: any;
 }
@@ -34,16 +48,22 @@ const renderPreview = (item: any) => {
     case 'input':
       return (
         <div className={styles.previewBox}>
+          {item.error === true && (
+            <div className={styles.errorBox}>未输入，请输入！</div>
+          )}
           <div className={styles.previewTitle}>{item.displayName}</div>
           <Input
             maxLength={item.maxLength}
             showCount={true}
             type={Number(item.maxLength) < 30 ? 'default' : 'textarea'}
             style={{ width: '100%' }}
-            placeholder={item.desc}
+            placeholder={item.placeholder}
             value={item.value}
             onChange={(e: any) => {
               item.value = e;
+              if (e !== '') {
+                item.error = false;
+              }
             }}
           ></Input>
         </div>
@@ -51,14 +71,20 @@ const renderPreview = (item: any) => {
     case 'select':
       return (
         <div className={styles.previewBox}>
+          {item.error === true && (
+            <div className={styles.errorBox}>未选择，请选择！</div>
+          )}
           <div className={styles.previewTitle}>{item.displayName}</div>
           <Select
             style={{ width: '100%' }}
             value={item.value}
-            placeholder={item.desc}
+            placeholder={item.placeholder}
             option={item.options}
             onChange={(e: any) => {
               item.value = e;
+              if (e !== '') {
+                item.error = false;
+              }
             }}
           ></Select>
         </div>
@@ -66,11 +92,17 @@ const renderPreview = (item: any) => {
     case 'treeSelect':
       return (
         <div className={styles.previewBox}>
+          {item.error === true && (
+            <div className={styles.errorBox}>未选择，请选择！</div>
+          )}
           <div className={styles.previewTitle}>{item.displayName}</div>
           <ComboBox
             style={{ width: '100%' }}
             onChange={(e: any) => {
               item.value = e.target.value;
+              if (e !== '') {
+                item.error = false;
+              }
             }}
             value={item.value}
             options={item.options}
@@ -80,11 +112,17 @@ const renderPreview = (item: any) => {
     case 'radio':
       return (
         <div className={styles.previewBox}>
+          {item.error === true && (
+            <div className={styles.errorBox}>未选择，请选择！</div>
+          )}
           <div className={styles.previewTitle}>{item.displayName}</div>
           <ComboBox
             style={{ width: '100%' }}
             onChange={(e: any) => {
               item.value = e.target.value;
+              if (e !== '') {
+                item.error = false;
+              }
             }}
             value={item.value}
             options={item.options}
@@ -94,6 +132,9 @@ const renderPreview = (item: any) => {
     case 'selectCheck':
       return (
         <div className={styles.previewBox}>
+          {item.error === true && (
+            <div className={styles.errorBox}>未选择，请选择！</div>
+          )}
           <div className={styles.previewTitle}>{item.displayName}</div>
           <div className={styles.previewCheckBox}>
             {item.options &&
@@ -104,6 +145,7 @@ const renderPreview = (item: any) => {
                       if (item.value === void 0) {
                         item.value = [];
                         item.value.push(items.value);
+                        item.error = false;
                       } else {
                         if (item.value?.includes(items.value)) {
                           console.log(JSON.stringify(item.value));
@@ -114,6 +156,7 @@ const renderPreview = (item: any) => {
                           item.value.splice(delIndex, 1);
                         } else {
                           item.value.push(items.value);
+                          item.error = false;
                         }
                       }
                     }}
@@ -135,6 +178,9 @@ const renderPreview = (item: any) => {
     case 'checkbox':
       return (
         <div className={styles.previewBox}>
+          {item.error === true && (
+            <div className={styles.errorBox}>未选择，请选择！</div>
+          )}
           <div className={styles.previewTitle}>{item.displayName}</div>
           <div className={styles.previewCheckBox}>
             {item.options &&
@@ -177,9 +223,9 @@ const renderPreview = (item: any) => {
 };
 
 const JobHunt: React.FC = () => {
-  const queryData = useCreation(() => {
-    return JSON.parse(window.sessionStorage.getItem('commonDatas') || '{}');
-  }, []);
+  // const queryData = useCreation(() => {
+  //   return JSON.parse(window.sessionStorage.getItem('commonDatas') || '{}');
+  // }, []);
   const typeWriter = useRef<TypewriterClass | null>(null);
   const typewriterStrCache = useRef<string>('');
   const state = useReactive<TState>({
@@ -187,12 +233,16 @@ const JobHunt: React.FC = () => {
     dialogList: [],
     typewriterArrCache: [],
     editId: '',
+    messageArr: [],
+    excludeId: '',
     isLoading: false,
     isTyping: false,
+    open: false,
     allow: '',
     aiData: {},
     editName: '',
     visible: false,
+    patams: '',
     data: [],
   });
 
@@ -223,49 +273,78 @@ const JobHunt: React.FC = () => {
     }
   }, [state.isTyping]);
 
+  const getHistoryList = (params: any, type: any) => {
+    getHistory({
+      paramId: params,
+      limit: 999999999,
+      pageNum: 1,
+    }).then((res: any) => {
+      if (type === 1) {
+        if (res.data.length !== 0) {
+          res.data[res.data.length - 1].active = true;
+        }
+      }
+      state.messageArr = res.data || [];
+    });
+  };
+
   const send = () => {
+    let error: any = false;
     if (isArray(state.allow)) {
       if (state.allow[0] === '1') {
         let sendData: any = {};
         // eslint-disable-next-line @typescript-eslint/no-unused-expressions, array-callback-return
         state.data &&
+          // eslint-disable-next-line array-callback-return
           state.data.map((item: any) => {
+            if (item.value === void 0 || item.value === '') {
+              item.error = true;
+              error = true;
+            } else {
+              item.error = false;
+            }
             sendData[item.name] = item.value;
           });
-        state.visible = true;
-        state.isLoading = true;
-        typewriterStrCache.current = '';
-        let qsData = {
-          ...queryData,
-          pluginCode: state.aiData.plugin?.code,
-          qsParams: sendData,
-        };
-        new EventSourceStream(
-          '/api/bus-xai/xai/plugin/create/stream',
-          {
-            method: 'POST',
-            data: qsData,
-            headers: {
-              'Content-Type': 'application/json',
-              Accept: 'text/event-stream',
+        if (error !== true) {
+          state.visible = true;
+          state.isLoading = true;
+          typewriterStrCache.current = '';
+          let queryData: any = JSON.parse(window.sessionStorage.getItem('commonDatas') || '{}')
+          let qsData = {
+            ...queryData,
+            paramId: state.patams,
+            pluginCode: state.aiData.plugin?.code,
+            qsParams: sendData,
+          };
+          new EventSourceStream(
+            '/api/bus-xai/xai/plugin/create/stream',
+            {
+              method: 'POST',
+              data: qsData,
+              headers: {
+                'Content-Type': 'application/json',
+                Accept: 'text/event-stream',
+              },
             },
-          },
-          {
-            // 结束，包括接收完毕所有数据、报错、关闭链接
-            onFinished: () => {
-              state.isLoading = false;
+            {
+              // 结束，包括接收完毕所有数据、报错、关闭链接
+              onFinished: () => {
+                state.isLoading = false;
+                getHistoryList(state.patams, 1);
+              },
+              onError: (error) => {
+                console.log(error);
+              },
+              // 接收到数据
+              receiveMessage: (data) => {
+                if (data) {
+                  console.log('2222222222', data.answer);
+                  state.typewriterArrCache.push(data!.answer);
+                }
+              },
             },
-            onError: (error) => {
-              console.log(error);
-            },
-            // 接收到数据
-            receiveMessage: (data) => {
-              if (data) {
-                state.typewriterArrCache.push(data!.answer);
-              }
-            },
-          },
-        ).run();
+          ).run();
+        }
       } else {
         message.warning('请先勾选并同意《AI内容生成功能使用说明》');
         return;
@@ -277,7 +356,17 @@ const JobHunt: React.FC = () => {
   };
 
   useMount(() => {
+    getConvertParamId({}).then((res: any) => {
+      getHistoryList(res);
+      state.patams = res;
+    });
     let qsData: any = getQueryParam();
+    window.sessionStorage.setItem('commonDatas', JSON.stringify(qsData));
+    // 如果是预置数据界面，不需要调用接口
+    if (qsData.isPreset) {
+      history.push('/presetData');
+      return;
+    }
     getPluginDetail({
       id: qsData.imageId,
       userId: '1',
@@ -295,18 +384,21 @@ const JobHunt: React.FC = () => {
         history.push('/wenshengVoice');
       } else if (res.plugin?.code === 'sentAnalysis') {
         history.push('/sentimentAnalysis');
-      }
-      else if (res.plugin?.code === 'ocr') {
+      } else if (res.plugin?.code === 'ocr') {
         history.push('/OCR');
-      }
-      else if (res.plugin?.code === 'general') {
+      } else if (res.plugin?.code === 'general') {
         history.push('/OR');
-      }
-      else if (res.plugin?.code === 'fruit') {
+      } else if (res.plugin?.code === 'fruit') {
         history.push('/FVR');
-      } 
-      else if (res.plugin?.code === 'carPlate') {
+      } else if (res.plugin?.code === 'carPlate') {
         history.push('/LPR');
+      } else if (res.plugin?.code === 'intelligence') {
+        history.push('/aiAtlas');
+      } else if (res.plugin?.modelTypeId === '12') {
+        history.push({
+          path: '',
+        });
+        history.push(`/AiSceneImg`);
       } else {
         state.data = JSON.parse(res.param?.params);
         state.aiData = res;
@@ -328,7 +420,12 @@ const JobHunt: React.FC = () => {
             <div
               className={styles.confing_text}
               onClick={() => {
-                message.warning('该功能暂未开放');
+                exampleRandom({
+                  pluginCode: 'pictotext',
+                  excludeId: state.excludeId,
+                }).then((res: any)=> {
+                   console.log(res);
+                })
               }}
             >
               填入示例
@@ -374,6 +471,7 @@ const JobHunt: React.FC = () => {
           </div>
         </div>
         <div className={styles.mid_content}>
+          <div style={{ position:'absolute',fontSize: 13, bottom: 18,color:'rgb(134, 142, 179)',fontWeight: 400, display: 'flex',alignSelf:'center' }}>所有内容均由人工智能模型输出，其内容的准确性和完整性无法保证，不代表我们的态度和观点。</div>
           <div className={styles.warningBox}>
             <img
               src={aiimg}
@@ -432,9 +530,61 @@ const JobHunt: React.FC = () => {
           )}
           {/* <SpeechInputComponent></SpeechInputComponent> */}
         </div>
-        {/* <div className={styles.right_list}>
-          <div className={styles.right_head}></div>
-        </div> */}
+        {
+          state.open === true ?   <div className={styles.right_list}>
+          <img src={shouqi} onClick={()=> { state.open = false; }} style={{ position:'absolute',width: 40, height: 40, top: 0, left: -20,cursor:'pointer' }}></img>
+          <div className={styles.right_head}>对话记录</div>
+          {state.messageArr &&
+            state.messageArr.map((el: any) => {
+              return (
+                <div
+                  key={el.id}
+                  onClick={() => {
+                    getHistoryDetail({
+                      themeId: el.id,
+                    }).then((res: any) => {
+                      console.log(res);
+                    });
+                  }}
+                  style={{ background: el.active ? 'white' : 'none' }}
+                  className={styles.messageBox}
+                >
+                  <div>
+                    <img
+                      src={duihua}
+                      style={{ width: 16, height: 14, marginRight: 6 }}
+                    ></img>
+                    {el.name}
+                  </div>
+                  <img
+                    onClick={(e: any) => {
+                      e.stopPropagation();
+                      deleteHistory({
+                        themeId: el.id,
+                      }).then(() => {
+                        message.success('操作成功');
+                        state.visible = false;
+                        getHistoryList(state.patams, 2);
+                      });
+                    }}
+                    src={closes}
+                    style={{ cursor: 'pointer', width: 14, height: 14 }}
+                  ></img>
+                  {/* {
+                  el.active ? <img onClick={()=> {
+                    deleteHistory({
+                      themeId: el.id,
+                    }).then(()=> {
+                      message.success('操作成功');
+                      getHistoryList(state.patams,2);
+                    })
+                  }} src={closes} style={{ cursor: 'pointer', width: 14, height: 14 }}></img> :  <div></div>
+                } */}
+                </div>
+              );
+            })}
+        </div> : <img src={zhankai} onClick={()=> { state.open = true; }} style={{ position:'absolute',width: 40, height: 40, top: 0, right: 5,cursor:'pointer' }}></img>
+        }
       </div>
     </div>
   );

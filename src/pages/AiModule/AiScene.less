@@ -21,22 +21,51 @@
         background: linear-gradient( 135deg, #F9F9FF 0%, #F0F1FE 100%);
         box-shadow: 1px 0px 0px 0px rgba(72,79,152,0.05);
         border-radius: 0px 8px 8px 0px;
+        padding-left: 16px;
+        padding-right: 20px;
+        position: relative;
+    }
+    .messageBox {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        height: 48px;
+        background: #FFFFFF;
+        border-radius: 4px;
+        padding-left: 16px;
+        padding-right: 10px;
+        font-family: PingFangSC, PingFang SC;
+        font-weight: 400;
+        font-size: 14px;
+        color: #272648;
+        line-height: 20px;
+        cursor: pointer;
+        justify-content: space-between;
     }
 
     .right_head {
         display: flex;
         width: 100%;
-
+        padding-top: 25px;
+        font-family: PingFangSC, PingFang SC;
+        font-weight: 500;
+        font-size: 18px;
+        color: #666666;
+        line-height: 25px;
+        margin-bottom: 16px;
     }
 
     .mid_content {
         display: flex;
         flex: 1 1;
         padding-left: 28px;
+        padding-bottom: 40px;
         padding-top: 37px;
         flex-direction: column;
         position: relative;
         padding-right: 28px;
+        height: 100%;
+        overflow-y: auto;
         background: linear-gradient(133deg, #E5F0FF 0%, #E9E9FF 100%);
     }
 
@@ -82,7 +111,7 @@
         padding: 16px;
         font-family: PingFangSC, PingFang SC;
         font-weight: 500;
-        font-size: 24px;
+        font-size: 20px;
         color: #272648;
         line-height: 33px;
         font-style: normal;
@@ -135,10 +164,12 @@
         display: flex;
         padding-left: 8px;
         padding-right: 8px;
+        position: relative;
         width: 100%;
         box-sizing: border-box;
         height: 100%;
-        min-height: calc(100vh - 62px);
+
+        height: calc(100vh - 62px);
         margin-bottom: 8px;
     }
 
@@ -155,7 +186,7 @@
 .subwarning {
     font-family: PingFangSC, PingFang SC;
     font-weight: 400;
-    font-size: 14px;
+    font-size: 16px;
     color: #272648;
     line-height: 28px;
     font-style: normal;
@@ -290,6 +321,15 @@
     flex-direction: column;
     width: 100%;
     margin-top: 20px;
+    position: relative;
+}
+
+.errorBox {
+    color: red;
+    font-size: 13px;
+    position: absolute;
+    left: 0px;
+    bottom: -19px;
 }
 
 .middleHead {
