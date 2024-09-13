@@ -5,6 +5,7 @@ import { useReactive } from 'ahooks';
 import classNames from 'classnames';
 import React, { useEffect } from 'react';
 import { DetailResponseType } from '../type';
+import DataTable from './components/DataTable';
 import styles from './index.less';
 
 type Props = {};
@@ -46,7 +47,9 @@ const Detail: React.FC<Props> = ({}) => {
           >
             {state.detailData?.file?.fileName || ''}
           </div>
-          <div className={styles['table-body']}></div>
+          <div className={styles['table-body']}>
+            <DataTable></DataTable>
+          </div>
         </div>
         <div className={styles['message-container']}></div>
       </div>
