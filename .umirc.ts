@@ -89,6 +89,12 @@ export default defineConfig({
       title: 'AI文档总结',
       layout: false,
     },
+    {
+      path: '/documentQA',
+      component: '@/pages/DocumentQA',
+      title: 'AI文档问答',
+      layout: false,
+    },
     // ai情感分析
     {
       path: '/sentimentAnalysis',

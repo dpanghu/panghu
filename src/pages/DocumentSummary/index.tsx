@@ -140,10 +140,11 @@ const DocumentSummary: React.FC = () => {
 
   const resetPopupContent = () => {
     state.exportParams = {
+      ...state.exportParams,
       introduction: '.docx',
       mindMap: '.png',
-      introductionChecked: false,
-      mindMapChecked: false,
+      // introductionChecked: false,
+      // mindMapChecked: false,
       popupOpen: false,
     };
   };
