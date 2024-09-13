@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import confings from '@/assets/images/configs.png';
 import aiimg from '@/assets/images/rebotIcon.png';
 import { getPluginDetail, saveImg, getPresetAnswer, recogNize, recogNizeResult, getFileUrl } from '@/services/aiModule';
@@ -8,6 +9,7 @@ import { useCreation, useMount, useReactive, useUpdateEffect } from 'ahooks';
 import { message } from 'antd';
 import classNames from 'classnames';
 import { exampleRandom } from '@/services/sentimentAnalysis';
+import { isArray } from 'lodash';
 import tushengwen from '@/assets/images/tushengwen.png';
 import uploadspng from '@/assets/images/uploads.png';
 import React, { useMemo, useRef } from 'react';
@@ -26,6 +28,7 @@ interface TState {
     data: any;
     baseData: any;
     allow: any;
+    introduce: any;
     aiData: any;
     imgUrl: any;
     isLoading: any;
@@ -49,6 +52,7 @@ const JobHunt: React.FC = () => {
     const typewriterStrCache = useRef<string>('');
     const state = useReactive<TState>({
         curTheme: undefined,
+        introduce: false,
         dialogList: [],
         baseData: [],
         typewriterArrCache: [],
@@ -75,6 +79,7 @@ const JobHunt: React.FC = () => {
             extraParams,
         },
         beforeUpload: (file: any) => {
+            console.log('type',file.type);
             const allowedFormats = ['image/jpeg', 'image/png', 'image/jpg'];
 
             if (!allowedFormats.includes(file.type)) {
@@ -148,6 +153,9 @@ const JobHunt: React.FC = () => {
                                 item.value = e;
                                 if (e !== '') {
                                     item.error = false;
+                                }
+                                if(e === '/') {
+                                    state.introduce = true;
                                 }
                             }}
                         ></Input>
@@ -273,25 +281,14 @@ const JobHunt: React.FC = () => {
                                     return (
                                         <div
                                             onClick={() => {
-                                                if (item.value === void 0) {
-                                                    item.value = [];
-                                                    item.value.push(items.value);
-                                                } else {
-                                                    if (item.value?.includes(items.value)) {
-                                                        console.log(JSON.stringify(item.value));
-                                                        let delIndex: any = item.value.findIndex(
-                                                            (el: any) => el === items.value,
-                                                        );
-                                                        console.log(delIndex);
-                                                        item.value.splice(delIndex, 1);
-                                                    } else {
-                                                        item.value.push(items.value);
-                                                    }
-                                                }
+                                                item.options.forEach((el: any) => el.choose = false);
+                                                items.choose = true;
+                                                item.value = items.value;
+                                                console.log(JSON.stringify(state.data))
                                             }}
                                             key={items.id}
                                             style={{
-                                                border: item.value?.includes(items.value)
+                                                border: item.value === items.value
                                                     ? '1px solid rgb(86, 114, 255)'
                                                     : '1px solid rgba(0, 0, 0, 0.25)',
                                             }}
@@ -331,8 +328,8 @@ const JobHunt: React.FC = () => {
                 .callFunction(() => {
                     state.isTyping = false;
                 });
-        }else{
-            if(state.isLoading === false && state.typewriterArrCache.length === 0 ) {
+        } else {
+            if (state.isLoading === false && state.typewriterArrCache.length === 0) {
                 state.visible = false;
                 state.messageList.push({
                     type: 2,
@@ -342,162 +339,98 @@ const JobHunt: React.FC = () => {
         }
     }, [state.isTyping]);
 
-    // useUpdateEffect(() => {
-    //     if (
-    //         (state.typewriterArrCache.length > 0 || state.isLoading) &&
-    //         !state.isTyping &&
-    //         typeWriter.current
-    //     ) {
-    //         state.isTyping = true;
-    //         const curStr: string = state.typewriterArrCache.shift()! || '';
-    //         typewriterStrCache.current += curStr;
-    //         typeWriter
-    //             .current!.typeString(curStr)
-    //             .start()
-    //             .callFunction(() => {
-    //                 state.isTyping = false;
-    //             });
-    //     }else{
-    //         if(state.isLoading === false && state.typewriterArrCache.length === 0 ) {
-    //             alert('22222222222');
-    //         }
-    //     }
-    // }, [state.isTyping]);
-
     const send = () => {
-        let messages: any = state.data.find((element: any) => element.elementType === 'input');
-        // let checks: any = state.data.find((element: any) => element.elementType === 'checkbox');
-        state.messageList.push({
-            data: messages.value,
-            type: 1
-        });
-        recogNize({
-            paramId: state.patams,
-            id: state.imgId,
-        }).then((res: any) => {
-            console.log(res);
-            const interView = setInterval(() => {
-                recogNizeResult({
+        if (isArray(state.allow)) {
+            if (state.allow[0] === '1') {
+                let messages: any = state.data.find((element: any) => element.elementType === 'input');
+                let checks: any = state.data.find((element: any) => element.elementType === 'checkbox');
+                state.messageList.push({
+                    data: messages.value,
+                    type: 1
+                });
+                recogNize({
+                    paramId: state.patams,
                     id: state.imgId,
                 }).then((res: any) => {
                     console.log(res);
-                    if (res.recognizeResult === 2) {
-                        let sendData: any = {
-                            picId: state.imgId,
-                            pointCode: 'content',
-                        }
-                        clearInterval(interView);
-                        state.visible = true;
-                        state.isLoading = true;
-                        typewriterStrCache.current = '';
-                        let qsData = {
-                            ...queryData,
-                            paramId: state.patams,
-                            pluginCode: 'pictotext',
-                            qsParams: sendData,
-                            userMessage: messages.value
-                            // userMessage: '根据图片内容，创作一首包含标题和内容的'
-                        };
-                        new EventSourceStream(
-                            '/api/bus-xai/xai/plugin/create/stream',
-                            {
-                                method: 'POST',
-                                data: qsData,
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    Accept: 'text/event-stream',
-                                },
-                            },
-                            {
-                                // 结束，包括接收完毕所有数据、报错、关闭链接
-                                onFinished: () => {
-                                    state.isLoading = false;
-                                },
-                                onError: (error) => {
-                                    console.log(error);
-                                },
-                                // 接收到数据
-                                receiveMessage: (data) => {
-                                    if (data) {
-                                        state.typewriterArrCache.push(data!.answer);
-                                    }
-                                },
-                            },
-                        ).run();
-                    } else if (res.recognizeResult === 3) {
-                        clearInterval(interView);
-                        state.messageList.push({
-                            type: 2,
-                            data: '识别失败',
-                        });
-                    }
+                    const interView = setInterval(() => {
+                        recogNizeResult({
+                            id: state.imgId,
+                        }).then((res: any) => {
+                            console.log(res);
+                            if (res.recognizeResult === 2) {
+                                let testData: any = {
+                                    '内容': 'content',
+                                    '情感': 'emotion',
+                                    '风格': 'style',
+                                    '故事': 'story',
+                                    '关系': 'relation',
+                                    '场景': 'scene',
+                                    '联想': 'associate',
+                                    '时空': 'space',
+                                };
+                                let sendData: any = {
+                                    picId: state.imgId,
+                                    pointCode: testData[checks.value],
+                                }
+                                clearInterval(interView);
+                                state.visible = true;
+                                state.isLoading = true;
+                                typewriterStrCache.current = '';
+                                let qsData = {
+                                    ...queryData,
+                                    paramId: state.patams,
+                                    pluginCode: 'pictotext',
+                                    qsParams: sendData,
+                                    userMessage: messages.value
+                                    // userMessage: '根据图片内容，创作一首包含标题和内容的'
+                                };
+                                new EventSourceStream(
+                                    '/api/bus-xai/xai/plugin/create/stream',
+                                    {
+                                        method: 'POST',
+                                        data: qsData,
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            Accept: 'text/event-stream',
+                                        },
+                                    },
+                                    {
+                                        // 结束，包括接收完毕所有数据、报错、关闭链接
+                                        onFinished: () => {
+                                            state.isLoading = false;
+                                        },
+                                        onError: (error) => {
+                                            console.log(error);
+                                        },
+                                        // 接收到数据
+                                        receiveMessage: (data) => {
+                                            if (data) {
+                                                state.typewriterArrCache.push(data!.answer);
+                                            }
+                                        },
+                                    },
+                                ).run();
+                            } else if (res.recognizeResult === 3) {
+                                clearInterval(interView);
+                                state.messageList.push({
+                                    type: 2,
+                                    data: '识别失败',
+                                });
+                            }
+                        })
+                    }, 2000);
+                    console.log(interView);
                 })
-            }, 2000);
-            console.log(interView);
-        })
-        // let error: any = false;
-        // if (isArray(state.allow)) {
-        //     if (state.allow[0] === '1') {
-        //         let sendData: any = {};
-        //         // eslint-disable-next-line @typescript-eslint/no-unused-expressions, array-callback-return
-        //         state.data &&
-        //             // eslint-disable-next-line array-callback-return
-        //             state.data.map((item: any) => {
-        //                 if (item.value === void 0 || item.value === '') {
-        //                     item.error = true;
-        //                     error = true;
-        //                 } else {
-        //                     item.error = false;
-        //                 }
-        //                 sendData[item.name] = item.value;
-        //             });
-        //         if (error !== true) {
-        //             state.visible = true;
-        //             state.isLoading = true;
-        //             typewriterStrCache.current = '';
-        //             let qsData = {
-        //                 ...queryData,
-        //                 paramId: state.patams,
-        //                 pluginCode: state.aiData.plugin?.code,
-        //                 qsParams: sendData,
-        //             };
-        //             new EventSourceStream(
-        //                 '/api/bus-xai/xai/plugin/create/stream',
-        //                 {
-        //                     method: 'POST',
-        //                     data: qsData,
-        //                     headers: {
-        //                         'Content-Type': 'application/json',
-        //                         Accept: 'text/event-stream',
-        //                     },
-        //                 },
-        //                 {
-        //                     // 结束，包括接收完毕所有数据、报错、关闭链接
-        //                     onFinished: () => {
-        //                         state.isLoading = false;
-        //                         getHistoryList(state.patams, 1);
-        //                     },
-        //                     onError: (error) => {
-        //                         console.log(error);
-        //                     },
-        //                     // 接收到数据
-        //                     receiveMessage: (data) => {
-        //                         if (data) {
-        //                             console.log('2222222222', data.answer);
-        //                             state.typewriterArrCache.push(data!.answer);
-        //                         }
-        //                     },
-        //                 },
-        //             ).run();
-        //         }
-        //     } else {
-        //         message.warning('请先勾选并同意《AI内容生成功能使用说明》');
-        //         return;
-        //     }
-        // } else {
-        //     message.warning('请先勾选并同意《AI内容生成功能使用说明》');
-        //     return;
-        // }
+            } else {
+                message.warning('请先勾选并同意《AI内容生成功能使用说明》');
+                return;
+            }
+        }
+        else {
+            message.warning('请先勾选并同意《AI内容生成功能使用说明》');
+            return;
+        }
     };
 
     useMount(() => {
@@ -515,14 +448,24 @@ const JobHunt: React.FC = () => {
             memberId: '1',
             schoolId: '1',
         }).then((res: any) => {
-            state.data = JSON.parse(res.param?.params);
+            let clone: any = JSON.parse(JSON.stringify(JSON.parse(res.param?.params)));
+            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+            clone && clone.map((el: any)=> {
+                if(el.elementType === 'checkbox') {
+                    console.log(el);
+                    el.value = '内容';
+                }
+            });
+            console.log(';22222',JSON.stringify(clone));
+            state.data = clone;
             state.aiData = res;
         });
     });
 
     return (
         <div className={styles.aicontainer}>
-            <div className={styles.head}>{state.aiData.plugin?.name}</div>
+            {/* <div className={styles.head}>{state.aiData.plugin?.name}</div> */}
+            <div className={styles.head}>{'AI图生文'}</div>
             <div className={styles.content}>
                 <div className={styles.left_content}>
                     <div className={styles.config_head}>
@@ -537,15 +480,15 @@ const JobHunt: React.FC = () => {
                                 exampleRandom({
                                     pluginCode: 'pictotext',
                                     excludeId: state.excludeId,
-                                  }).then((res: any)=> {
-                                     state.imgId = JSON.parse(res.params)?.picId;
-                                     state.excludeId = res.id;
-                                     getFileUrl({
+                                }).then((res: any) => {
+                                    state.imgId = JSON.parse(res.params)?.picId;
+                                    state.excludeId = res.id;
+                                    getFileUrl({
                                         id: JSON.parse(res.params)?.picId
-                                     }).then((res1: any)=> {
+                                    }).then((res1: any) => {
                                         state.imgUrl = res1.picUrl;
-                                     })
-                                  })
+                                    })
+                                })
                             }}
                         >
                             随机示例
@@ -607,8 +550,20 @@ const JobHunt: React.FC = () => {
                     </div>
                 </div>
                 <div className={styles.mid_content}>
-                    
-                    <div className={styles.warningBox} style={{ marginTop: 0 }}>
+                    <div className={styles.warningBox}>
+                        <img
+                            src={aiimg}
+                            style={{ width: 24, height: 24, marginRight: 16 }}
+                        ></img>
+                        <div className={styles.warning}>
+                            <div>{state.aiData.plugin?.tips}</div>
+                            <div className={styles.subwarning}>
+                                {state.aiData.plugin?.note}
+                            </div>
+                        </div>
+                    </div>
+                    {
+                        state.introduce && <div className={styles.warningBox} style={{ marginTop: 20 }}>
                         <img
                             src={aiimg}
                             style={{ width: 24, height: 24, marginRight: 16 }}
@@ -619,11 +574,14 @@ const JobHunt: React.FC = () => {
                                 state.baseData && state.baseData.map((el: any, index: any) => {
                                     return <div key={el.id} style={{ borderBottom: index === state.baseData.length - 1 ? 'none' : '1px solid #F0E8FF' }} className={styles.titleBox}>
                                         <div>{el.example}</div>
-                                        <div className={styles.basetest} onClick={()=> {
-                                            let inputs: any = state.data.find((element: any)=> element.elementType === 'input');
-                                            if(inputs !== void 0) {
+                                        <div className={styles.basetest} onClick={() => {
+                                            let inputs: any = state.data.find((element: any) => element.elementType === 'input');
+                                            if (inputs !== void 0) {
                                                 inputs.value = el.example;
                                             }
+                                            let check: any = state.data.find((checks: any)=> checks.elementType === 'checkbox');
+                                            check.value = el.pointName;
+                                            
                                         }}>试一试</div>
                                     </div>
                                 })
@@ -631,6 +589,7 @@ const JobHunt: React.FC = () => {
 
                         </div>
                     </div>
+                    }
                     <div className={styles.messageList}>
                         {
                             state.messageList && state.messageList.map((item: any) => {
