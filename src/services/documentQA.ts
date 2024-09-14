@@ -19,7 +19,7 @@ export async function getWordAnswerList(params?: RecordItem) {
   });
 }
 
-// AI查询列表
+// AI查询单条
 export async function getWordAnswerItem(params?: RecordItem) {
   return $axios.request({
     url: `/seentao/xai/word/answer/get`,

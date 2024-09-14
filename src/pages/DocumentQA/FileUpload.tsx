@@ -10,9 +10,10 @@ import styles from './FileUpload.less';
 
 interface TProps {
   paramsId: string;
+  onChange: (dataSource: RecordItem) => void;
 }
 
-const FileUpload: React.FC<TProps> = ({ paramsId }) => {
+const FileUpload: React.FC<TProps> = ({ paramsId, onChange }) => {
   const extraParams = JSON.parse(
     window.sessionStorage.getItem('queryParams') || '{}',
   );
@@ -30,6 +31,7 @@ const FileUpload: React.FC<TProps> = ({ paramsId }) => {
         ...extraParams,
       });
       console.log(result);
+      onChange(result);
     } finally {
       state.loading = false;
     }

@@ -13,11 +13,12 @@ import { getAttachmentId } from '@/services/documentSummary';
 import { getFileMajorType } from '@/utils/contants';
 import { Button, message } from 'SeenPc';
 import { useMount, useReactive } from 'ahooks';
-import { Popconfirm } from 'antd';
+import { Popconfirm, Spin } from 'antd';
 import { RcFile } from 'antd/es/upload';
 import classNames from 'classnames';
 import React, { useRef } from 'react';
 import FileUpload from './FileUpload';
+import QAResult from './QAResult';
 import styles from './index.less';
 interface TState {
   paramsId: string;
@@ -317,7 +318,20 @@ const DocumentQA: React.FC = () => {
       </div>
       <div className={styles.main}>
         <div className={styles.content}>
-          <FileUpload paramsId={state.paramsId} />
+          {state.showSummary ? (
+            <QAResult
+              summaryData={state.summaryData}
+              paramsId={state.paramsId}
+            />
+          ) : state.showActionBtns ? (
+            <Spin
+              tip="文档上传中，请稍等！"
+              spinning={state.uploadLoading}
+              size="large"
+            />
+          ) : (
+            <FileUpload onChange={changeContent} paramsId={state.paramsId} />
+          )}
         </div>
       </div>
     </div>
