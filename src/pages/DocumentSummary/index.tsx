@@ -90,11 +90,11 @@ const DocumentSummary: React.FC = () => {
     } catch (error) {}
   };
 
-  const changeContent = (dataSource: RecordItem) => {
+  const changeContent = (dataSource: RecordItem, mount?: boolean) => {
     state.showSummary = true;
     state.showActionBtns = true;
     state.summaryData = dataSource;
-    querySummaryList();
+    querySummaryList(mount);
     // 轮询 get接口 判断附件预览转换是否完成 ossViewUrl为0时 可能是未转换成功，也可能是文档不支持预览 所以设置1min最大轮询时长
     try {
       if (state.summaryData.ossViewUrl !== '0') {
@@ -140,10 +140,11 @@ const DocumentSummary: React.FC = () => {
 
   const resetPopupContent = () => {
     state.exportParams = {
+      ...state.exportParams,
       introduction: '.docx',
       mindMap: '.png',
-      introductionChecked: false,
-      mindMapChecked: false,
+      // introductionChecked: false,
+      // mindMapChecked: false,
       popupOpen: false,
     };
   };
@@ -242,27 +243,35 @@ const DocumentSummary: React.FC = () => {
       // state.summaryData = result;
       // querySummaryList();
       changeContent(result);
-    } finally {
-      state.uploadLoading = false;
+      state.showActionBtns = true;
+      state.showSummary = true;
+    } catch (e) {
+      message.error('解析失败');
       state.showActionBtns = false;
       state.showSummary = false;
+    } finally {
+      state.uploadLoading = false;
     }
   };
 
   const resetAnalysis = async (params: RecordItem) => {
     try {
       state.showSummary = false;
+      state.uploadLoading = true;
       state.showActionBtns = true;
       const result: any = await resetWordAnalysis({
         wordSummaryId: params.id,
         isPreset: params.isPreset,
         paramId: state.paramsId,
       });
-      changeContent(result);
+      changeContent(result, true);
       // state.showSummary = true;
     } catch (error) {
       state.showSummary = false;
       state.showActionBtns = false;
+      message.error('解析失败');
+    } finally {
+      state.uploadLoading = false;
     }
   };
 
@@ -356,7 +365,10 @@ const DocumentSummary: React.FC = () => {
                           className={styles.fileTypeIcon}
                         />
                         <div className={styles.fileItem}>
-                          <div className={styles.fileName}>
+                          <div
+                            className={styles.fileName}
+                            title={item.attachmentName}
+                          >
                             {item.attachmentName}
                           </div>
                           <div className={styles.fileDetail}>
@@ -409,15 +421,17 @@ const DocumentSummary: React.FC = () => {
                               </div>
                             )}
                           </div>
-                          <img
-                            onClick={() => {
-                              state.delModalOpen = true;
-                              state.delSummaryId = item.id;
-                            }}
-                            src={deleteIcon}
-                            alt=""
-                            className={styles.deleteIcon}
-                          />
+                          {!item.isPreset && (
+                            <img
+                              onClick={() => {
+                                state.delModalOpen = true;
+                                state.delSummaryId = item.id;
+                              }}
+                              src={deleteIcon}
+                              alt=""
+                              className={styles.deleteIcon}
+                            />
+                          )}
                         </div>
                       </div>
                     ))}
@@ -500,7 +514,7 @@ const DocumentSummary: React.FC = () => {
                               onChangeCheckbox(e, '2');
                             }}
                           >
-                            <span className={styles.title}>脑图</span>
+                            <span className={styles.title}>思维导图</span>
                           </Checkbox>
                           <div className={styles.select}>
                             <span>文档格式</span>

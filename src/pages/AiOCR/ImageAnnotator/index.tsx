@@ -208,8 +208,34 @@ const ImageAnnotator: React.FC<ImageAnnotatorProps> = ({
       }
       if (isMark) {
         // 绘制文字
+        function calculateFontSize(boxWidth: any, boxHeight: any, numChars: any) {
+          const initialFontSize = 50; // 固定的初始字体大小
+          const minFontSize = 8; // 可接受的最小字体大小
+          let fontSize = initialFontSize;
+          let step = 1; // 字体大小调整的步长
+
+          // 估计一个大致的字体大小范围
+          let lowerBound = minFontSize;
+          let upperBound = initialFontSize;
+
+          while (lowerBound <= upperBound) {
+            fontSize = Math.floor((lowerBound + upperBound) / 2);
+            let estimatedWidth = fontSize * numChars; // 假设每个字符占用的宽度大约等于字体大小
+            let estimatedHeight = fontSize; // 假设每行的高度等于字体大小
+
+            if (estimatedWidth > boxWidth || estimatedHeight > boxHeight) {
+              upperBound = fontSize - step;
+            } else {
+              lowerBound = fontSize + step;
+            }
+          }
+
+          return Math.max(fontSize, minFontSize);
+        }
+
         ctx.fillStyle = 'black';
-        ctx.font = `${14 * scale}px DFPHaiBaoW12`;
+        const optimalFontSize = calculateFontSize(location.width, location.height, words.length)
+        ctx.font = `${optimalFontSize * scale}px DFPHaiBaoW12`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(

@@ -72,6 +72,9 @@ class Axios {
       message.error(CodeMessage[401]);
       return errorResult401;
     }
+    if (Number(code) !== 200 && conf.needUrl) {
+      return Promise.reject(res);
+    }
     if (Number(code) !== 200) {
       if (!conf.hiddenErrorMessage) {
         message.error(msg || CodeMessage[Number(code)] || CodeMessage.other);

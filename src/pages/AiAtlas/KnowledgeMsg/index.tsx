@@ -50,7 +50,6 @@ const EditableCell: React.FC<React.PropsWithChildren> = ({
   };
 
   let childNode = children;
-
   if (editable) {
     childNode = editing ? (
       <Input
@@ -60,16 +59,16 @@ const EditableCell: React.FC<React.PropsWithChildren> = ({
         onPressEnter={save}
         onBlur={save}
         maxLength={20}
-        style={{ width: '100%`' }}
+        style={{ width: '100%' }}
       />
     ) : (
       <div
         className={styles['editable-cell-value-wrap']}
         onClick={toggleEdit}
-        // @ts
-        title={children}
+        // @ts-ignore
+        title={children[1]}
       >
-        {children}
+        {children[1]}
       </div>
     );
   }
