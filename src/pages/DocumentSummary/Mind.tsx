@@ -7,27 +7,29 @@ import CopyButton from './CopyButton';
 
 const Markdown = ({ content }: { content: string }) => {
   return (
-    <ReactMarkdown
-      components={{
-        code: ({ children = [], className, ...props }) => {
-          return (
-            <>
-              <SyntaxHighlighter
-                showLineNumbers={false}
-                style={oneLight as any}
-                PreTag="div"
-                className="syntax-hight-wrapper"
-              >
-                {children as string[]}
-              </SyntaxHighlighter>
-              <CopyButton content={children as string} />
-            </>
-          );
-        },
-      }}
-    >
-      {content}
-    </ReactMarkdown>
+    <div style={{ whiteSpace: 'pre-wrap' }}>
+      <ReactMarkdown
+        components={{
+          code: ({ children = [], className, ...props }) => {
+            return (
+              <>
+                <SyntaxHighlighter
+                  showLineNumbers={false}
+                  style={oneLight as any}
+                  PreTag="div"
+                  className="syntax-hight-wrapper"
+                >
+                  {children as string[]}
+                </SyntaxHighlighter>
+                <CopyButton content={children as string} />
+              </>
+            );
+          },
+        }}
+      >
+        {content}
+      </ReactMarkdown>
+    </div>
   );
 };
 
