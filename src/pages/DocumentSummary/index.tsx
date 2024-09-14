@@ -364,7 +364,10 @@ const DocumentSummary: React.FC = () => {
                           className={styles.fileTypeIcon}
                         />
                         <div className={styles.fileItem}>
-                          <div className={styles.fileName}>
+                          <div
+                            className={styles.fileName}
+                            title={item.attachmentName}
+                          >
                             {item.attachmentName}
                           </div>
                           <div className={styles.fileDetail}>
