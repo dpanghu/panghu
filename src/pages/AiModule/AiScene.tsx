@@ -394,7 +394,9 @@ const JobHunt: React.FC = () => {
         history.push('/LPR');
       } else if (res.plugin?.code === 'intelligence') {
         history.push('/aiAtlas');
-      } else if (res.plugin?.modelTypeId === '12') {
+      } else if (res.plugin?.code === 'studyPlan') {
+        history.push('/AiPlan');
+      }  else if (res.plugin?.modelTypeId === '12') {
         history.push({
           path: '',
         });

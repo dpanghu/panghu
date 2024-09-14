@@ -30,6 +30,21 @@ export default defineConfig({
       component: '@/pages/AiModule/AiScene',
     },
     {
+      path: '/AiPlanList',
+      layout: false,
+      component: '@/pages/AiModule/AiPlanList',
+    },
+    {
+      path: '/AiPlan',
+      layout: false,
+      component: '@/pages/AiModule/AiPlan',
+    },
+    {
+      path: '/AiPlanPeople',
+      layout: false,
+      component: '@/pages/AiModule/AiPlanPeople',
+    },
+    {
       path: '/AiScene',
       layout: false,
       component: '@/pages/AiModule/AiScene',
