@@ -417,15 +417,17 @@ const DocumentSummary: React.FC = () => {
                               </div>
                             )}
                           </div>
-                          <img
-                            onClick={() => {
-                              state.delModalOpen = true;
-                              state.delSummaryId = item.id;
-                            }}
-                            src={deleteIcon}
-                            alt=""
-                            className={styles.deleteIcon}
-                          />
+                          {!item.isPreset && (
+                            <img
+                              onClick={() => {
+                                state.delModalOpen = true;
+                                state.delSummaryId = item.id;
+                              }}
+                              src={deleteIcon}
+                              alt=""
+                              className={styles.deleteIcon}
+                            />
+                          )}
                         </div>
                       </div>
                     ))}

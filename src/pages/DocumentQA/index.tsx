@@ -28,9 +28,10 @@ const DocumentQA: React.FC = () => {
     <div className={styles.DocumentQAContainer}>
       <div className={styles.header}></div>
       <div className={styles.main}>
-        <div className={styles.content}></div>
+        <div className={styles.content}>
+          <FileUpload paramsId={state.paramsId} />
+        </div>
       </div>
-      <FileUpload paramsId={state.paramsId} />
     </div>
   );
 };
