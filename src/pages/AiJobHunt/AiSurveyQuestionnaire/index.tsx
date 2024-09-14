@@ -131,19 +131,40 @@ const AiSurveyQuestionnaire: React.FC = () => {
             message.error('请填写完整问卷内容');
         }
         else {
-            const val = JSON.stringify({ "questionId": chioceValueID, "portfolios": [{ "answerOptionId": chioceAID, "portfolio": chioceA + value1 }, { "answerOptionId": chioceBID, "portfolio": chioceB + value2 }, { "answerOptionId": chioceCID, "portfolio": chioceC + value3 }] });
-            saveQuestionnaire({ name: titleValue, content: contentValue, endtips: conclusionValue, bind: promptValue, portfolio: val, projectVersionId: 1, taskId: 2, memberId, userId, schoolId, userToken }).then((res) => {
-                // console.log(res, '11111111')
-                message.success('保存成功');
-            })
-            setIsModalOpen(false);
-            setTitleValue('');
-            setContentValue('');
-            setConclusionValue('');
-            setPromptValue('');
-            setvalue1('');
-            setvalue2('');
-            setvalue3('');
+            if (promptValue === '1') {
+                if (value1 === '' || value2 === '' || value3 === '') {
+                    message.error('请填写绑定题目完整内容');
+                } else if (value1 != '' || value2 != '' || value3 != '') {
+                    const val = JSON.stringify({ "questionId": chioceValueID, "portfolios": [{ "answerOptionId": chioceAID, "portfolio": chioceA + value1 }, { "answerOptionId": chioceBID, "portfolio": chioceB + value2 }, { "answerOptionId": chioceCID, "portfolio": chioceC + value3 }] });
+                    saveQuestionnaire({ name: titleValue, content: contentValue, endtips: conclusionValue, bind: promptValue, portfolio: val, projectVersionId: 1, taskId: 2, memberId, userId, schoolId, userToken }).then((res) => {
+                        // console.log(res, '11111111')
+                        message.success('保存成功');
+                    })
+                    setIsModalOpen(false);
+                    setTitleValue('');
+                    setContentValue('');
+                    setConclusionValue('');
+                    setPromptValue('');
+                    setvalue1('');
+                    setvalue2('');
+                    setvalue3('');
+                }
+            } else if (promptValue === '') {
+                message.error('请选择是否绑定题目');
+            } else if (promptValue === '0') {
+                saveQuestionnaire({ name: titleValue, content: contentValue, endtips: conclusionValue, bind: promptValue, portfolio: 0, projectVersionId: 1, taskId: 2, memberId, userId, schoolId, userToken }).then((res) => {
+                    // console.log(res, '11111111')
+                    message.success('保存成功');
+                })
+                setIsModalOpen(false);
+                setTitleValue('');
+                setContentValue('');
+                setConclusionValue('');
+                setPromptValue('');
+                setvalue1('');
+                setvalue2('');
+                setvalue3('');
+            }
         }
     };
     const columns: any = [
