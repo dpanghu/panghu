@@ -16,7 +16,11 @@ type FieldType = {
     问卷结束语?: any;
 };
 const AiSurveyQuestionnaire: React.FC = () => {
-    const [dataSources, setDataSources] = useState<any>([])//表格数据
+    const [dataSources, setDataSources] = useState<any>(() => {
+        // 尝试从本地存储中获取数据
+        const storedData = localStorage.getItem('tableData');
+        return storedData ? JSON.parse(storedData) : [];
+    })//表格数据
     const [isDataReady, setIsDataReady] = useState(false);//控制表格显示
     const [isModalOpen, setIsModalOpen] = useState(false);//保存模态框是否打开
     const [isModalOpens, setIsModalOpens] = useState(false);//导入模态框是否打开
@@ -116,6 +120,19 @@ const AiSurveyQuestionnaire: React.FC = () => {
     //点击保存按钮，弹出模态框
     const showModal = () => {
         setIsModalOpen(true);
+        //查询builder-问卷设置信息接口
+        getQuestionnaire({ classId: 1, taskId: 2, projectVersionId: 1, memberId, userId, schoolId, userToken }).then((res: any) => {
+            // const data = res.options
+            console.log(res, 'res');
+            setChioceValue(res.question.name)
+            setChioceA(res.options[0].name)
+            setChioceB(res.options[1].name)
+            setChioceC(res.options[2].name)
+            setChioceValueID(res.question.id)
+            setChioceAID(res.options[0].id)
+            setChioceBID(res.options[1].id)
+            setChioceCID(res.options[2].id)
+        })
     };
     //点击导入按钮，弹出模态框
     const showModals = () => {
@@ -133,7 +150,7 @@ const AiSurveyQuestionnaire: React.FC = () => {
         else {
             if (promptValue === '1') {
                 if (value1 === '' || value2 === '' || value3 === '') {
-                    message.error('请填写绑定题目完整内容');
+                    message.error('请填写绑定题目的各个选项的人设');
                 } else if (value1 != '' || value2 != '' || value3 != '') {
                     const val = JSON.stringify({ "questionId": chioceValueID, "portfolios": [{ "answerOptionId": chioceAID, "portfolio": chioceA + value1 }, { "answerOptionId": chioceBID, "portfolio": chioceB + value2 }, { "answerOptionId": chioceCID, "portfolio": chioceC + value3 }] });
                     saveQuestionnaire({ name: titleValue, content: contentValue, endtips: conclusionValue, bind: promptValue, portfolio: val, projectVersionId: 1, taskId: 2, memberId, userId, schoolId, userToken }).then((res) => {
@@ -141,13 +158,13 @@ const AiSurveyQuestionnaire: React.FC = () => {
                         message.success('保存成功');
                     })
                     setIsModalOpen(false);
-                    setTitleValue('');
-                    setContentValue('');
-                    setConclusionValue('');
-                    setPromptValue('');
-                    setvalue1('');
-                    setvalue2('');
-                    setvalue3('');
+                    // setTitleValue('');
+                    // setContentValue('');
+                    // setConclusionValue('');
+                    // setPromptValue('');
+                    // setvalue1('');
+                    // setvalue2('');
+                    // setvalue3('');
                 }
             } else if (promptValue === '') {
                 message.error('请选择是否绑定题目');
@@ -157,13 +174,13 @@ const AiSurveyQuestionnaire: React.FC = () => {
                     message.success('保存成功');
                 })
                 setIsModalOpen(false);
-                setTitleValue('');
-                setContentValue('');
-                setConclusionValue('');
-                setPromptValue('');
-                setvalue1('');
-                setvalue2('');
-                setvalue3('');
+                // setTitleValue('');
+                // setContentValue('');
+                // setConclusionValue('');
+                // setPromptValue('');
+                // setvalue1('');
+                // setvalue2('');
+                // setvalue3('');
             }
         }
     };
@@ -247,9 +264,10 @@ const AiSurveyQuestionnaire: React.FC = () => {
         setIsModalOpenss(false);
         //builder-删除导入数据接口
         deleteImportData({ taskId: 2, projectVersionId: 1, memberId, userId, schoolId, userToken }).then((res: any) => {
-            setListValue('0')
-            setIsDataReady(false)
+            // setListValue('0')
+            // setIsDataReady(false)
             setDataSources([])
+            localStorage.clear();
             message.success('删除成功')
             // console.log(dataSources)
         })
@@ -257,7 +275,7 @@ const AiSurveyQuestionnaire: React.FC = () => {
     //点击确认按钮，关闭模态框(导入)
     const handleOks = () => {
         setIsModalOpens(false);
-        setListValue('1')//控制表格显示
+        // setListValue('1')//控制表格显示
         getList();
     }
     // let dataSource: any = [];
@@ -319,8 +337,10 @@ const AiSurveyQuestionnaire: React.FC = () => {
                 });
             }
             // console.log(dataSource, 'dataSource')
-            setIsDataReady(true)
+            // setIsDataReady(true)
             setDataSources(dataSource)
+            // 当 dataSources 改变时，将其存储到本地存储中
+            localStorage.setItem('tableData', JSON.stringify(dataSource));
         })
     }
     //点击取消按钮，关闭模态框
@@ -328,12 +348,13 @@ const AiSurveyQuestionnaire: React.FC = () => {
         setIsModalOpen(false);
         setIsModalOpens(false);
         setIsModalOpenss(false);
-        setPromptValue('');
-        setPromptValues('');
+        // setPromptValue('');
+        // setPromptValues('');
     };
     //下载已有模版
     const downloadTemplate = () => {
-        window.location.href = './wenjuan.xlsx';
+        window.location.href = './wenjaun.xlsx'
+        // window.open('./wenjaun.xlsx');
     }
     //大模型提示语选项
     const options = [
@@ -364,22 +385,22 @@ const AiSurveyQuestionnaire: React.FC = () => {
         setPromptValues('');
     };
     //查询builder-问卷设置信息接口
-    useEffect(() => {
-        if (promptValue === '1') {
-            getQuestionnaire({ classId: 1, taskId: 2, projectVersionId: 1, memberId, userId, schoolId, userToken }).then((res: any) => {
-                // const data = res.options
-                // console.log(res, 'res');
-                setChioceValue(res.question.name)
-                setChioceA(res.options[0].name)
-                setChioceB(res.options[1].name)
-                setChioceC(res.options[2].name)
-                setChioceValueID(res.question.id)
-                setChioceAID(res.options[0].id)
-                setChioceBID(res.options[1].id)
-                setChioceCID(res.options[2].id)
-            })
-        }
-    });
+    // useEffect(() => {
+    //     if (promptValue === '1') {
+    //         getQuestionnaire({ classId: 1, taskId: 2, projectVersionId: 1, memberId, userId, schoolId, userToken }).then((res: any) => {
+    //             // const data = res.options
+    //             // console.log(res, 'res');
+    //             setChioceValue(res.question.name)
+    //             setChioceA(res.options[0].name)
+    //             setChioceB(res.options[1].name)
+    //             setChioceC(res.options[2].name)
+    //             setChioceValueID(res.question.id)
+    //             setChioceAID(res.options[0].id)
+    //             setChioceBID(res.options[1].id)
+    //             setChioceCID(res.options[2].id)
+    //         })
+    //     }
+    // });
     //关联题目选项
     const optionss = [
         {
@@ -409,7 +430,7 @@ const AiSurveyQuestionnaire: React.FC = () => {
                 open={isModalOpen}
                 footer={false}
                 title={'问卷内容说明:'}
-                destroyOnClose={true}
+                // destroyOnClose={true}
                 onCancel={handleCancel}
             // width={800}
             >
@@ -541,14 +562,14 @@ const AiSurveyQuestionnaire: React.FC = () => {
             <div className={styles.mainbtn}>
                 <Button type="primary" onClick={showModals}>导入</Button>
                 <Button style={{ marginLeft: 10 }} onClick={showModal}>保存</Button>
-                <Button type='primary' danger style={{ marginLeft: 10 }} onClick={showModalss} >删除</Button>
+                <Button type='primary' danger style={{ marginLeft: 10 }} onClick={showModalss} >全部删除</Button>
             </div>
-            {isDataReady && listValue === '1' && (
-                <div>
-                    <SeenTable style={{ marginTop: '50px', minWidth: '100%' }} scroll={{ x: 2000 }} columns={columns} dataSource={dataSources}></SeenTable >
-                </div>
-            )
-            }
+            {/* {isDataReady && listValue === '1' && ( */}
+            <div>
+                <SeenTable style={{ marginTop: '50px', minWidth: '100%', overflowX: 'none' }} scroll={{ x: 2000 }} columns={columns} dataSource={dataSources}></SeenTable >
+            </div>
+            {/* ) */}
+            {/* } */}
         </div >
     );
 };
