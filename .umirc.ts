@@ -30,6 +30,21 @@ export default defineConfig({
       component: '@/pages/AiModule/AiScene',
     },
     {
+      path: '/AiPlanList',
+      layout: false,
+      component: '@/pages/AiModule/AiPlanList',
+    },
+    {
+      path: '/AiPlan',
+      layout: false,
+      component: '@/pages/AiModule/AiPlan',
+    },
+    {
+      path: '/AiPlanPeople',
+      layout: false,
+      component: '@/pages/AiModule/AiPlanPeople',
+    },
+    {
       path: '/AiScene',
       layout: false,
       component: '@/pages/AiModule/AiScene',
@@ -48,18 +63,6 @@ export default defineConfig({
       path: '/aiJobHunt/AiSurveyQuestionnaire',
       component: '@/pages/AiJobHunt/AiSurveyQuestionnaire',
       title: 'XAI | ai调查问卷',
-      layout: false,
-    },
-    {
-      path: '/aiJobHunt/AiLearnPlan',
-      component: '@/pages/AiJobHunt/AiLearnPlan',
-      title: 'XAI | ai学习规划',
-      layout: false,
-    },
-    {
-      path: '/aiJobHunt/AiPersonalPortrait',
-      component: '@/pages/AiJobHunt/AiPersonalPortrait',
-      title: 'XAI | ai个人画像',
       layout: false,
     },
     {

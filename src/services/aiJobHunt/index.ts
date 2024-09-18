@@ -10,6 +10,25 @@ export async function getConvertParamId(params?: RecordItem) {
   });
 }
 
+// 获取转换参数id
+export async function getAiPlanList(params?: RecordItem) {
+  return $axios.request({
+    url: '/xai/plugin/create',
+    method: 'POST',
+    params,
+    isJSON: true,
+  });
+}
+
+// 获取转换参数id
+export async function getQuestion(params?: RecordItem) {
+  return $axios.request({
+    url: '/widget/xai/sp/detail/get',
+    method: 'GET',
+    params,
+  });
+}
+
 // 查询任务左侧的聊天主题
 
 export async function getChatThemeList<T>(params?: RecordItem): Promise<T[]> {
@@ -197,6 +216,14 @@ export async function deletePlugin<T>(params?: RecordItem): Promise<T> {
 export async function copyPlugin<T>(params?: RecordItem): Promise<T> {
   return $axios.request({
     url: '/xai/remote/plugin/copy',
+    method: 'POST',
+    params,
+  });
+}
+//复制插件
+export async function saveAnswer<T>(params?: RecordItem): Promise<T> {
+  return $axios.request({
+    url: '/widget/xai/sp/answer/pager/save',
     method: 'POST',
     params,
   });
