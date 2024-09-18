@@ -5,7 +5,7 @@ import { getAiPlanList, saveAnswer } from '@/services/aiJobHunt';
 import { useMount, useReactive } from 'ahooks';
 import styles from './AiPlanPeople.less';
 import { getConvertParamId } from '@/services/aiJobHunt/index';
-import { Modal } from 'SeenPc';
+import { Modal } from 'antd';
 import { Button, Input } from 'SeenPc';
 import { history } from 'umi';
 import banner1 from '@/assets/images/banner1.png';

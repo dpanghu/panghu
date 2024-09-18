@@ -5,12 +5,15 @@ import styles from './AiPlanList.less';
 import Backs from '@/assets/images/backs.png'
 import { getConvertParamId } from '@/services/aiJobHunt/index';
 import { message } from 'antd';
+import { Button } from 'SeenPc';
 import planbac from '@/assets/images/plantitle.png';
 import { history } from 'umi';
+import html2canvas from 'html2canvas';
 interface TState {
     curTheme: any;
     dialogList: any;
     excludeId: any;
+    planList: any;
     editId: string;
     editName: string;
     imgId: any;
@@ -42,6 +45,7 @@ const App: React.FC = () => {
         isTyping: false,
         messageList: [],
         allow: '',
+        planList: [],
         aiData: {},
         imgUrl: '',
         editName: '',
@@ -74,56 +78,43 @@ const App: React.FC = () => {
         }).then((res: any) => {
             message.success('保存成功');
             console.log(res);
-            window.sessionStorage.setItem('portfolio',res.portfolio);
+            window.sessionStorage.setItem('portfolio', res.portfolio);
             history.push('/AiPlanPeople');
         });
     }
 
     useMount(() => {
+        let planList: any = JSON.parse(window.sessionStorage.getItem('planList') as any);
+        state.planList = planList;
         getConvertParamId({}).then((res: any) => {
             state.patams = res;
         });
-        // getQuestion({
-        //     userId: '42084774553583616',
-        //     userToken: '2ba4dcfc10abe43a03e7253e8ed53998',
-        //     memberId: '42084774565642240',
-        //     schoolId: '100678506119168',
-        //     classId: '1',
-        //     taskId: '2',
-        //     dbeProjectVersionId: '1'
-        // }).then((res: any) => {
-        //     console.log(res);
-        //     let arr: any = [];
-        //     let types: any = {
-        //         'INPUT': 'input',
-        //         'SINGLE_CHOICE': 'radio',
-        //     }
-        //     // eslint-disable-next-line @typescript-eslint/no-unused-expressions, array-callback-return
-        //     res.questionList && res.questionList.map((item: any) => {
-        //         if (item.options) {
-        //             // eslint-disable-next-line @typescript-eslint/no-unused-expressions, array-callback-return
-        //             item.options && item.options.map((element: any) => {
-        //                 element.label = element.name;
-        //                 element.value = element.id;
-        //             })
-        //         }
-        //         arr.push({
-        //             title: item.name,
-        //             type: types[item.type],
-        //             // eslint-disable-next-line eqeqeq
-        //             isRequired: item.required == 1 ? true : false,
-        //             id: item.id,
-        //             options: item.options ? item.options : '',
-        //         })
-        //     })
-        //     state.data = arr;
-        //     console.log(JSON.stringify(state.data));
-        // })
     })
+
+    const captureElement = () => {
+        let dom: any = document.getElementById('content');
+        html2canvas(dom).then(canvas => {
+            // 将canvas转换为图片URL  
+            let imageURL = canvas.toDataURL('image/png').replace("image/png", "image/octet-stream");
+
+            // 创建一个临时的a标签用于下载  
+            let link = document.createElement('a');
+            link.download = 'downloaded-image.png'; // 指定下载的文件名  
+            link.href = imageURL;
+            link.click(); // 触发下载  
+
+            // 注意：在某些浏览器中，出于安全原因，可能需要在用户交互（如点击事件）中触发下载  
+
+            // 清理：移除创建的a标签（可选）  
+            link.remove();
+
+            // 如果需要，你也可以将图片保存到服务器（例如使用Ajax）  
+        });
+    }
 
     return (
         <div className={styles.peoplecontainer} >
-            <div className={styles.head} onClick={()=> {
+            <div className={styles.head} onClick={() => {
                 history.push('/AiPlan')
             }}>
                 <img src={Backs} style={{ width: 16, height: 16 }}></img>
@@ -132,19 +123,38 @@ const App: React.FC = () => {
                 <div className={styles.backText} style={{ lineHeight: '22px', marginLeft: 12 }}>AI学习规划</div>
             </div>
             <div className={styles.contents} style={{ width: '100%', paddingLeft: 8, paddingRight: 8 }}>
-                <div className={styles.content}>
-                    <img src={planbac} style={{ position:'absolute',width:'868px',height: 49, marginTop: 19 }}></img>
+                <div className={styles.content} id='content'>
+                    <img src={planbac} style={{ position: 'absolute', width: '868px', height: 49, marginTop: 19 }}></img>
                     <div className={styles.tables}>
-                         <div className={styles.box}>
+                        <div className={styles.box}>
                             <div className={styles.ths} style={{ width: '65px' }}>日期</div>
                             <div className={styles.ths}>学习内容</div>
                             <div className={styles.ths}>学习内容</div>
                             <div className={styles.ths}>学习内容</div>
                             <div className={styles.ths} style={{ borderRight: 'none' }}>学习内容</div>
-                         </div>
-                         
+                        </div>
+                        {
+                            state.planList && state.planList.map((item: any) => {
+                                return <div className={styles.boxs} key={item.id}>
+                                    <div className={styles.ths} style={{ width: '65px', marginLeft: 0 }}>{item.day}</div>
+                                    {
+                                        item.plan && item.plan.map((items: any) => {
+                                            return <>
+                                                <div className={styles.ths}>{items}</div>
+                                            </>
+                                        })
+                                    }
+                                </div>
+                            })
+                        }
                     </div>
                 </div>
+            </div>
+            <div className={styles.footer}>
+                <Button onClick={() => { message.success('生成成功') }} size='small' type='default' style={{ width: 88, height: 28, border: '1px solid #5672ff', color: '#5672ff' }}>重新生成</Button>
+                <Button onClick={()=> {
+                    captureElement();
+                }} size={'small'} style={{ marginLeft: 70, width: 88, height: 28 }} type='primary'>下载</Button>
             </div>
         </div>
     );
