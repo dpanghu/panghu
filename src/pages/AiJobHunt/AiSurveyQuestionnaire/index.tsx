@@ -3,54 +3,71 @@ import { Button, Modal, message } from 'antd';
 import styles from './index.less';
 import { InboxOutlined } from '@ant-design/icons';
 import type { UploadProps } from 'antd';
-import { Upload, Form, Input, SeenTable } from 'SeenPc';
+import { Upload, Input, SeenTable } from 'SeenPc';
+import { Form } from 'antd';
 import qs from 'qs';
 import { history } from 'umi';
 import { Radio } from 'antd';
 import { importData, saveQuestionnaire, getQuestionnaire, getImportDataList, deleteImportData } from '@/services/aiLearnPlan';
 import { set } from 'lodash';
-
 type FieldType = {
     问卷标题?: any;
     问卷说明?: any;
     问卷结束语?: any;
 };
 const AiSurveyQuestionnaire: React.FC = () => {
-    const [dataSources, setDataSources] = useState<any>(() => {
-        // 尝试从本地存储中获取数据
-        const storedData = localStorage.getItem('tableData');
-        return storedData ? JSON.parse(storedData) : [];
-    })//表格数据
-    const [isDataReady, setIsDataReady] = useState(false);//控制表格显示
+
+    const [form] = Form.useForm();
+    const [dataSources, setDataSources] = useState<any>([])//表格数据
+    // const [isDataReady, setIsDataReady] = useState(false);//控制表格显示
     const [isModalOpen, setIsModalOpen] = useState(false);//保存模态框是否打开
     const [isModalOpens, setIsModalOpens] = useState(false);//导入模态框是否打开
-    const [titleValue, setTitleValue] = useState<any>('');//模态框中的问卷标题输入框的值
-    const [contentValue, setContentValue] = useState<any>('');//模态框中的问卷说明输入框的值
-    const [conclusionValue, setConclusionValue] = useState<any>('');//模态框中的问卷结束语输入框的值
+    // const [titleValue, setTitleValue] = useState<any>('');//模态框中的问卷标题输入框的值
+    // const [contentValue, setContentValue] = useState<any>('');//模态框中的问卷说明输入框的值
+    // const [conclusionValue, setConclusionValue] = useState<any>('');//模态框中的问卷结束语输入框的值
+    // const [titleValues, setTitleValues] = useState<any>('');//模态框中的问卷标题输入框的值(保存后)
+    // const [contentValues, setContentValues] = useState<any>('');//模态框中的问卷说明输入框的值(保存后)
+    // const [conclusionValues, setConclusionValues] = useState<any>('');//模态框中的问卷结束语输入框的值(保存后)
     const [atttachIdValue, setAttatchIdValue] = useState<any>('');//模态框中的问卷附件id
-    const [listValue, setListValue] = useState<any>('');//是否展示问卷列表
+    // const [listValue, setListValue] = useState<any>('');//是否展示问卷列表
     const [isModalOpenss, setIsModalOpenss] = useState(false);//删除模态框是否打开
     const [uploadValue, setUpLoadValue] = useState<any>(false);//上传文件失败控制打开模态框
     const [fileValue, setFileValue] = useState<any>();//上传文件失败分析后的文件
-    // const { qs: queryStr } = history.location.query as any;
-    // // 从location.query获取参数
-    // const Param = qs.parse(window.atob(queryStr));
+
+    useEffect(() => {
+        //获取问卷列表
+        getImportDataList({ taskId: 2, projectVersionId: 1, memberId, userId, schoolId, userToken }).then((res: any) => {
+            const dataSource: any = [];
+            for (let i = 0; i < res.length; i++) {
+                dataSource.push({
+                    sort: res[i].serialNo,
+                    name: res[i].type,
+                    sno: res[i].name,
+                    school: res[i].optionA,
+                    college: res[i].optionB,
+                    master: res[i].optionC,
+                    class: res[i].optionD,
+                    classe: res[i].optionE,
+                    classf: res[i].optionF,
+                    classg: res[i].needInput,
+                    classh: res[i].note,
+                    classi: res[i].required,
+                    classj: res[i].rel,
+                    classk: res[i].relOptions,
+                });
+            }
+            setDataSources(dataSource)
+        })
+    }, [])
     const Param = qs.parse(window.atob(window.sessionStorage.getItem('qs') || '{}'));
-    // console.log(Param);
-    // localStorage.setItem('Param', JSON.stringify(Param));
     // 提取必要的参数
     const { memberId, userId, schoolId, userToken } = Param;
     //上传文件成功调用builder-导入数据接口
     const importDataMethod = (url: any) => {
         importData({ url, projectVersionId: 1, taskId: 2, memberId, userId, schoolId, userToken }).then((res: any) => {
-            // if (res.code === 200) {
-            // console.log(res);
-            // setUpLoadValue('1')
             message.success('上传成功');
-            // }
         }).catch((msg: any) => {
             message.error('上传失败,请下载分析后的表格查看错误信息');
-            // console.log(msg);
             setUpLoadValue(true)
             setFileValue(msg.data)
         })
@@ -79,11 +96,8 @@ const AiSurveyQuestionnaire: React.FC = () => {
         listType: 'text',
         maxCount: 1,
         beforeUpload: (file: any) => {
-            // console.log(file);
             const fileType = file.name.split('.').pop();
-            // console.log(fileType);
             const allowedFormats = ['xls', 'xlsx'];
-
             if (!allowedFormats.includes(fileType)) {
                 message.warning('文件上传的格式不正确，仅支持xls,xlsx格式')
                 return false;
@@ -98,16 +112,11 @@ const AiSurveyQuestionnaire: React.FC = () => {
         onChange(info: any) {
             const { status } = info.file;
             if (status !== 'uploading') {
-                // console.log(info.file, info.fileList);
-                // console.log(info)
+
             }
             if (status === 'done') {
                 importDataMethod(info.file.key);
                 setAttatchIdValue(info.file.uid)
-                // if (uploadValue === '1') {
-                // message.success(`${info.file.name} 上传成功.`);
-                // setUpLoadValue('0')
-                // }
             } else if (status === 'error') {
                 message.error(`${info.file.name} 上传失败.`);
 
@@ -122,16 +131,30 @@ const AiSurveyQuestionnaire: React.FC = () => {
         setIsModalOpen(true);
         //查询builder-问卷设置信息接口
         getQuestionnaire({ classId: 1, taskId: 2, projectVersionId: 1, memberId, userId, schoolId, userToken }).then((res: any) => {
-            // const data = res.options
-            console.log(res, 'res');
             setChioceValue(res.question.name)
+            setChioceValueID(res.question.id)
             setChioceA(res.options[0].name)
             setChioceB(res.options[1].name)
             setChioceC(res.options[2].name)
-            setChioceValueID(res.question.id)
             setChioceAID(res.options[0].id)
             setChioceBID(res.options[1].id)
             setChioceCID(res.options[2].id)
+            if (res.xaiSp) {
+                form.setFieldsValue({
+                    titleValue: res.xaiSp.name,
+                    contentValue: res.xaiSp.content,
+                    conclusionValue: res.xaiSp.endtips,
+                })
+                setPromptValue(JSON.stringify(res.xaiSp.bind))
+                if (res.xaiSp.portfolio != '0') {
+                    const jsonValue = JSON.parse(res.xaiSp.portfolio).portfolios
+                    console.log(jsonValue, 'jsonValue');
+                    setPromptValues('1')
+                    setvalue1(jsonValue[0].portfolio)
+                    setvalue2(jsonValue[1].portfolio)
+                    setvalue3(jsonValue[2].portfolio)
+                }
+            }
         })
     };
     //点击导入按钮，弹出模态框
@@ -144,7 +167,9 @@ const AiSurveyQuestionnaire: React.FC = () => {
     }
     //点击确认按钮，关闭模态框(保存)
     const handleOk = () => {
-        if (titleValue === '' || contentValue === '' || conclusionValue === '') {
+        const values = form.getFieldsValue();
+        console.log('Form data:', values);
+        if (values.titleValue === '' || values.contentValue === '' || values.conclusionValue === '') {
             message.error('请填写完整问卷内容');
         }
         else {
@@ -152,35 +177,19 @@ const AiSurveyQuestionnaire: React.FC = () => {
                 if (value1 === '' || value2 === '' || value3 === '') {
                     message.error('请填写绑定题目的各个选项的人设');
                 } else if (value1 != '' || value2 != '' || value3 != '') {
-                    const val = JSON.stringify({ "questionId": chioceValueID, "portfolios": [{ "answerOptionId": chioceAID, "portfolio": chioceA + value1 }, { "answerOptionId": chioceBID, "portfolio": chioceB + value2 }, { "answerOptionId": chioceCID, "portfolio": chioceC + value3 }] });
-                    saveQuestionnaire({ name: titleValue, content: contentValue, endtips: conclusionValue, bind: promptValue, portfolio: val, projectVersionId: 1, taskId: 2, memberId, userId, schoolId, userToken }).then((res) => {
-                        // console.log(res, '11111111')
+                    const val = JSON.stringify({ "questionId": chioceValueID, "portfolios": [{ "answerOptionId": chioceAID, "portfolio": value1 }, { "answerOptionId": chioceBID, "portfolio": value2 }, { "answerOptionId": chioceCID, "portfolio": value3 }] });
+                    saveQuestionnaire({ name: values.titleValue, content: values.contentValue, endtips: values.conclusionValue, bind: promptValue, portfolio: val, projectVersionId: 1, taskId: 2, memberId, userId, schoolId, userToken }).then((res) => {
                         message.success('保存成功');
                     })
                     setIsModalOpen(false);
-                    // setTitleValue('');
-                    // setContentValue('');
-                    // setConclusionValue('');
-                    // setPromptValue('');
-                    // setvalue1('');
-                    // setvalue2('');
-                    // setvalue3('');
                 }
             } else if (promptValue === '') {
                 message.error('请选择是否绑定题目');
             } else if (promptValue === '0') {
-                saveQuestionnaire({ name: titleValue, content: contentValue, endtips: conclusionValue, bind: promptValue, portfolio: 0, projectVersionId: 1, taskId: 2, memberId, userId, schoolId, userToken }).then((res) => {
-                    // console.log(res, '11111111')
+                saveQuestionnaire({ name: values.titleValue, content: values.contentValue, endtips: values.conclusionValue, bind: promptValue, portfolio: 0, projectVersionId: 1, taskId: 2, memberId, userId, schoolId, userToken }).then((res) => {
                     message.success('保存成功');
                 })
                 setIsModalOpen(false);
-                // setTitleValue('');
-                // setContentValue('');
-                // setConclusionValue('');
-                // setPromptValue('');
-                // setvalue1('');
-                // setvalue2('');
-                // setvalue3('');
             }
         }
     };
@@ -258,65 +267,49 @@ const AiSurveyQuestionnaire: React.FC = () => {
             key: 'classk',
         },
     ];
-    // const [dataSource, setDataSource] = useState<any>([]);
     //点击确认按钮，关闭模态框(删除)
     const handleOkss = () => {
         setIsModalOpenss(false);
         //builder-删除导入数据接口
         deleteImportData({ taskId: 2, projectVersionId: 1, memberId, userId, schoolId, userToken }).then((res: any) => {
-            // setListValue('0')
-            // setIsDataReady(false)
-            setDataSources([])
-            localStorage.clear();
+            //删除后调用列表接口
+            getImportDataList({ taskId: 2, projectVersionId: 1, memberId, userId, schoolId, userToken }).then((res: any) => {
+                // console.log(res, '22222')
+                const dataSource: any = [];
+                for (let i = 0; i < res.length; i++) {
+                    dataSource.push({
+                        sort: res[i].serialNo,
+                        name: res[i].type,
+                        sno: res[i].name,
+                        school: res[i].optionA,
+                        college: res[i].optionB,
+                        master: res[i].optionC,
+                        class: res[i].optionD,
+                        classe: res[i].optionE,
+                        classf: res[i].optionF,
+                        classg: res[i].needInput,
+                        classh: res[i].note,
+                        classi: res[i].required,
+                        classj: res[i].rel,
+                        classk: res[i].relOptions,
+                    });
+                }
+                // console.log(dataSource, 'dataSource')
+                // setIsDataReady(true)
+                setDataSources(dataSource)
+            })
             message.success('删除成功')
-            // console.log(dataSources)
         })
     }
     //点击确认按钮，关闭模态框(导入)
     const handleOks = () => {
         setIsModalOpens(false);
-        // setListValue('1')//控制表格显示
         getList();
     }
-    // let dataSource: any = [];
-    // useEffect(() => {
-    // getList();
-    // if (listValue === '1') {
-    //     // setDataSources([])
-    //     // builder-查询导入数据列表接口
-    //     getImportDataList({ taskId: 2, projectVersionId: 1, memberId, userId, schoolId, userToken }).then((res: any) => {
-    //         // console.log(res, '22222')
-    //         // const dataSource: any = [];
-    //         for (let i = 0; i < res.length; i++) {
-    //             dataSources.push({
-    //                 sort: res[i].serialNo,
-    //                 name: res[i].type,
-    //                 sno: res[i].name,
-    //                 school: res[i].optionA,
-    //                 college: res[i].optionB,
-    //                 master: res[i].optionC,
-    //                 class: res[i].optionD,
-    //                 classe: res[i].optionE,
-    //                 classf: res[i].optionF,
-    //                 classg: res[i].needInput,
-    //                 classh: res[i].note,
-    //                 classi: res[i].required,
-    //                 classj: res[i].rel,
-    //                 classk: res[i].relOptions,
-    //             });
-    //         }
-    //         // console.log(dataSource, 'dataSource')
-    //         setIsDataReady(true)
-    //         // setDataSources(dataSources)
-    //     })
-    // }
-    // }, [])
-
     // 获取列表题目
     const getList = () => {
         // builder-查询导入数据列表接口
         getImportDataList({ taskId: 2, projectVersionId: 1, memberId, userId, schoolId, userToken }).then((res: any) => {
-            // console.log(res, '22222')
             const dataSource: any = [];
             for (let i = 0; i < res.length; i++) {
                 dataSource.push({
@@ -339,8 +332,6 @@ const AiSurveyQuestionnaire: React.FC = () => {
             // console.log(dataSource, 'dataSource')
             // setIsDataReady(true)
             setDataSources(dataSource)
-            // 当 dataSources 改变时，将其存储到本地存储中
-            localStorage.setItem('tableData', JSON.stringify(dataSource));
         })
     }
     //点击取消按钮，关闭模态框
@@ -354,7 +345,6 @@ const AiSurveyQuestionnaire: React.FC = () => {
     //下载已有模版
     const downloadTemplate = () => {
         window.location.href = './wenjaun.xlsx'
-        // window.open('./wenjaun.xlsx');
     }
     //大模型提示语选项
     const options = [
@@ -368,12 +358,12 @@ const AiSurveyQuestionnaire: React.FC = () => {
         },
     ];
     //获取大模型提示语
-    const [promptValue, setPromptValue] = useState('null');//是否关联题目选项
-    const [promptValues, setPromptValues] = useState('null');//获取大模型提示语关联题目
-    const [chioceValue, setChioceValue] = useState('null');//获取关联题目
-    const [chioceA, setChioceA] = useState('null');//获取关联题目的选项A
-    const [chioceB, setChioceB] = useState('null');//获取关联题目的选项B
-    const [chioceC, setChioceC] = useState('null');//获取关联题目的选项C
+    const [promptValue, setPromptValue] = useState<any>();//是否关联题目选项
+    const [promptValues, setPromptValues] = useState<any>();//获取大模型提示语关联题目
+    const [chioceValue, setChioceValue] = useState();//获取关联题目
+    const [chioceA, setChioceA] = useState();//获取关联题目的选项A
+    const [chioceB, setChioceB] = useState();//获取关联题目的选项B
+    const [chioceC, setChioceC] = useState();//获取关联题目的选项C
     const [chioceValueID, setChioceValueID] = useState('null');//获取关联题目的ID
     const [chioceAID, setChioceAID] = useState('null');//获取关联题目的选项A的ID
     const [chioceBID, setChioceBID] = useState('null');//获取关联题目的选项B的ID
@@ -384,23 +374,6 @@ const AiSurveyQuestionnaire: React.FC = () => {
         setPromptValue(e.target.value);
         setPromptValues('');
     };
-    //查询builder-问卷设置信息接口
-    // useEffect(() => {
-    //     if (promptValue === '1') {
-    //         getQuestionnaire({ classId: 1, taskId: 2, projectVersionId: 1, memberId, userId, schoolId, userToken }).then((res: any) => {
-    //             // const data = res.options
-    //             // console.log(res, 'res');
-    //             setChioceValue(res.question.name)
-    //             setChioceA(res.options[0].name)
-    //             setChioceB(res.options[1].name)
-    //             setChioceC(res.options[2].name)
-    //             setChioceValueID(res.question.id)
-    //             setChioceAID(res.options[0].id)
-    //             setChioceBID(res.options[1].id)
-    //             setChioceCID(res.options[2].id)
-    //         })
-    //     }
-    // });
     //关联题目选项
     const optionss = [
         {
@@ -424,6 +397,7 @@ const AiSurveyQuestionnaire: React.FC = () => {
     const [value1, setvalue1] = useState<any>('');//关联题目选项1文本框的值
     const [value2, setvalue2] = useState<any>('');//关联题目选项2文本框的值
     const [value3, setvalue3] = useState<any>('');//关联题目选项3文本框的值
+
     return (
         <div className={styles.all}>
             <Modal
@@ -435,54 +409,55 @@ const AiSurveyQuestionnaire: React.FC = () => {
             // width={800}
             >
                 <Form
+                    form={form}
                     name="basic"
                     style={{ maxWidth: 800 }}
                     autoComplete="off"
                 >
-                    <Form.Item<FieldType>
+                    <Form.Item
                         label="问卷标题"
-                        name="问卷标题"
+                        name="titleValue"
                         rules={[{ required: true, message: '问卷标题不可为空' }]}
                     >
                         <Input style={{ width: '384px', marginLeft: '1px' }}
-                            value={titleValue}
+                            // value={titleValues ? titleValues : titleValue}
                             allowClear={true}
                             showCount maxLength={20}
                             placeholder={'请输入问卷标题'}
-                            onChange={(e: any) => {
-                                setTitleValue(e);
-                            }}
+                            // onChange={(e: any) => {
+                            //     setTitleValue(e);
+                            // }}
                             size="medium" />
                     </Form.Item>
 
-                    <Form.Item<FieldType>
+                    <Form.Item
                         label="问卷说明"
-                        name="问卷说明"
+                        name="contentValue"
                         rules={[{ required: true, message: '问卷说明不可为空' }]}
                     >
                         <Input style={{ width: '384px', marginLeft: '1px' }}
-                            value={contentValue}
+                            // value={contentValues ? contentValues : contentValue}
                             showCount maxLength={200}
                             allowClear={true}
                             placeholder={'请输入问卷说明'}
-                            onChange={(e: any) => {
-                                setContentValue(e);
-                            }}
+                            // onChange={(e: any) => {
+                            //     setContentValue(e);
+                            // }}
                             size="medium" />
                     </Form.Item>
-                    <Form.Item<FieldType>
+                    <Form.Item
                         label="问卷结束语"
-                        name="问卷结束语"
+                        name="conclusionValue"
                         rules={[{ required: true, message: '问卷结束语不可为空' }]}
                     >
                         <Input style={{ width: '370px', marginLeft: '1px' }}
-                            value={conclusionValue}
+                            // value={conclusionValues ? conclusionValues : conclusionValue}
                             allowClear={true}
                             placeholder={'请输入问卷结束语'}
                             showCount maxLength={50}
-                            onChange={(e: any) => {
-                                setConclusionValue(e);
-                            }}
+                            // onChange={(e: any) => {
+                            //     setConclusionValue(e);
+                            // }}
                             size="medium" />
                     </Form.Item>
                     <div>
