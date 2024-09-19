@@ -27,3 +27,31 @@ export async function getWordAnswerItem(params?: RecordItem) {
     params,
   });
 }
+
+// 更新会话id和主题id
+export async function updateAnswerId(params?: RecordItem) {
+  return $axios.request({
+    url: `/seentao/xai/word/answer/update`,
+    method: 'GET',
+    params,
+    hiddenLoading: true,
+  });
+}
+
+// 更新会话id和主题id
+export async function delAnswer(params?: RecordItem) {
+  return $axios.request({
+    url: `/seentao/xai/word/answer/del`,
+    method: 'GET',
+    params,
+  });
+}
+
+// 获取主题下的聊天记录
+export async function getMessageLast(params?: RecordItem) {
+  return $axios.request({
+    url: `/xai/chat/message/last`,
+    method: 'GET',
+    params,
+  });
+}

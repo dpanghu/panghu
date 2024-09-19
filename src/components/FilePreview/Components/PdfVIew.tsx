@@ -13,7 +13,7 @@ import { Spin, Tooltip } from 'antd';
 import React, { useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import styles from './PDFViewer.less';
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+pdfjs.GlobalWorkerOptions.workerSrc = `/bus_xai_web/pdf.worker.js`;
 
 const loadSize = 5; // 每次加载的页面
 
