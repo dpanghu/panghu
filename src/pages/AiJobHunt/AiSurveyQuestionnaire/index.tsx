@@ -12,17 +12,9 @@ const AiSurveyQuestionnaire: React.FC = () => {
 
     const [form] = Form.useForm();
     const [dataSources, setDataSources] = useState<any>([])//表格数据
-    // const [isDataReady, setIsDataReady] = useState(false);//控制表格显示
     const [isModalOpen, setIsModalOpen] = useState(false);//保存模态框是否打开
     const [isModalOpens, setIsModalOpens] = useState(false);//导入模态框是否打开
-    // const [titleValue, setTitleValue] = useState<any>('');//模态框中的问卷标题输入框的值
-    // const [contentValue, setContentValue] = useState<any>('');//模态框中的问卷说明输入框的值
-    // const [conclusionValue, setConclusionValue] = useState<any>('');//模态框中的问卷结束语输入框的值
-    // const [titleValues, setTitleValues] = useState<any>('');//模态框中的问卷标题输入框的值(保存后)
-    // const [contentValues, setContentValues] = useState<any>('');//模态框中的问卷说明输入框的值(保存后)
-    // const [conclusionValues, setConclusionValues] = useState<any>('');//模态框中的问卷结束语输入框的值(保存后)
     const [atttachIdValue, setAttatchIdValue] = useState<any>('');//模态框中的问卷附件id
-    // const [listValue, setListValue] = useState<any>('');//是否展示问卷列表
     const [isModalOpenss, setIsModalOpenss] = useState(false);//删除模态框是否打开
     const [uploadValue, setUpLoadValue] = useState<any>(false);//上传文件失败控制打开模态框
     const [fileValue, setFileValue] = useState<any>();//上传文件失败分析后的文件
@@ -125,7 +117,7 @@ const AiSurveyQuestionnaire: React.FC = () => {
             console.log('Dropped files', e.dataTransfer.files);
         },
     };
-
+    const [data, setData] = useState<any>([]);//存储关联题目及其选项
     //点击保存按钮，弹出模态框
     const showModal = () => {
         if (openValue === false) {
@@ -136,12 +128,18 @@ const AiSurveyQuestionnaire: React.FC = () => {
             getQuestionnaire({ classId: 1, taskId: 2, projectVersionId: 1, memberId, userId, schoolId, userToken }).then((res: any) => {
                 setChioceValue(res.question.name)
                 setChioceValueID(res.question.id)
-                setChioceA(res.options[0].name)
-                setChioceB(res.options[1].name)
-                setChioceC(res.options[2].name)
-                setChioceAID(res.options[0].id)
-                setChioceBID(res.options[1].id)
-                setChioceCID(res.options[2].id)
+                let arr: any = [];
+                const options = res.options || [];//防止options为空报错
+                for (let i = 0; i < options.length; i++) {
+                    //初始化
+                    if (!arr[i]) {
+                        arr[i] = {};
+                    }
+                    arr[i].label = options[i].name
+                    arr[i].value = options[i].id
+                    arr[i].inputValue = ''
+                }
+                setData(arr)
                 if (res.xaiSp) {
                     form.setFieldsValue({
                         titleValue: res.xaiSp.name,
@@ -151,11 +149,26 @@ const AiSurveyQuestionnaire: React.FC = () => {
                     setPromptValue(JSON.stringify(res.xaiSp.bind))
                     if (res.xaiSp.portfolio != '0') {
                         const jsonValue = JSON.parse(res.xaiSp.portfolio).portfolios
-                        console.log(jsonValue, 'jsonValue');
-                        setPromptValues('1')
-                        setvalue1(jsonValue[0].portfolio)
-                        setvalue2(jsonValue[1].portfolio)
-                        setvalue3(jsonValue[2].portfolio)
+                        let arr: any = [];
+                        const options = res.options || [];//防止options为空报错
+                        for (let i = 0; i < options.length; i++) {
+                            //初始化
+                            if (!arr[i]) {
+                                arr[i] = {};
+                            }
+                            arr[i].label = options[i].name
+                            arr[i].value = options[i].id
+                            arr[i].inputValue = jsonValue[i].portfolio
+                        }
+                        setData(arr);
+                        setPromptValues(options[0].id)
+                        let obj = {};
+                        obj = {
+                            ...jsonValue[0],
+                            value: jsonValue[0].answerOptionId,
+                            inputValue: jsonValue[0].portfolio
+                        }
+                        setchooseData(obj)
                     }
                 }
             })
@@ -173,20 +186,31 @@ const AiSurveyQuestionnaire: React.FC = () => {
             setIsModalOpenss(true);
         }
     }
-
     //点击确认按钮，关闭模态框(保存)
     const handleOk = () => {
+        let clone: any = JSON.parse(JSON.stringify(data));
+        let dataIndex: any = clone.findIndex(((item: any) => item.value === chooseData.value));
+        clone[dataIndex] = chooseData;
+        setData(clone);
         const values = form.getFieldsValue();
-        console.log('Form data:', values);
+        // console.log('Form data:', values);
         if (values.titleValue === '' || values.contentValue === '' || values.conclusionValue === '') {
             message.error('请填写完整问卷内容');
-        }
-        else {
+        } else {
             if (promptValue === '1') {
-                if (value1 === '' || value2 === '' || value3 === '') {
+                let error = clone.find((element: any) => element.inputValue === '');
+                if (error) {
                     message.error('请填写绑定题目的各个选项的人设');
-                } else if (value1 != '' || value2 != '' || value3 != '') {
-                    const val = JSON.stringify({ "questionId": chioceValueID, "portfolios": [{ "answerOptionId": chioceAID, "portfolio": value1 }, { "answerOptionId": chioceBID, "portfolio": value2 }, { "answerOptionId": chioceCID, "portfolio": value3 }] });
+                } else if (error === undefined) {
+                    let arr: any = [];
+                    for (let i = 0; i < clone.length; i++) {
+                        if (!arr[i]) {
+                            arr[i] = {};
+                        }
+                        arr[i].answerOptionId = clone[i].value;
+                        arr[i].portfolio = clone[i].inputValue;
+                    }
+                    const val = JSON.stringify({ "questionId": chioceValueID, "portfolios": arr });
                     saveQuestionnaire({ name: values.titleValue, content: values.contentValue, endtips: values.conclusionValue, bind: promptValue, portfolio: val, projectVersionId: 1, taskId: 2, memberId, userId, schoolId, userToken }).then((res) => {
                         message.success('保存成功');
                     })
@@ -283,7 +307,6 @@ const AiSurveyQuestionnaire: React.FC = () => {
         deleteImportData({ taskId: 2, projectVersionId: 1, memberId, userId, schoolId, userToken }).then((res: any) => {
             //删除后调用列表接口
             getImportDataList({ taskId: 2, projectVersionId: 1, memberId, userId, schoolId, userToken }).then((res: any) => {
-                // console.log(res, '22222')
                 const dataSource: any = [];
                 for (let i = 0; i < res.length; i++) {
                     dataSource.push({
@@ -303,12 +326,18 @@ const AiSurveyQuestionnaire: React.FC = () => {
                         classk: res[i].relOptions,
                     });
                 }
-                // console.log(dataSource, 'dataSource')
-                // setIsDataReady(true)
                 setDataSources(dataSource)
                 setOpenValue(false)
             })
             message.success('删除成功')
+            form.setFieldsValue({
+                titleValue: '',
+                contentValue: '',
+                conclusionValue: '',
+            })
+            setPromptValue('')
+            setData([])
+            setchooseData({})
         })
     }
     //点击确认按钮，关闭模态框(导入)
@@ -340,8 +369,6 @@ const AiSurveyQuestionnaire: React.FC = () => {
                     classk: res[i].relOptions,
                 });
             }
-            // console.log(dataSource, 'dataSource')
-            // setIsDataReady(true)
             setDataSources(dataSource)
         })
     }
@@ -350,8 +377,6 @@ const AiSurveyQuestionnaire: React.FC = () => {
         setIsModalOpen(false);
         setIsModalOpens(false);
         setIsModalOpenss(false);
-        // setPromptValue('');
-        // setPromptValues('');
     };
     //下载已有模版
     const downloadTemplate = () => {
@@ -372,57 +397,37 @@ const AiSurveyQuestionnaire: React.FC = () => {
     const [promptValue, setPromptValue] = useState<any>();//是否关联题目选项
     const [promptValues, setPromptValues] = useState<any>();//获取大模型提示语关联题目
     const [chioceValue, setChioceValue] = useState();//获取关联题目
-    const [chioceA, setChioceA] = useState();//获取关联题目的选项A
-    const [chioceB, setChioceB] = useState();//获取关联题目的选项B
-    const [chioceC, setChioceC] = useState();//获取关联题目的选项C
-    const [chioceValueID, setChioceValueID] = useState('null');//获取关联题目的ID
-    const [chioceAID, setChioceAID] = useState('null');//获取关联题目的选项A的ID
-    const [chioceBID, setChioceBID] = useState('null');//获取关联题目的选项B的ID
-    const [chioceCID, setChioceCID] = useState('null');//获取关联题目的选项C的ID
+    const [chioceValueID, setChioceValueID] = useState();//获取关联题目id
     //是否关联题目选项
     const handleChange = (e: any) => {
-        // console.log(e.target.value);
         setPromptValue(e.target.value);
-        setPromptValues('');
     };
-    //关联题目选项
-    const optionss = [
-        {
-            label: chioceA,
-            value: '1',
-        },
-        {
-            label: chioceB,
-            value: '2',
-        },
-        {
-            label: chioceC,
-            value: '3',
-        },
-    ];
     //关联题目选项value
     const handleChanges = (e: any) => {
+        if (chooseData.value !== void 0) {
+            let clone: any = JSON.parse(JSON.stringify(data));
+            let dataIndex: any = clone.findIndex(((item: any) => item.value === chooseData.value));
+            clone[dataIndex] = chooseData;
+            setData(clone);
+        }
+        let choose: any = data.find(((item: any) => item.value === e.target.value));
+        setchooseData(choose);
         setPromptValues(e.target.value);
     }
-    const [value, setvalue] = useState<any>('');//输入框的值
-    const [value1, setvalue1] = useState<any>('');//关联题目选项1文本框的值
-    const [value2, setvalue2] = useState<any>('');//关联题目选项2文本框的值
-    const [value3, setvalue3] = useState<any>('');//关联题目选项3文本框的值
-
+    const [values, setvalues] = useState<any>('');//输入框的值
+    const [chooseData, setchooseData] = useState<any>({});//选项文本框的值
     return (
         <div className={styles.all}>
             <Modal
                 open={isModalOpen}
                 footer={false}
                 title={'问卷内容说明:'}
-                // destroyOnClose={true}
                 onCancel={handleCancel}
-            // width={800}
+                style={{ minWidth: '1000px' }}
             >
                 <Form
                     form={form}
                     name="basic"
-                    // style={{ maxWidth: 800 }}
                     autoComplete="off"
                 >
                     <Form.Item
@@ -430,14 +435,10 @@ const AiSurveyQuestionnaire: React.FC = () => {
                         name="titleValue"
                         rules={[{ required: true, message: '问卷标题不可为空' }]}
                     >
-                        <Input style={{ width: '384px', marginLeft: '1px' }}
-                            // value={titleValues ? titleValues : titleValue}
+                        <Input style={{ width: '862px', marginLeft: '1px' }}
                             allowClear={true}
                             showCount maxLength={20}
                             placeholder={'请输入问卷标题'}
-                            // onChange={(e: any) => {
-                            //     setTitleValue(e);
-                            // }}
                             size="medium" />
                     </Form.Item>
 
@@ -446,14 +447,10 @@ const AiSurveyQuestionnaire: React.FC = () => {
                         name="contentValue"
                         rules={[{ required: true, message: '问卷说明不可为空' }]}
                     >
-                        <Input style={{ width: '384px', marginLeft: '1px' }}
-                            // value={contentValues ? contentValues : contentValue}
+                        <Input style={{ width: '862px', marginLeft: '1px' }}
                             showCount maxLength={200}
                             allowClear={true}
                             placeholder={'请输入问卷说明'}
-                            // onChange={(e: any) => {
-                            //     setContentValue(e);
-                            // }}
                             size="medium" />
                     </Form.Item>
                     <Form.Item
@@ -461,14 +458,10 @@ const AiSurveyQuestionnaire: React.FC = () => {
                         name="conclusionValue"
                         rules={[{ required: true, message: '问卷结束语不可为空' }]}
                     >
-                        <Input style={{ width: '370px', marginLeft: '1px' }}
-                            // value={conclusionValues ? conclusionValues : conclusionValue}
+                        <Input style={{ width: '847px', marginLeft: '1px' }}
                             allowClear={true}
                             placeholder={'请输入问卷结束语'}
                             showCount maxLength={50}
-                            // onChange={(e: any) => {
-                            //     setConclusionValue(e);
-                            // }}
                             size="medium" />
                     </Form.Item>
                     <div>
@@ -478,41 +471,22 @@ const AiSurveyQuestionnaire: React.FC = () => {
                     {promptValue === '1' && (
                         <div style={{ position: 'relative' }}>
                             <p style={{ color: 'rgb(0,0,0,0.88)', fontWeight: '600', fontSize: '16px' }}>{chioceValue}</p>
-                            <Radio.Group style={{ display: 'flex', justifyContent: 'space-evenly' }} options={optionss} onChange={handleChanges} value={promptValues} />
-                            <Input value={value} disabled
+                            <Radio.Group style={{ display: 'flex', justifyContent: 'space-evenly' }} options={data} onChange={handleChanges} value={promptValues} />
+                            <Input value={values} disabled
                                 onChange={(e: any) => {
-                                    setvalue(e);
+                                    setvalues(e);
                                 }} maxLength={10} style={{ width: '50px', height: '20px', position: 'absolute', top: '43px', right: ' -22px' }}></Input>
-                            {promptValues === '1' && (
-                                <Input
-                                    style={{ width: '1000px', marginTop: '10px' }}
-                                    value={value1}
-                                    onChange={(e: any) => {
-                                        setvalue1(e);
-                                    }}
-                                    type={'textarea'}
-                                ></Input>
-                            )}
-                            {promptValues === '2' && (
-                                <Input
-                                    style={{ width: '1000px', marginTop: '10px' }}
-                                    value={value2}
-                                    onChange={(e: any) => {
-                                        setvalue2(e);
-                                    }}
-                                    type={'textarea'}
-                                ></Input>
-                            )}
-                            {promptValues === '3' && (
-                                <Input
-                                    style={{ width: '1000px', marginTop: '10px' }}
-                                    value={value3}
-                                    onChange={(e: any) => {
-                                        setvalue3(e);
-                                    }}
-                                    type={'textarea'}
-                                ></Input>
-                            )}
+                            <Input
+                                style={{ width: '1000px', marginTop: '10px' }}
+                                value={chooseData.inputValue}
+                                onChange={(e: any) => {
+                                    chooseData.inputValue = e;
+                                    let clone: any = JSON.parse(JSON.stringify(chooseData));
+                                    clone.inputValue = e;
+                                    setchooseData(clone);
+                                }}
+                                type={'textarea'}
+                            ></Input>
                         </div>
                     )}
                     <Form.Item style={{ position: 'relative' }}>
