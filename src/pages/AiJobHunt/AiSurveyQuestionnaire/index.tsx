@@ -2,19 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { Button, Modal, message } from 'antd';
 import styles from './index.less';
 import { InboxOutlined } from '@ant-design/icons';
-import type { UploadProps } from 'antd';
 import { Upload, Input, SeenTable } from 'SeenPc';
 import { Form } from 'antd';
 import qs from 'qs';
-import { history } from 'umi';
 import { Radio } from 'antd';
 import { importData, saveQuestionnaire, getQuestionnaire, getImportDataList, deleteImportData } from '@/services/aiLearnPlan';
-import { set } from 'lodash';
-type FieldType = {
-    问卷标题?: any;
-    问卷说明?: any;
-    问卷结束语?: any;
-};
+
 const AiSurveyQuestionnaire: React.FC = () => {
 
     const [form] = Form.useForm();
@@ -58,6 +51,11 @@ const AiSurveyQuestionnaire: React.FC = () => {
                 });
             }
             setDataSources(dataSource)
+            if (res.length != 0) {
+                setOpenValue(true)
+            } else {
+                setOpenValue(false)
+            }
         })
     }, [])
     const Param = qs.parse(window.atob(window.sessionStorage.getItem('qs') || '{}'));
@@ -66,7 +64,7 @@ const AiSurveyQuestionnaire: React.FC = () => {
     //上传文件成功调用builder-导入数据接口
     const importDataMethod = (url: any) => {
         importData({ url, projectVersionId: 1, taskId: 2, memberId, userId, schoolId, userToken }).then((res: any) => {
-            message.success('上传成功');
+            // message.success('上传成功');
             setOpenValue(true)
         }).catch((msg: any) => {
             message.error('上传失败,请下载分析后的表格查看错误信息');
@@ -121,13 +119,13 @@ const AiSurveyQuestionnaire: React.FC = () => {
                 setAttatchIdValue(info.file.uid)
             } else if (status === 'error') {
                 message.error(`${info.file.name} 上传失败.`);
-
             }
         },
         onDrop(e: any) {
             console.log('Dropped files', e.dataTransfer.files);
         },
     };
+
     //点击保存按钮，弹出模态框
     const showModal = () => {
         if (openValue === false) {
@@ -308,12 +306,14 @@ const AiSurveyQuestionnaire: React.FC = () => {
                 // console.log(dataSource, 'dataSource')
                 // setIsDataReady(true)
                 setDataSources(dataSource)
+                setOpenValue(false)
             })
             message.success('删除成功')
         })
     }
     //点击确认按钮，关闭模态框(导入)
     const handleOks = () => {
+        message.success('上传成功');
         setIsModalOpens(false);
         getList();
     }
@@ -422,7 +422,7 @@ const AiSurveyQuestionnaire: React.FC = () => {
                 <Form
                     form={form}
                     name="basic"
-                    style={{ maxWidth: 800 }}
+                    // style={{ maxWidth: 800 }}
                     autoComplete="off"
                 >
                     <Form.Item
