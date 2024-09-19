@@ -166,7 +166,8 @@ const AiSurveyQuestionnaire: React.FC = () => {
                         obj = {
                             ...jsonValue[0],
                             value: jsonValue[0].answerOptionId,
-                            inputValue: jsonValue[0].portfolio
+                            inputValue: jsonValue[0].portfolio,
+                            label: options[0].name
                         }
                         setchooseData(obj)
                     }
@@ -193,7 +194,6 @@ const AiSurveyQuestionnaire: React.FC = () => {
         clone[dataIndex] = chooseData;
         setData(clone);
         const values = form.getFieldsValue();
-        // console.log('Form data:', values);
         if (values.titleValue === '' || values.contentValue === '' || values.conclusionValue === '') {
             message.error('请填写完整问卷内容');
         } else {
