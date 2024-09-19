@@ -10,7 +10,7 @@ import {
   ZoomOutOutlined,
 } from '@ant-design/icons';
 import { Spin, Tooltip } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import styles from './PDFViewer.less';
 pdfjs.GlobalWorkerOptions.workerSrc = `/bus_xai_web/pdf.worker.js`;
@@ -72,6 +72,7 @@ const PdfView: React.FC<Props> = (props: Props) => {
   const [numPages, setNumPages] = useState(1);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [loadPages, setLoadPages] = useState(1);
+  const [canvasLoaded, setCanvasLoaded] = useState(false);
   const pageLengthArray = Array.from({ length: loadPages });
 
   // console.log('4343434343', pageLengthArray, setPageWidth);
@@ -164,6 +165,7 @@ const PdfView: React.FC<Props> = (props: Props) => {
   const onDocumentLoad = (pages: RecordItem) => {
     setNumPages(pages?.numPages);
     setLoadPages(pages?.numPages > loadSize ? loadSize : pages?.numPages);
+    setCanvasLoaded(true);
 
     window.document.onkeydown = function (ent) {
       const event = ent || window.event;
@@ -201,6 +203,19 @@ const PdfView: React.FC<Props> = (props: Props) => {
     // this.setState({ pageWidth: pageWidth })
   };
 
+  useEffect(() => {
+    if (canvasLoaded) {
+      setTimeout(() => {
+        if (
+          (document.getElementById('pdf')?.clientWidth || 0) <
+          (document.querySelector('.react-pdf__Document')?.scrollWidth || 0)
+        ) {
+          setPageWidth(document.getElementById('pdf')?.clientWidth || 0);
+        }
+      }, 10);
+    }
+  }, [canvasLoaded]);
+
   return (
     <div className={styles.view_wrap} id="pdf_containr">
       <div className={styles.header}>
@@ -218,6 +233,14 @@ const PdfView: React.FC<Props> = (props: Props) => {
             alignItems: 'center',
             justifyContent: 'center',
             width: 'calc(100% - 12px)',
+            transform:
+              (document.getElementById('pdf')?.clientWidth || 0) < pageWidth
+                ? `translateX(${
+                    (pageWidth -
+                      (document.getElementById('pdf')?.clientWidth || 0)) /
+                    2
+                  }px)`
+                : 'none',
           }}
         >
           {url ? (
@@ -237,7 +260,7 @@ const PdfView: React.FC<Props> = (props: Props) => {
               }}
             >
               {pageLengthArray.map((item: any, index: any) => (
-                <div id={index} key={item?.id}>
+                <div className="pdf_canvas_content" id={index} key={item?.id}>
                   <Page
                     // pageNumber={pageIndex}
                     pageIndex={index}
