@@ -33,6 +33,7 @@ const AiSurveyQuestionnaire: React.FC = () => {
     const [isModalOpenss, setIsModalOpenss] = useState(false);//删除模态框是否打开
     const [uploadValue, setUpLoadValue] = useState<any>(false);//上传文件失败控制打开模态框
     const [fileValue, setFileValue] = useState<any>();//上传文件失败分析后的文件
+    const [openValue, setOpenValue] = useState<any>(false);//上传文件成功后控制打开保存模态框
 
     useEffect(() => {
         //获取问卷列表
@@ -66,6 +67,7 @@ const AiSurveyQuestionnaire: React.FC = () => {
     const importDataMethod = (url: any) => {
         importData({ url, projectVersionId: 1, taskId: 2, memberId, userId, schoolId, userToken }).then((res: any) => {
             message.success('上传成功');
+            setOpenValue(true)
         }).catch((msg: any) => {
             message.error('上传失败,请下载分析后的表格查看错误信息');
             setUpLoadValue(true)
@@ -128,34 +130,38 @@ const AiSurveyQuestionnaire: React.FC = () => {
     };
     //点击保存按钮，弹出模态框
     const showModal = () => {
-        setIsModalOpen(true);
-        //查询builder-问卷设置信息接口
-        getQuestionnaire({ classId: 1, taskId: 2, projectVersionId: 1, memberId, userId, schoolId, userToken }).then((res: any) => {
-            setChioceValue(res.question.name)
-            setChioceValueID(res.question.id)
-            setChioceA(res.options[0].name)
-            setChioceB(res.options[1].name)
-            setChioceC(res.options[2].name)
-            setChioceAID(res.options[0].id)
-            setChioceBID(res.options[1].id)
-            setChioceCID(res.options[2].id)
-            if (res.xaiSp) {
-                form.setFieldsValue({
-                    titleValue: res.xaiSp.name,
-                    contentValue: res.xaiSp.content,
-                    conclusionValue: res.xaiSp.endtips,
-                })
-                setPromptValue(JSON.stringify(res.xaiSp.bind))
-                if (res.xaiSp.portfolio != '0') {
-                    const jsonValue = JSON.parse(res.xaiSp.portfolio).portfolios
-                    console.log(jsonValue, 'jsonValue');
-                    setPromptValues('1')
-                    setvalue1(jsonValue[0].portfolio)
-                    setvalue2(jsonValue[1].portfolio)
-                    setvalue3(jsonValue[2].portfolio)
+        if (openValue === false) {
+            message.error('请先导入数据');
+        } else {
+            setIsModalOpen(true);
+            //查询builder-问卷设置信息接口
+            getQuestionnaire({ classId: 1, taskId: 2, projectVersionId: 1, memberId, userId, schoolId, userToken }).then((res: any) => {
+                setChioceValue(res.question.name)
+                setChioceValueID(res.question.id)
+                setChioceA(res.options[0].name)
+                setChioceB(res.options[1].name)
+                setChioceC(res.options[2].name)
+                setChioceAID(res.options[0].id)
+                setChioceBID(res.options[1].id)
+                setChioceCID(res.options[2].id)
+                if (res.xaiSp) {
+                    form.setFieldsValue({
+                        titleValue: res.xaiSp.name,
+                        contentValue: res.xaiSp.content,
+                        conclusionValue: res.xaiSp.endtips,
+                    })
+                    setPromptValue(JSON.stringify(res.xaiSp.bind))
+                    if (res.xaiSp.portfolio != '0') {
+                        const jsonValue = JSON.parse(res.xaiSp.portfolio).portfolios
+                        console.log(jsonValue, 'jsonValue');
+                        setPromptValues('1')
+                        setvalue1(jsonValue[0].portfolio)
+                        setvalue2(jsonValue[1].portfolio)
+                        setvalue3(jsonValue[2].portfolio)
+                    }
                 }
-            }
-        })
+            })
+        }
     };
     //点击导入按钮，弹出模态框
     const showModals = () => {
@@ -163,8 +169,13 @@ const AiSurveyQuestionnaire: React.FC = () => {
     };
     //点击删除按钮，弹出模态框
     const showModalss = () => {
-        setIsModalOpenss(true);
+        if (openValue === false) {
+            message.error('请先导入数据');
+        } else {
+            setIsModalOpenss(true);
+        }
     }
+
     //点击确认按钮，关闭模态框(保存)
     const handleOk = () => {
         const values = form.getFieldsValue();
