@@ -23,6 +23,7 @@
       overflow-y: auto;
       flex-direction: column;
       row-gap: 20px;
+      padding-bottom: 20px;
       .AIAnswer {
         display: flex;
         column-gap: 16px;
@@ -53,6 +54,13 @@
             color: #272648;
             line-height: 28px;
           }
+        }
+        .question {
+          background: rgba(255, 255, 255, 0.8);
+          border-radius: 8px;
+          padding: 16px;
+          max-width: calc(100% - 80px);
+          line-height: 26px;
         }
         :global {
           .Typewriter {
@@ -87,6 +95,8 @@
       row-gap: 8px;
       .baseQuestion {
         display: flex;
+        flex-wrap: wrap;
+        row-gap: 6px;
         column-gap: 8px;
         > span {
           background: #ffffff;
@@ -97,6 +107,7 @@
           font-size: 14px;
           color: #333;
           cursor: pointer;
+          white-space: nowrap;
           &:hover {
             opacity: 0.85;
           }

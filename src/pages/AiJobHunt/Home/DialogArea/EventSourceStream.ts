@@ -46,13 +46,13 @@ export default class EventSourceStream {
       openWhenHidden: true, // 取消visibilityChange事件
       signal: this.ctrl!.signal, // AbortSignal
       onmessage: async (res) => {
-        const { data, success, msg }: ResponseType = JSON.parse(
+        const { data, success, msg, code }: ResponseType = JSON.parse(
           res?.data || '',
         );
         if (!data && success === false) {
           message.error('信息生成错误：' + msg);
           // 非正常结束
-          this.destory();
+          this.destory(code);
           return;
         }
         if (this.num === 0) {
@@ -96,8 +96,8 @@ export default class EventSourceStream {
     });
   }
 
-  destory() {
-    this.hooks?.onFinished && this.hooks?.onFinished();
+  destory(code?: any) {
+    this.hooks?.onFinished && this.hooks?.onFinished(code);
     this.ctrl!.abort();
     this.ctrl = null;
     if (this.eventSource) {

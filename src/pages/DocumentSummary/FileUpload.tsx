@@ -8,7 +8,7 @@ import React from 'react';
 import styles from './FileUpload.less';
 
 interface TProps {
-  onChange: (dataSource: RecordItem) => void;
+  onChange: (dataSource: RecordItem, mount: boolean) => void;
   paramsId: string;
 }
 
@@ -29,7 +29,7 @@ const FileUpload: React.FC<TProps> = ({ onChange, paramsId }) => {
         attachmentId: state.attachmentId,
         ...extraParams,
       });
-      onChange(result);
+      onChange(result, true);
     } finally {
       state.loading = false;
     }
