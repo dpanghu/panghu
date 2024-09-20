@@ -138,6 +138,6 @@ class Axios {
 export const $axios = new Axios({
   baseURL: '/api/bus-xai',
   responseType: 'json',
-  timeout: 1000 * 60,
+  timeout: 2000 * 60,
   timeoutErrorMessage: '请求超时，请稍后重试',
 });

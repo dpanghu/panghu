@@ -152,6 +152,7 @@ const App: React.FC = () => {
             message.success('保存成功');
             console.log(res);
             window.sessionStorage.setItem('portfolio',res.portfolio);
+            window.sessionStorage.setItem('portrait',res.portrait);
             history.push('/AiPlanPeople');
         });
     }
