@@ -35,6 +35,11 @@ export default defineConfig({
       component: '@/pages/AiModule/AiPlanList',
     },
     {
+      path: '/AiPlanLists',
+      layout: false,
+      component: '@/pages/AiModule/AiPlanLists',
+    },
+    {
       path: '/AiPlan',
       layout: false,
       component: '@/pages/AiModule/AiPlan',
@@ -124,6 +129,26 @@ export default defineConfig({
       layout: false,
     },
     {
+      path: '/dataVisualization',
+      component: '@/pages/DataVisualization',
+      title: 'AI数据可视化',
+      layout: false,
+      routes: [
+        {
+          path: '/dataVisualization/upload',
+          component: '@/pages/DataVisualization/Upload',
+          exact: true,
+          title: 'AI数据可视化',
+        },
+        {
+          path: '/dataVisualization/detail/:id',
+          exact: true,
+          component: '@/pages/DataVisualization/Detail',
+          title: 'AI数据可视化',
+        },
+      ],
+    },
+    {
       path: '/aiJobHunt',
       component: '@/pages/AiJobHunt',
       layout: false,
@@ -163,7 +188,7 @@ export default defineConfig({
   npmClient: 'npm',
   proxy: {
     '/api/': {
-      target: 'https://tapi.seentao.com/',
+      target: 'https://dapi.seentao.com/',
       onProxyReq: function (req) {
         if (
           req.path.includes('/chat/stream') ||

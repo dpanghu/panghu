@@ -12,15 +12,17 @@ import { exampleRandom } from '@/services/sentimentAnalysis';
 import { isArray } from 'lodash';
 import tushengwen from '@/assets/images/tushengwen.png';
 import uploadspng from '@/assets/images/uploads.png';
-import React, { useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Typewriter, { type TypewriterClass } from 'typewriter-effect';
 import EventSourceStream from '../AiJobHunt/Home/DialogArea/EventSourceStream';
 import styles from './AiSceneImg.less';
+import { uploads } from '@/services/aiOCR';
 // import SpeechInputComponent from '../Recognition/index';
 const { Dragger } = Upload;
 interface TState {
     curTheme: any;
     dialogList: any;
+    userImg: any;
     excludeId: any;
     editId: string;
     editName: string;
@@ -50,6 +52,7 @@ const JobHunt: React.FC = () => {
     }, []);
     const typeWriter = useRef<TypewriterClass | null>(null);
     const typewriterStrCache = useRef<string>('');
+    const [shouldPaste, setShouldPaste] = useState(false);
     const state = useReactive<TState>({
         curTheme: undefined,
         introduce: false,
@@ -57,6 +60,7 @@ const JobHunt: React.FC = () => {
         baseData: [],
         typewriterArrCache: [],
         editId: '',
+        userImg: '',
         excludeId: '',
         messageArr: [],
         isLoading: false,
@@ -79,7 +83,7 @@ const JobHunt: React.FC = () => {
             extraParams,
         },
         beforeUpload: (file: any) => {
-            console.log('type',file.type);
+            console.log('type', file.type);
             const allowedFormats = ['image/jpeg', 'image/png', 'image/jpg'];
 
             if (!allowedFormats.includes(file.type)) {
@@ -115,12 +119,89 @@ const JobHunt: React.FC = () => {
             console.log('Dropped files', e.dataTransfer.files);
         },
     };
+    const handleKeyDown = (event: KeyboardEvent) => {
+        if ((event.ctrlKey || event.metaKey) && event.key === 'v') {
+            setShouldPaste(true);
+        }
+    };
+    const handlePaste = (event: any) => {
+        if (!shouldPaste) return
+        setShouldPaste(false);
+        const items = (event.clipboardData || event.originalEvent.clipboardData)
+            .items;
+        let file = null;
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].type.indexOf('image') !== -1) {
+                file = items[i].getAsFile();
+                break;
+            }
+        }
+        if (file) {
+            let allowedFormats = ['image/jpeg', 'image/png', 'image/jpg'];
+
+            if (!allowedFormats.includes(file.type)) {
+                message.warning('请上传图片，支持jpg,jpeg,png格式');
+                return;
+            }
+            let maxSize = 1 * 1024 * 1024;
+            if (file.size > maxSize) {
+                message.warning('图片过大，请上传1MB以内图片');
+                return;
+            }
+            let param = new FormData();
+            param.append('file', file);
+            uploads({
+                bucketNameType: 'pub',
+                ossResCategory: 'builder',
+                objectKey: `/res/task/${file.name}` || '',
+            })
+                .then((res) => {
+                    // 处理fentch 的response
+                    if (!res) {
+                        message.error('获取OSS上传参数失败');
+                        return Promise.reject('获取OSS上传参数失败');
+                    } else {
+                        const formData = new FormData();
+                        Object.keys(res.tokenParams).forEach((key) => {
+                            formData.append(key, res.tokenParams[key]);
+                        });
+                        formData.append('file', file);
+                        fetch(res.endpoint, {
+                            method: 'POST',
+                            body: formData,
+                        }).then((rst) => {
+                            if (rst.ok) {
+                                state.imgUrl = res.file_url;
+                                saveImg({
+                                    picUrl: res.file_url,
+                                    paramId: state.patams,
+                                }).then((res: any) => {
+                                    state.imgId = res.id;
+                                })
+                            }
+                        });
+                    }
+                })
+                .catch(() => {
+                    return Promise.reject('获取OSS上传参数失败');
+                });
+        }
+    };
+    useEffect(() => {
+        document.addEventListener('keydown', handleKeyDown as EventListener);
+        document.addEventListener('paste', handlePaste as EventListener);
+
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown as EventListener);
+            document.removeEventListener('paste', handlePaste as EventListener);
+        };
+    }, [shouldPaste]);
 
     const renderPreview = (item: any) => {
         switch (item.elementType) {
             case 'file':
                 return <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
-                    <Button icon={<img src={uploadspng} style={{ width: 16, height: 16, marginRight: 4 }}></img>} style={{ width: 92, marginTop: 12 }} size={'small'} type='primary'>上传图片</Button>
+                    <Upload {...imgProps}><Button icon={<img src={uploadspng} style={{ width: 16, height: 16, marginRight: 4 }}></img>} style={{ width: 92, marginTop: 12 }} size={'small'} type='primary'>上传图片</Button></Upload>
                     <Dragger {...imgProps} showUploadList={false}>
                         <div className={styles.previewBox} style={{ width: '100%', height: 178, display: 'flex', marginTop: 8, justifyContent: 'center', flexDirection: 'column', cursor: 'pointer', color: '#333333', fontSize: 14, lineHeight: '21px' }}>
                             <img src={state.imgUrl === '' ? tushengwen : state.imgUrl} style={{ position: 'absolute', width: '100%', height: 178 }}></img>
@@ -154,7 +235,7 @@ const JobHunt: React.FC = () => {
                                 if (e !== '') {
                                     item.error = false;
                                 }
-                                if(e === '/') {
+                                if (e === '/') {
                                     state.introduce = true;
                                 }
                             }}
@@ -344,10 +425,15 @@ const JobHunt: React.FC = () => {
             if (state.allow[0] === '1') {
                 let messages: any = state.data.find((element: any) => element.elementType === 'input');
                 let checks: any = state.data.find((element: any) => element.elementType === 'checkbox');
-                if(messages.value === '' || messages.value === void 0) {
+                if (messages.value === '' || messages.value === void 0) {
                     message.warning('请输入描述场景');
                     return;
                 }
+                if(state.imgId === '' || state.imgId === void 0) {
+                    message.warning('请先上传图片');
+                    return;
+                }
+                state.isLoading = true;
                 state.messageList.push({
                     data: messages.value,
                     type: 1
@@ -379,7 +465,6 @@ const JobHunt: React.FC = () => {
                                 }
                                 clearInterval(interView);
                                 state.visible = true;
-                                state.isLoading = true;
                                 typewriterStrCache.current = '';
                                 let qsData = {
                                     ...queryData,
@@ -401,7 +486,15 @@ const JobHunt: React.FC = () => {
                                     },
                                     {
                                         // 结束，包括接收完毕所有数据、报错、关闭链接
-                                        onFinished: () => {
+                                        onFinished: (code: any) => {
+                                            if (code === '500') {
+                                                state.visible = false;
+                                                state.messageList.push({
+                                                    type: 2,
+                                                    data: '请更换图片或提问内容，重新生成。'
+                                                })
+                                                // state.typewriterArrCache.push('请更换图片或提问内容，重新生成。')
+                                            }
                                             state.isLoading = false;
                                         },
                                         onError: (error) => {
@@ -421,6 +514,7 @@ const JobHunt: React.FC = () => {
                                     type: 2,
                                     data: '识别失败',
                                 });
+                                state.isLoading = false;
                             }
                         })
                     }, 2000);
@@ -446,6 +540,7 @@ const JobHunt: React.FC = () => {
             state.patams = res;
         });
         let qsData: any = JSON.parse(window.sessionStorage.getItem('commonDatas') as any);
+        state.userImg = qsData?.userImg;
         getPluginDetail({
             id: qsData.imageId,
             userId: '1',
@@ -454,13 +549,13 @@ const JobHunt: React.FC = () => {
         }).then((res: any) => {
             let clone: any = JSON.parse(JSON.stringify(JSON.parse(res.param?.params)));
             // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-            clone && clone.map((el: any)=> {
-                if(el.elementType === 'checkbox') {
+            clone && clone.map((el: any) => {
+                if (el.elementType === 'checkbox') {
                     console.log(el);
                     el.value = '内容';
                 }
             });
-            console.log(';22222',JSON.stringify(clone));
+            console.log(';22222', JSON.stringify(clone));
             state.data = clone;
             state.aiData = res;
         });
@@ -522,6 +617,7 @@ const JobHunt: React.FC = () => {
                     </div>
                     <div className={styles.left_bottom}>
                         <Button
+                            disabled={state.isLoading || state.typewriterArrCache.length > 0}
                             type="primary"
                             onClick={() => {
                                 send();
@@ -568,31 +664,31 @@ const JobHunt: React.FC = () => {
                     </div>
                     {
                         state.introduce && <div className={styles.warningBox} style={{ marginTop: 20 }}>
-                        <img
-                            src={aiimg}
-                            style={{ width: 24, height: 24, marginRight: 16 }}
-                        ></img>
-                        <div className={styles.warningbase}>
-                            <div className={styles.baseTitle}>你可以这么提问：</div>
-                            {
-                                state.baseData && state.baseData.map((el: any, index: any) => {
-                                    return <div key={el.id} style={{ borderBottom: index === state.baseData.length - 1 ? 'none' : '1px solid #F0E8FF' }} className={styles.titleBox}>
-                                        <div>{el.example}</div>
-                                        <div className={styles.basetest} onClick={() => {
-                                            let inputs: any = state.data.find((element: any) => element.elementType === 'input');
-                                            if (inputs !== void 0) {
-                                                inputs.value = el.example;
-                                            }
-                                            let check: any = state.data.find((checks: any)=> checks.elementType === 'checkbox');
-                                            check.value = el.pointName;
-                                            
-                                        }}>试一试</div>
-                                    </div>
-                                })
-                            }
+                            <img
+                                src={aiimg}
+                                style={{ width: 24, height: 24, marginRight: 16 }}
+                            ></img>
+                            <div className={styles.warningbase}>
+                                <div className={styles.baseTitle}>你可以这么提问：</div>
+                                {
+                                    state.baseData && state.baseData.map((el: any, index: any) => {
+                                        return <div key={el.id} style={{ borderBottom: index === state.baseData.length - 1 ? 'none' : '1px solid #F0E8FF' }} className={styles.titleBox}>
+                                            <div>{el.example}</div>
+                                            <div className={styles.basetest} onClick={() => {
+                                                let inputs: any = state.data.find((element: any) => element.elementType === 'input');
+                                                if (inputs !== void 0) {
+                                                    inputs.value = el.example;
+                                                }
+                                                let check: any = state.data.find((checks: any) => checks.elementType === 'checkbox');
+                                                check.value = el.pointName;
 
+                                            }}>试一试</div>
+                                        </div>
+                                    })
+                                }
+
+                            </div>
                         </div>
-                    </div>
                     }
                     <div className={styles.messageList}>
                         {
@@ -601,7 +697,7 @@ const JobHunt: React.FC = () => {
                                     {
                                         item.type === 1 ? <div className={styles.send}>
                                             <div className={styles.sendData}>{item.data}</div>
-                                            <img src={''} style={{ width: 32, height: 32, marginLeft: 16, borderRadius: '50%', }}></img>
+                                            <img src={state.userImg} style={{ width: 32, height: 32, marginLeft: 16, borderRadius: '50%', }}></img>
                                         </div> : <div className={styles.receive}>
                                             <img src={aiimg} style={{ width: 24, height: 24, marginRight: 16, borderRadius: '50%', }}></img>
                                             <div className={styles.sendData}>{item.data}</div>

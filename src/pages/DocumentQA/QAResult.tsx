@@ -1,11 +1,12 @@
 import avatarIcon from '@/assets/images/documentQA/aiIcon.png';
 import userIcon from '@/assets/images/documentQA/userIcon.png';
 import FilePreview from '@/components/FilePreview';
+import { getMessageLast, updateAnswerId } from '@/services/documentQA';
 import { Button } from 'SeenPc';
 import { useReactive, useUpdateEffect } from 'ahooks';
 import TextArea from 'antd/es/input/TextArea';
-import React, { useRef } from 'react';
-import { type TypewriterClass } from 'typewriter-effect';
+import React, { useEffect, useRef } from 'react';
+import Typewriter, { type TypewriterClass } from 'typewriter-effect';
 import EventSourceStream from '../AiJobHunt/Home/DialogArea/EventSourceStream';
 import styles from './QAResult.less';
 
@@ -23,14 +24,16 @@ interface TState {
   typewriterArr: string[];
   textWriteFinished: boolean;
   showTypewriter: boolean;
+  aiAnswerStr: string;
+  receiveText: boolean;
 }
 
 const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
+  const preAnswer = JSON.parse(summaryData?.preAnswer || '{}');
   const extraParams = JSON.parse(
     window.sessionStorage.getItem('queryParams') || '{}',
   );
   const typeWriter = useRef<TypewriterClass | null>(null);
-  const typewriterStrCache = useRef<string>('');
   const state = useReactive<TState>({
     dialogList: [],
     questionValue: '',
@@ -40,6 +43,8 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
     textWriteFinished: true,
     typewriterArr: [],
     showTypewriter: false,
+    aiAnswerStr: '',
+    receiveText: false,
   });
 
   const onQuestionChange = (
@@ -48,7 +53,34 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
     state.questionValue = e.target.value;
   };
 
+  // 获取对话上下文
+  const getMessageHistory = async () => {
+    try {
+      const result: RecordItem[] = await getMessageLast({
+        themeId: summaryData?.themeId,
+        num: 10,
+      });
+      result.reverse().map((item) => {
+        if (item.type === 0) {
+          state.dialogList.push({
+            type: 'question',
+            content: item.content,
+          });
+        } else if (item.type === 1) {
+          state.dialogList.push({
+            type: 'answer',
+            content: item.content,
+          });
+        }
+      });
+    } catch (error) {}
+  };
+
   const handleSendDialog = () => {
+    state.dialogList.push({
+      type: 'question',
+      content: state.questionValue.trim(),
+    });
     let qsData = {
       ...extraParams,
       paramId: paramsId,
@@ -56,8 +88,14 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
       qsParams: {
         attachmentUrl: summaryData.ossViewUrl,
       },
+      themeId: state.themeId,
+      conversation_id: state.conversationId,
       userMessage: state.questionValue.trim(),
     };
+    state.showTypewriter = true;
+    state.streamFinished = false;
+    state.receiveText = false;
+    state.questionValue = '';
     new EventSourceStream(
       '/api/bus-xai/xai/plugin/create/stream',
       {
@@ -73,10 +111,13 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
         onFinished: () => {
           state.streamFinished = true;
         },
-        onError: (error) => {},
+        onError: (error) => {
+          state.showTypewriter = false;
+        },
         // 接收到数据
         receiveMessage: (data) => {
           if (data) {
+            state.receiveText = true;
             state.streamFinished = false;
             state.textWriteFinished = false;
             if (!state.conversationId) {
@@ -90,16 +131,28 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
     ).run();
   };
 
+  const updateThemeId = async () => {
+    await updateAnswerId({
+      themeId: state.themeId,
+      conversationId: state.conversationId,
+      id: summaryData?.id,
+    });
+  };
+
   useUpdateEffect(() => {
+    // if (!typeWriter.current) {
+    //   return;
+    // }
     const writeText = state.typewriterArr.shift()! || '';
     state.textWriteFinished = false;
+    state.aiAnswerStr += writeText;
     typeWriter
       .current!.typeString(writeText)
       .start()
       .callFunction(() => {
         state.textWriteFinished = true;
       });
-  }, [state.textWriteFinished]);
+  }, [state.textWriteFinished, typeWriter.current]);
 
   useUpdateEffect(() => {
     if (
@@ -109,8 +162,37 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
     ) {
       console.log('输出完成');
       state.showTypewriter = false;
+
+      // state.aiAnswerStr = '';
     }
   }, [state.typewriterArr, state.streamFinished, state.textWriteFinished]);
+
+  useUpdateEffect(() => {
+    if (!state.showTypewriter) {
+      state.dialogList.push({
+        type: 'answer',
+        content: state.aiAnswerStr || '暂无结果',
+      });
+      state.aiAnswerStr = '';
+      state.typewriterArr = [];
+    }
+  }, [state.showTypewriter]);
+
+  useUpdateEffect(() => {
+    if (state.conversationId) {
+      updateThemeId();
+    }
+  }, [state.conversationId]);
+
+  useEffect(() => {
+    if (summaryData?.id) {
+      getMessageHistory();
+    }
+    if (!state.themeId) {
+      state.themeId = summaryData.themeId;
+      state.conversationId = summaryData.conversationId;
+    }
+  }, [summaryData]);
 
   return (
     <div className={styles.QAResultContainer}>
@@ -139,39 +221,65 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
               </span>
             </div>
           </div>
-          <div className={styles.userQuestion}>
-            <div className={styles.question}>
-              请输入你的问题，我将依据你的问题，在丰富的文档资源
-              请输入你的问题，我将依据你的问题，在丰富的文档资源
-              请输入你的问题，我将依据你的问题，在丰富的文档资源
+          {state.dialogList.map((item) =>
+            item.type === 'answer' ? (
+              <div className={styles.AIAnswer}>
+                <img
+                  draggable={false}
+                  src={avatarIcon}
+                  alt=""
+                  className={styles.avatar}
+                />
+                <div className={styles.question}>{item.content}</div>
+              </div>
+            ) : (
+              <div className={styles.userQuestion}>
+                <div className={styles.question}>{item.content}</div>
+                <img src={userIcon} alt="" className={styles.userIcon} />
+              </div>
+            ),
+          )}
+          {state.showTypewriter && (
+            <div className={styles.AIAnswer}>
+              <img
+                draggable={false}
+                src={avatarIcon}
+                alt=""
+                className={styles.avatar}
+              />
+              <Typewriter
+                onInit={(typewriter: TypewriterClass) => {
+                  typeWriter.current = typewriter;
+                  typewriter
+                    .typeString('')
+                    .start()
+                    .callFunction(() => {});
+                }}
+                options={{
+                  delay: 25,
+                }}
+              />
             </div>
-            <img src={userIcon} alt="" className={styles.userIcon} />
-          </div>
-          {/* <div className={styles.AIAnswer}>
-            <img
-              draggable={false}
-              src={avatarIcon}
-              alt=""
-              className={styles.avatar}
-            />
-            <Typewriter
-              onInit={(typewriter: TypewriterClass) => {
-                typeWriter.current = typewriter;
-                typewriter
-                  .typeString('')
-                  .start()
-                  .callFunction(() => {});
-              }}
-              options={{
-                delay: 25,
-              }}
-            />
-          </div> */}
+          )}
         </div>
         <div className={styles.footer}>
           <div className={styles.baseQuestion}>
-            <span>什么是元数据管理?</span>
-            <span>血缘分析、影响分析、关联分析的区别?</span>
+            <span
+              onClick={() => {
+                state.questionValue = preAnswer?.query1 || '';
+                handleSendDialog();
+              }}
+            >
+              {preAnswer?.query1 || ''}
+            </span>
+            <span
+              onClick={() => {
+                state.questionValue = preAnswer?.query1 || '';
+                handleSendDialog();
+              }}
+            >
+              {preAnswer?.query2 || ''}
+            </span>
           </div>
           <div className={styles.ipt}>
             <TextArea

@@ -81,6 +81,18 @@ export async function recogNizeResult<T>(params?: RecordItem): Promise<T> {
   });
 }
 
+// 获取个人信息
+export async function getBaseInfo(params?: RecordItem) {
+  return $axios.request({
+    url: '/user-service/user.login.baseinfo.get',
+    method: 'POST',
+    params,
+    noAi: true,
+    hiddenLoading: true,
+    isPlatform: true,
+  });
+}
+
 export async function getFileUrl<T>(params?: RecordItem): Promise<T> {
   return $axios.request({
     url: '/widget/xai/ptt/upload/get',

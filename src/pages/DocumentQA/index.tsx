@@ -1,10 +1,12 @@
 import deleteIcon from '@/assets/images/close.png';
 import fileIcon from '@/assets/images/fileIcon.png';
+import iconCircleIcon from '@/assets/images/icon-exclamation-circle.png';
 import PDFIcon from '@/assets/images/icon-file_PDF.png';
 import WordIcon from '@/assets/images/icon-file_word.png';
 import CustomUpload, { CustomUploadProps } from '@/components/CustomUpload';
 import { getConvertParamId } from '@/services/aiJobHunt';
 import {
+  delAnswer,
   getWordAnswerItem,
   getWordAnswerList,
   uploadWordAnswer,
@@ -13,7 +15,7 @@ import { getAttachmentId } from '@/services/documentSummary';
 import { getFileMajorType } from '@/utils/contants';
 import { Button, message } from 'SeenPc';
 import { useMount, useReactive } from 'ahooks';
-import { Popconfirm, Spin } from 'antd';
+import { Modal, Popconfirm, Spin } from 'antd';
 import { RcFile } from 'antd/es/upload';
 import classNames from 'classnames';
 import React, { useRef } from 'react';
@@ -151,6 +153,15 @@ const DocumentQA: React.FC = () => {
     } catch (error) {}
   };
 
+  const deleteSummaryItem = async () => {
+    try {
+      await delAnswer({ ...extraParams, id: state.delSummaryId });
+      message.success('删除成功');
+      state.delModalOpen = false;
+      querySummaryList();
+    } catch (error) {}
+  };
+
   useMount(() => {
     getParamId();
   });
@@ -187,7 +198,7 @@ const DocumentQA: React.FC = () => {
   };
 
   return (
-    <div className={styles.DocumentQAContainer}>
+    <div className={styles.DocumentQAContainer} id="DocumentSummaryContainer">
       <div className={styles.header}>
         <div className={styles.title}>AI文档问答</div>
         <div className={styles.action}>
@@ -334,6 +345,30 @@ const DocumentQA: React.FC = () => {
           )}
         </div>
       </div>
+      <Modal
+        title={null}
+        footer={null}
+        open={state.delModalOpen}
+        getContainer={() =>
+          document.getElementById('DocumentSummaryContainer') as HTMLElement
+        }
+        maskClosable={false}
+        centered
+        onCancel={() => {
+          state.delModalOpen = false;
+        }}
+      >
+        <div className={styles.delModalContent}>
+          <div className={styles.title}>
+            <img src={iconCircleIcon} alt="" />
+            <span>确定要删除本记录吗?</span>
+          </div>
+          <span>删除后不可撤回，请确定是否删除？</span>
+          <Button type="primary" onClick={deleteSummaryItem}>
+            确定
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 };
