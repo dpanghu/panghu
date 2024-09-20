@@ -10,7 +10,7 @@ export type Theme = {
 
 export type HistoryItem = {
   id: string;
-  type: 0 | 1;
+  type: 0 | 1 | 2;
   content: string;
 };
 
