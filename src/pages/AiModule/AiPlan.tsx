@@ -23,6 +23,7 @@ interface TState {
     imgUrl: any;
     isLoading: any;
     messageArr: any;
+    questionData: any;
     patams: any;
     visible: any;
     isTyping: any;
@@ -38,6 +39,7 @@ const App: React.FC = () => {
         baseData: [],
         typewriterArrCache: [],
         editId: '',
+        questionData: {},
         excludeId: '',
         messageArr: [],
         isLoading: false,
@@ -131,13 +133,27 @@ const App: React.FC = () => {
     const save = (values: any) => {
         let arr: any = [];
         // eslint-disable-next-line @typescript-eslint/no-unused-expressions, array-callback-return
-        Object.keys(values) && Object.keys(values).map((el: any) => {
+        values && values.map((el: any) => {
             let obj: any = {};
-            obj.questionId = el;
-            obj.answerOptionIds = values[el];
-            obj.answerInput = values[el];
+            if(el.type === 'radio') {
+                // eslint-disable-next-line array-callback-return, @typescript-eslint/no-unused-expressions, eqeqeq
+                let chooseInput: any =  el.options.find((el: any) => el.needInput == 1);;
+                // eslint-disable-next-line @typescript-eslint/no-unused-expressions, array-callback-return
+                if(chooseInput !== void 0) {
+                    // eslint-disable-next-line eqeqeq
+                    if(chooseInput.id == el.value) {
+                        obj.answerInput = chooseInput.needValue
+                    }
+                }
+                obj.questionId = el.id;
+                obj.answerOptionIds = el.value;
+            }else if(el.type === 'input') {
+                obj.questionId = el.id;
+                obj.answerInput = el.value;
+            }
             arr.push(obj);
         })
+        console.log('values',arr);
         saveAnswer({
             answer: JSON.stringify(arr),
             userId: '42084774553583616',
@@ -175,7 +191,9 @@ const App: React.FC = () => {
             let types: any = {
                 'INPUT': 'input',
                 'SINGLE_CHOICE': 'radio',
+
             }
+            
             // eslint-disable-next-line @typescript-eslint/no-unused-expressions, array-callback-return
             res.questionList && res.questionList.map((item: any) => {
                 if (item.options) {
@@ -195,6 +213,7 @@ const App: React.FC = () => {
                 })
             })
             state.data = arr;
+            state.questionData = res.xaiSp;
             console.log(JSON.stringify(state.data));
         })
     })
@@ -204,15 +223,15 @@ const App: React.FC = () => {
             <div className={styles.head}>AI学习规划</div>
             <div style={{ width: '100%', paddingLeft: 8, paddingRight: 8 }}>
                 <div className={styles.banner}>
-                    <div className={styles.banner_head}>中国大学生职业发展调查问卷</div>
-                    <div className={styles.benner_desc}>中国大学生职业发展调查问卷旨在了解大学生对职业规划的认知、态度和行为。以便更好地指导学生进行职业选择和发展。问卷内容涵盖职业兴趣、</div>
-                    <div className={styles.benner_desc}>期望、专业技能等方面，请您根据自身情况，真实、客观的填写。您的图谱仅用于本项目案例应用。感谢您的参与和支持！</div>
+                    <div className={styles.banner_head}>{state.questionData.name}</div>
+                    <div className={styles.benner_desc}>{state.questionData.content}</div>
+                    {/* <div className={styles.benner_desc}>期望、专业技能等方面，请您根据自身情况，真实、客观的填写。您的图谱仅用于本项目案例应用。感谢您的参与和支持！</div> */}
                 </div>
             </div>
             <div className={styles.mid}>
                 <Questionnaire ref={refs} footer={false} dataSource={state.data} title=''
                     description=''
-                    footerDescription='感谢您花时间完成这份问卷，稍后讲为您量身定制个性化的学习和发展计划。'
+                    footerDescription={state.questionData.endtips}
                     submit={(values: any) => {
                         save(values);
                     }} insertPosition={3}
