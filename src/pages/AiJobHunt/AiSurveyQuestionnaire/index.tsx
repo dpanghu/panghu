@@ -380,7 +380,7 @@ const AiSurveyQuestionnaire: React.FC = () => {
     };
     //下载已有模版
     const downloadTemplate = () => {
-        window.open(`${window.location.origin}/bus_xai_web/wenjaun.xlsx`);
+        window.location.href = `${window.location.origin}/bus_xai_web/wenjaun.xlsx`;
     }
     //大模型提示语选项
     const options = [
