@@ -56,7 +56,7 @@ const AiSurveyQuestionnaire: React.FC = () => {
     //上传文件成功调用builder-导入数据接口
     const importDataMethod = (url: any) => {
         importData({ url, projectVersionId: 1, taskId: 2, memberId, userId, schoolId, userToken }).then((res: any) => {
-            // message.success('上传成功');
+            message.success('上传成功');
             setOpenValue(true)
         }).catch((msg: any) => {
             message.error('上传失败,请下载分析后的表格查看错误信息');
@@ -147,7 +147,15 @@ const AiSurveyQuestionnaire: React.FC = () => {
                         conclusionValue: res.xaiSp.endtips,
                     })
                     setPromptValue(JSON.stringify(res.xaiSp.bind))
-                    if (res.xaiSp.portfolio != '0') {
+                    function tryParseJSON(str: any) {
+                        try {
+                            JSON.parse(str);
+                            return true;
+                        } catch (e) {
+                            return false;
+                        }
+                    }
+                    if (typeof res.xaiSp.portfolio === 'string' && tryParseJSON(res.xaiSp.portfolio) && promptValue === '1') {
                         const jsonValue = JSON.parse(res.xaiSp.portfolio).portfolios
                         let arr: any = [];
                         const options = res.options || [];//防止options为空报错
@@ -170,6 +178,8 @@ const AiSurveyQuestionnaire: React.FC = () => {
                             label: options[0].name
                         }
                         setchooseData(obj)
+                    } else {
+                        setNoValue(res.xaiSp.portfolio)
                     }
                 }
             })
@@ -219,7 +229,7 @@ const AiSurveyQuestionnaire: React.FC = () => {
             } else if (promptValue === '') {
                 message.error('请选择是否绑定题目');
             } else if (promptValue === '0') {
-                saveQuestionnaire({ name: values.titleValue, content: values.contentValue, endtips: values.conclusionValue, bind: promptValue, portfolio: 0, projectVersionId: 1, taskId: 2, memberId, userId, schoolId, userToken }).then((res) => {
+                saveQuestionnaire({ name: values.titleValue, content: values.contentValue, endtips: values.conclusionValue, bind: promptValue, portfolio: noValue, projectVersionId: 1, taskId: 2, memberId, userId, schoolId, userToken }).then((res) => {
                     message.success('保存成功');
                 })
                 setIsModalOpen(false);
@@ -338,11 +348,12 @@ const AiSurveyQuestionnaire: React.FC = () => {
             setPromptValue('')
             setData([])
             setchooseData({})
+            setNoValue('')
         })
     }
     //点击确认按钮，关闭模态框(导入)
     const handleOks = () => {
-        message.success('上传成功');
+        // message.success('上传成功');
         setIsModalOpens(false);
         getList();
     }
@@ -395,6 +406,7 @@ const AiSurveyQuestionnaire: React.FC = () => {
     ];
     //获取大模型提示语
     const [promptValue, setPromptValue] = useState<any>();//是否关联题目选项
+    const [noValue, setNoValue] = useState<any>();//不与题目选项绑定的输入框的值
     const [promptValues, setPromptValues] = useState<any>();//获取大模型提示语关联题目
     const [chioceValue, setChioceValue] = useState();//获取关联题目
     const [chioceValueID, setChioceValueID] = useState();//获取关联题目id
@@ -488,6 +500,16 @@ const AiSurveyQuestionnaire: React.FC = () => {
                                 type={'textarea'}
                             ></Input>
                         </div>
+                    )}
+                    {promptValue === '0' && (
+                        <Input
+                            style={{ width: '1000px', marginTop: '10px' }}
+                            value={noValue}
+                            onChange={(e: any) => {
+                                setNoValue(e);
+                            }}
+                            type={'textarea'}
+                        ></Input>
                     )}
                     <Form.Item style={{ position: 'relative' }}>
                         <Button style={{ lineHeight: '100%', backgroundColor: '#fff', borderColor: '#d9d9d9', position: 'absolute', right: '100px', top: '10px' }} type="text" htmlType="submit" onClick={() => { setIsModalOpen(false); setPromptValue(''); }
