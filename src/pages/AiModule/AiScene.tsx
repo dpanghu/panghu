@@ -396,7 +396,12 @@ const JobHunt: React.FC = () => {
         history.push('/aiAtlas');
       } else if (res.plugin?.code === 'studyPlan') {
         history.push('/AiPlan');
-      }  else if (res.plugin?.modelTypeId === '12') {
+      }  
+      else if (res.plugin?.code === 'dataView') {
+        history.push('/dataVisualization');
+      }  
+      
+      else if (res.plugin?.modelTypeId === '12') {
         history.push({
           path: '',
         });
