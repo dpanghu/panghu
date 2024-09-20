@@ -150,8 +150,16 @@ const PresetData: React.FC<TProps> = ({}) => {
 
   const DraggerProps: CustomUploadProps = {
     dragger: false,
-    accept: state.fileConf.ext.map((item) => '.' + item).join(','),
-    allowFileType: state.fileConf.ext,
+    accept: [
+      ...state.fileConf.ext,
+      ...state.fileConf.ext.map((item) => item.toUpperCase()),
+    ]
+      .map((item) => '.' + item)
+      .join(','),
+    allowFileType: [
+      ...state.fileConf.ext,
+      ...state.fileConf.ext.map((item) => item.toUpperCase()),
+    ],
     allowFileSize: state.fileConf.maxSize,
     // action: 'https://tapi.seentao.com/bus-xai/dbe3.private.params.upload.get',
     // data: extraParams,

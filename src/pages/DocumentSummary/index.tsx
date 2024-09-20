@@ -1,4 +1,3 @@
-import deleteIcon from '@/assets/images/close.png';
 import fileIcon from '@/assets/images/fileIcon.png';
 import iconCircleIcon from '@/assets/images/icon-exclamation-circle.png';
 import PDFIcon from '@/assets/images/icon-file_PDF.png';
@@ -421,7 +420,7 @@ const DocumentSummary: React.FC = () => {
                               </div>
                             )}
                           </div>
-                          {!item.isPreset && (
+                          {/* {!item.isPreset && (
                             <img
                               onClick={() => {
                                 state.delModalOpen = true;
@@ -431,7 +430,7 @@ const DocumentSummary: React.FC = () => {
                               alt=""
                               className={styles.deleteIcon}
                             />
-                          )}
+                          )} */}
                         </div>
                       </div>
                     ))}
@@ -452,7 +451,7 @@ const DocumentSummary: React.FC = () => {
                 <CustomUpload {...DraggerProps}>
                   <Button disabled={!state.showSummary}>上传</Button>
                 </CustomUpload>
-                <Button
+                {/* <Button
                   disabled={!state.showSummary}
                   onClick={() => {
                     state.delSummaryId = state.summaryData?.id;
@@ -460,7 +459,7 @@ const DocumentSummary: React.FC = () => {
                   }}
                 >
                   删除
-                </Button>
+                </Button> */}
                 <Popconfirm
                   placement="bottomRight"
                   open={state.exportParams.popupOpen}
