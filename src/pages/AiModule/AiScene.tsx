@@ -138,7 +138,7 @@ const renderPreview = (item: any) => {
           <div className={styles.previewTitle}>{item.displayName}</div>
           <div className={styles.previewCheckBox}>
             {item.options &&
-              item.options.map((items: any) => {
+              item.options.map((items: any, index: any) => {
                 return (
                   <div
                     onClick={() => {
@@ -165,6 +165,7 @@ const renderPreview = (item: any) => {
                       border: item.value?.includes(items.value)
                         ? '1px solid rgb(86, 114, 255)'
                         : '1px solid rgba(0, 0, 0, 0.25)',
+                      marginLeft: index % 4 === 0 ? 0 : 8
                     }}
                     className={styles.previewCheck}
                   >
@@ -184,7 +185,7 @@ const renderPreview = (item: any) => {
           <div className={styles.previewTitle}>{item.displayName}</div>
           <div className={styles.previewCheckBox}>
             {item.options &&
-              item.options.map((items: any) => {
+              item.options.map((items: any, index: any) => {
                 return (
                   <div
                     onClick={() => {
@@ -209,6 +210,7 @@ const renderPreview = (item: any) => {
                       border: item.value?.includes(items.value)
                         ? '1px solid rgb(86, 114, 255)'
                         : '1px solid rgba(0, 0, 0, 0.25)',
+                      marginLeft: index % 4 === 0 ? 0 : 8
                     }}
                     className={styles.previewCheck}
                   >
@@ -392,15 +394,16 @@ const JobHunt: React.FC = () => {
         history.push('/FVR');
       } else if (res.plugin?.code === 'carPlate') {
         history.push('/LPR');
+
       } else if (res.plugin?.code === 'intelligence') {
         history.push('/aiAtlas');
       } else if (res.plugin?.code === 'studyPlan') {
         history.push('/AiPlan');
-      }  
+      }
       else if (res.plugin?.code === 'dataView') {
         history.push('/dataVisualization');
-      }  
-      
+      }
+
       else if (res.plugin?.modelTypeId === '12') {
         history.push({
           path: '',
@@ -430,8 +433,10 @@ const JobHunt: React.FC = () => {
                 exampleRandom({
                   pluginCode: 'pictotext',
                   excludeId: state.excludeId,
-                }).then((res: any)=> {
-                   console.log(res);
+                }).then((res: any) => {
+                  console.log('111',state.typewriterArrCache)
+                  console.log('222',state.isLoading)
+                  console.log('333',state.isTyping)
                 })
               }}
             >
@@ -478,106 +483,117 @@ const JobHunt: React.FC = () => {
           </div>
         </div>
         <div className={styles.mid_content}>
-          <div style={{ position:'absolute',fontSize: 13, bottom: 18,color:'rgb(134, 142, 179)',fontWeight: 400, display: 'flex',alignSelf:'center' }}>所有内容均由人工智能模型输出，其内容的准确性和完整性无法保证，不代表我们的态度和观点。</div>
-          <div className={styles.warningBox}>
-            <img
-              src={aiimg}
-              style={{ width: 24, height: 24, marginRight: 16 }}
-            ></img>
-            <div className={styles.warning}>
-              <div>{state.aiData.plugin?.tips}</div>
-              <div className={styles.subwarning}>
-                {state.aiData.plugin?.note}
+          <div style={{ position: 'absolute', fontSize: 13, bottom: 18, color: 'rgb(134, 142, 179)', fontWeight: 400, display: 'flex', alignSelf: 'center' }}>所有内容均由人工智能模型输出，其内容的准确性和完整性无法保证，不代表我们的态度和观点。</div>
+          <div style={{ height: 'calc(100% - 5px)',display:'flex',flexDirection:'column',overflowY:'auto' }}>
+            <div className={styles.warningBox}>
+              <img
+                src={aiimg}
+                style={{ width: 24, height: 24, marginRight: 16 }}
+              ></img>
+              <div className={styles.warning}>
+                <div>{state.aiData.plugin?.tips}</div>
+                <div className={styles.subwarning}>
+                  {state.aiData.plugin?.note}
+                </div>
               </div>
             </div>
-          </div>
-          {state.visible && (
-            <div>
-              <span className={classNames(sf.sFs14, sf.sFwBold)}>
-                {isTypeFinished ? (
-                  <div className={styles.warningBox} style={{ marginTop: 24 }}>
-                    <img
-                      src={aiimg}
-                      style={{ width: 24, height: 24, marginRight: 16 }}
-                    ></img>
-                    <div className={styles.finallText}>
-                      {typewriterStrCache.current}
-                      {/* <pre className={styles.texts} style={{ whiteSpace: 'pre-wrap', margin: 0, color: '#272648', fontSize: 14, lineHeight: '24px',fontWeight: 400 }}>
+            {state.visible && (
+              <div>
+                <span className={classNames(sf.sFs14, sf.sFwBold)}>
+                  {isTypeFinished ? (
+                    <div className={styles.warningBox} style={{ marginTop: 24 }}>
+                      <img
+                        src={aiimg}
+                        style={{ width: 24, height: 24, marginRight: 16 }}
+                      ></img>
+                      <div className={styles.finallText}>
+                        {typewriterStrCache.current}
+
+                        333
+                        {/* <pre className={styles.texts} style={{ whiteSpace: 'pre-wrap', margin: 0, color: '#272648', fontSize: 14, lineHeight: '24px',fontWeight: 400 }}>
                     {typewriterStrCache.current}
                   </pre> */}
+                      </div>
                     </div>
-                  </div>
-                ) : (
-                  <div className={styles.warningBox} style={{ marginTop: 24 }}>
-                    <img
-                      src={aiimg}
-                      style={{ width: 24, height: 24, marginRight: 16 }}
-                    ></img>
-                    <div className={styles.warnings}>
-                      <Typewriter
-                        onInit={(typewriter: TypewriterClass) => {
-                          state.isTyping = true;
-                          typeWriter.current = typewriter;
-                          typewriter
-                            .typeString('')
-                            .start()
-                            .callFunction(() => {
-                              state.isTyping = false;
-                            });
-                        }}
-                        options={{
-                          delay: 25,
-                        }}
-                      />
+                  ) : (
+                    <div className={styles.warningBox} style={{ marginTop: 24 }}>
+                      <img
+                        src={aiimg}
+                        style={{ width: 24, height: 24, marginRight: 16 }}
+                      ></img>
+                      <div className={styles.warnings}>
+                        <Typewriter
+                          onInit={(typewriter: TypewriterClass) => {
+                            state.isTyping = true;
+                            typeWriter.current = typewriter;
+                            typewriter
+                              .typeString('')
+                              .start()
+                              .callFunction(() => {
+                                state.isTyping = false;
+                              });
+                          }}
+                          options={{
+                            delay: 25,
+                          }}
+                        />
+                      </div>
                     </div>
-                  </div>
-                )}
-              </span>
-            </div>
-          )}
+                  )}
+                </span>
+              </div>
+            )}
+          </div>
           {/* <SpeechInputComponent></SpeechInputComponent> */}
         </div>
         {
-          state.open === true ?   <div className={styles.right_list}>
-          <img src={shouqi} onClick={()=> { state.open = false; }} style={{ position:'absolute',width: 40, height: 40, top: 0, left: -20,cursor:'pointer' }}></img>
-          <div className={styles.right_head}>对话记录</div>
-          {state.messageArr &&
-            state.messageArr.map((el: any) => {
-              return (
-                <div
-                  key={el.id}
-                  onClick={() => {
-                    getHistoryDetail({
-                      themeId: el.id,
-                    }).then((res: any) => {
-                      console.log(res);
-                    });
-                  }}
-                  style={{ background: el.active ? 'white' : 'none' }}
-                  className={styles.messageBox}
-                >
-                  <div>
-                    <img
-                      src={duihua}
-                      style={{ width: 16, height: 14, marginRight: 6 }}
-                    ></img>
-                    {el.name}
-                  </div>
-                  <img
-                    onClick={(e: any) => {
-                      e.stopPropagation();
-                      deleteHistory({
+          state.open === true ? <div className={styles.right_list}>
+            <img src={shouqi} onClick={() => { state.open = false; }} style={{ position: 'absolute', width: 40, height: 40, top: 0, left: -20, cursor: 'pointer' }}></img>
+            <div className={styles.right_head}>对话记录</div>
+            {state.messageArr &&
+              state.messageArr.map((el: any) => {
+                return (
+                  <div
+                    key={el.id}
+                    onClick={() => {
+                      let clone: any = state.messageArr;
+                      clone.forEach((element: any) => {
+                        element.active = false;
+                      });
+                      el.active = true;
+                      state.messageArr = clone;
+                      getHistoryDetail({
                         themeId: el.id,
-                      }).then(() => {
-                        message.success('操作成功');
-                        state.visible = false;
-                        getHistoryList(state.patams, 2);
+                      }).then((res: any) => {
+                        typewriterStrCache.current = res.answer;
+                        state.visible = true;
                       });
                     }}
-                    src={closes}
-                    style={{ cursor: 'pointer', width: 14, height: 14 }}
-                  ></img>
-                  {/* {
+                    style={{ background: el.active ? 'white' : 'none' }}
+                    className={styles.messageBox}
+                  >
+                    <div>
+                      <img
+                        src={duihua}
+                        style={{ width: 16, height: 14, marginRight: 6 }}
+                      ></img>
+                      {el.name}
+                    </div>
+                    <img
+                      onClick={(e: any) => {
+                        e.stopPropagation();
+                        deleteHistory({
+                          themeId: el.id,
+                        }).then(() => {
+                          message.success('操作成功');
+                          state.visible = false;
+                          getHistoryList(state.patams, 2);
+                        });
+                      }}
+                      src={closes}
+                      style={{ cursor: 'pointer', width: 14, height: 14 }}
+                    ></img>
+                    {/* {
                   el.active ? <img onClick={()=> {
                     deleteHistory({
                       themeId: el.id,
@@ -587,10 +603,10 @@ const JobHunt: React.FC = () => {
                     })
                   }} src={closes} style={{ cursor: 'pointer', width: 14, height: 14 }}></img> :  <div></div>
                 } */}
-                </div>
-              );
-            })}
-        </div> : <img src={zhankai} onClick={()=> { state.open = true; }} style={{ position:'absolute',width: 40, height: 40, top: 0, right: 5,cursor:'pointer' }}></img>
+                  </div>
+                );
+              })}
+          </div> : <img src={zhankai} onClick={() => { state.open = true; }} style={{ position: 'absolute', width: 40, height: 40, top: 0, right: 5, cursor: 'pointer' }}></img>
         }
       </div>
     </div>

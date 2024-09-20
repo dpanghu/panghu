@@ -108,6 +108,7 @@ const Resume: React.FC = ({ }) => {
               length: el.maxLength,
               type: 'text',
               limit: 0,
+              placeholder: el.placeholder,
             })
           } else if (el.elementType == 'file') {
             arr.push({
@@ -326,7 +327,7 @@ const Resume: React.FC = ({ }) => {
           <Input onChange={(e: any) => {
             item.title = e;
           }} style={{ width: '100%' }} size='large' value={item.title} placeholder={'请输入标题'}></Input>
-          <Input type='textarea' value={item.value} placeholder={'此处为内容输入区，此处不支持预置'} style={{ marginTop: 15, width: '100%', background: 'white' }}></Input>
+          <Input type='textarea' value={item.value} placeholder={item.placeholder} style={{ marginTop: 15, width: '100%', background: 'white' }}></Input>
         </div>
       case 'file':
         return <div className={styles.inputBox} onDragOver={(e: any) => {
@@ -597,12 +598,12 @@ const Resume: React.FC = ({ }) => {
       case 'text':
         return <div className={styles.previewBox}>
           <div className={styles.previewTitle}>{item.title}</div>
-          <Input maxLength={item.length} showCount={true} type='textarea' style={{ width: '100%' }} placeholder={item.desc}></Input>
+          <Input maxLength={item.length} showCount={true} type='textarea' style={{ width: '100%' }} placeholder={item.tips}></Input>
         </div>
       case 'select':
         return <div className={styles.previewBox}>
           <div className={styles.previewTitle}>{item.title}</div>
-          <Select style={{ width: '100%' }} placeholder={item.desc} option={item.option}></Select>
+          <Select style={{ width: '100%' }} placeholder={item.tips} option={item.option}></Select>
         </div>
       case 'radio':
         return <div className={styles.previewBox}>
@@ -731,7 +732,7 @@ const Resume: React.FC = ({ }) => {
         <div style={{ paddingLeft: 25, marginTop: 30, marginBottom: 30 }}>
           <div style={{ display: 'flex', alignItems: 'center', marginTop: 10 }}>
             <div style={{ minWidth: 42, marginRight: 10 }}><span style={{ color: 'red', marginRight: 7 }}>*</span>标签</div>
-            <Input value={state.modalData.name} onChange={(e: any) => { state.modalData.name = e }} placeholder={'请输入label值'}></Input>
+            <Input value={state.modalData.name} onChange={(e: any) => { state.modalData.name = e }} maxLength={state.chooseData.type === 'checkbox' ? 6 : 999} placeholder={state.chooseData.type === 'checkbox' ? '最多6个字' : '请输入label值'}></Input>
           </div>
           {/* <div style={{ display: 'flex', alignItems: 'center', marginTop: 10 }}>
             <div style={{ minWidth: 42, marginRight: 10 }}><span style={{ color: 'red', marginRight: 7 }}>*</span>值</div>

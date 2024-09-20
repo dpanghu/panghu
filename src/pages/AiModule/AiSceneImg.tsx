@@ -22,6 +22,7 @@ const { Dragger } = Upload;
 interface TState {
     curTheme: any;
     dialogList: any;
+    userImg: any;
     excludeId: any;
     editId: string;
     editName: string;
@@ -59,6 +60,7 @@ const JobHunt: React.FC = () => {
         baseData: [],
         typewriterArrCache: [],
         editId: '',
+        userImg: '',
         excludeId: '',
         messageArr: [],
         isLoading: false,
@@ -427,6 +429,10 @@ const JobHunt: React.FC = () => {
                     message.warning('请输入描述场景');
                     return;
                 }
+                if(state.imgId === '' || state.imgId === void 0) {
+                    message.warning('请先上传图片');
+                    return;
+                }
                 state.isLoading = true;
                 state.messageList.push({
                     data: messages.value,
@@ -534,6 +540,7 @@ const JobHunt: React.FC = () => {
             state.patams = res;
         });
         let qsData: any = JSON.parse(window.sessionStorage.getItem('commonDatas') as any);
+        state.userImg = qsData?.userImg;
         getPluginDetail({
             id: qsData.imageId,
             userId: '1',
@@ -690,7 +697,7 @@ const JobHunt: React.FC = () => {
                                     {
                                         item.type === 1 ? <div className={styles.send}>
                                             <div className={styles.sendData}>{item.data}</div>
-                                            <img src={''} style={{ width: 32, height: 32, marginLeft: 16, borderRadius: '50%', }}></img>
+                                            <img src={state.userImg} style={{ width: 32, height: 32, marginLeft: 16, borderRadius: '50%', }}></img>
                                         </div> : <div className={styles.receive}>
                                             <img src={aiimg} style={{ width: 24, height: 24, marginRight: 16, borderRadius: '50%', }}></img>
                                             <div className={styles.sendData}>{item.data}</div>

@@ -32,6 +32,11 @@ export interface CreateAxiosConfig extends AxiosRequestConfig {
   isJSON?: boolean;
 
   /**
+   * 定义请求参数是否为Json格式
+   */
+  noAi?: any;
+
+  /**
    * 是否屏蔽错误消息
    */
   hiddenErrorMessage?: boolean;
