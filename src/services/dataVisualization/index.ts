@@ -38,3 +38,12 @@ export async function deleteUploadFile<T>(params?: RecordItem): Promise<T> {
     params,
   });
 }
+
+// 保存大模型结果
+export async function saveResult<T>(params?: RecordItem): Promise<T> {
+  return $axios.request({
+    url: '/widget/xai/visualization/file/save',
+    method: 'POST',
+    params,
+  });
+}

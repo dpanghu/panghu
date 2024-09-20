@@ -5,6 +5,7 @@ import { useReactive } from 'ahooks';
 import classNames from 'classnames';
 import React, { useEffect } from 'react';
 import { DetailResponseType } from '../type';
+import Conversation from './components/Conversation';
 import DataTable from './components/DataTable';
 import styles from './index.less';
 
@@ -31,8 +32,11 @@ const Detail: React.FC<Props> = ({}) => {
         getUploadDetail<DetailResponseType>({
           id: file.id || '',
           presetFileId: file.presetFileId || '',
+          fileUrl: file.fileUrl || '',
+          fileName: file.fileName || '',
+          fileSize: file.fileSize || '',
         }).then((rst) => {
-          state.detailData = rst;
+          state.detailData = { ...rst };
         });
       }
     }
@@ -48,10 +52,12 @@ const Detail: React.FC<Props> = ({}) => {
             {state.detailData?.file?.fileName || ''}
           </div>
           <div className={styles['table-body']}>
-            <DataTable></DataTable>
+            <DataTable fileData={state.detailData}></DataTable>
           </div>
         </div>
-        <div className={styles['message-container']}></div>
+        <div className={styles['message-container']}>
+          <Conversation fileData={state.detailData}></Conversation>
+        </div>
       </div>
     </>
   );

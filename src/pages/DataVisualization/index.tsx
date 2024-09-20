@@ -34,7 +34,10 @@ const DataVisualization: React.FC<Props> = ({}) => {
             (item) => item.fileType === FileType.CUSTOM,
           );
           if (firstCustomerUpload) {
-            history.push('/dataVisualization/detail/' + firstCustomerUpload.id);
+            history.push(
+              '/dataVisualization/detail/' +
+                (firstCustomerUpload.id || firstCustomerUpload.presetFileId),
+            );
           } else {
             history.push('/dataVisualization/upload');
           }

@@ -33,6 +33,7 @@
     "lodash": "4.17.21",
     "nanoid": "^5.0.7",
     "qs": "6.12.3",
+    "rc-markdown": "^0.0.11",
     "react-beautiful-dnd": "13.1.1",
     "react-doc-viewer": "^0.1.14",
     "react-markdown": "^9.0.1",

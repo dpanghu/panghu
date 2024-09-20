@@ -15,6 +15,8 @@ export type UploadDataType = {
   fileType: FileType;
   fileSize: string;
   presetFileId?: string;
+  themeId?: string;
+  conversationId?: string;
 };
 
 export type DetailResponseType = {

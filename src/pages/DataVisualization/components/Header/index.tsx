@@ -1,7 +1,9 @@
+import iconCircleIcon from '@/assets/images/icon-exclamation-circle.png';
 import { deleteUploadFile } from '@/services/dataVisualization';
 import { history, useModel, useParams } from '@umijs/max';
 import { Button, message } from 'SeenPc';
 import sf from 'SeenPc/dist/esm/globalStyle/global.less';
+import { useReactive } from 'ahooks';
 import { Empty, Modal, Popover } from 'antd';
 import classNames from 'classnames';
 import React, { useMemo } from 'react';
@@ -22,37 +24,32 @@ const Header: React.FC<Props> = ({}) => {
     }),
   );
 
+  const state = useReactive({
+    delModalVisible: '0',
+  });
+
   const params = useParams();
 
   const deleteConfirm = (delId: string) => {
-    confirm({
-      title: '确认要删除本记录吗？',
-      content: '删除后不可撤回，请确定是否删除？',
-      cancelText: '再考虑下',
-      okText: '确定',
-      onOk() {
-        deleteUploadFile({
-          id: delId,
-        }).then(() => {
-          const deletedFile = fileList.find((file) => file.id === delId);
-          const deletedFileList = fileList.filter((file) => file.id !== delId);
-          setFileList(deletedFileList);
-          message.success('删除成功');
-          if (!params?.id) {
-            return;
-          }
-          // 若删除的数据为当前所展示的，则进入下一条数据的详情，若历史记录已经清空，则返回到上传页面
-          if (deletedFile!.id === delId) {
-            if (deletedFileList.length > 0) {
-              history.push(
-                '/dataVisualization/detail/' + deletedFileList[0].id,
-              );
-            } else {
-              history.push('/dataVisualization/upload');
-            }
-          }
-        });
-      },
+    deleteUploadFile({
+      id: delId,
+    }).then(() => {
+      const deletedFile = fileList.find((file) => file.id === delId);
+      const deletedFileList = fileList.filter((file) => file.id !== delId);
+      setFileList(deletedFileList);
+      message.success('删除成功');
+      state.delModalVisible = '0';
+      if (!params?.id) {
+        return;
+      }
+      // 若删除的数据为当前所展示的，则进入下一条数据的详情，若历史记录已经清空，则返回到上传页面
+      if (deletedFile!.id === delId) {
+        if (deletedFileList.length > 0) {
+          history.push('/dataVisualization/detail/' + deletedFileList[0].id);
+        } else {
+          history.push('/dataVisualization/upload');
+        }
+      }
     });
   };
 
@@ -61,7 +58,7 @@ const Header: React.FC<Props> = ({}) => {
       <div className={styles['popover-content']}>
         <h2>我的文档库</h2>
         <div className={styles['popover-body']}>
-          <div>
+          <div style={{ overflow: 'auto' }}>
             {fileList.length === 0 ? (
               <Empty description="暂无数据" style={{ marginTop: 60 }} />
             ) : (
@@ -92,7 +89,8 @@ const Header: React.FC<Props> = ({}) => {
                           )}
                           onClick={() => {
                             history.push(
-                              '/dataVisualization/detail/' + item.id,
+                              '/dataVisualization/detail/' +
+                                (item.id || item.presetFileId),
                             );
                           }}
                         >
@@ -104,7 +102,7 @@ const Header: React.FC<Props> = ({}) => {
                       <span
                         className={styles['close']}
                         onClick={() => {
-                          deleteConfirm(item.id);
+                          state.delModalVisible = item.id;
                         }}
                       ></span>
                     )}
@@ -143,13 +141,42 @@ const Header: React.FC<Props> = ({}) => {
             FileType.CUSTOM && (
             <Button
               className={sf.sMrL8}
-              onClick={() => deleteConfirm(params?.id)}
+              onClick={() => {
+                state.delModalVisible = params.id || '';
+              }}
             >
               删除
             </Button>
           )}
         </>
       )}
+      <Modal
+        title={null}
+        footer={null}
+        open={state.delModalVisible !== '0'}
+        getContainer={() =>
+          document.getElementById('DocumentSummaryContainer') as HTMLElement
+        }
+        maskClosable={false}
+        centered
+        onCancel={() => {
+          state.delModalVisible = '0';
+        }}
+      >
+        <div className={styles.delModalContent}>
+          <div className={styles.title}>
+            <img src={iconCircleIcon} alt="" />
+            <span>确定要删除本记录吗?</span>
+          </div>
+          <span>删除后不可撤回，请确定是否删除？</span>
+          <Button
+            type="primary"
+            onClick={() => deleteConfirm(params?.id as string)}
+          >
+            确定
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 };

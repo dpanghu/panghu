@@ -4,3 +4,11 @@ export enum FileType {
   // 非预制数据
   CUSTOM = '0',
 }
+
+export const NeedParams = [
+  'memberId',
+  'classId',
+  'userToken',
+  'userId',
+  'schoolId',
+];
