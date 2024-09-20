@@ -22,6 +22,7 @@ interface TState {
     editName: string;
     portfolio: any;
     textvalue: any;
+    portrait: any;
     imgId: any;
     data: any;
     baseData: any;
@@ -61,6 +62,7 @@ const App: React.FC = () => {
         imgId: '',
         visible: false,
         patams: '',
+        portrait: [],
         data: [],
     });
 
@@ -87,6 +89,8 @@ const App: React.FC = () => {
             state.patams = res;
         });
         state.portfolio = window.sessionStorage.getItem('portfolio');
+        state.portrait = JSON.parse(window.sessionStorage.getItem('portrait') as any);
+        console.log(JSON.parse(window.sessionStorage.getItem('portrait') as any));
     })
 
     return (
@@ -117,30 +121,24 @@ const App: React.FC = () => {
                 <div className={styles.banner1}>
                     <img src={banner1} style={{ position: 'absolute', width: '100%', height: "100%" }}></img>
                     <img src={banner1Text} style={{ position: 'absolute', width: 130, height: 17, top: 13 }}></img>
-                    <div style={{ width: "885px", position: 'relative',marginTop: 60 }}>
-                        {/* <div style={{ display:"flex",width:'100%',flexWrap:'wrap',marginTop: 60 }}>
-                               <div style={{ width:'33%',display:'flex',justifyContent:'flex-end',minHeight: 50 }}>
-                                <div className={styles.left}>2222222</div>
-                               </div>
-                               <div className={styles.mid} style={{  width:'33%',minHeight: 50  }}></div>
-                               <div style={{  width:'33%',display:'flex',justifyContent:'flex-start',minHeight: 50  }}>
-                                <div className={styles.right}>22222</div>
-                               </div>
-                               <div style={{ width:'33%',display:'flex',justifyContent:'flex-end',minHeight: 50 }}>
-                                <div className={styles.left}>2222222</div>
-                               </div>
-                               <div className={styles.mid} style={{  width:'33%',minHeight: 50  }}></div>
-                               <div style={{  width:'33%',display:'flex',justifyContent:'flex-start',minHeight: 50  }}>
-                                <div className={styles.right}>22222</div>
-                               </div>
-                               <div style={{ width:'33%',display:'flex',justifyContent:'flex-end',minHeight: 50 }}>
-                                <div className={styles.left}>2222222</div>
-                               </div>
-                               <div className={styles.mid} style={{  width:'33%',minHeight: 50  }}></div>
-                               <div style={{  width:'33%',display:'flex',justifyContent:'flex-start',minHeight: 50  }}>
-                                <div className={styles.right}>22222</div>
-                               </div>
-                        </div> */}
+                    <div style={{ width: "885px", position: 'relative', marginTop: 60 }}>
+                        <div style={{ display: "flex", width: '100%', flexWrap: 'wrap', marginTop: 60 }}>
+                            {
+                                state.portrait && state.portrait.map((lists: any, index: any) => {
+                                    return <>
+                                        {
+                                            (index - Math.floor(index / 3) * 3) === 0 ? <div key={lists.id} style={{ width: '40%', display: 'flex', justifyContent: 'flex-end', minHeight: 50, paddingRight: Math.floor(index / 3)*35, position:'relative'  }}>
+                                                <div className={styles.left}>{lists}</div>
+                                                {/* <div className={styles.left_lines} style={{ right: `-${20} - ${Math.floor(index / 3)*35}px` }}></div> */}
+                                            </div> : (index - Math.floor(index / 3) * 3) === 1 ? <div className={styles.mid} style={{ width: '18%', minHeight: 50 }}></div> :
+                                                <div style={{ width: '33%', display: 'flex', justifyContent: 'flex-start', minHeight: 50, paddingLeft: Math.floor(index / 3)*35, position:'relative' }}>
+                                                    <div className={styles.right}>{lists}</div>
+                                                </div>
+                                        }
+                                    </>
+                                })
+                            }
+                        </div>
                         <img src={banner1people} style={{ position: 'absolute', width: '100%', top: 0 }}></img>
                     </div>
                     <img src={banner2} style={{ position: 'absolute', width: '100%', bottom: 205, height: 43 }}></img>
