@@ -14,7 +14,7 @@ import {
 import { getQueryParam } from '@/utils/utils';
 import { Button, ComboBox, Input, Select } from 'SeenPc';
 import sf from 'SeenPc/dist/esm/globalStyle/global.less';
-import { useCreation, useMount, useReactive, useUpdateEffect } from 'ahooks';
+import { useMount, useReactive, useUpdateEffect } from 'ahooks';
 import { message } from 'antd';
 import classNames from 'classnames';
 import { isArray } from 'lodash';
@@ -165,7 +165,7 @@ const renderPreview = (item: any) => {
                       border: item.value?.includes(items.value)
                         ? '1px solid rgb(86, 114, 255)'
                         : '1px solid rgba(0, 0, 0, 0.25)',
-                      marginLeft: index % 4 === 0 ? 0 : 8
+                      marginLeft: index % 4 === 0 ? 0 : 8,
                     }}
                     className={styles.previewCheck}
                   >
@@ -210,7 +210,7 @@ const renderPreview = (item: any) => {
                       border: item.value?.includes(items.value)
                         ? '1px solid rgb(86, 114, 255)'
                         : '1px solid rgba(0, 0, 0, 0.25)',
-                      marginLeft: index % 4 === 0 ? 0 : 8
+                      marginLeft: index % 4 === 0 ? 0 : 8,
                     }}
                     className={styles.previewCheck}
                   >
@@ -311,7 +311,9 @@ const JobHunt: React.FC = () => {
           state.visible = true;
           state.isLoading = true;
           typewriterStrCache.current = '';
-          let queryData: any = JSON.parse(window.sessionStorage.getItem('commonDatas') || '{}')
+          let queryData: any = JSON.parse(
+            window.sessionStorage.getItem('commonDatas') || '{}',
+          );
           let qsData = {
             ...queryData,
             paramId: state.patams,
@@ -384,6 +386,8 @@ const JobHunt: React.FC = () => {
         history.push('/documentSummary');
       } else if (res.plugin?.code === 'tts') {
         history.push('/wenshengVoice');
+      } else if (res.plugin?.code === 'aiAQuestionGen') {
+        history.push('/documentQA');
       } else if (res.plugin?.code === 'sentAnalysis') {
         history.push('/sentimentAnalysis');
       } else if (res.plugin?.code === 'ocr') {
@@ -394,17 +398,13 @@ const JobHunt: React.FC = () => {
         history.push('/FVR');
       } else if (res.plugin?.code === 'carPlate') {
         history.push('/LPR');
-
       } else if (res.plugin?.code === 'intelligence') {
         history.push('/aiAtlas');
       } else if (res.plugin?.code === 'studyPlan') {
         history.push('/AiPlan');
-      }
-      else if (res.plugin?.code === 'dataView') {
+      } else if (res.plugin?.code === 'dataView') {
         history.push('/dataVisualization');
-      }
-
-      else if (res.plugin?.modelTypeId === '12') {
+      } else if (res.plugin?.modelTypeId === '12') {
         history.push({
           path: '',
         });
@@ -434,10 +434,10 @@ const JobHunt: React.FC = () => {
                   pluginCode: 'pictotext',
                   excludeId: state.excludeId,
                 }).then((res: any) => {
-                  console.log('111',state.typewriterArrCache)
-                  console.log('222',state.isLoading)
-                  console.log('333',state.isTyping)
-                })
+                  console.log('111', state.typewriterArrCache);
+                  console.log('222', state.isLoading);
+                  console.log('333', state.isTyping);
+                });
               }}
             >
               填入示例
@@ -483,8 +483,27 @@ const JobHunt: React.FC = () => {
           </div>
         </div>
         <div className={styles.mid_content}>
-          <div style={{ position: 'absolute', fontSize: 13, bottom: 18, color: 'rgb(134, 142, 179)', fontWeight: 400, display: 'flex', alignSelf: 'center' }}>所有内容均由人工智能模型输出，其内容的准确性和完整性无法保证，不代表我们的态度和观点。</div>
-          <div style={{ height: 'calc(100% - 5px)',display:'flex',flexDirection:'column',overflowY:'auto' }}>
+          <div
+            style={{
+              position: 'absolute',
+              fontSize: 13,
+              bottom: 18,
+              color: 'rgb(134, 142, 179)',
+              fontWeight: 400,
+              display: 'flex',
+              alignSelf: 'center',
+            }}
+          >
+            所有内容均由人工智能模型输出，其内容的准确性和完整性无法保证，不代表我们的态度和观点。
+          </div>
+          <div
+            style={{
+              height: 'calc(100% - 5px)',
+              display: 'flex',
+              flexDirection: 'column',
+              overflowY: 'auto',
+            }}
+          >
             <div className={styles.warningBox}>
               <img
                 src={aiimg}
@@ -501,14 +520,16 @@ const JobHunt: React.FC = () => {
               <div>
                 <span className={classNames(sf.sFs14, sf.sFwBold)}>
                   {isTypeFinished ? (
-                    <div className={styles.warningBox} style={{ marginTop: 24 }}>
+                    <div
+                      className={styles.warningBox}
+                      style={{ marginTop: 24 }}
+                    >
                       <img
                         src={aiimg}
                         style={{ width: 24, height: 24, marginRight: 16 }}
                       ></img>
                       <div className={styles.finallText}>
                         {typewriterStrCache.current}
-
                         333
                         {/* <pre className={styles.texts} style={{ whiteSpace: 'pre-wrap', margin: 0, color: '#272648', fontSize: 14, lineHeight: '24px',fontWeight: 400 }}>
                     {typewriterStrCache.current}
@@ -516,7 +537,10 @@ const JobHunt: React.FC = () => {
                       </div>
                     </div>
                   ) : (
-                    <div className={styles.warningBox} style={{ marginTop: 24 }}>
+                    <div
+                      className={styles.warningBox}
+                      style={{ marginTop: 24 }}
+                    >
                       <img
                         src={aiimg}
                         style={{ width: 24, height: 24, marginRight: 16 }}
@@ -546,9 +570,22 @@ const JobHunt: React.FC = () => {
           </div>
           {/* <SpeechInputComponent></SpeechInputComponent> */}
         </div>
-        {
-          state.open === true ? <div className={styles.right_list}>
-            <img src={shouqi} onClick={() => { state.open = false; }} style={{ position: 'absolute', width: 40, height: 40, top: 0, left: -20, cursor: 'pointer' }}></img>
+        {state.open === true ? (
+          <div className={styles.right_list}>
+            <img
+              src={shouqi}
+              onClick={() => {
+                state.open = false;
+              }}
+              style={{
+                position: 'absolute',
+                width: 40,
+                height: 40,
+                top: 0,
+                left: -20,
+                cursor: 'pointer',
+              }}
+            ></img>
             <div className={styles.right_head}>对话记录</div>
             {state.messageArr &&
               state.messageArr.map((el: any) => {
@@ -606,8 +643,23 @@ const JobHunt: React.FC = () => {
                   </div>
                 );
               })}
-          </div> : <img src={zhankai} onClick={() => { state.open = true; }} style={{ position: 'absolute', width: 40, height: 40, top: 0, right: 5, cursor: 'pointer' }}></img>
-        }
+          </div>
+        ) : (
+          <img
+            src={zhankai}
+            onClick={() => {
+              state.open = true;
+            }}
+            style={{
+              position: 'absolute',
+              width: 40,
+              height: 40,
+              top: 0,
+              right: 5,
+              cursor: 'pointer',
+            }}
+          ></img>
+        )}
       </div>
     </div>
   );

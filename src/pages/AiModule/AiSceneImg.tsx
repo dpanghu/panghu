@@ -203,7 +203,7 @@ const JobHunt: React.FC = () => {
         switch (item.elementType) {
             case 'file':
                 return <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
-                    <Upload {...imgProps}><Button icon={<img src={uploadspng} style={{ width: 16, height: 16, marginRight: 4 }}></img>} style={{ width: 92, marginTop: 12 }} size={'small'} type='primary'>上传图片</Button></Upload>
+                    <Upload {...imgProps} showUploadList={false}><Button icon={<img src={uploadspng} style={{ width: 16, height: 16, marginRight: 4 }}></img>} style={{ width: 92, marginTop: 12 }} size={'small'} type='primary'>上传图片</Button></Upload>
                     <Dragger {...imgProps} showUploadList={false}>
                         <div className={styles.previewBox} style={{ width: '100%', height: 178, display: 'flex', marginTop: 8, justifyContent: 'center', flexDirection: 'column', cursor: 'pointer', color: '#333333', fontSize: 14, lineHeight: '21px' }}>
                             <img src={state.imgUrl === '' ? tushengwen : state.imgUrl} style={{ position: 'absolute', width: '100%', height: 178 }}></img>
