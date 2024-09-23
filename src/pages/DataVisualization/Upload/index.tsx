@@ -38,11 +38,11 @@ const UploadCmp: React.FC<Props> = ({}) => {
       message.error('上传文件名称不能超过50个字符!');
       return false;
     }
+    state.isParsing = true;
     return true;
   };
 
   const onChange = ({ file }) => {
-    state.isParsing = true;
     const { status } = file;
     if (status === 'done') {
       uploadExcel<DetailResponseType>({
@@ -83,7 +83,7 @@ const UploadCmp: React.FC<Props> = ({}) => {
             onChange={onChange}
           >
             <div className={styles['upload']}>
-              <div className={sf.sMrL8}>
+              <div className={sf.sMrL8} style={{ textAlign: 'left' }}>
                 点击或将文件拖拽到此处上传
                 <br /> 文档格式:Excel
                 <br /> 文档大小:最大支持1M
