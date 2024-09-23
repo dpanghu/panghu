@@ -74,6 +74,7 @@ const App: React.FC = () => {
         }).then((res: any) => {
             if (res) {
                 window.sessionStorage.setItem('planList', res);
+                window.sessionStorage.setItem('planportfolio', state.portfolio);
                 message.success('生成成功');
                 if (JSON.parse(res)?.length > 7) {
                     history.push('/AiPlanList');
