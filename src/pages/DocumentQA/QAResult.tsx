@@ -124,7 +124,7 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
         onFinished: () => {
           setTimeout(() => {
             state.showTypewriter = false;
-          }, 1000);
+          }, 3000);
           state.streamFinished = true;
         },
         onError: (error) => {
