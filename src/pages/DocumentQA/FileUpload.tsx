@@ -72,7 +72,7 @@ const FileUpload: React.FC<TProps> = ({ paramsId, onChange }) => {
     <div className={styles.FileUploadContainer}>
       {state.loading ? (
         <Spin
-          tip="文档解析中，请稍等！"
+          tip="文档上传中，请稍等！"
           spinning={state.loading}
           size="large"
         />

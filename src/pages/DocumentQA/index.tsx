@@ -62,13 +62,14 @@ const DocumentQA: React.FC = () => {
   };
 
   const changeContent = (dataSource: RecordItem) => {
-    state.showSummary = true;
+    state.showSummary = false;
     state.showActionBtns = true;
-    state.summaryData = dataSource;
-    querySummaryList();
+    // state.summaryData = dataSource;
+
+    // querySummaryList();
     // 轮询 get接口 判断附件预览转换是否完成 ossViewUrl为0时 可能是未转换成功，也可能是文档不支持预览 所以设置1min最大轮询时长
     try {
-      if (state.summaryData.ossViewUrl !== '0') {
+      if (dataSource.ossViewUrl && dataSource.ossViewUrl !== '0') {
         return;
       } else {
         state.uploadLoading = true;
@@ -76,24 +77,30 @@ const DocumentQA: React.FC = () => {
       intervalRef.current = setInterval(async () => {
         timerOutRef.current += 15;
         const result1: RecordItem = await getWordAnswerItem({
-          id: state.summaryData.id,
+          id: dataSource.id,
         });
         ossViewUrlRef.current = result1.ossViewUrl;
-        if (ossViewUrlRef.current !== '0') {
+        if (result1.ossViewUrl && result1.ossViewUrl !== '0') {
           state.summaryData = result1;
           clearInterval(intervalRef.current);
           state.uploadLoading = false;
+          state.showSummary = true;
+          state.showActionBtns = true;
         }
       }, 1000 * 15);
       if (ossViewUrlRef.current !== '0' || timerOutRef.current >= 60) {
         clearInterval(intervalRef.current);
         state.uploadLoading = false;
+        state.showSummary = false;
+        state.showActionBtns = false;
       }
     } catch (error) {}
   };
 
   const uploadData = async () => {
     try {
+      state.showActionBtns = true;
+      state.showSummary = false;
       state.uploadLoading = true;
       const result: RecordItem = await uploadWordAnswer({
         paramId: state.paramsId,
@@ -331,6 +338,7 @@ const DocumentQA: React.FC = () => {
         <div className={styles.content}>
           {state.showSummary ? (
             <QAResult
+              key={state.summaryData?.id}
               summaryData={state.summaryData}
               paramsId={state.paramsId}
             />
