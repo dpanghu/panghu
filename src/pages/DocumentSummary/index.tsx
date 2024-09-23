@@ -90,32 +90,42 @@ const DocumentSummary: React.FC = () => {
   };
 
   const changeContent = (dataSource: RecordItem, mount?: boolean) => {
-    state.showSummary = true;
+    state.showSummary = false;
     state.showActionBtns = true;
-    state.summaryData = dataSource;
-    querySummaryList(mount);
+    state.uploadLoading = true;
+    // querySummaryList(mount);
     // 轮询 get接口 判断附件预览转换是否完成 ossViewUrl为0时 可能是未转换成功，也可能是文档不支持预览 所以设置1min最大轮询时长
     try {
-      if (state.summaryData.ossViewUrl !== '0') {
-        return;
-      } else {
-        state.uploadLoading = true;
-      }
+      // if (state.summaryData.ossViewUrl !== '0') {
+      //   return;
+      // } else {
+      //   state.uploadLoading = true;
+      // }
       intervalRef.current = setInterval(async () => {
         timerOutRef.current += 15;
         const result1: RecordItem = await getSummaryItem({
-          id: state.summaryData.id,
+          id: dataSource.id,
         });
-        ossViewUrlRef.current = result1.ossViewUrl;
-        if (ossViewUrlRef.current !== '0') {
+        if (result1.status === 2) {
           state.summaryData = result1;
           clearInterval(intervalRef.current);
           state.uploadLoading = false;
+          state.showSummary = true;
+          state.showActionBtns = true;
         }
+        // ossViewUrlRef.current = result1.ossViewUrl;
+        // if (ossViewUrlRef.current !== '0') {
+        //   state.summaryData = result1;
+        //   clearInterval(intervalRef.current);
+        //   state.uploadLoading = false;
+        // }
       }, 1000 * 15);
-      if (ossViewUrlRef.current !== '0' || timerOutRef.current >= 60) {
+      if (ossViewUrlRef.current !== '0' || timerOutRef.current >= 15 * 4 * 10) {
         clearInterval(intervalRef.current);
         state.uploadLoading = false;
+        state.summaryData = {};
+        state.showSummary = false;
+        state.showActionBtns = true;
       }
     } catch (error) {}
   };
@@ -242,14 +252,14 @@ const DocumentSummary: React.FC = () => {
       // state.summaryData = result;
       // querySummaryList();
       changeContent(result);
-      state.showActionBtns = true;
-      state.showSummary = true;
+      // state.showActionBtns = true;
+      // state.showSummary = true;
     } catch (e) {
       message.error('解析失败');
       state.showActionBtns = false;
       state.showSummary = false;
     } finally {
-      state.uploadLoading = false;
+      // state.uploadLoading = false;
     }
   };
 
