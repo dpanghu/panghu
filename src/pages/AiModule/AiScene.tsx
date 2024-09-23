@@ -294,11 +294,13 @@ const JobHunt: React.FC = () => {
     let error: any = false;
     if (isArray(state.allow)) {
       if (state.allow[0] === '1') {
+        console.log('sads',JSON.stringify(state.data));
         let sendData: any = {};
         // eslint-disable-next-line @typescript-eslint/no-unused-expressions, array-callback-return
         state.data &&
           // eslint-disable-next-line array-callback-return
           state.data.map((item: any) => {
+            console.log('22222',item.value);
             if (item.value === void 0 || item.value === '') {
               item.error = true;
               error = true;
