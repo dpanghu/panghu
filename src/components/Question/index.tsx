@@ -63,6 +63,7 @@ const QuestionNaire: React.FC<IProps> = ({ dataSource, title, description, foote
 
     const checkUsername = async (rule: any, value: any) => {
         console.log(value);
+        console.log(rule);
         // 这里可以是异步请求来验证用户名是否存在
         if (value.trim() == '') {
             console.log(value);
@@ -131,7 +132,6 @@ const QuestionNaire: React.FC<IProps> = ({ dataSource, title, description, foote
                             formItemContent = <Select option={item.options || []} value={value} onChange={(e: any) => setValue(e)} />;
                             break;
                         case 'radio':
-                        case 'checkbox':
                             if (item.type === 'radio' && item.options?.find((element: any) => element.needInput == 1)) {
                                 formItemContent = <Radio.Group key={item.id} onChange={(e) => handleRadioChange(item.id, e.target.value)} value={selectValues[item.id]}>
                                     {item.options.map((option, optionIndex) => (
@@ -163,6 +163,9 @@ const QuestionNaire: React.FC<IProps> = ({ dataSource, title, description, foote
                                 formItemContent = <ComboBox options={item.options || []} type={item.type} />;
                             }
                             break;
+                        case 'checkbox':
+                            formItemContent = <ComboBox options={item.options || []} type={'checkbox'} />;
+                            break;
                         case 'custom':
                             formItemContent = insertContent;
                             break;
@@ -171,7 +174,6 @@ const QuestionNaire: React.FC<IProps> = ({ dataSource, title, description, foote
                             break;
                     }
 
-
                     return (
                         // eslint-disable-next-line react/jsx-key
                         <div className={styles.form_item}>
@@ -179,12 +181,12 @@ const QuestionNaire: React.FC<IProps> = ({ dataSource, title, description, foote
                                 key={item.id}
                                 label={item.title}
                                 name={`${item.id}`}
-                                rules={[
+                                rules={item.type == 'checkbox' ? [] : [
                                     // { required: item.isRequired, message: `${item.title}为必填` },
                                     {
                                         message: '不能为空',
-                                        validator: checkUsername
-                                      }
+                                        validator:  checkUsername
+                                    }
                                 ]}
                                 
                             >
