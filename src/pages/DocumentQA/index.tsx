@@ -87,7 +87,7 @@ const DocumentQA: React.FC = () => {
           state.showSummary = true;
           state.showActionBtns = true;
         }
-      }, 1000 * 15);
+      }, 1000 * 5);
       if (ossViewUrlRef.current !== '0' || timerOutRef.current >= 60) {
         clearInterval(intervalRef.current);
         state.uploadLoading = false;
@@ -113,7 +113,7 @@ const DocumentQA: React.FC = () => {
       state.showActionBtns = true;
       state.showSummary = true;
     } catch (e) {
-      message.error('解析失败');
+      // message.error('解析失败');
       state.showActionBtns = false;
       state.showSummary = false;
     } finally {

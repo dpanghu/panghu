@@ -2,6 +2,7 @@ import avatarIcon from '@/assets/images/documentQA/aiIcon.png';
 import userIcon from '@/assets/images/documentQA/userIcon.png';
 import FilePreview from '@/components/FilePreview';
 import { getMessageLast, updateAnswerId } from '@/services/documentQA';
+import { scrollToBottom } from '@/utils/utils';
 import { Button, message } from 'SeenPc';
 import { useReactive, useUpdateEffect } from 'ahooks';
 import TextArea from 'antd/es/input/TextArea';
@@ -30,6 +31,7 @@ interface TState {
 
 const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
   const preAnswer = JSON.parse(summaryData?.preAnswer || '{}');
+  const historyEleHref = useRef<HTMLDivElement>(null);
   const extraParams = JSON.parse(
     window.sessionStorage.getItem('queryParams') || '{}',
   );
@@ -102,6 +104,7 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
       conversation_id: state.conversationId,
       userMessage: state.questionValue.trim(),
     };
+    scrollToBottom(historyEleHref.current);
     state.showTypewriter = true;
     state.streamFinished = false;
     state.receiveText = false;
@@ -119,6 +122,9 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
       {
         // 结束，包括接收完毕所有数据、报错、关闭链接
         onFinished: () => {
+          setTimeout(() => {
+            state.showTypewriter = false;
+          }, 3000);
           state.streamFinished = true;
         },
         onError: (error) => {
@@ -161,6 +167,9 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
       .start()
       .callFunction(() => {
         state.textWriteFinished = true;
+        if (state.showTypewriter) {
+          scrollToBottom(historyEleHref.current);
+        }
       });
   }, [state.textWriteFinished, typeWriter.current]);
 
@@ -183,6 +192,9 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
       });
       state.aiAnswerStr = '';
       state.typewriterArr = [];
+      setTimeout(() => {
+        scrollToBottom(historyEleHref.current);
+      }, 50);
     }
   }, [state.showTypewriter]);
 
@@ -212,7 +224,7 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
         />
       </div>
       <div className={styles.AIcontent}>
-        <div className={styles.questionContent}>
+        <div className={styles.questionContent} ref={historyEleHref}>
           <div className={styles.AIAnswer}>
             <img
               draggable={false}
@@ -261,7 +273,9 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
                   typewriter
                     .typeString('')
                     .start()
-                    .callFunction(() => {});
+                    .callFunction(() => {
+                      scrollToBottom(historyEleHref.current);
+                    });
                 }}
                 options={{
                   delay: 25,
@@ -284,7 +298,7 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
             <span
               title={preAnswer?.query2 || ''}
               onClick={() => {
-                state.questionValue = preAnswer?.query1 || '';
+                state.questionValue = preAnswer?.query2 || '';
                 handleSendDialog();
               }}
             >
