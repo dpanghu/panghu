@@ -66,6 +66,6 @@ export async function resetWordAnalysis<T>(params?: RecordItem): Promise<T> {
     params,
     hiddenLoading: true,
     hiddenErrorMessage: true,
-    timeout: 1000 * 60 * 2,
+    timeout: 1000 * 60 * 10,
   });
 }

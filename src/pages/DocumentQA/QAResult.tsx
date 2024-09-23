@@ -2,7 +2,7 @@ import avatarIcon from '@/assets/images/documentQA/aiIcon.png';
 import userIcon from '@/assets/images/documentQA/userIcon.png';
 import FilePreview from '@/components/FilePreview';
 import { getMessageLast, updateAnswerId } from '@/services/documentQA';
-import { Button } from 'SeenPc';
+import { Button, message } from 'SeenPc';
 import { useReactive, useUpdateEffect } from 'ahooks';
 import TextArea from 'antd/es/input/TextArea';
 import React, { useEffect, useRef } from 'react';
@@ -77,6 +77,16 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
   };
 
   const handleSendDialog = () => {
+    // 判断是否输出完成 输出完 才允许继续问答
+    if (state.showTypewriter) {
+      message.warning('请等待上一次回答结束后再次提问');
+      return;
+    }
+
+    if (!state.questionValue.trim()) {
+      message.warning('请先输入问题');
+      return;
+    }
     state.dialogList.push({
       type: 'question',
       content: state.questionValue.trim(),
@@ -162,8 +172,6 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
     ) {
       console.log('输出完成');
       state.showTypewriter = false;
-
-      // state.aiAnswerStr = '';
     }
   }, [state.typewriterArr, state.streamFinished, state.textWriteFinished]);
 
@@ -185,7 +193,7 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
   }, [state.conversationId]);
 
   useEffect(() => {
-    if (summaryData?.id) {
+    if (summaryData?.id && summaryData?.themeId) {
       getMessageHistory();
     }
     if (!state.themeId) {
@@ -265,6 +273,7 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
         <div className={styles.footer}>
           <div className={styles.baseQuestion}>
             <span
+              title={preAnswer?.query1 || ''}
               onClick={() => {
                 state.questionValue = preAnswer?.query1 || '';
                 handleSendDialog();
@@ -273,6 +282,7 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
               {preAnswer?.query1 || ''}
             </span>
             <span
+              title={preAnswer?.query2 || ''}
               onClick={() => {
                 state.questionValue = preAnswer?.query1 || '';
                 handleSendDialog();
@@ -287,7 +297,10 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
               value={state.questionValue}
               maxLength={200}
               onChange={onQuestionChange}
-              //   onPressEnter={handleSendDialog}
+              onPressEnter={(e) => {
+                e.preventDefault();
+                handleSendDialog();
+              }}
               placeholder="请输入问题，AI将根据文档内容，进行回答"
               style={{ height: 100, resize: 'none' }}
             />
