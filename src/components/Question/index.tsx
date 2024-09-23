@@ -181,7 +181,7 @@ const QuestionNaire: React.FC<IProps> = ({ dataSource, title, description, foote
                                 key={item.id}
                                 label={item.title}
                                 name={`${item.id}`}
-                                rules={item.type == 'checkbox' ? [] : [
+                                rules={item.type == 'checkbox' && !item.isRequired ? [] : [
                                     // { required: item.isRequired, message: `${item.title}为必填` },
                                     {
                                         message: '不能为空',
