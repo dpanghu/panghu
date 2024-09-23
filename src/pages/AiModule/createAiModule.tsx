@@ -235,6 +235,11 @@ const Resume: React.FC = ({ }) => {
         });
       }
     })
+    let hasFile: any = state.data.find((element: any)=> element.type == 'file');
+    if(hasFile !== void 0 && state.saveData.modelTypeId !== '12') {
+      message.error('该模型分类下不支持文件工具类型，请修改工具配置');
+      return;
+    }
     let newportfolio: any = state.saveData.portfolio;
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
     let portfolios: any = extractContentBetweenDoubleBraces(state.saveData.portfolio);
