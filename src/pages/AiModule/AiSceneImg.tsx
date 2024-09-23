@@ -40,6 +40,7 @@ interface TState {
     isTyping: any;
     messageList: any;
     typewriterArrCache: any;
+    status: any;
 }
 
 const extraParams = JSON.parse(
@@ -56,6 +57,7 @@ const JobHunt: React.FC = () => {
     const state = useReactive<TState>({
         curTheme: undefined,
         introduce: false,
+        status: 'ending',
         dialogList: [],
         baseData: [],
         typewriterArrCache: [],
@@ -411,11 +413,14 @@ const JobHunt: React.FC = () => {
                 });
         } else {
             if (state.isLoading === false && state.typewriterArrCache.length === 0) {
+                console.log('22222222222222',state.status);
                 state.visible = false;
-                state.messageList.push({
-                    type: 2,
-                    data: typewriterStrCache.current
-                })
+                if(state.status !== 'ending') {
+                    state.messageList.push({
+                        type: 2,
+                        data: typewriterStrCache.current
+                    })
+                }
             }
         }
     }, [state.isTyping]);
@@ -429,7 +434,7 @@ const JobHunt: React.FC = () => {
                     message.warning('请输入描述场景');
                     return;
                 }
-                if(state.imgId === '' || state.imgId === void 0) {
+                if (state.imgId === '' || state.imgId === void 0) {
                     message.warning('请先上传图片');
                     return;
                 }
@@ -438,6 +443,7 @@ const JobHunt: React.FC = () => {
                     data: messages.value,
                     type: 1
                 });
+                state.status = 'waiting';
                 recogNize({
                     paramId: state.patams,
                     id: state.imgId,
@@ -492,7 +498,8 @@ const JobHunt: React.FC = () => {
                                                 state.messageList.push({
                                                     type: 2,
                                                     data: '请更换图片或提问内容，重新生成。'
-                                                })
+                                                });
+                                                state.status = 'ending';
                                                 // state.typewriterArrCache.push('请更换图片或提问内容，重新生成。')
                                             }
                                             state.isLoading = false;
@@ -503,12 +510,14 @@ const JobHunt: React.FC = () => {
                                         // 接收到数据
                                         receiveMessage: (data) => {
                                             if (data) {
+                                                state.status = 'pending';
                                                 state.typewriterArrCache.push(data!.answer);
                                             }
                                         },
                                     },
                                 ).run();
                             } else if (res.recognizeResult === 3) {
+                                state.status = 'ending';
                                 clearInterval(interView);
                                 state.messageList.push({
                                     type: 2,
@@ -705,6 +714,12 @@ const JobHunt: React.FC = () => {
                                     }
                                 </>
                             })
+                        }
+                        {
+                            state.status === 'waiting' && <div className={styles.receive}>
+                                <img src={aiimg} style={{ width: 24, height: 24, marginRight: 16, borderRadius: '50%', }}></img>
+                                <div className={styles.sendData}>{'等我想想...'}</div>
+                            </div>
                         }
                     </div>
                     {state.visible && (

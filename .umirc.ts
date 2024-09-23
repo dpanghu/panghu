@@ -188,7 +188,7 @@ export default defineConfig({
   npmClient: 'npm',
   proxy: {
     '/api/': {
-      target: 'https://dapi.seentao.com/',
+      target: 'https://tapi.seentao.com/',
       onProxyReq: function (req) {
         if (
           req.path.includes('/chat/stream') ||
