@@ -40,6 +40,14 @@
   font-weight: 400;
   color: #272648;
   position: relative;
+  overflow: hidden;
+  white-space: break-spaces;
+  :global {
+    .rc-markdown-body-extend {
+      display: flex;
+      flex-direction: column;
+    }
+  }
 }
 
 .data-scope {
@@ -115,14 +123,12 @@
 
 .conversion-item {
   background: url('~@/assets/images/rebotIcon.png') no-repeat 0 0 / 24px 24px;
-  height: 130px;
 }
 
 .conversion-content {
-  height: 100%;
   margin-left: 40px;
   width: calc(100% - 100px);
-  background: url('~@/assets/images/aiInitialBg.png') no-repeat 0 0 / 100% 129px;
+  background: url('~@/assets/images/aiInitialBg.png') no-repeat 0 0 / 100% 100%;
   padding: 16px;
 
   h2 {

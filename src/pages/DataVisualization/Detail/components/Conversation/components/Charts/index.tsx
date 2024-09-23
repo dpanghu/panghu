@@ -25,13 +25,21 @@ const Charts: React.FC<Props> = ({ props }) => {
   const state = useReactive({
     type: 'bar',
     data: [],
+    isError: false,
   });
 
   useDeepCompareEffect(() => {
     if (props) {
-      const data = JSON.parse(props.children[0]);
-      if (keys(ChartType).find((chart) => chart === data.type)) {
-        state.type = data.type;
+      let parsedData;
+      try {
+        parsedData = JSON.parse(props.children[0]);
+        state.isError = false;
+      } catch (err) {
+        state.isError = true;
+        return;
+      }
+      if (keys(ChartType).find((chart) => chart === parsedData.type)) {
+        state.type = parsedData.type;
       } else {
         state.type = 'bar';
       }
@@ -39,13 +47,22 @@ const Charts: React.FC<Props> = ({ props }) => {
   }, [props]);
 
   const parsedOptions = useMemo(() => {
+    let parsedData;
+    try {
+      parsedData = JSON.parse(props.children[0]);
+      state.isError = false;
+    } catch (err) {
+      state.isError = true;
+    }
     // @ts-ignore
-    return ChartOptions[state.type](JSON.parse(props.children[0]));
+    return ChartOptions[state.type](parsedData);
   }, [JSON.stringify(props), state.type]);
 
   useMount(() => {
-    let myChart = echarts.init(document.getElementById(randomId));
-    echartRef.current = myChart;
+    if (document.getElementById(randomId)) {
+      let myChart = echarts.init(document.getElementById(randomId));
+      echartRef.current = myChart;
+    }
   });
 
   useEffect(() => {
@@ -77,14 +94,23 @@ const Charts: React.FC<Props> = ({ props }) => {
 
   return (
     <div className={styles['container']}>
-      <div id={randomId} className={styles['chart']}></div>
-      <div className={styles['toggleChart']}>
-        <Popover placement="topRight" content={renderPopoverContent()}>
-          <BarChartOutlined
-            style={{ fontSize: 16, color: '#000', fontWeight: 'light' }}
-          />
-        </Popover>
-      </div>
+      {state.isError && (
+        <div className={styles['error-message']}>
+          解析数据出错，请检查数据格式是否正确
+        </div>
+      )}
+      {!state.isError && (
+        <>
+          <div id={randomId} className={styles['chart']}></div>
+          <div className={styles['toggleChart']}>
+            <Popover placement="topRight" content={renderPopoverContent()}>
+              <BarChartOutlined
+                style={{ fontSize: 16, color: '#000', fontWeight: 'light' }}
+              />
+            </Popover>
+          </div>
+        </>
+      )}
     </div>
   );
 };

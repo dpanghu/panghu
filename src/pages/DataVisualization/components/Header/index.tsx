@@ -171,7 +171,9 @@ const Header: React.FC<Props> = ({}) => {
           <span>删除后不可撤回，请确定是否删除？</span>
           <Button
             type="primary"
-            onClick={() => deleteConfirm(params?.id as string)}
+            onClick={() =>
+              deleteConfirm((params?.id as string) || state.delModalVisible)
+            }
           >
             确定
           </Button>
