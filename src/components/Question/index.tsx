@@ -61,6 +61,21 @@ const QuestionNaire: React.FC<IProps> = ({ dataSource, title, description, foote
         }));
     };
 
+    const checkUsername = async (rule: any, value: any) => {
+        console.log(value);
+        // 这里可以是异步请求来验证用户名是否存在
+        if (value.trim() == '') {
+            console.log(value);
+          throw new Error('不能为空');
+        }
+        if (value == void 0) {
+            console.log(value);
+            throw new Error('不能为空');
+          }
+        // 如果验证通过，返回Promise.resolve()
+        return Promise.resolve();
+      };
+
     const handleInputChange = (itemId: any, e: any) => {
         const inputValue = e.slice(0, 10);
         setInputValues((prevValues: any) => ({
@@ -110,7 +125,7 @@ const QuestionNaire: React.FC<IProps> = ({ dataSource, title, description, foote
                     const isInsertIndex = index + 1 === insertPosition;
                     switch (item.type) {
                         case 'input':
-                            formItemContent = <Input value={value} onChange={(e: any) => setValue(e)} />;
+                            formItemContent = <Input maxLength={50} value={value} onChange={(e: any) => setValue(e)} />;
                             break;
                         case 'select':
                             formItemContent = <Select option={item.options || []} value={value} onChange={(e: any) => setValue(e)} />;
@@ -158,14 +173,20 @@ const QuestionNaire: React.FC<IProps> = ({ dataSource, title, description, foote
 
 
                     return (
+                        // eslint-disable-next-line react/jsx-key
                         <div className={styles.form_item}>
                             <Form.Item
                                 key={item.id}
                                 label={item.title}
                                 name={`${item.id}`}
                                 rules={[
-                                    { required: item.isRequired, message: `${item.title}为必填` }
+                                    // { required: item.isRequired, message: `${item.title}为必填` },
+                                    {
+                                        message: '不能为空',
+                                        validator: checkUsername
+                                      }
                                 ]}
+                                
                             >
                                 {formItemContent}
                             </Form.Item>

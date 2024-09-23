@@ -105,7 +105,7 @@ const App: React.FC = () => {
                 state.open = false;
             }} cancelText={'取消'} okText={'确定'} title='补充学习规划内容' open={state.open}>
                 <div style={{ width: '100%' }}>
-                    <Input onChange={(e: any) => {
+                    <Input maxLength={100} onChange={(e: any) => {
                         state.textvalue = e;
                     }} value={state.textvalue} style={{ width: '100%', background: 'rgba(0,0,0,0.04)' }} type='textarea' placeholder={'请补充你的学习规划，例如：当前学习水平，获得证书、个人优势与特点……'}></Input>
                 </div>
@@ -122,7 +122,7 @@ const App: React.FC = () => {
                 <div className={styles.banner1}>
                     <img src={banner1} style={{ position: 'absolute', width: '100%', height: "100%" }}></img>
                     <img src={banner1Text} style={{ position: 'absolute', width: 130, height: 17, top: 13 }}></img>
-                    <div style={{ width: "885px", position: 'relative', marginTop: 60 }}>
+                    <div style={{ width: "885px", position: 'relative', marginTop: 60,display:'flex',flexDirection:'column',alignItems:'center' }}>
                         <div style={{ display: "flex", width: '100%', flexWrap: 'wrap', marginTop: 60 }}>
                             {
                                 state.portrait && state.portrait.map((lists: any, index: any) => {
@@ -140,7 +140,7 @@ const App: React.FC = () => {
                                 })
                             }
                         </div>
-                        <img src={banner1people} style={{ position: 'absolute', width: '100%', top: 0 }}></img>
+                        <img src={banner1people} style={{ position: 'absolute', width: '80%', top: 0,  }}></img>
                     </div>
                     <img src={banner2} style={{ position: 'absolute', width: '100%', bottom: 205, height: 43 }}></img>
                     <img src={banner2Text} style={{ position: 'absolute', width: 174, bottom: 221 }}></img>
