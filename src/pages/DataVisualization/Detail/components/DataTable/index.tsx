@@ -12,7 +12,7 @@ type Props = {
   fileData: DetailResponseType | null;
 };
 
-const ZOOM_SCALES = [50, 75, 100, 150, 200];
+const ZOOM_SCALES = [100, 150, 200];
 enum ZOOM_OPT_TYPE {
   PREV = 'prev',
   NEXT = 'next',
@@ -21,7 +21,7 @@ enum ZOOM_OPT_TYPE {
 const DataTable: React.FC<Props> = ({ fileData }) => {
   const handsonTable = useRef<Handsontable | null>(null);
   const state = useReactive({
-    zoomIndex: 2,
+    zoomIndex: 0,
   });
   useMount(() => {
     const container = document.querySelector('#handsomTable');
@@ -37,7 +37,7 @@ const DataTable: React.FC<Props> = ({ fileData }) => {
         stretchH: 'all',
         manualColumnResize: true,
         manualRowResize: true,
-        rowHeaders: true,
+        // rowHeaders: true,
         colHeaders: true,
         licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
       });
@@ -49,6 +49,7 @@ const DataTable: React.FC<Props> = ({ fileData }) => {
     if (fileData) {
       const rst = formatData(fileData);
       handsonTable.current!.loadData(rst);
+      state.zoomIndex = 0;
     }
   }, [JSON.stringify(fileData)]);
 
@@ -72,7 +73,7 @@ const DataTable: React.FC<Props> = ({ fileData }) => {
     const size = getAllWidthsAndHeight();
     const originZoom = ZOOM_SCALES[state.zoomIndex];
     if (type === ZOOM_OPT_TYPE.NEXT) {
-      if (state.zoomIndex < 4) {
+      if (state.zoomIndex < 2) {
         state.zoomIndex += 1;
       } else {
         return;
@@ -94,7 +95,6 @@ const DataTable: React.FC<Props> = ({ fileData }) => {
       colWidths,
       rowHeights,
     });
-    handsonTable.current.render();
     allCells.forEach(function (cell) {
       cell.style.fontSize = (14 * ZOOM_SCALES[state.zoomIndex]) / 100 + 'px';
     });
