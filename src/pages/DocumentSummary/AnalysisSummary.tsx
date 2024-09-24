@@ -25,7 +25,9 @@ const AnalysisSummary: React.FC<TProps> = ({
   });
 
   const formatData = () => {
-    const data = JSON.parse(summaryData?.mindMap || '{}');
+    const data = JSON.parse(summaryData?.mindMap || '[]');
+    console.log(data);
+
     if (data?.length && data?.length === 1) {
       state.mindData = data[0];
     } else if (data?.length && data?.length > 1) {
@@ -34,7 +36,10 @@ const AnalysisSummary: React.FC<TProps> = ({
         children: data,
       };
     } else {
-      state.mindData = data;
+      state.mindData = {
+        name: '文档总结',
+        children: [],
+      };
     }
   };
 
