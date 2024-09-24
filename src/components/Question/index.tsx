@@ -39,10 +39,12 @@ const QuestionNaire: React.FC<IProps> = ({ dataSource, title, description, foote
         Object.keys(values) && Object.keys(values).map((item: any)=> {
             let dataSources: any = dataSource.find((element: any)=> element.id == item);
             if(dataSources !== void 0) {
-                arr.push({
-                    ...dataSources,
-                    value: values[item],
-                })
+                if(dataSources.displays !== 0) {
+                    arr.push({
+                        ...dataSources,
+                        value: values[item],
+                    })
+                }
             }
         })
         // const formValues = Object.keys(values).reduce((acc: any, key) => {
@@ -155,6 +157,14 @@ const QuestionNaire: React.FC<IProps> = ({ dataSource, title, description, foote
                                         connect && connect.map((element: any) => {
                                             let source: any = dataSource.find((elements: any)=> elements.id == element );
                                             source.displays = 1;
+                                        })
+                                        handleRadioChange(item.id, e.target.value);
+                                    }else if(chooseRadio.needInput) {
+                                        // eslint-disable-next-line @typescript-eslint/no-unused-expressions, array-callback-return
+                                        dataSource && dataSource.map((source: any)=> {
+                                            if(source.display == 0) {
+                                                source.displays = 0;
+                                            } 
                                         })
                                         handleRadioChange(item.id, e.target.value);
                                     }
