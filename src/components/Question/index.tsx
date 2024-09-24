@@ -2,6 +2,8 @@ import React, { ReactNode, useMemo } from 'react';
 import { Form, Radio } from 'antd';
 import { Input, Select, ComboBox, Button } from 'SeenPc';
 import styles from './index.less';
+import { AntdFormUtils } from 'ahooks/lib/useAntdTable/types';
+import { useMount } from 'ahooks';
 
 type Question = {
     title: string;
@@ -10,6 +12,7 @@ type Question = {
     isRequired: boolean;
     id: string;
     needValue?: any;
+    display?: any;
 }
 
 type IProps = {
@@ -53,6 +56,10 @@ const QuestionNaire: React.FC<IProps> = ({ dataSource, title, description, foote
         // form.resetFields();
         // setSelectValues({});
     };
+
+    useMount(()=> {
+
+    })
 
     const handleRadioChange = (itemId: any, value: any) => {
         setSelectValues((prevValues: any) => ({
@@ -126,14 +133,32 @@ const QuestionNaire: React.FC<IProps> = ({ dataSource, title, description, foote
                     const isInsertIndex = index + 1 === insertPosition;
                     switch (item.type) {
                         case 'input':
-                            formItemContent = <Input maxLength={50} value={value} onChange={(e: any) => setValue(e)} />;
+                            formItemContent = <Input maxLength={30} value={value} onChange={(e: any) => setValue(e)} />;
                             break;
                         case 'select':
                             formItemContent = <Select option={item.options || []} value={value} onChange={(e: any) => setValue(e)} />;
                             break;
                         case 'radio':
                             if (item.type === 'radio' && item.options?.find((element: any) => element.needInput == 1)) {
-                                formItemContent = <Radio.Group key={item.id} onChange={(e) => handleRadioChange(item.id, e.target.value)} value={selectValues[item.id]}>
+                                formItemContent = <Radio.Group key={item.id} onChange={(e) => {
+                                    let chooseRadio: any = item.options.find((element: any)=> element.value == e.target.value);
+                                    if(chooseRadio.relQuestionIds !== void 0) {
+                                        // eslint-disable-next-line @typescript-eslint/no-unused-expressions, array-callback-return
+                                        dataSource && dataSource.map((source: any)=> {
+                                            if(source.display == 0) {
+                                                source.displays = 0;
+                                            } 
+                                        })
+                                        console.log('sssssssssssssssss',JSON.stringify(dataSource));
+                                        let connect: any = chooseRadio.relQuestionIds.split(',');
+                                        // eslint-disable-next-line @typescript-eslint/no-unused-expressions, array-callback-return
+                                        connect && connect.map((element: any) => {
+                                            let source: any = dataSource.find((elements: any)=> elements.id == element );
+                                            source.displays = 1;
+                                        })
+                                        handleRadioChange(item.id, e.target.value);
+                                    }
+                                }} value={selectValues[item.id]}>
                                     {item.options.map((option, optionIndex) => (
                                         <Radio key={optionIndex} value={option.value}>
                                             {String.fromCharCode(65 + optionIndex % 26) + '. ' + option.label}
@@ -160,7 +185,10 @@ const QuestionNaire: React.FC<IProps> = ({ dataSource, title, description, foote
                                 </Radio.Group>
 
                             } else {
-                                formItemContent = <ComboBox options={item.options || []} type={item.type} />;
+                                formItemContent = <ComboBox onChange={(e: any)=> {
+                                    let chooseRadio: any = item.options.find((element: any)=> element.value == e.target.value);
+                                    console.log(chooseRadio);
+                                }} options={item.options || []} type={item.type} />;
                             }
                             break;
                         case 'checkbox':
@@ -176,18 +204,18 @@ const QuestionNaire: React.FC<IProps> = ({ dataSource, title, description, foote
 
                     return (
                         // eslint-disable-next-line react/jsx-key
-                        <div className={styles.form_item}>
+                        <div className={styles.form_item} style={{ display: item.displays == '1' ? 'flex' : 'none' }}>
                             <Form.Item
                                 key={item.id}
                                 label={item.title}
                                 name={`${item.id}`}
-                                rules={item.type == 'checkbox' && !item.isRequired ? [] : [
+                                rules={item.type == 'checkbox' ? [] : item.isRequired ?  [
                                     // { required: item.isRequired, message: `${item.title}为必填` },
                                     {
                                         message: '不能为空',
                                         validator:  checkUsername
                                     }
-                                ]}
+                                ] : []}
                                 
                             >
                                 {formItemContent}
