@@ -13,3 +13,4 @@
 .swc
 /npminstall-debug.log
 .history
+.vscode/settings.json

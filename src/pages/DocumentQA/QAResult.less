@@ -56,11 +56,26 @@
           }
         }
         .question {
+          position: relative;
           background: rgba(255, 255, 255, 0.8);
           border-radius: 8px;
           padding: 16px;
           max-width: calc(100% - 80px);
           line-height: 26px;
+          padding-bottom: 48px;
+          .actionBtns {
+            position: absolute;
+            bottom: 22px;
+            right: 24px;
+            display: flex;
+            column-gap: 24px;
+            align-items: center;
+            > img {
+              width: 16px;
+              height: 16px;
+              cursor: pointer;
+            }
+          }
         }
         :global {
           .Typewriter {
