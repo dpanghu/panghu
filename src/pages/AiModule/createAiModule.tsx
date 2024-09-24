@@ -598,6 +598,10 @@ const Resume: React.FC = ({ }) => {
     }
   }
 
+  const getPopupContainer = (triggerNode: any) => {
+    return triggerNode.parentElement; // 返回你想要挂载下拉菜单的DOM元素
+  };
+
   const renderPreview = (item: any) => {
     switch (item.type) {
       case 'text':
@@ -608,7 +612,7 @@ const Resume: React.FC = ({ }) => {
       case 'select':
         return <div className={styles.previewBox}>
           <div className={styles.previewTitle}>{item.title}</div>
-          <Select style={{ width: '100%' }} placeholder={item.tips} option={item.option}></Select>
+          <Selects getPopupContainer={getPopupContainer} style={{ width: '100%' }} placeholder={item.tips} option={item.option}></Selects>
         </div>
       case 'radio':
         return <div className={styles.previewBox}>

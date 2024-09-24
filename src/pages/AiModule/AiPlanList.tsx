@@ -140,7 +140,7 @@ const App: React.FC = () => {
                     <img src={planbac} style={{ position: 'absolute', width: '868px', height: 49, marginTop: 19 }}></img>
                     <div className={styles.tables}>
                         <div className={styles.box}>
-                            <div className={styles.ths} style={{ width: '65px' }}>日期</div>
+                            <div className={styles.ths} style={{ width: '90px' }}>日期</div>
                             <div className={styles.ths}>学习内容</div>
                             <div className={styles.ths}>学习内容</div>
                             <div className={styles.ths}>学习内容</div>
@@ -149,7 +149,7 @@ const App: React.FC = () => {
                         {
                             state.planList && state.planList.map((item: any) => {
                                 return <div className={styles.boxs} key={item.id}>
-                                    <div className={styles.ths} style={{ width: '65px', marginLeft: 0 }}>{item.day}</div>
+                                    <div className={styles.ths} style={{ width: '90px', marginLeft: 0 }}>{item.day}</div>
                                     {
                                         item.plan && item.plan.map((items: any) => {
                                             return <>
