@@ -100,3 +100,12 @@ export async function getFileUrl<T>(params?: RecordItem): Promise<T> {
     params,
   });
 }
+
+//设置满意程度
+export async function setSatisfaction<T>(params?: RecordItem): Promise<T> {
+  return $axios.request({
+    url: '/xai/message/satisfied/update',
+    method: 'POST',
+    params,
+  });
+}
