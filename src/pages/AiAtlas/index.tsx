@@ -37,49 +37,6 @@ const AiAtlas = ({}) => {
 
   const randomId = useRef<string>('');
 
-  useMount(() => {
-    const queryParams = JSON.parse(
-      // @ts-ignore
-      window.sessionStorage.getItem('queryParams'),
-    );
-    getConvertParamId(queryParams)
-      .then((id) => {
-        window.sessionStorage.setItem(
-          'queryParams',
-          JSON.stringify({ ...queryParams, paramId: id }),
-        );
-        getAtlasHistory().then((rst) => {
-          if (rst) {
-            state.data = rst;
-            generateGraph(JSON.parse(rst.info));
-          }
-        });
-        state.loading = false;
-      })
-      .catch(() => {
-        state.loading = false;
-      });
-  });
-
-  // 抽取知识
-  const extractMsg = (userMessage: string) => {
-    state.extractLoading = true;
-    state.data!.extractState = EXTRACT_STATUS.SUCCESS;
-    state.data!.createState = CREATE_STATUS.UNGENERATED;
-    if (userMessage) {
-      extractKnowledge({ userMessage, pluginCode: PluginCode })
-        .then((rst) => {
-          if (rst) {
-            state.data!.info = rst.info;
-          }
-          state.extractLoading = false;
-        })
-        .catch(() => {
-          state.extractLoading = false;
-        });
-    }
-  };
-
   // 生成图谱
   const generateGraph = (graphData: TableDataType[]) => {
     const edges: GraphDataType['edges'] = [];
@@ -114,19 +71,72 @@ const AiAtlas = ({}) => {
     };
     setTimeout(() => {
       state.graphLoading = false;
-      state.data!.createState = CREATE_STATUS.GENERATED;
     }, 1000);
+  };
+
+  useMount(() => {
+    const queryParams = JSON.parse(
+      // @ts-ignore
+      window.sessionStorage.getItem('queryParams'),
+    );
+    getConvertParamId(queryParams)
+      .then((id) => {
+        window.sessionStorage.setItem(
+          'queryParams',
+          JSON.stringify({ ...queryParams, paramId: id }),
+        );
+        getAtlasHistory().then((rst) => {
+          if (rst) {
+            state.data = rst;
+            if (rst.createState === CREATE_STATUS.GENERATED) {
+              generateGraph(JSON.parse(rst.info));
+            }
+          }
+        });
+        state.loading = false;
+      })
+      .catch(() => {
+        state.loading = false;
+      });
+  });
+
+  // 抽取知识
+  const extractMsg = (userMessage: string) => {
+    state.extractLoading = true;
+    state.data = {
+      ...state.data,
+      extractState: EXTRACT_STATUS.SUCCESS,
+      createState: CREATE_STATUS.UNGENERATED,
+    };
+    if (userMessage) {
+      extractKnowledge({ userMessage, pluginCode: PluginCode })
+        .then((rst) => {
+          if (rst) {
+            state.data!.info = rst.info;
+          }
+          state.extractLoading = false;
+        })
+        .catch(() => {
+          state.extractLoading = false;
+        });
+    }
   };
 
   // 随机示例
   const createRandomCase = () => {
-    getRandomCase({ id: randomId.current, pluginCode: PluginCode }).then(
-      (rst) => {
-        randomId.current = rst.id;
-        state.data = rst;
-        generateGraph(JSON.parse(state.data!.info));
-      },
-    );
+    state.data = {
+      ...state.data,
+      createState: CREATE_STATUS.UNGENERATED,
+    };
+    setTimeout(() => {
+      getRandomCase({ id: randomId.current, pluginCode: PluginCode }).then(
+        (rst) => {
+          randomId.current = rst.id;
+          state.data = rst;
+          generateGraph(JSON.parse(state.data!.info));
+        },
+      );
+    }, 0);
   };
 
   return (
@@ -163,6 +173,10 @@ const AiAtlas = ({}) => {
                     })
                       .then(() => {
                         generateGraph(data);
+                        state.data = {
+                          ...state.data,
+                          createState: CREATE_STATUS.GENERATED,
+                        };
                       })
                       .catch(() => {
                         state.graphLoading = false;
