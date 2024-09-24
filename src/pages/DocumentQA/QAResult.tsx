@@ -1,7 +1,17 @@
+import activeCopyIcon from '@/assets/images/documentQA/activeCopy.png';
+import activeDownIcon from '@/assets/images/documentQA/activeDown.png';
+import activeUpIcon from '@/assets/images/documentQA/activeUp.png';
 import avatarIcon from '@/assets/images/documentQA/aiIcon.png';
+import baseCopyIcon from '@/assets/images/documentQA/baseCopy.png';
+import baseDownIcon from '@/assets/images/documentQA/baseDown.png';
+import baseUpIcon from '@/assets/images/documentQA/baseUp.png';
 import userIcon from '@/assets/images/documentQA/userIcon.png';
 import FilePreview from '@/components/FilePreview';
-import { getMessageLast, updateAnswerId } from '@/services/documentQA';
+import {
+  getMessageLast,
+  updateAnswerId,
+  updateSatisfied,
+} from '@/services/documentQA';
 import { scrollToBottom } from '@/utils/utils';
 import { Button, message } from 'SeenPc';
 import { useReactive, useUpdateEffect } from 'ahooks';
@@ -27,6 +37,8 @@ interface TState {
   showTypewriter: boolean;
   aiAnswerStr: string;
   receiveText: boolean;
+  copyActive: boolean;
+  downActive: boolean;
 }
 
 const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
@@ -47,6 +59,8 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
     showTypewriter: false,
     aiAnswerStr: '',
     receiveText: false,
+    copyActive: false,
+    downActive: false,
   });
 
   const onQuestionChange = (
@@ -62,20 +76,33 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
         themeId: summaryData?.themeId,
         num: 10,
       });
+      state.dialogList = [];
       result.reverse().map((item) => {
         if (item.type === 0) {
           state.dialogList.push({
             type: 'question',
             content: item.content,
+            satisfied: item.satisfied,
+            id: item.id,
           });
         } else if (item.type === 1) {
           state.dialogList.push({
             type: 'answer',
             content: item.content,
+            satisfied: item.satisfied,
+            id: item.id,
           });
         }
       });
     } catch (error) {}
+  };
+
+  const handleSatisfied = async (params: RecordItem, type: 'down' | 'up') => {
+    await updateSatisfied({
+      messageId: params.id,
+      satisfied: type === 'down' ? 0 : 1,
+    });
+    getMessageHistory();
   };
 
   const handleSendDialog = () => {
@@ -155,6 +182,39 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
     });
   };
 
+  const handleCopyContent = (params: RecordItem) => {
+    state.copyActive = true;
+    if (navigator.clipboard && window.isSecureContext) {
+      return window.navigator?.clipboard
+        ?.writeText(params?.content)
+        .then(() => {
+          message.success(`文本已复制`);
+        })
+        .catch(() => {
+          message.error('复制失败，请手动右键复制');
+        });
+      // return navigator.clipboard.writeText(textToCopy);
+    } else {
+      // 创建text area
+      let textArea = document.createElement('textarea');
+      textArea.value = params?.content;
+      // 使text area不在viewport，同时设置不可见
+      textArea.style.position = 'absolute';
+      textArea.style.opacity = '0';
+      textArea.style.left = '-999999px';
+      textArea.style.top = '-999999px';
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      return new Promise((res, rej) => {
+        message.success(`文本已复制`);
+        // 执行复制命令并移除文本框
+        document.execCommand('copy') ? res(null) : rej();
+        textArea.remove();
+      });
+    }
+  };
+
   useUpdateEffect(() => {
     // if (!typeWriter.current) {
     //   return;
@@ -186,15 +246,16 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
 
   useUpdateEffect(() => {
     if (!state.showTypewriter) {
-      state.dialogList.push({
-        type: 'answer',
-        content: state.aiAnswerStr || '暂无结果',
-      });
+      // state.dialogList.push({
+      //   type: 'answer',
+      //   content: state.aiAnswerStr || '暂无结果',
+      // });
+      getMessageHistory();
       state.aiAnswerStr = '';
       state.typewriterArr = [];
       setTimeout(() => {
         scrollToBottom(historyEleHref.current);
-      }, 50);
+      }, 200);
     }
   }, [state.showTypewriter]);
 
@@ -250,7 +311,32 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
                   alt=""
                   className={styles.avatar}
                 />
-                <div className={styles.question}>{item.content}</div>
+                <div className={styles.question}>
+                  {item.content}
+                  <div className={styles.actionBtns}>
+                    <img
+                      onClick={() => {
+                        handleSatisfied(item, 'up');
+                      }}
+                      src={item.satisfied === 1 ? activeUpIcon : baseUpIcon}
+                      alt=""
+                    />
+                    <img
+                      onClick={() => {
+                        handleSatisfied(item, 'down');
+                      }}
+                      src={item.satisfied === 0 ? activeDownIcon : baseDownIcon}
+                      alt=""
+                    />
+                    <img
+                      onClick={() => {
+                        handleCopyContent(item);
+                      }}
+                      src={state.copyActive ? activeCopyIcon : baseCopyIcon}
+                      alt=""
+                    />
+                  </div>
+                </div>
               </div>
             ) : (
               <div className={styles.userQuestion}>
