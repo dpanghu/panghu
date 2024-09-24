@@ -55,3 +55,12 @@ export async function getMessageLast(params?: RecordItem) {
     params,
   });
 }
+
+export async function analysisAnswer(params?: RecordItem) {
+  return $axios.request({
+    url: `/seentao/xai/word/answer/analysis`,
+    method: 'GET',
+    params,
+    hiddenLoading: true,
+  });
+}
