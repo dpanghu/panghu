@@ -4,12 +4,19 @@ import duihua from '@/assets/images/duihua.png';
 import aiimg from '@/assets/images/rebotIcon.png';
 import shouqi from '@/assets/images/shouqi.png';
 import zhankai from '@/assets/images/zhankai.png';
+import copy from '@/assets/images/copyIcon@2x.png'
+import refresh from '@/assets/images/refreshIcon@2x.png'
+import dislikeOutlined from '@/assets/images/DislikeOutlined@2x.png'
+import bDisLikeOutlined from '@/assets/images/DislikeOutlined2@2x.png'
+import likeOutlined from '@/assets/images/LikeOutlined@2x.png'
+import bLikeOutlined from '@/assets/images/LikeOutlined2@2x.png'
 import { getConvertParamId } from '@/services/aiJobHunt/index';
 import {
   deleteHistory,
   getHistory,
   getHistoryDetail,
   getPluginDetail,
+  setSatisfaction,
 } from '@/services/aiModule';
 import { getQueryParam } from '@/utils/utils';
 import { Button, ComboBox, Input, Select } from 'SeenPc';
@@ -41,6 +48,8 @@ interface TState {
   open: any;
   isTyping: any;
   typewriterArrCache: any;
+  messageId: any;
+  satisfied: any;
 }
 
 const renderPreview = (item: any) => {
@@ -246,6 +255,8 @@ const JobHunt: React.FC = () => {
     visible: false,
     patams: '',
     data: [],
+    messageId: '',
+    satisfied: 0,
   });
 
   // 是否完成对话
@@ -281,12 +292,13 @@ const JobHunt: React.FC = () => {
       limit: 999999999,
       pageNum: 1,
     }).then((res: any) => {
-      if (type === 1) {
-        if (res.data.length !== 0) {
-          res.data[res.data.length - 1].active = true;
-        }
-      }
+      // if (type === 1) {
+      //   if (res.data.length !== 0) {
+      //     res.data[res.data.length - 1].active = true;
+      //   }
+      // }
       state.messageArr = res.data || [];
+      // getMessageDetail(res?.data[0]?.id, type)
     });
   };
 
@@ -294,13 +306,13 @@ const JobHunt: React.FC = () => {
     let error: any = false;
     if (isArray(state.allow)) {
       if (state.allow[0] === '1') {
-        console.log('sads',JSON.stringify(state.data));
+        console.log('sads', JSON.stringify(state.data));
         let sendData: any = {};
         // eslint-disable-next-line @typescript-eslint/no-unused-expressions, array-callback-return
         state.data &&
           // eslint-disable-next-line array-callback-return
           state.data.map((item: any) => {
-            console.log('22222',item.value);
+            console.log('22222', item.value);
             if (item.value === void 0 || item.value === '') {
               item.error = true;
               error = true;
@@ -361,6 +373,12 @@ const JobHunt: React.FC = () => {
     }
   };
 
+  useUpdateEffect(() => {
+    if (state.isLoading === false && state.typewriterArrCache.length === 0) {
+      getMessageDetail(state.messageArr[0].id, 1)
+    }
+
+  }, [state.isTyping]);
   useMount(() => {
     getConvertParamId({}).then((res: any) => {
       getHistoryList(res);
@@ -417,6 +435,65 @@ const JobHunt: React.FC = () => {
       }
     });
   });
+
+  const copyText = () => {
+    navigator.clipboard
+      .writeText(typewriterStrCache.current)
+      .then(() => {
+        message.success('复制成功!');
+      })
+      .catch((err) => {
+        message.error('复制失败，请重新尝试！');
+        console.error('Copy to clipboard failed', err);
+      });
+  }
+
+  const setSatisfied = (satisfied: any) => {
+    setSatisfaction({
+      satisfied,
+      messageId: state.messageId
+    })
+  }
+
+  const likeAnswer = () => {
+    if (state.satisfied === 1) {
+      state.satisfied = -1
+      setSatisfied(-1)
+    } else {
+      state.satisfied = 1
+      setSatisfied(1)
+    }
+  }
+
+  const disLikeAnswer = () => {
+    if (state.satisfied === 0) {
+      state.satisfied = -1
+      setSatisfied(-1)
+    } else {
+      state.satisfied = 0
+      setSatisfied(0)
+    }
+  }
+
+  const getMessageDetail = (id: any, type?: any) => {
+    let clone: any = state.messageArr;
+    clone.forEach((element: any) => {
+      element.active = false;
+    });
+    let choosedata: any = clone.find((element: any) => element.id == id);
+    choosedata.active = true;
+    state.messageArr = clone;
+    getHistoryDetail({
+      themeId: choosedata.id,
+    }).then((res: any) => {
+      if (type !== 1) {
+        typewriterStrCache.current = res.answer;
+      }
+      state.visible = true;
+      state.messageId = res.messageId
+      state.satisfied = res.satisfied;
+    });
+  }
 
   return (
     <div className={styles.aicontainer}>
@@ -532,7 +609,21 @@ const JobHunt: React.FC = () => {
                       ></img>
                       <div className={styles.finallText}>
                         {typewriterStrCache.current}
-                        333
+                        <div className={styles.finallTextBottom}>
+                          <div>
+                            <span style={{ marginRight: 16 }}>您对本次的回答满意吗？</span>
+                            <img src={state.satisfied === 1 ? bLikeOutlined : likeOutlined} style={{ marginRight: 24, cursor: 'pointer' }}
+                              onClick={likeAnswer} />
+                            <img src={state.satisfied === 0 ? bDisLikeOutlined : dislikeOutlined} style={{ cursor: 'pointer' }} onClick={disLikeAnswer} />
+                          </div>
+                          <div>
+                            <span style={{ marginRight: 24 }}>{typewriterStrCache.current?.length || 0}个字符</span>
+                            <span style={{ marginRight: 24, cursor: 'pointer' }} onClick={() => {
+                              send();
+                            }}><img src={refresh} style={{ marginRight: 3 }} />重新回答</span>
+                            <img onClick={copyText} style={{ cursor: 'pointer' }} src={copy} />
+                          </div>
+                        </div>
                         {/* <pre className={styles.texts} style={{ whiteSpace: 'pre-wrap', margin: 0, color: '#272648', fontSize: 14, lineHeight: '24px',fontWeight: 400 }}>
                     {typewriterStrCache.current}
                   </pre> */}
@@ -595,18 +686,7 @@ const JobHunt: React.FC = () => {
                   <div
                     key={el.id}
                     onClick={() => {
-                      let clone: any = state.messageArr;
-                      clone.forEach((element: any) => {
-                        element.active = false;
-                      });
-                      el.active = true;
-                      state.messageArr = clone;
-                      getHistoryDetail({
-                        themeId: el.id,
-                      }).then((res: any) => {
-                        typewriterStrCache.current = res.answer;
-                        state.visible = true;
-                      });
+                      getMessageDetail(el.id);
                     }}
                     style={{ background: el.active ? 'white' : 'none' }}
                     className={styles.messageBox}
