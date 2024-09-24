@@ -22,6 +22,7 @@ const { Dragger } = Upload;
 interface TState {
     curTheme: any;
     dialogList: any;
+    userImg: any;
     excludeId: any;
     editId: string;
     editName: string;
@@ -39,6 +40,7 @@ interface TState {
     isTyping: any;
     messageList: any;
     typewriterArrCache: any;
+    status: any;
 }
 
 const extraParams = JSON.parse(
@@ -55,10 +57,12 @@ const JobHunt: React.FC = () => {
     const state = useReactive<TState>({
         curTheme: undefined,
         introduce: false,
+        status: 'ending',
         dialogList: [],
         baseData: [],
         typewriterArrCache: [],
         editId: '',
+        userImg: '',
         excludeId: '',
         messageArr: [],
         isLoading: false,
@@ -199,7 +203,7 @@ const JobHunt: React.FC = () => {
         switch (item.elementType) {
             case 'file':
                 return <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
-                    <Upload {...imgProps}><Button icon={<img src={uploadspng} style={{ width: 16, height: 16, marginRight: 4 }}></img>} style={{ width: 92, marginTop: 12 }} size={'small'} type='primary'>上传图片</Button></Upload>
+                    <Upload {...imgProps} showUploadList={false}><Button icon={<img src={uploadspng} style={{ width: 16, height: 16, marginRight: 4 }}></img>} style={{ width: 92, marginTop: 12 }} size={'small'} type='primary'>上传图片</Button></Upload>
                     <Dragger {...imgProps} showUploadList={false}>
                         <div className={styles.previewBox} style={{ width: '100%', height: 178, display: 'flex', marginTop: 8, justifyContent: 'center', flexDirection: 'column', cursor: 'pointer', color: '#333333', fontSize: 14, lineHeight: '21px' }}>
                             <img src={state.imgUrl === '' ? tushengwen : state.imgUrl} style={{ position: 'absolute', width: '100%', height: 178 }}></img>
@@ -409,11 +413,14 @@ const JobHunt: React.FC = () => {
                 });
         } else {
             if (state.isLoading === false && state.typewriterArrCache.length === 0) {
+                console.log('22222222222222',state.status);
                 state.visible = false;
-                state.messageList.push({
-                    type: 2,
-                    data: typewriterStrCache.current
-                })
+                if(state.status !== 'ending') {
+                    state.messageList.push({
+                        type: 2,
+                        data: typewriterStrCache.current
+                    })
+                }
             }
         }
     }, [state.isTyping]);
@@ -427,11 +434,16 @@ const JobHunt: React.FC = () => {
                     message.warning('请输入描述场景');
                     return;
                 }
+                if (state.imgId === '' || state.imgId === void 0) {
+                    message.warning('请先上传图片');
+                    return;
+                }
                 state.isLoading = true;
                 state.messageList.push({
                     data: messages.value,
                     type: 1
                 });
+                state.status = 'waiting';
                 recogNize({
                     paramId: state.patams,
                     id: state.imgId,
@@ -486,7 +498,8 @@ const JobHunt: React.FC = () => {
                                                 state.messageList.push({
                                                     type: 2,
                                                     data: '请更换图片或提问内容，重新生成。'
-                                                })
+                                                });
+                                                state.status = 'ending';
                                                 // state.typewriterArrCache.push('请更换图片或提问内容，重新生成。')
                                             }
                                             state.isLoading = false;
@@ -497,12 +510,14 @@ const JobHunt: React.FC = () => {
                                         // 接收到数据
                                         receiveMessage: (data) => {
                                             if (data) {
+                                                state.status = 'pending';
                                                 state.typewriterArrCache.push(data!.answer);
                                             }
                                         },
                                     },
                                 ).run();
                             } else if (res.recognizeResult === 3) {
+                                state.status = 'ending';
                                 clearInterval(interView);
                                 state.messageList.push({
                                     type: 2,
@@ -534,6 +549,7 @@ const JobHunt: React.FC = () => {
             state.patams = res;
         });
         let qsData: any = JSON.parse(window.sessionStorage.getItem('commonDatas') as any);
+        state.userImg = qsData?.userImg;
         getPluginDetail({
             id: qsData.imageId,
             userId: '1',
@@ -690,7 +706,7 @@ const JobHunt: React.FC = () => {
                                     {
                                         item.type === 1 ? <div className={styles.send}>
                                             <div className={styles.sendData}>{item.data}</div>
-                                            <img src={''} style={{ width: 32, height: 32, marginLeft: 16, borderRadius: '50%', }}></img>
+                                            <img src={state.userImg} style={{ width: 32, height: 32, marginLeft: 16, borderRadius: '50%', }}></img>
                                         </div> : <div className={styles.receive}>
                                             <img src={aiimg} style={{ width: 24, height: 24, marginRight: 16, borderRadius: '50%', }}></img>
                                             <div className={styles.sendData}>{item.data}</div>
@@ -698,6 +714,12 @@ const JobHunt: React.FC = () => {
                                     }
                                 </>
                             })
+                        }
+                        {
+                            state.status === 'waiting' && <div className={styles.receive}>
+                                <img src={aiimg} style={{ width: 24, height: 24, marginRight: 16, borderRadius: '50%', }}></img>
+                                <div className={styles.sendData}>{'等我想想...'}</div>
+                            </div>
                         }
                     </div>
                     {state.visible && (

@@ -29,6 +29,8 @@ const FileUpload: React.FC<TProps> = ({ onChange, paramsId }) => {
         attachmentId: state.attachmentId,
         ...extraParams,
       });
+      // 使用id轮询调用
+      console.log(result);
       onChange(result, true);
     } finally {
       state.loading = false;

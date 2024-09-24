@@ -1,5 +1,5 @@
 import React from 'react';
-import { saveAnswer } from '@/services/aiJobHunt';
+import { saveAnswer, getAiPlanList } from '@/services/aiJobHunt';
 import { useMount, useReactive } from 'ahooks';
 import styles from './AiPlanLists.less';
 import Backs from '@/assets/images/backs.png'
@@ -91,6 +91,19 @@ const App: React.FC = () => {
         });
     })
 
+    const getPlan = () => {
+        getAiPlanList({
+            userMessage: window.sessionStorage.getItem('planportfolio'),
+            paramId: state.patams,
+            pluginCode: 'studyPlan',
+        }).then((res: any) => {
+            if (res) {
+                message.success('生成成功');
+                state.planList = JSON.parse(res);
+            }
+        })
+    }
+
     const captureElement = () => {
         let dom: any = document.getElementById('content');
         html2canvas(dom).then(canvas => {
@@ -156,7 +169,7 @@ const App: React.FC = () => {
                 </div>
             </div>
             <div className={styles.footer}>
-                <Button onClick={() => { message.success('生成成功') }} size='small' type='default' style={{ width: 88, height: 28, border: '1px solid #5672ff', color: '#5672ff' }}>重新生成</Button>
+                <Button onClick={() => { getPlan(); }} size='small' type='default' style={{ width: 88, height: 28, border: '1px solid #5672ff', color: '#5672ff' }}>重新生成</Button>
                 <Button onClick={() => {
                     captureElement();
                 }} size={'small'} style={{ marginLeft: 70, width: 88, height: 28 }} type='primary'>下载</Button>

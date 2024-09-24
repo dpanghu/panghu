@@ -61,6 +61,22 @@ const QuestionNaire: React.FC<IProps> = ({ dataSource, title, description, foote
         }));
     };
 
+    const checkUsername = async (rule: any, value: any) => {
+        console.log(value);
+        console.log(rule);
+        // 这里可以是异步请求来验证用户名是否存在
+        if (value.trim() == '') {
+            console.log(value);
+          throw new Error('不能为空');
+        }
+        if (value == void 0) {
+            console.log(value);
+            throw new Error('不能为空');
+          }
+        // 如果验证通过，返回Promise.resolve()
+        return Promise.resolve();
+      };
+
     const handleInputChange = (itemId: any, e: any) => {
         const inputValue = e.slice(0, 10);
         setInputValues((prevValues: any) => ({
@@ -110,13 +126,12 @@ const QuestionNaire: React.FC<IProps> = ({ dataSource, title, description, foote
                     const isInsertIndex = index + 1 === insertPosition;
                     switch (item.type) {
                         case 'input':
-                            formItemContent = <Input value={value} onChange={(e: any) => setValue(e)} />;
+                            formItemContent = <Input maxLength={50} value={value} onChange={(e: any) => setValue(e)} />;
                             break;
                         case 'select':
                             formItemContent = <Select option={item.options || []} value={value} onChange={(e: any) => setValue(e)} />;
                             break;
                         case 'radio':
-                        case 'checkbox':
                             if (item.type === 'radio' && item.options?.find((element: any) => element.needInput == 1)) {
                                 formItemContent = <Radio.Group key={item.id} onChange={(e) => handleRadioChange(item.id, e.target.value)} value={selectValues[item.id]}>
                                     {item.options.map((option, optionIndex) => (
@@ -148,6 +163,9 @@ const QuestionNaire: React.FC<IProps> = ({ dataSource, title, description, foote
                                 formItemContent = <ComboBox options={item.options || []} type={item.type} />;
                             }
                             break;
+                        case 'checkbox':
+                            formItemContent = <ComboBox options={item.options || []} type={'checkbox'} />;
+                            break;
                         case 'custom':
                             formItemContent = insertContent;
                             break;
@@ -156,16 +174,21 @@ const QuestionNaire: React.FC<IProps> = ({ dataSource, title, description, foote
                             break;
                     }
 
-
                     return (
+                        // eslint-disable-next-line react/jsx-key
                         <div className={styles.form_item}>
                             <Form.Item
                                 key={item.id}
                                 label={item.title}
                                 name={`${item.id}`}
-                                rules={[
-                                    { required: item.isRequired, message: `${item.title}为必填` }
+                                rules={item.type == 'checkbox' && !item.isRequired ? [] : [
+                                    // { required: item.isRequired, message: `${item.title}为必填` },
+                                    {
+                                        message: '不能为空',
+                                        validator:  checkUsername
+                                    }
                                 ]}
+                                
                             >
                                 {formItemContent}
                             </Form.Item>

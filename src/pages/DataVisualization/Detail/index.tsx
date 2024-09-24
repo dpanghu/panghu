@@ -1,10 +1,10 @@
-import { getUploadDetail } from '@/services/dataVisualization';
+import { getUploadDetail, getUploadList } from '@/services/dataVisualization';
 import { useModel, useParams } from '@umijs/max';
 import sf from 'SeenPc/dist/esm/globalStyle/global.less';
 import { useReactive } from 'ahooks';
 import classNames from 'classnames';
 import React, { useEffect } from 'react';
-import { DetailResponseType } from '../type';
+import { DetailResponseType, UploadDataType } from '../type';
 import Conversation from './components/Conversation';
 import DataTable from './components/DataTable';
 import styles from './index.less';
@@ -19,9 +19,12 @@ const Detail: React.FC<Props> = ({}) => {
   const state = useReactive<IState>({
     detailData: null,
   });
-  const { fileList } = useModel('DataVisualization.model', (model) => ({
-    fileList: model.fileList,
-  }));
+  const { fileList, setFileList } = useModel(
+    'DataVisualization.model',
+    (model) => ({
+      fileList: model.fileList,
+    }),
+  );
 
   useEffect(() => {
     if (fileId && fileList.length > 0) {
@@ -37,6 +40,14 @@ const Detail: React.FC<Props> = ({}) => {
           fileSize: file.fileSize || '',
         }).then((rst) => {
           state.detailData = { ...rst };
+          // 若为预制数据，则调用get接口后，将会存在id，因此需要更新list接口
+          if (!file.id && file.presetFileId) {
+            getUploadList<UploadDataType>().then((listData) => {
+              if (listData) {
+                setFileList(listData);
+              }
+            });
+          }
         });
       }
     }

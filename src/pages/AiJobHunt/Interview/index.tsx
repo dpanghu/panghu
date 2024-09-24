@@ -28,12 +28,14 @@ type TState = {
   problemId: string;
   isLoading: boolean;
   isType: boolean;
+  imgSrc: any;
 };
 const Interview: React.FC = ({ }) => {
   const params = useParams<{ paramId?: string; themeId?: string }>();
   const queryData = useCreation(() => {
     return JSON.parse(window.sessionStorage.getItem('queryParams') || '{}');
   }, []);
+
   const state = useReactive<TState>({
     data: [],
     message: '',
@@ -47,6 +49,7 @@ const Interview: React.FC = ({ }) => {
     problemId: '',
     isLoading: false,
     isType: false,
+    imgSrc: '',
   });
   const submitUserAnswer = () => {
     state.isLoading = true;
@@ -70,14 +73,14 @@ const Interview: React.FC = ({ }) => {
       {
         // 结束，包括接收完毕所有数据、报错、关闭链接
         onFinished: () => {
-          
+
         },
         onError: (error) => {
           console.log(error);
         },
         // 接收到数据
         receiveMessage: (data) => {
-          if(data.isEnd){
+          if (data.isEnd) {
             console.log('11111')
             state.isLoading = false;
           }
@@ -200,6 +203,8 @@ const Interview: React.FC = ({ }) => {
     }).then((res) => console.log(res))
   }
   useMount(() => {
+    let qsData: any = JSON.parse(window.sessionStorage.getItem('commonDatas') as any);
+    state.imgSrc = qsData?.userImg;
     getInterviewQuestion();
     getShowAIAnswers();
   });
@@ -265,15 +270,19 @@ const Interview: React.FC = ({ }) => {
                         <div className={styles.box}>{faq.question}</div>
                       )}
                     </div>
-                    <div className={styles.answerBox}>
-                      {state.answers
-                        .filter((answer) => answer.questionIndex === index)
-                        .map((answer, answerIndex) => (
-                          <div className={styles.box} key={answerIndex}>
-                            {answer.stuAnswer}
-                          </div>
-                        ))}
-                    </div>
+                    {index < state.currentQuestionIndex
+                      && (
+                        <div className={styles.answerBox}>
+                          {state.answers
+                            .filter((answer) => answer.questionIndex === index)
+                            .map((answer, answerIndex) => (
+                              <div className={styles.box} key={answerIndex}>
+                                {answer.stuAnswer}
+                              </div>
+                            ))}
+                          <img src={state.imgSrc} alt='' />
+                        </div>
+                      )}
                   </>
                 )}
               </div>

@@ -4,17 +4,24 @@ import duihua from '@/assets/images/duihua.png';
 import aiimg from '@/assets/images/rebotIcon.png';
 import shouqi from '@/assets/images/shouqi.png';
 import zhankai from '@/assets/images/zhankai.png';
+import copy from '@/assets/images/copyIcon@2x.png'
+import refresh from '@/assets/images/refreshIcon@2x.png'
+import dislikeOutlined from '@/assets/images/DislikeOutlined@2x.png'
+import bDisLikeOutlined from '@/assets/images/DislikeOutlined2@2x.png'
+import likeOutlined from '@/assets/images/LikeOutlined@2x.png'
+import bLikeOutlined from '@/assets/images/LikeOutlined2@2x.png'
 import { getConvertParamId } from '@/services/aiJobHunt/index';
 import {
   deleteHistory,
   getHistory,
   getHistoryDetail,
   getPluginDetail,
+  setSatisfaction,
 } from '@/services/aiModule';
 import { getQueryParam } from '@/utils/utils';
 import { Button, ComboBox, Input, Select } from 'SeenPc';
 import sf from 'SeenPc/dist/esm/globalStyle/global.less';
-import { useCreation, useMount, useReactive, useUpdateEffect } from 'ahooks';
+import { useMount, useReactive, useUpdateEffect } from 'ahooks';
 import { message } from 'antd';
 import classNames from 'classnames';
 import { isArray } from 'lodash';
@@ -41,6 +48,8 @@ interface TState {
   open: any;
   isTyping: any;
   typewriterArrCache: any;
+  messageId: any;
+  satisfied: any;
 }
 
 const renderPreview = (item: any) => {
@@ -138,7 +147,7 @@ const renderPreview = (item: any) => {
           <div className={styles.previewTitle}>{item.displayName}</div>
           <div className={styles.previewCheckBox}>
             {item.options &&
-              item.options.map((items: any) => {
+              item.options.map((items: any, index: any) => {
                 return (
                   <div
                     onClick={() => {
@@ -165,6 +174,7 @@ const renderPreview = (item: any) => {
                       border: item.value?.includes(items.value)
                         ? '1px solid rgb(86, 114, 255)'
                         : '1px solid rgba(0, 0, 0, 0.25)',
+                      marginLeft: index % 4 === 0 ? 0 : 8,
                     }}
                     className={styles.previewCheck}
                   >
@@ -184,7 +194,7 @@ const renderPreview = (item: any) => {
           <div className={styles.previewTitle}>{item.displayName}</div>
           <div className={styles.previewCheckBox}>
             {item.options &&
-              item.options.map((items: any) => {
+              item.options.map((items: any, index: any) => {
                 return (
                   <div
                     onClick={() => {
@@ -209,6 +219,7 @@ const renderPreview = (item: any) => {
                       border: item.value?.includes(items.value)
                         ? '1px solid rgb(86, 114, 255)'
                         : '1px solid rgba(0, 0, 0, 0.25)',
+                      marginLeft: index % 4 === 0 ? 0 : 8,
                     }}
                     className={styles.previewCheck}
                   >
@@ -244,6 +255,8 @@ const JobHunt: React.FC = () => {
     visible: false,
     patams: '',
     data: [],
+    messageId: '',
+    satisfied: 0,
   });
 
   // 是否完成对话
@@ -279,12 +292,13 @@ const JobHunt: React.FC = () => {
       limit: 999999999,
       pageNum: 1,
     }).then((res: any) => {
-      if (type === 1) {
-        if (res.data.length !== 0) {
-          res.data[res.data.length - 1].active = true;
-        }
-      }
+      // if (type === 1) {
+      //   if (res.data.length !== 0) {
+      //     res.data[res.data.length - 1].active = true;
+      //   }
+      // }
       state.messageArr = res.data || [];
+      // getMessageDetail(res?.data[0]?.id, type)
     });
   };
 
@@ -292,11 +306,13 @@ const JobHunt: React.FC = () => {
     let error: any = false;
     if (isArray(state.allow)) {
       if (state.allow[0] === '1') {
+        console.log('sads', JSON.stringify(state.data));
         let sendData: any = {};
         // eslint-disable-next-line @typescript-eslint/no-unused-expressions, array-callback-return
         state.data &&
           // eslint-disable-next-line array-callback-return
           state.data.map((item: any) => {
+            console.log('22222', item.value);
             if (item.value === void 0 || item.value === '') {
               item.error = true;
               error = true;
@@ -309,7 +325,9 @@ const JobHunt: React.FC = () => {
           state.visible = true;
           state.isLoading = true;
           typewriterStrCache.current = '';
-          let queryData: any = JSON.parse(window.sessionStorage.getItem('commonDatas') || '{}')
+          let queryData: any = JSON.parse(
+            window.sessionStorage.getItem('commonDatas') || '{}',
+          );
           let qsData = {
             ...queryData,
             paramId: state.patams,
@@ -355,6 +373,12 @@ const JobHunt: React.FC = () => {
     }
   };
 
+  useUpdateEffect(() => {
+    if (state.isLoading === false && state.typewriterArrCache.length === 0) {
+      getMessageDetail(state.messageArr[0].id, 1)
+    }
+
+  }, [state.isTyping]);
   useMount(() => {
     getConvertParamId({}).then((res: any) => {
       getHistoryList(res);
@@ -382,6 +406,8 @@ const JobHunt: React.FC = () => {
         history.push('/documentSummary');
       } else if (res.plugin?.code === 'tts') {
         history.push('/wenshengVoice');
+      } else if (res.plugin?.code === 'aiAQuestionGen') {
+        history.push('/documentQA');
       } else if (res.plugin?.code === 'sentAnalysis') {
         history.push('/sentimentAnalysis');
       } else if (res.plugin?.code === 'ocr') {
@@ -396,12 +422,9 @@ const JobHunt: React.FC = () => {
         history.push('/aiAtlas');
       } else if (res.plugin?.code === 'studyPlan') {
         history.push('/AiPlan');
-      }  
-      else if (res.plugin?.code === 'dataView') {
+      } else if (res.plugin?.code === 'dataView') {
         history.push('/dataVisualization');
-      }  
-      
-      else if (res.plugin?.modelTypeId === '12') {
+      } else if (res.plugin?.modelTypeId === '12') {
         history.push({
           path: '',
         });
@@ -412,6 +435,65 @@ const JobHunt: React.FC = () => {
       }
     });
   });
+
+  const copyText = () => {
+    navigator.clipboard
+      .writeText(typewriterStrCache.current)
+      .then(() => {
+        message.success('复制成功!');
+      })
+      .catch((err) => {
+        message.error('复制失败，请重新尝试！');
+        console.error('Copy to clipboard failed', err);
+      });
+  }
+
+  const setSatisfied = (satisfied: any) => {
+    setSatisfaction({
+      satisfied,
+      messageId: state.messageId
+    })
+  }
+
+  const likeAnswer = () => {
+    if (state.satisfied === 1) {
+      state.satisfied = -1
+      setSatisfied(-1)
+    } else {
+      state.satisfied = 1
+      setSatisfied(1)
+    }
+  }
+
+  const disLikeAnswer = () => {
+    if (state.satisfied === 0) {
+      state.satisfied = -1
+      setSatisfied(-1)
+    } else {
+      state.satisfied = 0
+      setSatisfied(0)
+    }
+  }
+
+  const getMessageDetail = (id: any, type?: any) => {
+    let clone: any = state.messageArr;
+    clone.forEach((element: any) => {
+      element.active = false;
+    });
+    let choosedata: any = clone.find((element: any) => element.id == id);
+    choosedata.active = true;
+    state.messageArr = clone;
+    getHistoryDetail({
+      themeId: choosedata.id,
+    }).then((res: any) => {
+      if (type !== 1) {
+        typewriterStrCache.current = res.answer;
+      }
+      state.visible = true;
+      state.messageId = res.messageId
+      state.satisfied = res.satisfied;
+    });
+  }
 
   return (
     <div className={styles.aicontainer}>
@@ -430,9 +512,11 @@ const JobHunt: React.FC = () => {
                 exampleRandom({
                   pluginCode: 'pictotext',
                   excludeId: state.excludeId,
-                }).then((res: any)=> {
-                   console.log(res);
-                })
+                }).then((res: any) => {
+                  console.log('111', state.typewriterArrCache);
+                  console.log('222', state.isLoading);
+                  console.log('333', state.isTyping);
+                });
               }}
             >
               填入示例
@@ -478,106 +562,157 @@ const JobHunt: React.FC = () => {
           </div>
         </div>
         <div className={styles.mid_content}>
-          <div style={{ position:'absolute',fontSize: 13, bottom: 18,color:'rgb(134, 142, 179)',fontWeight: 400, display: 'flex',alignSelf:'center' }}>所有内容均由人工智能模型输出，其内容的准确性和完整性无法保证，不代表我们的态度和观点。</div>
-          <div className={styles.warningBox}>
-            <img
-              src={aiimg}
-              style={{ width: 24, height: 24, marginRight: 16 }}
-            ></img>
-            <div className={styles.warning}>
-              <div>{state.aiData.plugin?.tips}</div>
-              <div className={styles.subwarning}>
-                {state.aiData.plugin?.note}
+          <div
+            style={{
+              position: 'absolute',
+              fontSize: 13,
+              bottom: 18,
+              color: 'rgb(134, 142, 179)',
+              fontWeight: 400,
+              display: 'flex',
+              alignSelf: 'center',
+            }}
+          >
+            所有内容均由人工智能模型输出，其内容的准确性和完整性无法保证，不代表我们的态度和观点。
+          </div>
+          <div
+            style={{
+              height: 'calc(100% - 5px)',
+              display: 'flex',
+              flexDirection: 'column',
+              overflowY: 'auto',
+            }}
+          >
+            <div className={styles.warningBox}>
+              <img
+                src={aiimg}
+                style={{ width: 24, height: 24, marginRight: 16 }}
+              ></img>
+              <div className={styles.warning}>
+                <div>{state.aiData.plugin?.tips}</div>
+                <div className={styles.subwarning}>
+                  {state.aiData.plugin?.note}
+                </div>
               </div>
             </div>
-          </div>
-          {state.visible && (
-            <div>
-              <span className={classNames(sf.sFs14, sf.sFwBold)}>
-                {isTypeFinished ? (
-                  <div className={styles.warningBox} style={{ marginTop: 24 }}>
-                    <img
-                      src={aiimg}
-                      style={{ width: 24, height: 24, marginRight: 16 }}
-                    ></img>
-                    <div className={styles.finallText}>
-                      {typewriterStrCache.current}
-                      {/* <pre className={styles.texts} style={{ whiteSpace: 'pre-wrap', margin: 0, color: '#272648', fontSize: 14, lineHeight: '24px',fontWeight: 400 }}>
+            {state.visible && (
+              <div>
+                <span className={classNames(sf.sFs14, sf.sFwBold)}>
+                  {isTypeFinished ? (
+                    <div
+                      className={styles.warningBox}
+                      style={{ marginTop: 24 }}
+                    >
+                      <img
+                        src={aiimg}
+                        style={{ width: 24, height: 24, marginRight: 16 }}
+                      ></img>
+                      <div className={styles.finallText}>
+                        {typewriterStrCache.current}
+                        <div className={styles.finallTextBottom}>
+                          <div>
+                            <span style={{ marginRight: 16 }}>您对本次的回答满意吗？</span>
+                            <img src={state.satisfied === 1 ? bLikeOutlined : likeOutlined} style={{ marginRight: 24, cursor: 'pointer' }}
+                              onClick={likeAnswer} />
+                            <img src={state.satisfied === 0 ? bDisLikeOutlined : dislikeOutlined} style={{ cursor: 'pointer' }} onClick={disLikeAnswer} />
+                          </div>
+                          <div>
+                            <span style={{ marginRight: 24 }}>{typewriterStrCache.current?.length || 0}个字符</span>
+                            <span style={{ marginRight: 24, cursor: 'pointer' }} onClick={() => {
+                              send();
+                            }}><img src={refresh} style={{ marginRight: 3 }} />重新回答</span>
+                            <img onClick={copyText} style={{ cursor: 'pointer' }} src={copy} />
+                          </div>
+                        </div>
+                        {/* <pre className={styles.texts} style={{ whiteSpace: 'pre-wrap', margin: 0, color: '#272648', fontSize: 14, lineHeight: '24px',fontWeight: 400 }}>
                     {typewriterStrCache.current}
                   </pre> */}
+                      </div>
                     </div>
-                  </div>
-                ) : (
-                  <div className={styles.warningBox} style={{ marginTop: 24 }}>
-                    <img
-                      src={aiimg}
-                      style={{ width: 24, height: 24, marginRight: 16 }}
-                    ></img>
-                    <div className={styles.warnings}>
-                      <Typewriter
-                        onInit={(typewriter: TypewriterClass) => {
-                          state.isTyping = true;
-                          typeWriter.current = typewriter;
-                          typewriter
-                            .typeString('')
-                            .start()
-                            .callFunction(() => {
-                              state.isTyping = false;
-                            });
-                        }}
-                        options={{
-                          delay: 25,
-                        }}
-                      />
+                  ) : (
+                    <div
+                      className={styles.warningBox}
+                      style={{ marginTop: 24 }}
+                    >
+                      <img
+                        src={aiimg}
+                        style={{ width: 24, height: 24, marginRight: 16 }}
+                      ></img>
+                      <div className={styles.warnings}>
+                        <Typewriter
+                          onInit={(typewriter: TypewriterClass) => {
+                            state.isTyping = true;
+                            typeWriter.current = typewriter;
+                            typewriter
+                              .typeString('')
+                              .start()
+                              .callFunction(() => {
+                                state.isTyping = false;
+                              });
+                          }}
+                          options={{
+                            delay: 25,
+                          }}
+                        />
+                      </div>
                     </div>
-                  </div>
-                )}
-              </span>
-            </div>
-          )}
+                  )}
+                </span>
+              </div>
+            )}
+          </div>
           {/* <SpeechInputComponent></SpeechInputComponent> */}
         </div>
-        {
-          state.open === true ?   <div className={styles.right_list}>
-          <img src={shouqi} onClick={()=> { state.open = false; }} style={{ position:'absolute',width: 40, height: 40, top: 0, left: -20,cursor:'pointer' }}></img>
-          <div className={styles.right_head}>对话记录</div>
-          {state.messageArr &&
-            state.messageArr.map((el: any) => {
-              return (
-                <div
-                  key={el.id}
-                  onClick={() => {
-                    getHistoryDetail({
-                      themeId: el.id,
-                    }).then((res: any) => {
-                      console.log(res);
-                    });
-                  }}
-                  style={{ background: el.active ? 'white' : 'none' }}
-                  className={styles.messageBox}
-                >
-                  <div>
-                    <img
-                      src={duihua}
-                      style={{ width: 16, height: 14, marginRight: 6 }}
-                    ></img>
-                    {el.name}
-                  </div>
-                  <img
-                    onClick={(e: any) => {
-                      e.stopPropagation();
-                      deleteHistory({
-                        themeId: el.id,
-                      }).then(() => {
-                        message.success('操作成功');
-                        state.visible = false;
-                        getHistoryList(state.patams, 2);
-                      });
+        {state.open === true ? (
+          <div className={styles.right_list}>
+            <img
+              src={shouqi}
+              onClick={() => {
+                state.open = false;
+              }}
+              style={{
+                position: 'absolute',
+                width: 40,
+                height: 40,
+                top: 0,
+                left: -20,
+                cursor: 'pointer',
+              }}
+            ></img>
+            <div className={styles.right_head}>对话记录</div>
+            {state.messageArr &&
+              state.messageArr.map((el: any) => {
+                return (
+                  <div
+                    key={el.id}
+                    onClick={() => {
+                      getMessageDetail(el.id);
                     }}
-                    src={closes}
-                    style={{ cursor: 'pointer', width: 14, height: 14 }}
-                  ></img>
-                  {/* {
+                    style={{ background: el.active ? 'white' : 'none' }}
+                    className={styles.messageBox}
+                  >
+                    <div>
+                      <img
+                        src={duihua}
+                        style={{ width: 16, height: 14, marginRight: 6 }}
+                      ></img>
+                      {el.name}
+                    </div>
+                    <img
+                      onClick={(e: any) => {
+                        e.stopPropagation();
+                        deleteHistory({
+                          themeId: el.id,
+                        }).then(() => {
+                          message.success('操作成功');
+                          state.visible = false;
+                          getHistoryList(state.patams, 2);
+                        });
+                      }}
+                      src={closes}
+                      style={{ cursor: 'pointer', width: 14, height: 14 }}
+                    ></img>
+                    {/* {
                   el.active ? <img onClick={()=> {
                     deleteHistory({
                       themeId: el.id,
@@ -587,11 +722,26 @@ const JobHunt: React.FC = () => {
                     })
                   }} src={closes} style={{ cursor: 'pointer', width: 14, height: 14 }}></img> :  <div></div>
                 } */}
-                </div>
-              );
-            })}
-        </div> : <img src={zhankai} onClick={()=> { state.open = true; }} style={{ position:'absolute',width: 40, height: 40, top: 0, right: 5,cursor:'pointer' }}></img>
-        }
+                  </div>
+                );
+              })}
+          </div>
+        ) : (
+          <img
+            src={zhankai}
+            onClick={() => {
+              state.open = true;
+            }}
+            style={{
+              position: 'absolute',
+              width: 40,
+              height: 40,
+              top: 0,
+              right: 5,
+              cursor: 'pointer',
+            }}
+          ></img>
+        )}
       </div>
     </div>
   );

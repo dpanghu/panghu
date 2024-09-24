@@ -191,7 +191,7 @@ const App: React.FC = () => {
             let types: any = {
                 'INPUT': 'input',
                 'SINGLE_CHOICE': 'radio',
-
+                'MULTI_CHOICE': 'checkbox'
             }
             
             // eslint-disable-next-line @typescript-eslint/no-unused-expressions, array-callback-return

@@ -24,7 +24,7 @@ export async function savePresetPageData<T>(params?: RecordItem): Promise<T> {
     url: '/widget/xai/pic/recognition/preset/save',
     method: 'POST',
     params,
-    timeout: 5 * 1000 * 60,
+    timeout: 10 * 1000 * 60,
   });
 }
 
