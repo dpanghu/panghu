@@ -10,8 +10,6 @@ import React, { useMemo } from 'react';
 import { FileType } from '../../constants';
 import styles from './index.less';
 
-const { confirm } = Modal;
-
 type Props = {
   isDetail?: boolean;
 };

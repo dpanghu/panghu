@@ -30,8 +30,6 @@ const DataTable: React.FC<Props> = ({ fileData }) => {
         data: [],
         height: '100%',
         width: '100%',
-        colWidths: 140, // 默认单元格宽度
-        rowHeights: 40, // 默认单元格高度
         readOnly: true,
         fixedRowsTop: 1,
         stretchH: 'all',
@@ -89,8 +87,8 @@ const DataTable: React.FC<Props> = ({ fileData }) => {
     );
     const ratio = ZOOM_SCALES[state.zoomIndex] / originZoom;
     handsonTable.current.updateSettings({
-      colWidths: size.widths.map((width) => width * ratio),
-      rowHeights: size.heights.map((height) => height * ratio),
+      colWidths: size.widths.map((width) => Math.round(width * ratio)),
+      rowHeights: size.heights.map((height) => Math.round(height * ratio)),
     });
     allCells.forEach(function (cell) {
       cell.style.fontSize = (14 * ZOOM_SCALES[state.zoomIndex]) / 100 + 'px';

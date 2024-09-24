@@ -96,7 +96,7 @@ const Charts: React.FC<Props> = ({ props }) => {
     <div className={styles['container']}>
       {state.isError && (
         <div className={styles['error-message']}>
-          解析数据出错，请检查数据格式是否正确
+          提示：你选择的数据无法生成可视化图表，请重新选择数据！
         </div>
       )}
       {!state.isError && (

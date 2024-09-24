@@ -15,7 +15,6 @@ import styles from './index.less';
 type IState = {
   dialogHistory: HistoryItem[];
   isLoading: boolean;
-  isTyping: boolean;
   typewriterArrCache: string[];
 };
 
@@ -25,13 +24,13 @@ const Conversation: React.FC<Props> = ({ fileData }) => {
     // @ts-ignore
     window.sessionStorage.getItem('queryParams'),
   );
+  const scrollRef = useRef<HTMLDivElement>(null);
   const conversation_id = useRef<string>('');
   const themeId = useRef<string>('');
-  const historyEleHref = useRef<HTMLDivElement>(null);
+  const resizeObserver = useRef<ResizeObserver>();
   const state = useReactive<IState>({
     dialogHistory: [],
     isLoading: false,
-    isTyping: false,
     typewriterArrCache: [],
   });
 
@@ -53,6 +52,26 @@ const Conversation: React.FC<Props> = ({ fileData }) => {
       }
     }
   }, [JSON.stringify(fileData?.file)]);
+
+  // 监控滚动
+  const handleScroll = () => {
+    resizeObserver.current = new ResizeObserver(() => {
+      scrollRef.current?.scrollIntoView();
+    });
+
+    // 观察一个或多个元素
+    if (scrollRef.current) {
+      resizeObserver.current.observe(scrollRef.current);
+    }
+  };
+
+  useEffect(() => {
+    if (state.isLoading) {
+      handleScroll();
+    } else {
+      resizeObserver.current?.disconnect();
+    }
+  }, [state.isLoading]);
 
   const submitMessage = (message: string, isAnalysis: boolean) => {
     let qsParams = {
@@ -130,7 +149,7 @@ const Conversation: React.FC<Props> = ({ fileData }) => {
   return (
     <div className={styles['container']}>
       <div className={styles['information']}>
-        {state.dialogHistory.length === 0 ? (
+        <div className={styles['dialog-history']}>
           <div className={styles['dialog-initial-info']}>
             <div className={styles['conversion-item']}>
               <div className={styles['conversion-content']}>
@@ -141,53 +160,48 @@ const Conversation: React.FC<Props> = ({ fileData }) => {
               </div>
             </div>
           </div>
-        ) : (
-          <div className={styles['dialog-history']} ref={historyEleHref}>
-            {state.dialogHistory.map((item) => {
-              return (
-                <div
-                  key={item.id}
-                  className={classNames({
-                    [styles['message-from-ai']]: item.type !== 0,
-                    [styles['message-from-user']]: item.type === 0,
-                  })}
-                >
-                  {item.type === 2 ? (
-                    <div className={styles['message-area']}>
-                      {item.type === 2 && (
-                        <div className={styles['data-scope']}>
-                          数据范围: {dataScope}
-                        </div>
-                      )}
-                      <RcMarkdownExtend
-                        content={item.content}
-                        compoents={{
-                          code(props) {
-                            return <Charts props={props} />;
-                          },
-                          table(props) {
-                            return <CustomTable props={props} />;
-                          },
-                        }}
-                      />
-                    </div>
-                  ) : (
-                    <pre className={styles['message-area']}>{item.content}</pre>
-                  )}
-                </div>
-              );
-            })}
-            {state.isLoading && (
-              <div className={styles['message-from-ai']}>
-                <div className={styles['message-area']}>
-                  <RcMarkdownExtend
-                    content={state.typewriterArrCache.join('')}
-                  />
-                </div>
+          {state.dialogHistory.map((item) => {
+            return (
+              <div
+                key={item.id}
+                className={classNames({
+                  [styles['message-from-ai']]: item.type !== 0,
+                  [styles['message-from-user']]: item.type === 0,
+                })}
+              >
+                {item.type === 2 ? (
+                  <div className={styles['message-area']}>
+                    {item.type === 2 && (
+                      <div className={styles['data-scope']}>
+                        数据范围: {dataScope}
+                      </div>
+                    )}
+                    <RcMarkdownExtend
+                      content={item.content}
+                      compoents={{
+                        code(props) {
+                          return <Charts props={props} />;
+                        },
+                        table(props) {
+                          return <CustomTable props={props} />;
+                        },
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <pre className={styles['message-area']}>{item.content}</pre>
+                )}
               </div>
-            )}
-          </div>
-        )}
+            );
+          })}
+          {state.isLoading && (
+            <div className={styles['message-from-ai']}>
+              <div className={styles['message-area']} ref={scrollRef}>
+                <RcMarkdownExtend content={state.typewriterArrCache.join('')} />
+              </div>
+            </div>
+          )}
+        </div>
       </div>
       <div className={styles['text-area']}>
         <TextAreaMsg

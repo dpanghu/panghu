@@ -6,8 +6,6 @@ import styles from './index.less';
 
 type Props = {};
 const CustomTable: React.FC<Props> = ({ props }) => {
-  console.log(props);
-
   const formatData = useMemo(() => {
     const theadNode = cloneDeep(props.node.children[0].children[0]);
     const tbodyNode = cloneDeep(props.node.children[1]);
