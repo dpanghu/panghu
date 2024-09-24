@@ -27,6 +27,7 @@ const Conversation: React.FC<Props> = ({ fileData }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const conversation_id = useRef<string>('');
   const themeId = useRef<string>('');
+  const eventSourceObj = useRef<EventSourceStream>();
   const resizeObserver = useRef<ResizeObserver>();
   const state = useReactive<IState>({
     dialogHistory: [],
@@ -39,6 +40,9 @@ const Conversation: React.FC<Props> = ({ fileData }) => {
       const file = fileData.file;
       themeId.current = file.themeId || '';
       conversation_id.current = file.conversationId || '';
+      if (eventSourceObj?.current) {
+        eventSourceObj?.current?.ctrl?.abort();
+      }
       if (fileData?.file.onAnalysis) {
         state.dialogHistory = [
           {
@@ -50,6 +54,7 @@ const Conversation: React.FC<Props> = ({ fileData }) => {
       } else {
         state.dialogHistory = [];
       }
+      state.isLoading = false;
     }
   }, [JSON.stringify(fileData?.file)]);
 
@@ -101,7 +106,7 @@ const Conversation: React.FC<Props> = ({ fileData }) => {
     });
     const url = '/api/bus-xai/xai/plugin/create/stream';
     state.isLoading = true;
-    new EventSourceStream(
+    const eventSourceStream = new EventSourceStream(
       url,
       {
         method: 'POST',
@@ -126,6 +131,7 @@ const Conversation: React.FC<Props> = ({ fileData }) => {
             themeId: themeId.current,
             onAnalysis: rstStr,
           });
+          eventSourceObj.current = undefined;
           state.typewriterArrCache = [];
         },
         // 接收到数据
@@ -135,7 +141,9 @@ const Conversation: React.FC<Props> = ({ fileData }) => {
           state.typewriterArrCache.push(data!.answer);
         },
       },
-    ).run();
+    );
+    eventSourceStream.run();
+    eventSourceObj.current = eventSourceStream;
   };
 
   const dataScope = useMemo(() => {

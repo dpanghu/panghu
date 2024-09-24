@@ -30,6 +30,8 @@ const DataTable: React.FC<Props> = ({ fileData }) => {
         data: [],
         height: '100%',
         width: '100%',
+        colWidths: 140, // 默认单元格宽度
+        rowHeights: 40, // 默认单元格高度
         readOnly: true,
         fixedRowsTop: 1,
         stretchH: 'all',
