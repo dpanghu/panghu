@@ -37,7 +37,7 @@ const DataTable: React.FC<Props> = ({ fileData }) => {
         stretchH: 'all',
         manualColumnResize: true,
         manualRowResize: true,
-        // rowHeaders: true,
+        rowHeaders: true,
         colHeaders: true,
         licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
       });
