@@ -62,6 +62,7 @@ const AiSurveyQuestionnaire: React.FC = () => {
             message.error('上传失败,请下载分析后的表格查看错误信息');
             setUpLoadValue(true)
             setFileValue(msg.data)
+            // console.log(msg.data)
         })
     }
     //关闭上传文件失败的模态框
@@ -71,6 +72,7 @@ const AiSurveyQuestionnaire: React.FC = () => {
     //点击下载上传文件失败分析后的文件
     const onDownload = () => {
         window.open(fileValue)
+        setUpLoadValue(false)
     }
     const { Dragger } = Upload;
     //获取文件上传的参数
@@ -107,6 +109,7 @@ const AiSurveyQuestionnaire: React.FC = () => {
 
             }
             if (status === 'done') {
+                // console.log(info.file.key)
                 importDataMethod(info.file.key);
                 setAttatchIdValue(info.file.uid)
             } else if (status === 'error') {
