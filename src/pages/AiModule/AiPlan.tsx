@@ -191,7 +191,7 @@ const App: React.FC = () => {
             let types: any = {
                 'INPUT': 'input',
                 'SINGLE_CHOICE': 'radio',
-
+                'MULTI_CHOICE': 'checkbox'
             }
             
             // eslint-disable-next-line @typescript-eslint/no-unused-expressions, array-callback-return
@@ -208,6 +208,8 @@ const App: React.FC = () => {
                     type: types[item.type],
                     // eslint-disable-next-line eqeqeq
                     isRequired: item.required == 1 ? true : false,
+                    displays: item.display,
+                    display: item.display,
                     id: item.id,
                     options: item.options ? item.options : '',
                 })

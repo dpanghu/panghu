@@ -10,8 +10,6 @@ import React, { useMemo } from 'react';
 import { FileType } from '../../constants';
 import styles from './index.less';
 
-const { confirm } = Modal;
-
 type Props = {
   isDetail?: boolean;
 };
@@ -45,7 +43,10 @@ const Header: React.FC<Props> = ({}) => {
       // 若删除的数据为当前所展示的，则进入下一条数据的详情，若历史记录已经清空，则返回到上传页面
       if (deletedFile!.id === delId) {
         if (deletedFileList.length > 0) {
-          history.push('/dataVisualization/detail/' + deletedFileList[0].id);
+          history.push(
+            '/dataVisualization/detail/' +
+              (deletedFileList[0].id || deletedFileList[0].presetFileId),
+          );
         } else {
           history.push('/dataVisualization/upload');
         }
@@ -171,7 +172,9 @@ const Header: React.FC<Props> = ({}) => {
           <span>删除后不可撤回，请确定是否删除？</span>
           <Button
             type="primary"
-            onClick={() => deleteConfirm(params?.id as string)}
+            onClick={() =>
+              deleteConfirm((params?.id as string) || state.delModalVisible)
+            }
           >
             确定
           </Button>

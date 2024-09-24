@@ -88,10 +88,13 @@ const DataTable: React.FC<Props> = ({ fileData }) => {
       '.htCore td, .htCore th, .htCore .rollHeader',
     );
     const ratio = ZOOM_SCALES[state.zoomIndex] / originZoom;
+    const colWidths = size.widths.map((width) => Math.round(width * ratio));
+    const rowHeights = size.heights.map((height) => Math.round(height * ratio));
     handsonTable.current.updateSettings({
-      colWidths: size.widths.map((width) => width * ratio),
-      rowHeights: size.heights.map((height) => height * ratio),
+      colWidths,
+      rowHeights,
     });
+    handsonTable.current.render();
     allCells.forEach(function (cell) {
       cell.style.fontSize = (14 * ZOOM_SCALES[state.zoomIndex]) / 100 + 'px';
     });

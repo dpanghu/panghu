@@ -618,7 +618,7 @@ const Resume: React.FC = ({ }) => {
       case 'file':
         return <div style={{ width:'100%',display:'flex',flexDirection:'column' }}>
           <Button icon={<img src={uploadspng} style={{ width: 16,height: 16,marginRight: 4 }}></img>} style={{ width: 92,marginTop: 12 }} size={'small'} type='primary'>上传图片</Button>
-          <div className={styles.previewBox} style={{ width: 291,height: 163,display:'flex',marginTop: 8,justifyContent:'center',flexDirection:'column',cursor:'pointer',color:'#333333',fontSize: 14,lineHeight:'21px' }}>
+          <div className={styles.previewBox} style={{ width: 291,height: 163,display:'flex',marginTop: 8,justifyContent:'center',flexDirection:'column',cursor:'pointer',color:'#333333',fontSize: 14,lineHeight:'21px',position:'relative' }}>
           <img src={tushengwen} style={{ position:'absolute',width:'291px',height: 163 }}></img>
           <div className={styles.file_text}>支持jpg、jpeg、png、1MB以内</div>
           <div className={styles.file_text}>或按【ctrl+v】粘贴到这里</div>

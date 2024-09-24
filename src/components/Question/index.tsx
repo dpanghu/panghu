@@ -2,6 +2,8 @@ import React, { ReactNode, useMemo } from 'react';
 import { Form, Radio } from 'antd';
 import { Input, Select, ComboBox, Button } from 'SeenPc';
 import styles from './index.less';
+import { AntdFormUtils } from 'ahooks/lib/useAntdTable/types';
+import { useMount } from 'ahooks';
 
 type Question = {
     title: string;
@@ -10,6 +12,7 @@ type Question = {
     isRequired: boolean;
     id: string;
     needValue?: any;
+    display?: any;
 }
 
 type IProps = {
@@ -36,10 +39,12 @@ const QuestionNaire: React.FC<IProps> = ({ dataSource, title, description, foote
         Object.keys(values) && Object.keys(values).map((item: any)=> {
             let dataSources: any = dataSource.find((element: any)=> element.id == item);
             if(dataSources !== void 0) {
-                arr.push({
-                    ...dataSources,
-                    value: values[item],
-                })
+                if(dataSources.displays !== 0) {
+                    arr.push({
+                        ...dataSources,
+                        value: values[item],
+                    })
+                }
             }
         })
         // const formValues = Object.keys(values).reduce((acc: any, key) => {
@@ -54,12 +59,32 @@ const QuestionNaire: React.FC<IProps> = ({ dataSource, title, description, foote
         // setSelectValues({});
     };
 
+    useMount(()=> {
+
+    })
+
     const handleRadioChange = (itemId: any, value: any) => {
         setSelectValues((prevValues: any) => ({
             ...prevValues,
             [itemId]: value,
         }));
     };
+
+    const checkUsername = async (rule: any, value: any) => {
+        console.log(value);
+        console.log(rule);
+        // 这里可以是异步请求来验证用户名是否存在
+        if (value.trim() == '') {
+            console.log(value);
+          throw new Error('不能为空');
+        }
+        if (value == void 0) {
+            console.log(value);
+            throw new Error('不能为空');
+          }
+        // 如果验证通过，返回Promise.resolve()
+        return Promise.resolve();
+      };
 
     const handleInputChange = (itemId: any, e: any) => {
         const inputValue = e.slice(0, 10);
@@ -110,15 +135,40 @@ const QuestionNaire: React.FC<IProps> = ({ dataSource, title, description, foote
                     const isInsertIndex = index + 1 === insertPosition;
                     switch (item.type) {
                         case 'input':
-                            formItemContent = <Input value={value} onChange={(e: any) => setValue(e)} />;
+                            formItemContent = <Input maxLength={30} value={value} onChange={(e: any) => setValue(e)} />;
                             break;
                         case 'select':
                             formItemContent = <Select option={item.options || []} value={value} onChange={(e: any) => setValue(e)} />;
                             break;
                         case 'radio':
-                        case 'checkbox':
                             if (item.type === 'radio' && item.options?.find((element: any) => element.needInput == 1)) {
-                                formItemContent = <Radio.Group key={item.id} onChange={(e) => handleRadioChange(item.id, e.target.value)} value={selectValues[item.id]}>
+                                formItemContent = <Radio.Group key={item.id} onChange={(e) => {
+                                    let chooseRadio: any = item.options.find((element: any)=> element.value == e.target.value);
+                                    if(chooseRadio.relQuestionIds !== void 0) {
+                                        // eslint-disable-next-line @typescript-eslint/no-unused-expressions, array-callback-return
+                                        dataSource && dataSource.map((source: any)=> {
+                                            if(source.display == 0) {
+                                                source.displays = 0;
+                                            } 
+                                        })
+                                        console.log('sssssssssssssssss',JSON.stringify(dataSource));
+                                        let connect: any = chooseRadio.relQuestionIds.split(',');
+                                        // eslint-disable-next-line @typescript-eslint/no-unused-expressions, array-callback-return
+                                        connect && connect.map((element: any) => {
+                                            let source: any = dataSource.find((elements: any)=> elements.id == element );
+                                            source.displays = 1;
+                                        })
+                                        handleRadioChange(item.id, e.target.value);
+                                    }else if(chooseRadio.needInput) {
+                                        // eslint-disable-next-line @typescript-eslint/no-unused-expressions, array-callback-return
+                                        dataSource && dataSource.map((source: any)=> {
+                                            if(source.display == 0) {
+                                                source.displays = 0;
+                                            } 
+                                        })
+                                        handleRadioChange(item.id, e.target.value);
+                                    }
+                                }} value={selectValues[item.id]}>
                                     {item.options.map((option, optionIndex) => (
                                         <Radio key={optionIndex} value={option.value}>
                                             {String.fromCharCode(65 + optionIndex % 26) + '. ' + option.label}
@@ -145,8 +195,14 @@ const QuestionNaire: React.FC<IProps> = ({ dataSource, title, description, foote
                                 </Radio.Group>
 
                             } else {
-                                formItemContent = <ComboBox options={item.options || []} type={item.type} />;
+                                formItemContent = <ComboBox onChange={(e: any)=> {
+                                    let chooseRadio: any = item.options.find((element: any)=> element.value == e.target.value);
+                                    console.log(chooseRadio);
+                                }} options={item.options || []} type={item.type} />;
                             }
+                            break;
+                        case 'checkbox':
+                            formItemContent = <ComboBox options={item.options || []} type={'checkbox'} />;
                             break;
                         case 'custom':
                             formItemContent = insertContent;
@@ -156,16 +212,21 @@ const QuestionNaire: React.FC<IProps> = ({ dataSource, title, description, foote
                             break;
                     }
 
-
                     return (
-                        <div className={styles.form_item}>
+                        // eslint-disable-next-line react/jsx-key
+                        <div className={styles.form_item} style={{ display: item.displays == '1' ? 'flex' : 'none' }}>
                             <Form.Item
                                 key={item.id}
                                 label={item.title}
                                 name={`${item.id}`}
-                                rules={[
-                                    { required: item.isRequired, message: `${item.title}为必填` }
-                                ]}
+                                rules={item.type == 'checkbox' ? [] : item.isRequired ?  [
+                                    // { required: item.isRequired, message: `${item.title}为必填` },
+                                    {
+                                        message: '不能为空',
+                                        validator:  checkUsername
+                                    }
+                                ] : []}
+                                
                             >
                                 {formItemContent}
                             </Form.Item>

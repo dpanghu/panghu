@@ -1,4 +1,3 @@
-import deleteIcon from '@/assets/images/close.png';
 import fileIcon from '@/assets/images/fileIcon.png';
 import iconCircleIcon from '@/assets/images/icon-exclamation-circle.png';
 import PDFIcon from '@/assets/images/icon-file_PDF.png';
@@ -6,6 +5,7 @@ import WordIcon from '@/assets/images/icon-file_word.png';
 import CustomUpload, { CustomUploadProps } from '@/components/CustomUpload';
 import { getConvertParamId } from '@/services/aiJobHunt';
 import {
+  analysisAnswer,
   delAnswer,
   getWordAnswerItem,
   getWordAnswerList,
@@ -62,13 +62,18 @@ const DocumentQA: React.FC = () => {
   };
 
   const changeContent = (dataSource: RecordItem) => {
-    state.showSummary = true;
+    state.showSummary = false;
     state.showActionBtns = true;
-    state.summaryData = dataSource;
-    querySummaryList();
+    // state.summaryData = dataSource;
+
+    // querySummaryList();
     // 轮询 get接口 判断附件预览转换是否完成 ossViewUrl为0时 可能是未转换成功，也可能是文档不支持预览 所以设置1min最大轮询时长
     try {
-      if (state.summaryData.ossViewUrl !== '0') {
+      if (dataSource.ossViewUrl && dataSource.ossViewUrl !== '0') {
+        state.uploadLoading = false;
+        state.showSummary = true;
+        state.showActionBtns = true;
+        state.summaryData = dataSource;
         return;
       } else {
         state.uploadLoading = true;
@@ -76,44 +81,25 @@ const DocumentQA: React.FC = () => {
       intervalRef.current = setInterval(async () => {
         timerOutRef.current += 15;
         const result1: RecordItem = await getWordAnswerItem({
-          id: state.summaryData.id,
+          id: dataSource.id,
         });
         ossViewUrlRef.current = result1.ossViewUrl;
-        if (ossViewUrlRef.current !== '0') {
+        if (result1.ossViewUrl && result1.ossViewUrl !== '0') {
           state.summaryData = result1;
           clearInterval(intervalRef.current);
           state.uploadLoading = false;
+          state.showSummary = true;
+          state.showActionBtns = true;
         }
-      }, 1000 * 15);
+      }, 1000 * 5);
       if (ossViewUrlRef.current !== '0' || timerOutRef.current >= 60) {
         clearInterval(intervalRef.current);
         state.uploadLoading = false;
+        state.showSummary = false;
+        state.showActionBtns = false;
       }
     } catch (error) {}
   };
-
-  const uploadData = async () => {
-    try {
-      state.uploadLoading = true;
-      const result: RecordItem = await uploadWordAnswer({
-        paramId: state.paramsId,
-        attachmentId: state.attachmentId,
-        ...extraParams,
-      });
-      // state.summaryData = result;
-      // querySummaryList();
-      changeContent(result);
-      state.showActionBtns = true;
-      state.showSummary = true;
-    } catch (e) {
-      message.error('解析失败');
-      state.showActionBtns = false;
-      state.showSummary = false;
-    } finally {
-      state.uploadLoading = false;
-    }
-  };
-
   const querySummaryList = async (mount?: boolean) => {
     try {
       const result: RecordItem[] = await getWordAnswerList();
@@ -132,6 +118,53 @@ const DocumentQA: React.FC = () => {
         state.uploadLoading = false;
       }
     } catch (error) {}
+  };
+  const resetAnalysis = async (params: RecordItem) => {
+    try {
+      state.showSummary = false;
+      state.uploadLoading = true;
+      state.showActionBtns = true;
+      const result: any = await analysisAnswer({
+        wordAnswerId: params.id,
+        isPreset: params.isPreset,
+        paramId: state.paramsId,
+      });
+      changeContent(result);
+      const result1: RecordItem[] = await getWordAnswerList();
+      state.summaryList = result1;
+      // state.showSummary = true;
+    } catch (error) {
+      state.showSummary = false;
+      state.showActionBtns = false;
+      state.uploadLoading = false;
+      // message.error('解析失败');
+    } finally {
+      // state.uploadLoading = false;
+    }
+  };
+
+  const uploadData = async () => {
+    try {
+      state.showActionBtns = true;
+      state.showSummary = false;
+      state.uploadLoading = true;
+      const result: RecordItem = await uploadWordAnswer({
+        paramId: state.paramsId,
+        attachmentId: state.attachmentId,
+        ...extraParams,
+      });
+      // state.summaryData = result;
+      // querySummaryList();
+      changeContent(result);
+      state.showActionBtns = true;
+      state.showSummary = true;
+    } catch (e) {
+      // message.error('解析失败');
+      state.showActionBtns = false;
+      state.showSummary = false;
+    } finally {
+      state.uploadLoading = false;
+    }
   };
 
   const handleVisibleChange = (value: boolean, type: string) => {
@@ -260,7 +293,7 @@ const DocumentQA: React.FC = () => {
                                   : item.status === 2
                                   ? '上传成功'
                                   : item.status === 0
-                                  ? '待解析'
+                                  ? '待上传'
                                   : '上传失败'}
                               </div>
                             </div>
@@ -277,13 +310,15 @@ const DocumentQA: React.FC = () => {
                             {item.status === 0 && (
                               <div
                                 className={styles.readBtn}
-                                onClick={() => {}}
+                                onClick={() => {
+                                  resetAnalysis(item);
+                                }}
                               >
-                                重新上传
+                                立即上传
                               </div>
                             )}
                           </div>
-                          {!item.isPreset && (
+                          {/* {!item.isPreset && (
                             <img
                               onClick={() => {
                                 state.delModalOpen = true;
@@ -293,7 +328,7 @@ const DocumentQA: React.FC = () => {
                               alt=""
                               className={styles.deleteIcon}
                             />
-                          )}
+                          )} */}
                         </div>
                       </div>
                     ))}
@@ -313,7 +348,7 @@ const DocumentQA: React.FC = () => {
                 <CustomUpload {...DraggerProps}>
                   <Button disabled={!state.showSummary}>上传</Button>
                 </CustomUpload>
-                <Button
+                {/* <Button
                   disabled={!state.showSummary}
                   onClick={() => {
                     state.delSummaryId = state.summaryData?.id;
@@ -321,7 +356,7 @@ const DocumentQA: React.FC = () => {
                   }}
                 >
                   删除
-                </Button>
+                </Button> */}
               </>
             )}
           </div>
@@ -331,6 +366,7 @@ const DocumentQA: React.FC = () => {
         <div className={styles.content}>
           {state.showSummary ? (
             <QAResult
+              key={state.summaryData?.id}
               summaryData={state.summaryData}
               paramsId={state.paramsId}
             />

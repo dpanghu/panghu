@@ -521,7 +521,7 @@ const JobHunt: React.FC = () => {
                                 clearInterval(interView);
                                 state.messageList.push({
                                     type: 2,
-                                    data: '识别失败',
+                                    data: res.recognizeErrMsg || '',
                                 });
                                 state.isLoading = false;
                             }
