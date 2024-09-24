@@ -120,6 +120,15 @@ const DocumentQA: React.FC = () => {
     } catch (error) {}
   };
   const resetAnalysis = async (params: RecordItem) => {
+    state.summaryList = state.summaryList.map((item) => {
+      if (item.id === params.id) {
+        return {
+          ...item,
+          status: 1,
+        };
+      }
+      return item;
+    });
     try {
       state.showSummary = false;
       state.uploadLoading = true;
@@ -129,9 +138,10 @@ const DocumentQA: React.FC = () => {
         isPreset: params.isPreset,
         paramId: state.paramsId,
       });
-      changeContent(result);
       const result1: RecordItem[] = await getWordAnswerList();
       state.summaryList = result1;
+      changeContent(result);
+
       // state.showSummary = true;
     } catch (error) {
       state.showSummary = false;
