@@ -210,7 +210,7 @@ const DocumentQA: React.FC = () => {
   });
 
   const DraggerProps: CustomUploadProps = {
-    dragger: true,
+    dragger: false,
     accept: '.pdf,.PDF',
     allowFileType: ['pdf', 'PDF'],
     allowFileSize: 1,

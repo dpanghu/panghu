@@ -112,6 +112,7 @@ const CustomUpload: React.FC<CustomUploadProps> = ({
     />
   ) : (
     <Upload
+      className={styles.draggerContainer}
       multiple={multiple}
       showUploadList={showUploadList}
       name={name}
