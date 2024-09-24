@@ -64,3 +64,13 @@ export async function analysisAnswer(params?: RecordItem) {
     hiddenLoading: true,
   });
 }
+
+// 设置满意度
+export async function updateSatisfied(params?: RecordItem) {
+  return $axios.request({
+    url: `/xai/message/satisfied/update`,
+    method: 'GET',
+    params,
+    hiddenLoading: true,
+  });
+}
