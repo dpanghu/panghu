@@ -565,12 +565,12 @@ const AiOCR: React.FC = ({ }) => {
                 }
               >
                 <div className={styles.imageIndex}>{index + 1}</div>
-                <div
+                {!item.isPreset && <div
                   className={styles.imageDel}
                   onClick={() => delImage(index - 1)}
                 >
                   <CloseCircleFilled />
-                </div>
+                </div>}
                 <img src={item.url} alt="" />
               </div>
             ))}

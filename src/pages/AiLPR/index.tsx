@@ -437,7 +437,12 @@ const AiLPR: React.FC = ({ }) => {
                             {state.preData.map((item: any, index: any) => (
                                 <div className={state.isSelect === item.picUid ? styles.checkImageList : styles.imageList} key={item.id} onClick={() => selectImage(item.picUid, item.url, item.rotationAngle, item.note || [], item.isPreset)}>
                                     <div className={styles.imageIndex}>{index + 1}</div>
-                                    <div className={styles.imageDel} onClick={() => delImage(index - 1)}><CloseCircleFilled /></div>
+                                    {!item.isPreset && <div
+                                        className={styles.imageDel}
+                                        onClick={() => delImage(index - 1)}
+                                    >
+                                        <CloseCircleFilled />
+                                    </div>}
                                     <img src={item.url} alt="" />
                                 </div>
                             ))}
