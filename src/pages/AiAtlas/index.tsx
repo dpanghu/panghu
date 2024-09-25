@@ -109,7 +109,11 @@ const AiAtlas = ({}) => {
       createState: CREATE_STATUS.UNGENERATED,
     };
     if (userMessage) {
-      extractKnowledge({ userMessage, pluginCode: PluginCode })
+      extractKnowledge({
+        userMessage,
+        pluginCode: PluginCode,
+        id: state?.data?.id || '',
+      })
         .then((rst) => {
           if (rst) {
             state.data!.info = rst.info;

@@ -168,7 +168,7 @@ const KnowledgeGraph: React.FC<Props> = ({ data }) => {
                 ele!.style.borderTopLeftRadius = '8px';
                 ele!.style.borderBottomLeftRadius = '8px';
               } else {
-                ele!.style.left = '468px';
+                ele!.style.left = '600px';
                 ele!.style.borderTopLeftRadius = '0';
                 ele!.style.borderBottomLeftRadius = '0';
               }
