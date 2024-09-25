@@ -17,6 +17,7 @@ import Typewriter, { type TypewriterClass } from 'typewriter-effect';
 import EventSourceStream from '../AiJobHunt/Home/DialogArea/EventSourceStream';
 import styles from './AiSceneImg.less';
 import { uploads } from '@/services/aiOCR';
+import copyIcon from '@/assets/images/copyIcon.png'
 // import SpeechInputComponent from '../Recognition/index';
 const { Dragger } = Upload;
 interface TState {
@@ -413,9 +414,9 @@ const JobHunt: React.FC = () => {
                 });
         } else {
             if (state.isLoading === false && state.typewriterArrCache.length === 0) {
-                console.log('22222222222222',state.status);
+                console.log('22222222222222', state.status);
                 state.visible = false;
-                if(state.status !== 'ending') {
+                if (state.status !== 'ending') {
                     state.messageList.push({
                         type: 2,
                         data: typewriterStrCache.current
@@ -570,6 +571,18 @@ const JobHunt: React.FC = () => {
         });
     });
 
+    const copyText = (data: any) => {
+        navigator.clipboard
+            .writeText(data)
+            .then(() => {
+                message.success('复制成功!');
+            })
+            .catch((err) => {
+                message.error('复制失败，请重新尝试！');
+                console.error('Copy to clipboard failed', err);
+            });
+    }
+
     return (
         <div className={styles.aicontainer}>
             {/* <div className={styles.head}>{state.aiData.plugin?.name}</div> */}
@@ -709,7 +722,10 @@ const JobHunt: React.FC = () => {
                                             <img src={state.userImg} style={{ width: 32, height: 32, marginLeft: 16, borderRadius: '50%', }}></img>
                                         </div> : <div className={styles.receive}>
                                             <img src={aiimg} style={{ width: 24, height: 24, marginRight: 16, borderRadius: '50%', }}></img>
-                                            <div className={styles.sendData}>{item.data}</div>
+                                            <div className={styles.sendData}>
+                                                {item.data}
+                                                <img src={copyIcon} style={{ width: 15, height: 15 }} onClick={() => copyText(item.data)} />
+                                            </div>
                                         </div>
                                     }
                                 </>
