@@ -117,22 +117,28 @@ const Conversation: React.FC<Props> = ({ fileData }) => {
       },
       {
         // 结束，包括接收完毕所有数据、报错、关闭链接
-        onFinished: () => {
-          state.isLoading = false;
-          const rstStr = state.typewriterArrCache.join('');
-          state.dialogHistory.push({
-            id: uniqueId(),
-            type: rstStr.indexOf('chart-v1') > -1 ? 2 : 1,
-            content: rstStr,
-          });
-          saveResult({
-            id: fileData?.file.id,
-            conversationId: conversation_id.current,
-            themeId: themeId.current,
-            onAnalysis: rstStr,
-          });
-          eventSourceObj.current = undefined;
-          state.typewriterArrCache = [];
+        onFinished: (code) => {
+          if (!code) {
+            state.isLoading = false;
+            const rstStr = state.typewriterArrCache.join('');
+            state.dialogHistory.push({
+              id: uniqueId(),
+              type: rstStr.indexOf('chart-v1') > -1 ? 2 : 1,
+              content: rstStr,
+            });
+            saveResult({
+              id: fileData?.file.id,
+              conversationId: conversation_id.current,
+              themeId: themeId.current,
+              onAnalysis: rstStr,
+            });
+            eventSourceObj.current = undefined;
+            state.typewriterArrCache = [];
+          } else {
+            state.isLoading = false;
+            state.typewriterArrCache = [];
+            eventSourceObj.current = undefined;
+          }
         },
         // 接收到数据
         receiveMessage: (data) => {
