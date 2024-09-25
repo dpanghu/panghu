@@ -141,7 +141,7 @@ const AiOCR: React.FC = ({ }) => {
       const recognitionUrl = recognitionResults.url;
       const res = await getImageList();
       state.preData = res;
-      const { id, url: imageUrl, note, Preset } = state.preData[0];
+      const { id, url: imageUrl, note, Preset } = state.preData.filter(item => item.isPreset === false)[0];
       if (state.isChooseFirst) {
         selectImage(id, imageUrl, rotationAngle, note, Preset);
       } else {
@@ -167,12 +167,12 @@ const AiOCR: React.FC = ({ }) => {
     }).then((res) => {
       getImageList().then((res) => {
         state.preData = res;
-        state.imgUrl = state.preData[0].url;
+        state.imgUrl = state.preData.filter(item => item.isPreset === false)[0].url;
         postTextRecognition(
-          state.preData[0].url,
-          state.preData[0].picUid,
+          state.preData.filter(item => item.isPreset === false)[0].url,
+          state.preData.filter(item => item.isPreset === false)[0].picUid,
           0,
-          state.preData[0].isPreset ? 1 : 0,
+          state.preData.filter(item => item.isPreset === false)[0].isPreset ? 1 : 0,
         );
       });
     });
