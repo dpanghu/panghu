@@ -11,7 +11,7 @@ interface TProps {
 const FilePreview: React.FC<TProps> = (props) => {
   const { learnUrl, fileName, materialId } = props;
   return learnUrl !== '0' && learnUrl ? (
-    learnUrl.split('.').pop() == 'pdf' ? (
+    learnUrl.split('.').pop() == 'pdf' || learnUrl.split('.').pop() == 'PDF' ? (
       <PdfView filename={fileName} url={learnUrl} />
     ) : (
       <FileViewer attachmentId={materialId} url={learnUrl} />
