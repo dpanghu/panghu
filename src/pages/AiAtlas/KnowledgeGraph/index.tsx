@@ -31,7 +31,7 @@ const KnowledgeGraph: React.FC<Props> = ({ data }) => {
         default: ['drag-canvas', 'drag-node'],
       },
       layout: {
-        type: 'gForce',
+        type: 'force2',
         linkDistance: 100,
         preventOverlap: true,
         nodeSize: 50,
@@ -85,11 +85,11 @@ const KnowledgeGraph: React.FC<Props> = ({ data }) => {
       edge.labelCfg = {
         autoRotate: true,
         position: 'middle',
-        refX: -G6.Util.getTextSize(edge.label, 12)[0] / 2,
         refY: 12,
         style: {
           fill: '#7B8FFF',
           fontSize: 12,
+          textAlign: 'center',
         },
       };
       return edge;
