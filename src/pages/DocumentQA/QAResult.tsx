@@ -73,7 +73,7 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
   const getMessageHistory = async () => {
     try {
       const result: RecordItem[] = await getMessageLast({
-        themeId: summaryData?.themeId,
+        themeId: state.themeId,
         num: 10,
       });
       state.dialogList = [];
@@ -102,7 +102,9 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
       messageId: params.id,
       satisfied: type === 'down' ? 0 : 1,
     });
-    getMessageHistory();
+    if (state.themeId) {
+      getMessageHistory();
+    }
   };
 
   const handleSendDialog = () => {
@@ -250,14 +252,16 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
       //   type: 'answer',
       //   content: state.aiAnswerStr || '暂无结果',
       // });
-      getMessageHistory();
+      if (state.themeId) {
+        getMessageHistory();
+      }
       state.aiAnswerStr = '';
       state.typewriterArr = [];
       setTimeout(() => {
         scrollToBottom(historyEleHref.current);
       }, 200);
     }
-  }, [state.showTypewriter]);
+  }, [state.showTypewriter, state.themeId]);
 
   useUpdateEffect(() => {
     if (state.conversationId) {

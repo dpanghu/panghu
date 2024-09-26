@@ -123,7 +123,7 @@ const TextAreaMsg: React.FC<Props> = ({ fileData, onSubmit, isLoading }) => {
       {!state.moreVisible ? (
         <div className={styles['columns-area']}>
           <div className={styles['columns-list']} id="clumnsList">
-            {(fileData?.columns || []).map((item) => {
+            {(fileData?.columns.filter((c) => !!c) || []).map((item) => {
               return (
                 <Tooltip key={item} title={item}>
                   <div
@@ -158,7 +158,7 @@ const TextAreaMsg: React.FC<Props> = ({ fileData, onSubmit, isLoading }) => {
       ) : (
         <div className={styles['columns-area-more']} ref={moreDivRef}>
           <div className={classNames(styles['columns-list-more'])}>
-            {(fileData?.columns || []).map((item) => {
+            {(fileData?.columns.filter((c) => !!c) || []).map((item) => {
               return (
                 <Tooltip key={item} title={item}>
                   <div

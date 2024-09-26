@@ -136,7 +136,7 @@ const AiOR: React.FC = ({ }) => {
             const recognitionUrl = recognitionResults.url;
             const res = await getImageList();
             state.preData = res;
-            const { id, url: imageUrl, note, Preset } = state.preData[0];
+            const { id, url: imageUrl, note, Preset } = state.preData.filter(item => item.isPreset === false)[0];
             if (state.isChooseFirst) {
                 selectImage(id, imageUrl, rotationAngle, note, Preset);
             } else {
@@ -156,18 +156,19 @@ const AiOR: React.FC = ({ }) => {
         }
     };
 
+
     const uploadPics = (url: any) => {
         uploadPic({
             url,
         }).then((res) => {
             getImageList().then((res) => {
                 state.preData = res;
-                state.imgUrl = state.preData[0].url;
+                state.imgUrl = state.preData.filter(item => item.isPreset === false)[0].url;
                 postTextRecognition(
-                    state.preData[0].url,
-                    state.preData[0].picUid,
+                    state.preData.filter(item => item.isPreset === false)[0].url,
+                    state.preData.filter(item => item.isPreset === false)[0].picUid,
                     0,
-                    state.preData[0].isPreset ? 1 : 0,
+                    state.preData.filter(item => item.isPreset === false)[0].isPreset ? 1 : 0,
                 );
             });
         });
@@ -487,12 +488,12 @@ const AiOR: React.FC = ({ }) => {
                                 }
                             >
                                 <div className={styles.imageIndex}>{index + 1}</div>
-                                <div
+                                {!item.isPreset && <div
                                     className={styles.imageDel}
                                     onClick={() => delImage(index - 1)}
                                 >
                                     <CloseCircleFilled />
-                                </div>
+                                </div>}
                                 <img src={item.url} alt="" />
                             </div>
                         ))}
