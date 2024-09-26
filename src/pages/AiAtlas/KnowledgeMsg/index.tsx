@@ -1,80 +1,15 @@
+import { EditOutlined } from '@ant-design/icons';
 import { GraphData } from '@antv/g6';
 import { uuid } from '@antv/x6/lib/util/string/uuid';
-import { Button, Input, Table, message } from 'SeenPc';
+import { Button, Form, Input, Modal, Table, message } from 'SeenPc';
 import { useDeepCompareEffect, useReactive } from 'ahooks';
-import { InputRef } from 'antd';
-import React, { useEffect, useRef, useState } from 'react';
+import { Tooltip } from 'antd';
+import React, { useRef } from 'react';
 import Empty from '../components/Empty';
 import Loading from '../components/Loading';
 import { TableDataType } from '../type';
+import { columns, formItems } from './constants';
 import styles from './index.less';
-
-const EditableCell: React.FC<React.PropsWithChildren> = ({
-  title,
-  editable,
-  children,
-  dataIndex,
-  record,
-  handleSave,
-  ...restProps
-}) => {
-  const [editing, setEditing] = useState(false);
-  const state = useReactive({
-    editing: false,
-    value: '',
-  });
-  const inputRef = useRef<InputRef>(null);
-
-  useEffect(() => {
-    if (editing) {
-      inputRef.current?.focus();
-      state.value = record[dataIndex];
-    }
-  }, [editing]);
-
-  const toggleEdit = () => {
-    setEditing(!editing);
-  };
-
-  const save = async () => {
-    if (state.value === '') {
-      message.warning('知识信息中内容不能为空，请填写内容');
-      return;
-    }
-    try {
-      toggleEdit();
-      handleSave({ ...record, [dataIndex]: state.value });
-    } catch (errInfo) {
-      console.log('Save failed:', errInfo);
-    }
-  };
-
-  let childNode = children;
-  if (editable) {
-    childNode = editing ? (
-      <Input
-        ref={inputRef}
-        value={state.value}
-        onChange={(val) => (state.value = val)}
-        onPressEnter={save}
-        onBlur={save}
-        maxLength={20}
-        style={{ width: '100%' }}
-      />
-    ) : (
-      <div
-        className={styles['editable-cell-value-wrap']}
-        onClick={toggleEdit}
-        // @ts-ignore
-        title={children[1]}
-      >
-        {children[1]}
-      </div>
-    );
-  }
-
-  return <td {...restProps}>{childNode}</td>;
-};
 
 type Props = {
   extractLoading: boolean;
@@ -85,43 +20,9 @@ type Props = {
   createGraph: () => void;
 };
 
-const defaultColumns = [
-  {
-    width: '60px',
-    title: '序号',
-    dataIndex: 'index',
-    align: 'center',
-    key: 'index',
-    render: (_, record, index) => index + 1,
-  },
-  {
-    title: '实体',
-    dataIndex: 'entity1',
-    key: 'entity1',
-    editable: true,
-    width: 106,
-    ellipsis: true,
-  },
-  {
-    title: '关系',
-    dataIndex: 'rel',
-    key: 'rel',
-    editable: true,
-    width: 106,
-    ellipsis: true,
-  },
-  {
-    title: '实体',
-    dataIndex: 'entity2',
-    key: 'entity2',
-    editable: true,
-    width: 106,
-    ellipsis: true,
-  },
-];
-
 type IState = {
   dataSource: (TableDataType & { key: string })[];
+  editModalVisible: number;
 };
 
 const KnowledgeMsg: React.FC<Props> = ({
@@ -132,11 +33,11 @@ const KnowledgeMsg: React.FC<Props> = ({
 }) => {
   const state = useReactive<IState>({
     dataSource: [],
+    editModalVisible: -1,
   });
-
-  const operateRef = useRef<HTMLDivElement | null>();
   const tableRef = useRef<HTMLDivElement | null>();
-  const hoveredIndex = useRef<number>(-1);
+  const [formRef] = Form.useForm();
+
   useDeepCompareEffect(() => {
     if (knowledgeInfo) {
       state.dataSource = JSON.parse(knowledgeInfo).map(
@@ -148,38 +49,62 @@ const KnowledgeMsg: React.FC<Props> = ({
     }
   }, [knowledgeInfo]);
 
-  const handleSave = (row: TableDataType & { key: string }) => {
-    const newData = [...state.dataSource];
-    const index = newData.findIndex((item) => row.key === item.key);
-    const item = newData[index];
-    newData.splice(index, 1, {
-      ...item,
-      ...row,
-    });
-    state.dataSource = newData;
-  };
-
-  const columns = defaultColumns.map((col) => {
-    if (!col.editable) {
-      return col;
-    }
-    return {
-      ...col,
-      onCell: (record) => ({
-        record,
-        editable: true,
-        dataIndex: col.dataIndex,
-        title: col.title,
-        handleSave,
-      }),
-    };
-  });
-
-  const components = {
-    body: {
-      cell: EditableCell,
+  const defaultColumns = [
+    ...columns,
+    {
+      title: '操作',
+      dataIndex: 'operation',
+      key: 'operation',
+      align: 'center',
+      width: '70px',
+      render: (_, record, index) => {
+        return (
+          <div className={styles['operate-row']}>
+            <Tooltip title="编辑该行">
+              <EditOutlined
+                onClick={() => {
+                  state.editModalVisible = index;
+                  formRef.setFieldsValue({
+                    entity1: record.entity1,
+                    entity2: record.entity2,
+                    rel: record.rel,
+                  });
+                }}
+                style={{ fontSize: 14, color: '#979797', cursor: 'pointer' }}
+              />
+            </Tooltip>
+            {state.dataSource.length < 100 && (
+              <Tooltip title="在下面添加一行">
+                <div
+                  className={styles['operate-add']}
+                  onClick={() => {
+                    const newSource = [...state.dataSource];
+                    newSource.splice(index + 1, 0, {
+                      key: uuid(),
+                      entity1: '实体1',
+                      entity2: '实体2',
+                      rel: '关联',
+                    });
+                    state.dataSource = newSource;
+                  }}
+                ></div>
+              </Tooltip>
+            )}
+            <Tooltip title="删除该行">
+              <div
+                className={styles['operate-del']}
+                onClick={() => {
+                  state.dataSource = state.dataSource.filter(
+                    (_, ind) => ind !== index,
+                  );
+                }}
+              ></div>
+            </Tooltip>
+          </div>
+        );
+      },
     },
-  };
+  ];
 
   const checkEmpty = () => {
     return state.dataSource.every(
@@ -199,66 +124,12 @@ const KnowledgeMsg: React.FC<Props> = ({
           ) : knowledgeInfo ? (
             <div className={styles['table-container']} ref={tableRef}>
               <Table
-                components={components}
                 rowKey={(item) => item.key}
-                columns={columns}
+                columns={defaultColumns}
                 dataSource={state.dataSource}
                 bordered
                 pagination={false}
-                onRow={(record, index) => {
-                  return {
-                    onMouseEnter: (event) => {
-                      console.log(event);
-                      const ele = operateRef.current;
-                      ele.dataIndex = index;
-                      ele.style.display = 'block';
-                      ele.style.top = 44 + 40 * index + 'px';
-                      hoveredIndex.current = index;
-                    }, // 鼠标移入行
-                    onMouseLeave: (event) => {
-                      const ele = operateRef.current;
-                      if (event.relatedTarget !== operateRef.current) {
-                        ele.style.display = 'none';
-                        hoveredIndex.current = -1;
-                      }
-                    },
-                  };
-                }}
               ></Table>
-              <div
-                ref={operateRef}
-                className={styles['operate-row']}
-                onMouseLeave={() => {
-                  const ele = operateRef.current;
-                  ele.style.display = 'none';
-                  hoveredIndex.current = -1;
-                }}
-              >
-                {state.dataSource.length < 100 && (
-                  <div
-                    className={styles['operate-add']}
-                    onClick={() => {
-                      const newSource = [...state.dataSource];
-                      newSource.splice(hoveredIndex.current + 1, 0, {
-                        key: uuid(),
-                        entity1: '实体1',
-                        entity2: '实体2',
-                        rel: '关联',
-                      });
-                      state.dataSource = newSource;
-                    }}
-                  ></div>
-                )}
-
-                <div
-                  className={styles['operate-del']}
-                  onClick={() => {
-                    state.dataSource = state.dataSource.filter(
-                      (_, index) => index !== hoveredIndex.current,
-                    );
-                  }}
-                ></div>
-              </div>
             </div>
           ) : (
             <Empty emptyMessage="待抽取知识信息" />
@@ -288,6 +159,50 @@ const KnowledgeMsg: React.FC<Props> = ({
           </Button>
         </div>
       </footer>
+      <Modal
+        open={state.editModalVisible !== -1}
+        onCancel={() => (state.editModalVisible = -1)}
+        title="编辑行数据"
+        onOk={() => {
+          formRef.validateFields().then((values) => {
+            const newData = [...state.dataSource];
+            const item = newData[state.editModalVisible];
+            newData.splice(state.editModalVisible, 1, {
+              ...item,
+              ...values,
+            });
+            state.dataSource = newData;
+            state.editModalVisible = -1;
+          });
+        }}
+      >
+        <Form form={formRef} labelCol={{ span: 4 }} wrapperCol={{ span: 18 }}>
+          {formItems.map((item) => {
+            return (
+              <Form.Item
+                key={item.name}
+                label={item.label}
+                name={item.name}
+                rules={[
+                  {
+                    required: true,
+                    message: '请填写' + item.label,
+                  },
+                  {
+                    max: 20,
+                    message: item.label + '字符数不得超过20',
+                  },
+                ]}
+              >
+                <Input
+                  style={{ resize: 'unset', height: 80 }}
+                  type="textarea"
+                />
+              </Form.Item>
+            );
+          })}
+        </Form>
+      </Modal>
     </div>
   );
 };

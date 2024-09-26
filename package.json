@@ -23,7 +23,7 @@
     "@umijs/max": "4.3.10",
     "SeenPc": "2.3.11",
     "ahooks": "3.8.0",
-    "antd": "5.4.0",
+    "antd": "5.12.0",
     "classnames": "2.5.1",
     "dayjs": "^1.11.13",
     "docx-preview": "^0.3.2",
