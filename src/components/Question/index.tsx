@@ -36,10 +36,10 @@ const QuestionNaire: React.FC<IProps> = ({ dataSource, title, description, foote
     const onFinish = (values: any) => {
         let arr: any = [];
         // eslint-disable-next-line @typescript-eslint/no-unused-expressions, array-callback-return
-        Object.keys(values) && Object.keys(values).map((item: any)=> {
-            let dataSources: any = dataSource.find((element: any)=> element.id == item);
-            if(dataSources !== void 0) {
-                if(dataSources.displays !== 0) {
+        Object.keys(values) && Object.keys(values).map((item: any) => {
+            let dataSources: any = dataSource.find((element: any) => element.id == item);
+            if (dataSources !== void 0) {
+                if (dataSources.displays !== 0) {
                     arr.push({
                         ...dataSources,
                         value: values[item],
@@ -59,7 +59,7 @@ const QuestionNaire: React.FC<IProps> = ({ dataSource, title, description, foote
         // setSelectValues({});
     };
 
-    useMount(()=> {
+    useMount(() => {
 
     })
 
@@ -71,20 +71,35 @@ const QuestionNaire: React.FC<IProps> = ({ dataSource, title, description, foote
     };
 
     const checkUsername = async (rule: any, value: any) => {
-        console.log(value);
-        console.log(rule);
         // 这里可以是异步请求来验证用户名是否存在
         if (value.trim() == '') {
             console.log(value);
-          throw new Error('不能为空');
+            throw new Error('不能为空');
         }
         if (value == void 0) {
             console.log(value);
             throw new Error('不能为空');
-          }
+        }
         // 如果验证通过，返回Promise.resolve()
         return Promise.resolve();
-      };
+    };
+
+    const renderIndex = (item: any, index: any) => {
+        if(item?.display == 0 && item?.displays == 1) {
+            let math: any = 0;
+            // eslint-disable-next-line @typescript-eslint/no-unused-expressions, array-callback-return
+            dataSource && dataSource.map((element: any,index1: any)=> {
+                if(index1 < index) {
+                    if(element.display == 0 && element.displays == 0) {
+                        math = math + 1;
+                    }
+                }
+            })
+            return index + 1 - math;
+        }else {
+            return index + 1;
+        }
+    }
 
     const handleInputChange = (itemId: any, e: any) => {
         const inputValue = e.slice(0, 10);
@@ -114,7 +129,7 @@ const QuestionNaire: React.FC<IProps> = ({ dataSource, title, description, foote
 
         return orderedQuestions.map((item, index) => ({
             ...item,
-            title: `${index + 1}. ${item?.title}`,
+            title: `${renderIndex(item, index)}. ${item?.title}`,
         }));
     }, [dataSource, selectValues]);
 
@@ -143,28 +158,27 @@ const QuestionNaire: React.FC<IProps> = ({ dataSource, title, description, foote
                         case 'radio':
                             if (item.type === 'radio' && item.options?.find((element: any) => element.needInput == 1)) {
                                 formItemContent = <Radio.Group key={item.id} onChange={(e) => {
-                                    let chooseRadio: any = item.options.find((element: any)=> element.value == e.target.value);
-                                    if(chooseRadio.relQuestionIds !== void 0) {
+                                    let chooseRadio: any = item.options.find((element: any) => element.value == e.target.value);
+                                    if (chooseRadio.relQuestionIds !== void 0) {
                                         // eslint-disable-next-line @typescript-eslint/no-unused-expressions, array-callback-return
-                                        dataSource && dataSource.map((source: any)=> {
-                                            if(source.display == 0) {
+                                        dataSource && dataSource.map((source: any) => {
+                                            if (source.display == 0) {
                                                 source.displays = 0;
-                                            } 
+                                            }
                                         })
-                                        console.log('sssssssssssssssss',JSON.stringify(dataSource));
                                         let connect: any = chooseRadio.relQuestionIds.split(',');
                                         // eslint-disable-next-line @typescript-eslint/no-unused-expressions, array-callback-return
                                         connect && connect.map((element: any) => {
-                                            let source: any = dataSource.find((elements: any)=> elements.id == element );
+                                            let source: any = dataSource.find((elements: any) => elements.id == element);
                                             source.displays = 1;
                                         })
                                         handleRadioChange(item.id, e.target.value);
-                                    }else if(chooseRadio.needInput) {
+                                    } else if (chooseRadio.needInput) {
                                         // eslint-disable-next-line @typescript-eslint/no-unused-expressions, array-callback-return
-                                        dataSource && dataSource.map((source: any)=> {
-                                            if(source.display == 0) {
+                                        dataSource && dataSource.map((source: any) => {
+                                            if (source.display == 0) {
                                                 source.displays = 0;
-                                            } 
+                                            }
                                         })
                                         handleRadioChange(item.id, e.target.value);
                                     }
@@ -195,8 +209,8 @@ const QuestionNaire: React.FC<IProps> = ({ dataSource, title, description, foote
                                 </Radio.Group>
 
                             } else {
-                                formItemContent = <ComboBox onChange={(e: any)=> {
-                                    let chooseRadio: any = item.options.find((element: any)=> element.value == e.target.value);
+                                formItemContent = <ComboBox onChange={(e: any) => {
+                                    let chooseRadio: any = item.options.find((element: any) => element.value == e.target.value);
                                     console.log(chooseRadio);
                                 }} options={item.options || []} type={item.type} />;
                             }
@@ -219,14 +233,14 @@ const QuestionNaire: React.FC<IProps> = ({ dataSource, title, description, foote
                                 key={item.id}
                                 label={item.title}
                                 name={`${item.id}`}
-                                rules={item.type == 'checkbox' ? [] : item.isRequired ?  [
+                                rules={item.type == 'checkbox' ? [] : item.isRequired ? [
                                     // { required: item.isRequired, message: `${item.title}为必填` },
                                     {
                                         message: '不能为空',
-                                        validator:  checkUsername
+                                        validator: checkUsername
                                     }
                                 ] : []}
-                                
+
                             >
                                 {formItemContent}
                             </Form.Item>
