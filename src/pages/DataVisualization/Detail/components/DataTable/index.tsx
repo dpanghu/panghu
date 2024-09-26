@@ -1,5 +1,6 @@
 import { DetailResponseType } from '@/pages/DataVisualization/type';
-import { useMount, useReactive } from 'ahooks';
+import { FullscreenOutlined } from '@ant-design/icons';
+import { useFullscreen, useMount, useReactive } from 'ahooks';
 import { Empty } from 'antd';
 import classNames from 'classnames';
 import Handsontable from 'handsontable';
@@ -20,6 +21,8 @@ enum ZOOM_OPT_TYPE {
 
 const DataTable: React.FC<Props> = ({ fileData }) => {
   const handsonTable = useRef<Handsontable | null>(null);
+  const fullScreenRef = useRef<HTMLDivElement | null>(null);
+  const [isFullscreen, { enterFullscreen }] = useFullscreen(fullScreenRef);
   const state = useReactive({
     zoomIndex: 0,
   });
@@ -102,23 +105,42 @@ const DataTable: React.FC<Props> = ({ fileData }) => {
 
   return (
     <div className={styles['container']}>
-      <div
-        id="handsomTable"
-        className={classNames(
-          styles['table-container'],
-          // 'zoom-' + state.zoomIndex,
-        )}
-      ></div>
-      <div className={styles['zoom']}>
-        <span onClick={() => zoom(ZOOM_OPT_TYPE.PREV)}>-</span>
-        <span>{ZOOM_SCALES[state.zoomIndex]}%</span>
-        <span onClick={() => zoom(ZOOM_OPT_TYPE.NEXT)}>+</span>
-      </div>
-      {!fileData?.columns && (
-        <div className={styles['loading']}>
-          <Empty description="暂无数据" />
+      <div className={styles['wrapper']} ref={fullScreenRef}>
+        <div
+          id="handsomTable"
+          className={classNames(
+            styles['table-container'],
+            // 'zoom-' + state.zoomIndex,
+          )}
+        ></div>
+        <div className={styles['zoom']}>
+          <span
+            style={{ cursor: state.zoomIndex === 0 ? 'no-drop' : 'pointer' }}
+            onClick={() => zoom(ZOOM_OPT_TYPE.PREV)}
+          >
+            -
+          </span>
+          <span>{ZOOM_SCALES[state.zoomIndex]}%</span>
+          <span
+            style={{ cursor: state.zoomIndex === 2 ? 'no-drop' : 'pointer' }}
+            onClick={() => zoom(ZOOM_OPT_TYPE.NEXT)}
+          >
+            +
+          </span>
+          {!isFullscreen && (
+            <FullscreenOutlined
+              onClick={() => {
+                enterFullscreen();
+              }}
+            />
+          )}
         </div>
-      )}
+        {!fileData?.columns && (
+          <div className={styles['loading']}>
+            <Empty description="暂无数据" />
+          </div>
+        )}
+      </div>
     </div>
   );
 };
