@@ -19,7 +19,7 @@ import {
 } from '@/services/aiOCR';
 import { CloseCircleFilled } from '@ant-design/icons';
 import { useMount, useReactive } from 'ahooks';
-import { Input, message, Modal, Spin } from 'antd';
+import { Input, message, Modal, Spin, Tooltip } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { Upload } from 'SeenPc';
 import ImageAnnotator from './ImageAnnotator';
@@ -170,11 +170,16 @@ const AiOCR: React.FC = ({}) => {
     uploadPic({
       url,
     }).then((rst) => {
-      console.log(rst);
       getImageList().then((res) => {
+        selectImage(
+          rst.picUid,
+          rst.url,
+          rst.rotationAngle,
+          rst.note || [],
+          rst.isPreset,
+        );
         state.preData = res;
-        state.imgUrl = rst.url;
-        state.isSelect = rst.picUid;
+        state.isChooseFirst = false;
         postTextRecognition(rst.url, rst.picUid, 0, rst.isPreset ? 1 : 0);
       });
     });
@@ -479,27 +484,39 @@ const AiOCR: React.FC = ({}) => {
               </div>
             )}
             <div className={styles.function}>
-              <div
-                className={state.isCheck ? styles.ischeck : styles.check}
-                onClick={() => (state.isCheck = !state.isCheck)}
-              >
-                校验
-              </div>
-              <img
-                src={state.isMark ? blueA : A}
-                alt=""
-                className={styles.A}
-                onClick={() => (state.isMark = !state.isMark)}
-              />
-              <img
-                src={state.isBlue ? blueRectangle : rectangle}
-                alt=""
-                className={styles.rectangle}
-                onClick={() => (state.isBlue = !state.isBlue)}
-              />
-              <img src={zoomOut} alt="Zoom Out" onClick={handleZoomOut} />
-              <img src={zoomIn} alt="Zoom In" onClick={handleZoomIn} />
-              <img src={rotate} alt="" onClick={changeAngle} />
+              <Tooltip title="文字对比">
+                <div
+                  className={state.isCheck ? styles.ischeck : styles.check}
+                  onClick={() => (state.isCheck = !state.isCheck)}
+                >
+                  校验
+                </div>
+              </Tooltip>
+              <Tooltip title="显示识别文字">
+                <img
+                  src={state.isMark ? blueA : A}
+                  alt=""
+                  className={styles.A}
+                  onClick={() => (state.isMark = !state.isMark)}
+                />
+              </Tooltip>
+              <Tooltip title="标记识别位置">
+                <img
+                  src={state.isBlue ? blueRectangle : rectangle}
+                  alt=""
+                  className={styles.rectangle}
+                  onClick={() => (state.isBlue = !state.isBlue)}
+                />
+              </Tooltip>
+              <Tooltip title="放小">
+                <img src={zoomOut} alt="Zoom Out" onClick={handleZoomOut} />
+              </Tooltip>
+              <Tooltip title="缩大">
+                <img src={zoomIn} alt="Zoom In" onClick={handleZoomIn} />
+              </Tooltip>
+              <Tooltip title="顺时针旋转90°">
+                <img src={rotate} alt="" onClick={changeAngle} />
+              </Tooltip>
             </div>
           </div>
           {state.isrec && state.preData.length > 0 && (
@@ -548,8 +565,12 @@ const AiOCR: React.FC = ({}) => {
                 </div>
               )}
               <div className={styles.rightBottom}>
-                <img src={copy} alt="" onClick={copyText} />
-                <img src={refresh} alt="" onClick={refreshText} />
+                <Tooltip title="复制识别结果">
+                  <img src={copy} alt="" onClick={copyText} />
+                </Tooltip>
+                <Tooltip title="重新识别">
+                  <img src={refresh} alt="" onClick={refreshText} />
+                </Tooltip>
               </div>
             </div>
           )}

@@ -110,6 +110,17 @@ export async function getMyResultProgress<T>(params?: RecordItem): Promise<T> {
   });
 }
 
+// 重新生成
+export async function regeneratePlugin<T>(params?: RecordItem): Promise<T> {
+  return $axios.request({
+    url: '/xai/theme/recreate',
+    method: 'POST',
+    params: {
+      ...params,
+    },
+  });
+}
+
 /** ---------------------------- 简历页面 --------------------- */
 // 根据主题id查询简历
 
