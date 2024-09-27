@@ -414,7 +414,6 @@ const JobHunt: React.FC = () => {
                 });
         } else {
             if (state.isLoading === false && state.typewriterArrCache.length === 0) {
-                console.log('22222222222222', state.status);
                 state.visible = false;
                 if (state.status !== 'ending') {
                     state.messageList.push({

@@ -23,6 +23,7 @@ import { Button, ComboBox, Input, Select } from 'SeenPc';
 import sf from 'SeenPc/dist/esm/globalStyle/global.less';
 import { useMount, useReactive, useUpdateEffect } from 'ahooks';
 import { message } from 'antd';
+import RcMarkdown from 'rc-markdown';
 import classNames from 'classnames';
 import { isArray } from 'lodash';
 import React, { useMemo, useRef } from 'react';
@@ -46,6 +47,7 @@ interface TState {
   visible: any;
   excludeId: any;
   open: any;
+  isMarkdown: any;
   isTyping: any;
   typewriterArrCache: any;
   messageId: any;
@@ -249,6 +251,7 @@ const JobHunt: React.FC = () => {
     isLoading: false,
     isTyping: false,
     open: false,
+    isMarkdown: false,
     allow: '',
     aiData: {},
     editName: '',
@@ -274,6 +277,7 @@ const JobHunt: React.FC = () => {
       !state.isTyping &&
       typeWriter.current
     ) {
+      console.log('state');
       state.isTyping = true;
       const curStr: string = state.typewriterArrCache.shift()! || '';
       typewriterStrCache.current += curStr;
@@ -349,6 +353,7 @@ const JobHunt: React.FC = () => {
               onFinished: () => {
                 state.isLoading = false;
                 getHistoryList(state.patams, 1);
+                state.isMarkdown = true;
               },
               onError: (error) => {
                 console.log(error);
@@ -608,7 +613,7 @@ const JobHunt: React.FC = () => {
                         style={{ width: 24, height: 24, marginRight: 16 }}
                       ></img>
                       <div className={styles.finallText}>
-                        {typewriterStrCache.current}
+                        <RcMarkdown content={typewriterStrCache.current}></RcMarkdown>
                         <div className={styles.finallTextBottom}>
                           <div>
                             <span style={{ marginRight: 16 }}>您对本次的回答满意吗？</span>
@@ -624,9 +629,6 @@ const JobHunt: React.FC = () => {
                             <img onClick={copyText} style={{ cursor: 'pointer' }} src={copy} />
                           </div>
                         </div>
-                        {/* <pre className={styles.texts} style={{ whiteSpace: 'pre-wrap', margin: 0, color: '#272648', fontSize: 14, lineHeight: '24px',fontWeight: 400 }}>
-                    {typewriterStrCache.current}
-                  </pre> */}
                       </div>
                     </div>
                   ) : (
@@ -639,7 +641,8 @@ const JobHunt: React.FC = () => {
                         style={{ width: 24, height: 24, marginRight: 16 }}
                       ></img>
                       <div className={styles.warnings}>
-                        <Typewriter
+                      <RcMarkdown content={state.typewriterArrCache.join('')}></RcMarkdown>
+                        {/* <Typewriter
                           onInit={(typewriter: TypewriterClass) => {
                             state.isTyping = true;
                             typeWriter.current = typewriter;
@@ -653,7 +656,7 @@ const JobHunt: React.FC = () => {
                           options={{
                             delay: 25,
                           }}
-                        />
+                        /> */}
                       </div>
                     </div>
                   )}
