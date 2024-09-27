@@ -1,4 +1,8 @@
-import { getMyResultProgress, modifyThemeName } from '@/services/aiJobHunt';
+import {
+  getMyResultProgress,
+  modifyThemeName,
+  regeneratePlugin,
+} from '@/services/aiJobHunt';
 import { MoreOutlined } from '@ant-design/icons';
 import { message } from 'SeenPc';
 import sf from 'SeenPc/dist/esm/globalStyle/global.less';
@@ -16,6 +20,7 @@ type Props = {
   fileName: string;
   type: string;
   onDelItem: (themeId: string) => void;
+  onRegenerate: () => void;
 };
 
 type TState = {
@@ -37,7 +42,13 @@ const FILE_STATUS = {
 
 const FILE_STATUS_NAME = ['生成中', '已生成', '生成失败'];
 
-const FileItem: React.FC<Props> = ({ fileId, fileName, type, onDelItem }) => {
+const FileItem: React.FC<Props> = ({
+  fileId,
+  fileName,
+  type,
+  onDelItem,
+  onRegenerate,
+}) => {
   const state = useReactive<TState>({
     status: FILE_STATUS.SUCCESS,
     result: '',
@@ -123,6 +134,12 @@ const FileItem: React.FC<Props> = ({ fileId, fileName, type, onDelItem }) => {
     cancel();
   });
 
+  const regenerate = () => {
+    regeneratePlugin({ themeId: fileId }).then(() => {
+      onRegenerate();
+    });
+  };
+
   return (
     <>
       <div className={styles['file-item-container']} ref={containerRef}>
@@ -150,7 +167,9 @@ const FileItem: React.FC<Props> = ({ fileId, fileName, type, onDelItem }) => {
                 if (type === 'resume') {
                   history.push('/AiJobHunt/resume/' + fileId);
                 } else {
-                  history.push('/AiJobHunt/interview/' + paramId + '/' + fileId);
+                  history.push(
+                    '/AiJobHunt/interview/' + paramId + '/' + fileId,
+                  );
                 }
               }
             }}
@@ -177,40 +196,49 @@ const FileItem: React.FC<Props> = ({ fileId, fileName, type, onDelItem }) => {
           </div>
         )}
       </div>
-      <Popover
-        overlayClassName={styles['popup-container']}
-        content={
-          <>
-            <div
-              className={styles['edit-btn']}
-              onClick={() => {
-                state.isEditing = true;
-                state.editName = state.name;
-                setTimeout(() => {
-                  inputRef.current?.select();
-                  inputRef.current?.focus();
-                  state.popupVisible = false;
-                });
-              }}
-            >
-              重命名
-            </div>
-            <div
-              className={styles['del-btn']}
-              onClick={() => {
-                onDelItem(fileId);
-              }}
-            >
-              删除
-            </div>
-          </>
-        }
-        trigger="click"
-        open={state.popupVisible}
-        onOpenChange={(val) => (state.popupVisible = val)}
-      >
-        <MoreOutlined size={14} className={styles['operate-btn']} />
-      </Popover>
+      <div className={styles['opt-wrapper']}>
+        <Popover
+          overlayClassName={styles['popup-container']}
+          content={
+            <>
+              <div
+                className={styles['edit-btn']}
+                onClick={() => {
+                  state.isEditing = true;
+                  state.editName = state.name;
+                  setTimeout(() => {
+                    inputRef.current?.select();
+                    inputRef.current?.focus();
+                    state.popupVisible = false;
+                  });
+                }}
+              >
+                重命名
+              </div>
+              {state.status === FILE_STATUS.FAILURE && (
+                <div
+                  className={styles['del-btn']}
+                  onClick={() => {
+                    onDelItem(fileId);
+                  }}
+                >
+                  删除
+                </div>
+              )}
+            </>
+          }
+          trigger="click"
+          open={state.popupVisible}
+          onOpenChange={(val) => (state.popupVisible = val)}
+        >
+          <MoreOutlined size={14} className={styles['operate-btn']} />
+        </Popover>
+        {state.status === FILE_STATUS.FAILURE && (
+          <div className={styles['regenerate']} onClick={regenerate}>
+            重新生成
+          </div>
+        )}
+      </div>
     </>
   );
 };

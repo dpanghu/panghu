@@ -89,7 +89,7 @@ const DocumentSummary: React.FC = () => {
     } catch (error) {}
   };
 
-  const changeContent = (dataSource: RecordItem, mount?: boolean) => {
+  const changeContent = async (dataSource: RecordItem, mount?: boolean) => {
     state.showSummary = false;
     state.showActionBtns = true;
     state.uploadLoading = true;
@@ -109,6 +109,8 @@ const DocumentSummary: React.FC = () => {
         if (result1.status === 2) {
           state.summaryData = result1;
           clearInterval(intervalRef.current);
+          const result2: RecordItem[] = await getSummaryList();
+          state.summaryList = result2;
           state.uploadLoading = false;
           state.showSummary = true;
           state.showActionBtns = true;
@@ -122,6 +124,8 @@ const DocumentSummary: React.FC = () => {
       }, 1000 * 15);
       if (ossViewUrlRef.current !== '0' || timerOutRef.current >= 15 * 4 * 10) {
         clearInterval(intervalRef.current);
+        const result2: RecordItem[] = await getSummaryList();
+        state.summaryList = result2;
         state.uploadLoading = false;
         state.summaryData = {};
         state.showSummary = false;
@@ -255,7 +259,7 @@ const DocumentSummary: React.FC = () => {
       // state.showActionBtns = true;
       // state.showSummary = true;
     } catch (e) {
-      message.error('解析失败');
+      // message.error('解析失败');
       state.showActionBtns = false;
       state.showSummary = false;
     } finally {
@@ -274,13 +278,16 @@ const DocumentSummary: React.FC = () => {
         paramId: state.paramsId,
       });
       changeContent(result, true);
+      const result1: RecordItem[] = await getSummaryList();
+      state.summaryList = result1;
       // state.showSummary = true;
     } catch (error) {
       state.showSummary = false;
       state.showActionBtns = false;
-      message.error('解析失败');
-    } finally {
       state.uploadLoading = false;
+      // message.error('解析失败');
+    } finally {
+      // state.uploadLoading = false;
     }
   };
 

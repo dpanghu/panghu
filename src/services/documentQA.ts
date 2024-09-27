@@ -55,3 +55,22 @@ export async function getMessageLast(params?: RecordItem) {
     params,
   });
 }
+
+export async function analysisAnswer(params?: RecordItem) {
+  return $axios.request({
+    url: `/seentao/xai/word/answer/analysis`,
+    method: 'GET',
+    params,
+    hiddenLoading: true,
+  });
+}
+
+// 设置满意度
+export async function updateSatisfied(params?: RecordItem) {
+  return $axios.request({
+    url: `/xai/message/satisfied/update`,
+    method: 'GET',
+    params,
+    hiddenLoading: true,
+  });
+}

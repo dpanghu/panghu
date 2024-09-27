@@ -132,6 +132,7 @@ const App: React.FC = () => {
 
     const save = (values: any) => {
         let arr: any = [];
+        console.log('2222222222',values);
         // eslint-disable-next-line @typescript-eslint/no-unused-expressions, array-callback-return
         values && values.map((el: any) => {
             let obj: any = {};
@@ -150,6 +151,9 @@ const App: React.FC = () => {
             }else if(el.type === 'input') {
                 obj.questionId = el.id;
                 obj.answerInput = el.value;
+            }else if(el.type == 'checkbox') {
+                obj.questionId = el.id;
+                obj.answerOptionIds = el.value.join(',');
             }
             arr.push(obj);
         })
@@ -208,6 +212,8 @@ const App: React.FC = () => {
                     type: types[item.type],
                     // eslint-disable-next-line eqeqeq
                     isRequired: item.required == 1 ? true : false,
+                    displays: item.display,
+                    display: item.display,
                     id: item.id,
                     options: item.options ? item.options : '',
                 })

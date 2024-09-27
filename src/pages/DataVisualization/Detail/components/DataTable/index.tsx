@@ -1,5 +1,6 @@
 import { DetailResponseType } from '@/pages/DataVisualization/type';
-import { useMount, useReactive } from 'ahooks';
+import { FullscreenOutlined } from '@ant-design/icons';
+import { useFullscreen, useMount, useReactive } from 'ahooks';
 import { Empty } from 'antd';
 import classNames from 'classnames';
 import Handsontable from 'handsontable';
@@ -12,7 +13,7 @@ type Props = {
   fileData: DetailResponseType | null;
 };
 
-const ZOOM_SCALES = [50, 75, 100, 150, 200];
+const ZOOM_SCALES = [100, 150, 200];
 enum ZOOM_OPT_TYPE {
   PREV = 'prev',
   NEXT = 'next',
@@ -20,8 +21,10 @@ enum ZOOM_OPT_TYPE {
 
 const DataTable: React.FC<Props> = ({ fileData }) => {
   const handsonTable = useRef<Handsontable | null>(null);
+  const fullScreenRef = useRef<HTMLDivElement | null>(null);
+  const [isFullscreen, { enterFullscreen }] = useFullscreen(fullScreenRef);
   const state = useReactive({
-    zoomIndex: 2,
+    zoomIndex: 0,
   });
   useMount(() => {
     const container = document.querySelector('#handsomTable');
@@ -49,6 +52,7 @@ const DataTable: React.FC<Props> = ({ fileData }) => {
     if (fileData) {
       const rst = formatData(fileData);
       handsonTable.current!.loadData(rst);
+      state.zoomIndex = 0;
     }
   }, [JSON.stringify(fileData)]);
 
@@ -72,7 +76,7 @@ const DataTable: React.FC<Props> = ({ fileData }) => {
     const size = getAllWidthsAndHeight();
     const originZoom = ZOOM_SCALES[state.zoomIndex];
     if (type === ZOOM_OPT_TYPE.NEXT) {
-      if (state.zoomIndex < 4) {
+      if (state.zoomIndex < 2) {
         state.zoomIndex += 1;
       } else {
         return;
@@ -88,9 +92,11 @@ const DataTable: React.FC<Props> = ({ fileData }) => {
       '.htCore td, .htCore th, .htCore .rollHeader',
     );
     const ratio = ZOOM_SCALES[state.zoomIndex] / originZoom;
+    const colWidths = size.widths.map((width) => Math.round(width * ratio));
+    const rowHeights = size.heights.map((height) => Math.round(height * ratio));
     handsonTable.current.updateSettings({
-      colWidths: size.widths.map((width) => width * ratio),
-      rowHeights: size.heights.map((height) => height * ratio),
+      colWidths,
+      rowHeights,
     });
     allCells.forEach(function (cell) {
       cell.style.fontSize = (14 * ZOOM_SCALES[state.zoomIndex]) / 100 + 'px';
@@ -99,23 +105,42 @@ const DataTable: React.FC<Props> = ({ fileData }) => {
 
   return (
     <div className={styles['container']}>
-      <div
-        id="handsomTable"
-        className={classNames(
-          styles['table-container'],
-          // 'zoom-' + state.zoomIndex,
-        )}
-      ></div>
-      <div className={styles['zoom']}>
-        <span onClick={() => zoom(ZOOM_OPT_TYPE.PREV)}>-</span>
-        <span>{ZOOM_SCALES[state.zoomIndex]}%</span>
-        <span onClick={() => zoom(ZOOM_OPT_TYPE.NEXT)}>+</span>
-      </div>
-      {!fileData?.columns && (
-        <div className={styles['loading']}>
-          <Empty description="暂无数据" />
+      <div className={styles['wrapper']} ref={fullScreenRef}>
+        <div
+          id="handsomTable"
+          className={classNames(
+            styles['table-container'],
+            // 'zoom-' + state.zoomIndex,
+          )}
+        ></div>
+        <div className={styles['zoom']}>
+          <span
+            style={{ cursor: state.zoomIndex === 0 ? 'no-drop' : 'pointer' }}
+            onClick={() => zoom(ZOOM_OPT_TYPE.PREV)}
+          >
+            -
+          </span>
+          <span>{ZOOM_SCALES[state.zoomIndex]}%</span>
+          <span
+            style={{ cursor: state.zoomIndex === 2 ? 'no-drop' : 'pointer' }}
+            onClick={() => zoom(ZOOM_OPT_TYPE.NEXT)}
+          >
+            +
+          </span>
+          {!isFullscreen && (
+            <FullscreenOutlined
+              onClick={() => {
+                enterFullscreen();
+              }}
+            />
+          )}
         </div>
-      )}
+        {!fileData?.columns && (
+          <div className={styles['loading']}>
+            <Empty description="暂无数据" />
+          </div>
+        )}
+      </div>
     </div>
   );
 };

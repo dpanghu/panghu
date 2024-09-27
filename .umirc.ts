@@ -55,6 +55,11 @@ export default defineConfig({
       component: '@/pages/AiModule/AiScene',
     },
     {
+      path: '/AiScenes',
+      layout: false,
+      component: '@/pages/AiModule/AiList',
+    },
+    {
       path: '/AiSceneImg',
       layout: false,
       component: '@/pages/AiModule/AiSceneImg',

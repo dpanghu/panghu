@@ -172,6 +172,9 @@ const Resume: React.FC = ({ }) => {
   const save = () => {
     let paramsArr: any = [];
     let newArr: any = [];
+    if(state.data.length == 0) {
+      message.error('配置项不能为空');
+    }
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions, array-callback-return
     state.data && state.data.map((element: any, index: any) => {
       newArr.push({
@@ -598,6 +601,10 @@ const Resume: React.FC = ({ }) => {
     }
   }
 
+  const getPopupContainer = (triggerNode: any) => {
+    return triggerNode.parentElement; // 返回你想要挂载下拉菜单的DOM元素
+  };
+
   const renderPreview = (item: any) => {
     switch (item.type) {
       case 'text':
@@ -608,7 +615,7 @@ const Resume: React.FC = ({ }) => {
       case 'select':
         return <div className={styles.previewBox}>
           <div className={styles.previewTitle}>{item.title}</div>
-          <Select style={{ width: '100%' }} placeholder={item.tips} option={item.option}></Select>
+          <Selects getPopupContainer={getPopupContainer} style={{ width: '100%' }} placeholder={item.tips} option={item.option}></Selects>
         </div>
       case 'radio':
         return <div className={styles.previewBox}>

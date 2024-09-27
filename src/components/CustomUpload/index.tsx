@@ -1,7 +1,7 @@
 import { Upload, UploadProps, message } from 'SeenPc';
 import { RcFile } from 'antd/es/upload';
 import React, { ReactNode } from 'react';
-
+import styles from './index.less';
 export interface CustomUploadProps extends Partial<UploadProps> {
   /**
    * @description 唤起选择文件弹窗时 过滤出支持的附件类型
@@ -108,9 +108,11 @@ const CustomUpload: React.FC<CustomUploadProps> = ({
       {...restProps}
       beforeUpload={onBeforeUpload}
       onChange={onFileChange}
+      className={styles.draggerContainer}
     />
   ) : (
     <Upload
+      className={styles.draggerContainer}
       multiple={multiple}
       showUploadList={showUploadList}
       name={name}

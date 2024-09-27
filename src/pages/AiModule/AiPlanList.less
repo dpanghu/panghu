@@ -5,7 +5,7 @@
     flex-direction: column;
     height: 100vh;
     .footer {
-        position: absolute;
+        position: fixed;
         bottom: 0px;
         width: 100%;
         height: 56px;
@@ -22,7 +22,8 @@ border-radius: 0px 0px 8px 8px;
         background-size: 100% 100%;
         object-fit: cover;
         background-repeat: no-repeat;
-        height: 100%;
+        height: fit-content;
+        overflow-y: auto;
         border-radius: 4px;
         display: flex;
         justify-content: center;
@@ -31,15 +32,17 @@ border-radius: 0px 0px 8px 8px;
     .tables {
         display: flex;
         flex-direction: column;
-        width: 810px;
         margin-top: 26px;
         align-items: center;
+        height: fit-content;
+        margin-bottom: 70px;
         margin-top: 94px;
     }
 
     .box {
      display: flex;
      height: 36px;
+     min-height: 36px;
      background: linear-gradient( 270deg, rgba(152,88,255,0.88) 0%, rgba(85,104,255,0.9) 100%);
      .ths {
         height: 100%;
@@ -60,6 +63,8 @@ border-radius: 0px 0px 8px 8px;
     .boxs {
         display: flex;
         height: 36px;
+        min-height: 36px;
+        margin-top: 1px;
         .ths {
            height: 100%;
            margin-left: 1.2px;

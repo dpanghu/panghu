@@ -19,7 +19,7 @@ import {
 } from '@/services/aiOCR';
 import { CloseCircleFilled } from '@ant-design/icons';
 import { useMount, useReactive } from 'ahooks';
-import { Input, message, Modal, Spin } from 'antd';
+import { Input, message, Modal, Spin, Tooltip } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { Upload } from 'SeenPc';
 import ImageAnnotator from './ImageAnnotator';
@@ -45,7 +45,7 @@ type TState = {
   isChooseFirst: boolean;
   isPreset: boolean;
 };
-const AiOCR: React.FC = ({ }) => {
+const AiOCR: React.FC = ({}) => {
   const [scale, setScale] = useState(1);
   const [shouldPaste, setShouldPaste] = useState(false);
   const state = useReactive<TState>({
@@ -141,7 +141,12 @@ const AiOCR: React.FC = ({ }) => {
       const recognitionUrl = recognitionResults.url;
       const res = await getImageList();
       state.preData = res;
-      const { id, url: imageUrl, note, Preset } = state.preData[0];
+      const {
+        id,
+        url: imageUrl,
+        note,
+        Preset,
+      } = state.preData.filter((item) => item.isPreset === false)[0];
       if (state.isChooseFirst) {
         selectImage(id, imageUrl, rotationAngle, note, Preset);
       } else {
@@ -164,16 +169,18 @@ const AiOCR: React.FC = ({ }) => {
   const uploadPics = (url: any) => {
     uploadPic({
       url,
-    }).then((res) => {
+    }).then((rst) => {
       getImageList().then((res) => {
-        state.preData = res;
-        state.imgUrl = state.preData[0].url;
-        postTextRecognition(
-          state.preData[0].url,
-          state.preData[0].picUid,
-          0,
-          state.preData[0].isPreset ? 1 : 0,
+        selectImage(
+          rst.picUid,
+          rst.url,
+          rst.rotationAngle,
+          rst.note || [],
+          rst.isPreset,
         );
+        state.preData = res;
+        state.isChooseFirst = false;
+        postTextRecognition(rst.url, rst.picUid, 0, rst.isPreset ? 1 : 0);
       });
     });
   };
@@ -286,16 +293,20 @@ const AiOCR: React.FC = ({ }) => {
           message.success('删除成功');
         });
       },
-      onCancel() { },
+      onCancel() {},
     });
   };
 
   const handleChange = (e: any) => {
     state.message = e.target.value;
-    const inputWords = state.message.split(' ').filter((word: any) => word.trim() !== '');
-    const allDataWords = state.IdentifyData.flatMap((item: any) => item.words.split(' '));
+    const inputWords = state.message
+      .split(' ')
+      .filter((word: any) => word.trim() !== '');
+    const allDataWords = state.IdentifyData.flatMap((item: any) =>
+      item.words.split(' '),
+    );
     const isValid = inputWords.every((inputWord: any) =>
-      allDataWords.some((dataWord: any) => dataWord.includes(inputWord))
+      allDataWords.some((dataWord: any) => dataWord.includes(inputWord)),
     );
     if (isValid) {
       state.isValid = true;
@@ -402,10 +413,14 @@ const AiOCR: React.FC = ({ }) => {
 
   useEffect(() => {
     if (state.isCheck) {
-      const inputWords = state.message.split(' ').filter((word: any) => word.trim() !== '');
-      const allDataWords = state.IdentifyData.flatMap((item: any) => item.words.split(' '));
+      const inputWords = state.message
+        .split(' ')
+        .filter((word: any) => word.trim() !== '');
+      const allDataWords = state.IdentifyData.flatMap((item: any) =>
+        item.words.split(' '),
+      );
       const isValid = inputWords.every((inputWord: any) =>
-        allDataWords.some((dataWord: any) => dataWord.includes(inputWord))
+        allDataWords.some((dataWord: any) => dataWord.includes(inputWord)),
       );
       if (isValid) {
         state.isValid = true;
@@ -434,7 +449,7 @@ const AiOCR: React.FC = ({ }) => {
               </div>
             ) : (
               <Dragger
-                className='dragger'
+                className="dragger"
                 {...props}
                 showUploadList={false}
                 onMouseEnter={() => (state.isHover = true)}
@@ -469,27 +484,39 @@ const AiOCR: React.FC = ({ }) => {
               </div>
             )}
             <div className={styles.function}>
-              <div
-                className={state.isCheck ? styles.ischeck : styles.check}
-                onClick={() => (state.isCheck = !state.isCheck)}
-              >
-                校验
-              </div>
-              <img
-                src={state.isMark ? blueA : A}
-                alt=""
-                className={styles.A}
-                onClick={() => (state.isMark = !state.isMark)}
-              />
-              <img
-                src={state.isBlue ? blueRectangle : rectangle}
-                alt=""
-                className={styles.rectangle}
-                onClick={() => (state.isBlue = !state.isBlue)}
-              />
-              <img src={zoomOut} alt="Zoom Out" onClick={handleZoomOut} />
-              <img src={zoomIn} alt="Zoom In" onClick={handleZoomIn} />
-              <img src={rotate} alt="" onClick={changeAngle} />
+              <Tooltip title="文字对比">
+                <div
+                  className={state.isCheck ? styles.ischeck : styles.check}
+                  onClick={() => (state.isCheck = !state.isCheck)}
+                >
+                  校验
+                </div>
+              </Tooltip>
+              <Tooltip title="显示识别文字">
+                <img
+                  src={state.isMark ? blueA : A}
+                  alt=""
+                  className={styles.A}
+                  onClick={() => (state.isMark = !state.isMark)}
+                />
+              </Tooltip>
+              <Tooltip title="标记识别位置">
+                <img
+                  src={state.isBlue ? blueRectangle : rectangle}
+                  alt=""
+                  className={styles.rectangle}
+                  onClick={() => (state.isBlue = !state.isBlue)}
+                />
+              </Tooltip>
+              <Tooltip title="放小">
+                <img src={zoomOut} alt="Zoom Out" onClick={handleZoomOut} />
+              </Tooltip>
+              <Tooltip title="缩大">
+                <img src={zoomIn} alt="Zoom In" onClick={handleZoomIn} />
+              </Tooltip>
+              <Tooltip title="顺时针旋转90°">
+                <img src={rotate} alt="" onClick={changeAngle} />
+              </Tooltip>
             </div>
           </div>
           {state.isrec && state.preData.length > 0 && (
@@ -538,8 +565,12 @@ const AiOCR: React.FC = ({ }) => {
                 </div>
               )}
               <div className={styles.rightBottom}>
-                <img src={copy} alt="" onClick={copyText} />
-                <img src={refresh} alt="" onClick={refreshText} />
+                <Tooltip title="复制识别结果">
+                  <img src={copy} alt="" onClick={copyText} />
+                </Tooltip>
+                <Tooltip title="重新识别">
+                  <img src={refresh} alt="" onClick={refreshText} />
+                </Tooltip>
               </div>
             </div>
           )}
@@ -565,12 +596,14 @@ const AiOCR: React.FC = ({ }) => {
                 }
               >
                 <div className={styles.imageIndex}>{index + 1}</div>
-                <div
-                  className={styles.imageDel}
-                  onClick={() => delImage(index - 1)}
-                >
-                  <CloseCircleFilled />
-                </div>
+                {!item.isPreset && (
+                  <div
+                    className={styles.imageDel}
+                    onClick={() => delImage(index - 1)}
+                  >
+                    <CloseCircleFilled />
+                  </div>
+                )}
                 <img src={item.url} alt="" />
               </div>
             ))}

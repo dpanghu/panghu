@@ -15,7 +15,6 @@ import styles from './index.less';
 type IState = {
   dialogHistory: HistoryItem[];
   isLoading: boolean;
-  isTyping: boolean;
   typewriterArrCache: string[];
 };
 
@@ -25,13 +24,14 @@ const Conversation: React.FC<Props> = ({ fileData }) => {
     // @ts-ignore
     window.sessionStorage.getItem('queryParams'),
   );
+  const scrollRef = useRef<HTMLDivElement>(null);
   const conversation_id = useRef<string>('');
   const themeId = useRef<string>('');
-  const historyEleHref = useRef<HTMLDivElement>(null);
+  const eventSourceObj = useRef<EventSourceStream>();
+  const resizeObserver = useRef<ResizeObserver>();
   const state = useReactive<IState>({
     dialogHistory: [],
     isLoading: false,
-    isTyping: false,
     typewriterArrCache: [],
   });
 
@@ -40,6 +40,9 @@ const Conversation: React.FC<Props> = ({ fileData }) => {
       const file = fileData.file;
       themeId.current = file.themeId || '';
       conversation_id.current = file.conversationId || '';
+      if (eventSourceObj?.current) {
+        eventSourceObj?.current?.ctrl?.abort();
+      }
       if (fileData?.file.onAnalysis) {
         state.dialogHistory = [
           {
@@ -51,8 +54,29 @@ const Conversation: React.FC<Props> = ({ fileData }) => {
       } else {
         state.dialogHistory = [];
       }
+      state.isLoading = false;
     }
   }, [JSON.stringify(fileData?.file)]);
+
+  // 监控滚动
+  const handleScroll = () => {
+    resizeObserver.current = new ResizeObserver(() => {
+      scrollRef.current?.scrollIntoView();
+    });
+
+    // 观察一个或多个元素
+    if (scrollRef.current) {
+      resizeObserver.current.observe(scrollRef.current);
+    }
+  };
+
+  useEffect(() => {
+    if (state.isLoading) {
+      handleScroll();
+    } else {
+      resizeObserver.current?.disconnect();
+    }
+  }, [state.isLoading]);
 
   const submitMessage = (message: string, isAnalysis: boolean) => {
     let qsParams = {
@@ -82,7 +106,7 @@ const Conversation: React.FC<Props> = ({ fileData }) => {
     });
     const url = '/api/bus-xai/xai/plugin/create/stream';
     state.isLoading = true;
-    new EventSourceStream(
+    const eventSourceStream = new EventSourceStream(
       url,
       {
         method: 'POST',
@@ -93,21 +117,28 @@ const Conversation: React.FC<Props> = ({ fileData }) => {
       },
       {
         // 结束，包括接收完毕所有数据、报错、关闭链接
-        onFinished: () => {
-          state.isLoading = false;
-          const rstStr = state.typewriterArrCache.join('');
-          state.dialogHistory.push({
-            id: uniqueId(),
-            type: rstStr.indexOf('chart-v1') > -1 ? 2 : 1,
-            content: rstStr,
-          });
-          saveResult({
-            id: fileData?.file.id,
-            conversationId: conversation_id.current,
-            themeId: themeId.current,
-            onAnalysis: rstStr,
-          });
-          state.typewriterArrCache = [];
+        onFinished: (code) => {
+          if (!code) {
+            state.isLoading = false;
+            const rstStr = state.typewriterArrCache.join('');
+            state.dialogHistory.push({
+              id: uniqueId(),
+              type: rstStr.indexOf('chart-v1') > -1 ? 2 : 1,
+              content: rstStr,
+            });
+            saveResult({
+              id: fileData?.file.id,
+              conversationId: conversation_id.current,
+              themeId: themeId.current,
+              onAnalysis: rstStr,
+            });
+            eventSourceObj.current = undefined;
+            state.typewriterArrCache = [];
+          } else {
+            state.isLoading = false;
+            state.typewriterArrCache = [];
+            eventSourceObj.current = undefined;
+          }
         },
         // 接收到数据
         receiveMessage: (data) => {
@@ -116,7 +147,9 @@ const Conversation: React.FC<Props> = ({ fileData }) => {
           state.typewriterArrCache.push(data!.answer);
         },
       },
-    ).run();
+    );
+    eventSourceStream.run();
+    eventSourceObj.current = eventSourceStream;
   };
 
   const dataScope = useMemo(() => {
@@ -130,7 +163,7 @@ const Conversation: React.FC<Props> = ({ fileData }) => {
   return (
     <div className={styles['container']}>
       <div className={styles['information']}>
-        {state.dialogHistory.length === 0 ? (
+        <div className={styles['dialog-history']}>
           <div className={styles['dialog-initial-info']}>
             <div className={styles['conversion-item']}>
               <div className={styles['conversion-content']}>
@@ -141,53 +174,48 @@ const Conversation: React.FC<Props> = ({ fileData }) => {
               </div>
             </div>
           </div>
-        ) : (
-          <div className={styles['dialog-history']} ref={historyEleHref}>
-            {state.dialogHistory.map((item) => {
-              return (
-                <div
-                  key={item.id}
-                  className={classNames({
-                    [styles['message-from-ai']]: item.type !== 0,
-                    [styles['message-from-user']]: item.type === 0,
-                  })}
-                >
-                  {item.type === 2 ? (
-                    <div className={styles['message-area']}>
-                      {item.type === 2 && (
-                        <div className={styles['data-scope']}>
-                          数据范围: {dataScope}
-                        </div>
-                      )}
-                      <RcMarkdownExtend
-                        content={item.content}
-                        compoents={{
-                          code(props) {
-                            return <Charts props={props} />;
-                          },
-                          table(props) {
-                            return <CustomTable props={props} />;
-                          },
-                        }}
-                      />
-                    </div>
-                  ) : (
-                    <pre className={styles['message-area']}>{item.content}</pre>
-                  )}
-                </div>
-              );
-            })}
-            {state.isLoading && (
-              <div className={styles['message-from-ai']}>
-                <div className={styles['message-area']}>
-                  <RcMarkdownExtend
-                    content={state.typewriterArrCache.join('')}
-                  />
-                </div>
+          {state.dialogHistory.map((item) => {
+            return (
+              <div
+                key={item.id}
+                className={classNames({
+                  [styles['message-from-ai']]: item.type !== 0,
+                  [styles['message-from-user']]: item.type === 0,
+                })}
+              >
+                {item.type === 2 ? (
+                  <div className={styles['message-area']}>
+                    {item.type === 2 && (
+                      <div className={styles['data-scope']}>
+                        数据范围: {dataScope}
+                      </div>
+                    )}
+                    <RcMarkdownExtend
+                      content={item.content}
+                      compoents={{
+                        code(props) {
+                          return <Charts props={props} />;
+                        },
+                        table(props) {
+                          return <CustomTable props={props} />;
+                        },
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <pre className={styles['message-area']}>{item.content}</pre>
+                )}
               </div>
-            )}
-          </div>
-        )}
+            );
+          })}
+          {state.isLoading && (
+            <div className={styles['message-from-ai']}>
+              <div className={styles['message-area']} ref={scrollRef}>
+                <RcMarkdownExtend content={state.typewriterArrCache.join('')} />
+              </div>
+            </div>
+          )}
+        </div>
       </div>
       <div className={styles['text-area']}>
         <TextAreaMsg
