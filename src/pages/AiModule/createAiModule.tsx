@@ -172,6 +172,9 @@ const Resume: React.FC = ({ }) => {
   const save = () => {
     let paramsArr: any = [];
     let newArr: any = [];
+    if(state.data.length == 0) {
+      message.error('配置项不能为空');
+    }
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions, array-callback-return
     state.data && state.data.map((element: any, index: any) => {
       newArr.push({

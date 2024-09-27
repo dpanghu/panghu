@@ -1,5 +1,5 @@
 import G6, { Graph } from '@antv/g6';
-import { useMount, useReactive } from 'ahooks';
+import { useFullscreen, useMount, useReactive } from 'ahooks';
 import { Tooltip } from 'antd';
 import { random } from 'lodash';
 import React, { useRef } from 'react';
@@ -12,10 +12,14 @@ type Props = {
 
 const KnowledgeGraph: React.FC<Props> = ({ data }) => {
   const graph = useRef<Graph | null>(null);
+  const graphRef = useRef<HTMLDivElement>(null);
   const state = useReactive({
-    scale: 100,
     isFullscreen: false,
   });
+  const [isFullscreen, { enterFullscreen, exitFullscreen }] = useFullscreen(
+    graphRef.current,
+  );
+  console.log(isFullscreen);
 
   useMount(() => {
     const container = document.getElementById('graph');
@@ -28,7 +32,15 @@ const KnowledgeGraph: React.FC<Props> = ({ data }) => {
       width,
       height,
       modes: {
-        default: ['drag-canvas', 'drag-node'],
+        default: [
+          'drag-canvas',
+          'drag-node',
+          {
+            type: 'zoom-canvas',
+            enableOptimize: true,
+            optimizeZoom: 0.01,
+          },
+        ],
       },
       layout: {
         type: 'force2',
@@ -96,6 +108,9 @@ const KnowledgeGraph: React.FC<Props> = ({ data }) => {
     });
     graphObj.data(data);
     graphObj.render();
+    graphObj.on('afterrender', () => {
+      graphObj.fitView();
+    });
     graph.current = graphObj;
 
     const resizeObserver = new ResizeObserver((entries) => {
@@ -112,29 +127,19 @@ const KnowledgeGraph: React.FC<Props> = ({ data }) => {
   });
 
   const resetPosition = () => {
-    graph.current?.fitCenter();
+    graph.current?.fitView();
   };
 
   const scaleIn = () => {
-    if (state.scale - 10 < 50) {
-      return;
-    }
-    graph.current?.zoomTo((state.scale - 10) / 100);
-    graph.current?.fitCenter();
-    state.scale -= 10;
+    graph.current?.zoomTo(graph.current.getZoom() - 0.1);
   };
 
   const scaleOut = () => {
-    if (state.scale + 10 > 200) {
-      return;
-    }
-    graph.current?.zoomTo((state.scale + 10) / 100);
-    graph.current?.fitCenter();
-    state.scale += 10;
+    graph.current?.zoomTo(graph.current.getZoom() + 0.1);
   };
 
   return (
-    <div className={styles['container']}>
+    <div className={styles['container']} ref={graphRef}>
       <div id="graph"></div>
       <div className={styles['operate']}>
         <Tooltip title="回到初始位置">
@@ -147,12 +152,11 @@ const KnowledgeGraph: React.FC<Props> = ({ data }) => {
           <Tooltip title="缩小10%">
             <div className={styles['icon-scale-in']} onClick={scaleIn}></div>
           </Tooltip>
-          <span>{state.scale}%</span>
           <Tooltip title="放大10%">
             <div className={styles['icon-scale-out']} onClick={scaleOut}></div>
           </Tooltip>
         </div>
-        <Tooltip title="全屏">
+        <Tooltip title={state.isFullscreen ? '取消全屏' : '全屏'}>
           <div
             className={
               state.isFullscreen
@@ -160,17 +164,12 @@ const KnowledgeGraph: React.FC<Props> = ({ data }) => {
                 : styles['icon-full-screen']
             }
             onClick={() => {
-              state.isFullscreen = !state.isFullscreen;
-              const ele = document.getElementById('graphContent');
-              if (!ele) return;
               if (state.isFullscreen) {
-                ele!.style.left = '8px';
-                ele!.style.borderTopLeftRadius = '8px';
-                ele!.style.borderBottomLeftRadius = '8px';
+                state.isFullscreen = !state.isFullscreen;
+                exitFullscreen();
               } else {
-                ele!.style.left = '600px';
-                ele!.style.borderTopLeftRadius = '0';
-                ele!.style.borderBottomLeftRadius = '0';
+                state.isFullscreen = !state.isFullscreen;
+                enterFullscreen();
               }
             }}
           ></div>

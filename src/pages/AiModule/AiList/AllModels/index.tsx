@@ -195,6 +195,10 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
         <Form
           name="basic"
           style={{ maxWidth: 800 }}
+          // preserve={false}
+          // initialValues={{ remember: true }}
+          // onFinish={onFinish}
+          // onFinishFailed={onFinishFailed}
           autoComplete="off"
         >
           <Form.Item<FieldType>
@@ -254,7 +258,7 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                     setOpen(true);
                     setId(item.id);
                   }} className={styles.eye} src={eyeImg} alt="" />
-                  {item.isConfig === 0 ? (
+                  {/* {item.isConfig === 0 ? (
                     <Dropdown
                       className={`${styles.maohao} disabled-dropdown`}
                       autoAdjustOverflow={true}
@@ -556,7 +560,7 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                         </Space>
                       </a>
                     </Dropdown>
-                  )}
+                  )} */}
                 </div>
                 <div className={styles.cardTitle}>{item.name}</div>
                 <div className={styles.cardNote}>{item.note}</div>

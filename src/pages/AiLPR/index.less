@@ -1,370 +1,368 @@
 .aiLpr {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+
+  .title {
+    height: 54px;
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+    font-family: PingFangSC, PingFang SC;
+    font-weight: 500;
+    font-size: 22px;
+    color: #1a1a1e;
+    line-height: 30px;
+    text-align: left;
+    font-style: normal;
+  }
+
+  .bottom {
+    flex: 1;
+    margin: 8px;
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    border-radius: 8px;
+    overflow: auto;
+  }
 
-    .title {
-        height: 54px;
-        padding: 12px 16px;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  .content {
+    flex: 1;
+    display: flex;
+    overflow: auto;
+  }
+
+  .right {
+    width: 50%;
+    background: linear-gradient(180deg, #e5f0ff 0%, #e9e9ff 100%);
+    margin-left: 4px;
+    display: flex;
+    flex-direction: column;
+
+    .lRightResult {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .rightErr {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        img {
+          height: 24px;
+          width: 24px;
+          margin-bottom: 16px;
+        }
+
         font-family: PingFangSC, PingFang SC;
         font-weight: 500;
-        font-size: 22px;
-        color: #1A1A1E;
-        line-height: 30px;
+        font-size: 14px;
+        color: #333333;
+        line-height: 21px;
         text-align: left;
         font-style: normal;
+      }
     }
 
-    .bottom {
-        flex: 1;
-        margin: 8px;
-        display: flex;
-        flex-direction: column;
-        border-radius: 8px;
-        overflow: auto;
+    .recResult {
+      margin: 0 8px;
+      background: #f6f6fe;
+      box-shadow: 1px 0px 0px 0px rgba(72, 79, 152, 0.05);
+      height: 58px !important;
+      padding: 8px;
+      font-family: PingFangSC, PingFang SC;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 21px;
+      text-align: left;
+      font-style: normal;
+
+      .errRecResult {
+        color: #ff2739;
+      }
+
+      .sucRecResult {
+        color: #7ccd0d;
+      }
+
+      img {
+        height: 16px;
+        width: 16px;
+      }
     }
 
-    .content {
-        flex: 1;
+    .rightResult,
+    .lRightResult {
+      font-family: PingFangSC, PingFang SC;
+      font-weight: 500;
+      font-size: 14px;
+      color: #333333;
+      line-height: 21px;
+      text-align: left;
+      font-style: normal;
+      padding: 16px;
+      flex: 1;
+      overflow: auto;
+
+      .rightItems {
         display: flex;
-        overflow: auto;
-    }
 
-    .right {
-        width: 50%;
-        background: linear-gradient(180deg, #E5F0FF 0%, #E9E9FF 100%);
-        margin-left: 4px;
-        display: flex;
-        flex-direction: column;
-
-        .lRightResult {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            .rightErr {
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                img {
-                    height: 24px;
-                    width: 24px;
-                    margin-bottom: 16px;
-                }
-
-                font-family: PingFangSC,
-                PingFang SC;
-                font-weight: 500;
-                font-size: 14px;
-                color: #333333;
-                line-height: 21px;
-                text-align: left;
-                font-style: normal;
-
-            }
+        .rightIndex {
+          margin-right: 26px;
+          width: 28px;
+          text-align: center;
         }
 
-        .recResult {
-            margin: 0 8px;
-            background: #F6F6FE;
-            box-shadow: 1px 0px 0px 0px rgba(72, 79, 152, 0.05);
-            height: 58px !important;
-            padding: 8px;
-            font-family: PingFangSC, PingFang SC;
-            font-weight: 500;
-            font-size: 14px;
-            line-height: 21px;
-            text-align: left;
-            font-style: normal;
-
-            .errRecResult {
-                color: #FF2739;
-            }
-
-            .sucRecResult {
-                color: #7CCD0D;
-            }
-
-            img {
-                height: 16px;
-                width: 16px;
-            }
+        .rightNumber {
+          margin-right: 32px;
+          text-align: center;
         }
-
-        .rightResult,
-        .lRightResult {
-            font-family: PingFangSC, PingFang SC;
-            font-weight: 500;
-            font-size: 14px;
-            color: #333333;
-            line-height: 21px;
-            text-align: left;
-            font-style: normal;
-            padding: 16px;
-            flex: 1;
-            overflow: auto;
-
-            .rightItems {
-                display: flex;
-
-                .rightIndex {
-                    margin-right: 26px;
-                    width: 28px;
-                    text-align: center;
-                }
-
-                .rightNumber{
-                    margin-right: 32px;
-                    text-align: center;
-                }
-            }
-        }
-
-        .rightBottom {
-            height: 34px;
-            display: flex;
-            align-items: center;
-            padding: 0px 16px;
-
-            img {
-                height: 16px;
-                width: 16px;
-                margin-right: 16px;
-            }
-        }
+      }
     }
 
-    .imageAnnotator {
-        flex: 1;
-        padding: 0 40px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
+    .rightBottom {
+      height: 34px;
+      display: flex;
+      align-items: center;
+      padding: 0px 16px;
+
+      img {
+        height: 16px;
+        width: 16px;
+        margin-right: 16px;
+      }
+    }
+  }
+
+  .imageAnnotator {
+    flex: 1;
+    padding: 0 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .aleft {
+    :global {
+      .ant-upload-wrapper {
+        margin: auto 40px;
+      }
+    }
+  }
+
+  .left,
+  .aleft {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: linear-gradient(180deg, #e5f0ff 0%, #e9e9ff 100%);
+    flex: 1;
+    overflow: auto;
+
+    .checkText,
+    .checkTextBlue {
+      :global {
+        .ant-input {
+          height: 58px !important;
+          width: 100% !important;
+          background: #f6f6fe;
+          box-shadow: 1px 0px 0px 0px rgba(72, 79, 152, 0.05);
+          border-radius: 4px;
+          border: 1px solid #5a73ff;
+        }
+      }
+
+      width: 100%;
+      padding: 0 8px;
     }
 
-    .aleft {
+    .checkText {
+      :global {
+        .ant-input {
+          border: none;
+          box-shadow: 1px 0px 0px 0px rgba(72, 79, 152, 0.05);
+        }
+      }
+    }
+
+    .function {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 185px;
+      padding: 8px 16px;
+
+      .check,
+      .ischeck {
+        width: 28px;
+        height: 18px;
+        font-family: PingFangSC, PingFang SC;
+        font-weight: 500;
+        font-size: 14px;
+        color: #333333;
+        line-height: 18px;
+        text-align: left;
+        font-style: normal;
+        cursor: pointer;
+      }
+
+      .ischeck {
+        color: #5a73ff;
+      }
+
+      img {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+      }
+
+      .A {
+        width: 10px;
+        height: 18px;
+      }
+
+      .rectangle {
+        width: 19px;
+        height: 14px;
+      }
+    }
+
+    :global {
+      .ant-upload-wrapper {
+        background: url('~@/assets/images/imageFile@2x.png') no-repeat center;
+        background-size: contain;
+        aspect-ratio: 566 / 201;
+        margin: auto 186px;
+        min-width: 460px;
+      }
+
+      .ant-upload-wrapper .ant-upload-drag {
+        border: none;
+      }
+    }
+
+    .text {
+      width: 243px;
+      height: 104px;
+      font-family: PingFangSC, PingFang SC;
+      font-weight: 500;
+      font-size: 14px;
+      color: #333333;
+      line-height: 26px;
+      text-align: left;
+      font-style: normal;
+      position: relative;
+      left: 42%;
+    }
+  }
+
+  .imageLists {
+    height: 132px;
+    background: linear-gradient(135deg, #f9f9ff 0%, #f0f1fe 100%);
+    box-shadow: 1px 0px 0px 0px rgba(72, 79, 152, 0.05);
+    padding: 16px;
+    display: flex;
+    overflow: auto;
+
+    .imageUpload {
+      width: 76px;
+      height: 100px;
+      background: #eef1ff;
+      border-radius: 4px;
+      border: 1px dashed #5a73ff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      :global {
+        .ant-upload-wrapper {
+          height: 100%;
+          width: 100%;
+        }
+
+        .ant-upload-wrapper .ant-upload-drag:not(.ant-upload-disabled):hover {
+          border: none;
+        }
+
+        .ant-upload-wrapper .ant-upload-drag {
+          border: none;
+          border-radius: 0px;
+        }
+      }
+
+      p {
+        margin: 4px 0px;
+        color: #5a73ff;
+        font-size: 14px;
+      }
+    }
+
+    .imageList,
+    .checkImageList {
+      position: relative;
+      margin-right: 16px;
+      width: 76px;
+      height: 100px;
+      background: #ffffff;
+      border-radius: 4px;
+      border: 1px solid rgba(0, 0, 0, 0.15);
+      display: flex;
+      align-items: center;
+
+      img {
+        width: 100%;
+        max-height: 80%;
+        object-fit: contain;
+      }
+
+      .imageIndex {
+        position: absolute;
+        top: 0;
+        width: 14px;
+        height: 14px;
+        background: #d3d3d9;
+        border-radius: 5px 0px 5px 0px;
+        font-family: PingFangSC, PingFang SC;
+        font-weight: 500;
+        font-size: 12px;
+        color: #ffffff;
+        line-height: 12px;
+        text-align: left;
+        font-style: normal;
+        text-align: center;
+      }
+
+      .imageDel {
+        visibility: hidden;
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        height: 16px;
+        width: 16px;
+
         :global {
-            .ant-upload-wrapper {
-                margin: auto 40px;
-            }
+          .anticon svg {
+            color: #999999;
+          }
         }
+      }
     }
 
-    .left,
-    .aleft {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        background: linear-gradient(180deg, #E5F0FF 0%, #E9E9FF 100%);
-        flex: 1;
-        overflow: auto;
+    .imageList:hover,
+    .checkImageList {
+      border: 1px solid #5a73ff;
+      cursor: pointer;
 
-        .checkText,
-        .checkTextBlue {
-            :global {
-                .ant-input {
-                    height: 58px !important;
-                    width: 100% !important;
-                    background: #F6F6FE;
-                    box-shadow: 1px 0px 0px 0px rgba(72, 79, 152, 0.05);
-                    border-radius: 4px;
-                    border: 1px solid #5A73FF;
-                }
-            }
-
-            width: 100%;
-            padding: 0 8px;
-        }
-
-        .checkText {
-            :global {
-                .ant-input {
-                    border: none;
-                    box-shadow: 1px 0px 0px 0px rgba(72, 79, 152, 0.05)
-                }
-            }
-        }
-
-        .function {
-            display: flex;
-            justify-content: space-between;
-            width: 185px;
-            padding: 8px 16px;
-
-            .check,
-            .ischeck {
-                width: 28px;
-                height: 18px;
-                font-family: PingFangSC, PingFang SC;
-                font-weight: 500;
-                font-size: 14px;
-                color: #333333;
-                line-height: 18px;
-                text-align: left;
-                font-style: normal;
-                cursor: pointer;
-            }
-
-            .ischeck {
-                color: #5A73FF;
-            }
-
-            img {
-                width: 16px;
-                height: 16px;
-                cursor: pointer
-            }
-
-            .A {
-                width: 10px;
-                height: 18px;
-            }
-
-            .rectangle {
-                width: 19px;
-                height: 14px;
-            }
-        }
-
-        :global {
-            .ant-upload-wrapper {
-                background: url('~@/assets/images/imageFile@2x.png') no-repeat center;
-                background-size: contain;
-                aspect-ratio: 566 / 201;
-                margin: auto 186px;
-                min-width: 460px;
-            }
-
-            .ant-upload-wrapper .ant-upload-drag {
-                border: none;
-            }
-        }
-
-        .text {
-            width: 243px;
-            height: 104px;
-            font-family: PingFangSC, PingFang SC;
-            font-weight: 500;
-            font-size: 14px;
-            color: #333333;
-            line-height: 26px;
-            text-align: left;
-            font-style: normal;
-            position: relative;
-            left: 42%;
-        }
-
+      .imageIndex {
+        background: #5a73ff;
+      }
     }
 
-    .imageLists {
-        height: 132px;
-        background: linear-gradient(135deg, #F9F9FF 0%, #F0F1FE 100%);
-        box-shadow: 1px 0px 0px 0px rgba(72, 79, 152, 0.05);
-        padding: 16px;
-        display: flex;
-        overflow: auto;
-
-        .imageUpload {
-            width: 76px;
-            height: 100px;
-            background: #EEF1FF;
-            border-radius: 4px;
-            border: 1px dashed #5A73FF;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-
-            :global {
-                .ant-upload-wrapper {
-                    height: 100%;
-                    width: 100%;
-                }
-
-                .ant-upload-wrapper .ant-upload-drag:not(.ant-upload-disabled):hover {
-                    border: none;
-                }
-
-                .ant-upload-wrapper .ant-upload-drag {
-                    border: none;
-                    border-radius: 0px;
-                }
-            }
-
-            p {
-                margin: 4px 0px;
-                color: #5A73FF;
-                font-size: 14px;
-            }
-        }
-
-        .imageList,
-        .checkImageList {
-            position: relative;
-            margin-right: 16px;
-            width: 76px;
-            height: 100px;
-            background: #FFFFFF;
-            border-radius: 4px;
-            border: 1px solid rgba(0, 0, 0, 0.15);
-            display: flex;
-            align-items: center;
-
-            img {
-                width: 100%;
-                max-height: 80%;
-                object-fit: contain;
-            }
-
-            .imageIndex {
-                position: absolute;
-                top: 0;
-                width: 14px;
-                height: 14px;
-                background: #D3D3D9;
-                border-radius: 5px 0px 5px 0px;
-                font-family: PingFangSC, PingFang SC;
-                font-weight: 500;
-                font-size: 12px;
-                color: #FFFFFF;
-                line-height: 12px;
-                text-align: left;
-                font-style: normal;
-                text-align: center;
-            }
-
-            .imageDel {
-                visibility: hidden;
-                position: absolute;
-                top: -8px;
-                right: -8px;
-                height: 16px;
-                width: 16px;
-
-                :global {
-                    .anticon svg {
-                        color: #999999
-                    }
-                }
-            }
-        }
-
-        .imageList:hover,
-        .checkImageList {
-            border: 1px solid #5A73FF;
-            cursor: pointer;
-
-            .imageIndex {
-                background: #5A73FF;
-            }
-        }
-
-        .checkImageList {
-            .imageDel {
-                visibility: visible;
-            }
-        }
+    .checkImageList {
+      .imageDel {
+        visibility: visible;
+      }
     }
+  }
 }

@@ -193,7 +193,7 @@ const AiAtlas = ({}) => {
           </div>
           <div className={styles['area-atlas-container']} id="graphContent">
             <header>知识图谱</header>
-            <section>
+            <section style={{ overflow: 'hidden' }}>
               {state.graphLoading ? (
                 <Loading loadingMessage="知识图谱生成中" />
               ) : state.data?.createState === CREATE_STATUS.GENERATED ? (
