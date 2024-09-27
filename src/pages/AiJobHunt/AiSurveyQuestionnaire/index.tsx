@@ -181,8 +181,10 @@ const AiSurveyQuestionnaire: React.FC = () => {
                             label: options[0].name
                         }
                         setchooseData(obj)
+                        setNoValue('')
                     } else {
                         setNoValue(res.xaiSp.portfolio)
+                        setchooseData({})
                     }
                 }
             })
@@ -429,7 +431,7 @@ const AiSurveyQuestionnaire: React.FC = () => {
         setchooseData(choose);
         setPromptValues(e.target.value);
     }
-    const [values, setvalues] = useState<any>('');//输入框的值
+    // const [values, setvalues] = useState<any>('');//输入框的值
     const [chooseData, setchooseData] = useState<any>({});//选项文本框的值
     return (
         <div className={styles.all}>
@@ -487,10 +489,10 @@ const AiSurveyQuestionnaire: React.FC = () => {
                         <div style={{ position: 'relative' }}>
                             <p style={{ color: 'rgb(0,0,0,0.88)', fontWeight: '600', fontSize: '16px' }}>{chioceValue}</p>
                             <Radio.Group style={{ display: 'flex', justifyContent: 'space-evenly' }} options={data} onChange={handleChanges} value={promptValues} />
-                            <Input value={values} disabled
+                            {/* <Input value={values} disabled
                                 onChange={(e: any) => {
                                     setvalues(e);
-                                }} maxLength={10} style={{ width: '50px', height: '20px', position: 'absolute', top: '43px', right: ' -22px' }}></Input>
+                                }} maxLength={10} style={{ width: '50px', height: '20px', position: 'absolute', top: '43px', right: ' -22px' }}></Input> */}
                             <Input
                                 style={{ width: '1000px', marginTop: '10px' }}
                                 value={chooseData.inputValue}
