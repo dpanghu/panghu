@@ -45,6 +45,7 @@
     "react-speech-recognition": "^3.10.0",
     "react-syntax-highlighter": "^15.5.0",
     "rehype-highlight": "^7.0.0",
+    "seent-tools": "^0.0.43",
     "typewriter-effect": "2.21.0"
   },
   "devDependencies": {
