@@ -170,11 +170,16 @@ const AiOCR: React.FC = ({}) => {
     uploadPic({
       url,
     }).then((rst) => {
-      console.log(rst);
       getImageList().then((res) => {
+        selectImage(
+          rst.picUid,
+          rst.url,
+          rst.rotationAngle,
+          rst.note || [],
+          rst.isPreset,
+        );
         state.preData = res;
-        state.imgUrl = rst.url;
-        state.isSelect = rst.picUid;
+        state.isChooseFirst = false;
         postTextRecognition(rst.url, rst.picUid, 0, rst.isPreset ? 1 : 0);
       });
     });
