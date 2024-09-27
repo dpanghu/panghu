@@ -103,11 +103,6 @@ const AiAtlas = ({}) => {
   // 抽取知识
   const extractMsg = (userMessage: string) => {
     state.extractLoading = true;
-    state.data = {
-      ...state.data,
-      extractState: EXTRACT_STATUS.SUCCESS,
-      createState: CREATE_STATUS.UNGENERATED,
-    };
     if (userMessage) {
       extractKnowledge({
         userMessage,
@@ -116,7 +111,11 @@ const AiAtlas = ({}) => {
       })
         .then((rst) => {
           if (rst) {
-            state.data!.info = rst.info;
+            state.data = {
+              ...state.data,
+              extractState: EXTRACT_STATUS.SUCCESS,
+              info: rst.info,
+            };
           }
           state.extractLoading = false;
         })
