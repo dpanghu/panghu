@@ -87,6 +87,7 @@ const RenderFormItem: React.FC<Props> = ({ formRef, plugin }) => {
             style={{ width: 104 }}
             dropdownMatchSelectWidth={false}
             placeholder={item.displayName}
+            grey
           />
         );
       case 'number':
