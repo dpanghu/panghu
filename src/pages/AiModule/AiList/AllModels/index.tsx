@@ -253,7 +253,7 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
             let qsData: any = base64.encode(
               qs.stringify({
                 imageId: item.id,
-                dataScope: 'task',
+                dataScope: JSON.parse(window.sessionStorage.getItem('commonDatas') as any || '{}').memberType == 'TEACHER' ? 'teacher' : 'stu',
                 userImg: '',
                 ...commonData,
               })
@@ -268,7 +268,6 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
               <div className={styles.right}>
                 <div className={styles.cardPicture}>
                   <img onClick={() => {
-                    console.log('222222222222');
                     setOpen(true);
                     setId(item.id);
                   }} className={styles.eye} src={eyeImg} alt="" />
