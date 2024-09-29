@@ -188,10 +188,9 @@ const DialogArea = React.forwardRef(
           <div className={styles['dialog-initial-info']}>
             <div className={styles['conversion-item']}>
               <div className={styles['conversion-content']}>
-                <h2>您好，我是新道AI，您的专属AI伙伴</h2>
-                <p>我可以为您的创作提供灵感。</p>
+                <h2>您好，我是您的简历生成与优化小助手</h2>
                 <p>
-                  与您互动问答，为您的个性化需求提供智能推荐。期待与您一起探索未来！
+                  在职场竞争中，还在为完善简历而苦恼？在这个AI时代，只需告诉我你的职业背景、技能与目标职位等信息，我将为您量身打造一份专业的简历，助您脱颖而出，迈向职业新高峰！
                 </p>
               </div>
             </div>
@@ -238,7 +237,7 @@ const DialogArea = React.forwardRef(
             onSubmit={(msg) => {
               submitChat(msg);
             }}
-            onChangePlugin={() => { }}
+            onChangePlugin={() => {}}
           />
         </div>
         <div className={styles['warning-message']}>

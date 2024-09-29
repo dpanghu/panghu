@@ -17,7 +17,7 @@ import {
   uploadPic,
   uploads,
 } from '@/services/aiOCR';
-import { CloseCircleFilled } from '@ant-design/icons';
+import { CloseCircleFilled, LoadingOutlined } from '@ant-design/icons';
 import { useMount, useReactive } from 'ahooks';
 import { Input, message, Modal, Spin, Tooltip } from 'antd';
 import React, { useEffect, useState } from 'react';
@@ -157,6 +157,22 @@ const AiOCR: React.FC = ({}) => {
           recognitionResult,
           isPreset,
         );
+      }
+      if (state.isCheck) {
+        const inputWords = state.message
+          .split(' ')
+          .filter((word: any) => word.trim() !== '');
+        const allDataWords = state.IdentifyData.flatMap((item: any) =>
+          item.words.split(' '),
+        );
+        const isValid = inputWords.every((inputWord: any) =>
+          allDataWords.some((dataWord: any) => dataWord.includes(inputWord)),
+        );
+        if (isValid) {
+          state.isValid = true;
+        } else {
+          state.isValid = false;
+        }
       }
     } catch (err) {
       console.error('An error occurred during text recognition:', err);
@@ -548,7 +564,14 @@ const AiOCR: React.FC = ({}) => {
                   </div>
                 )}
               </div>
-              {state.isCheck && (
+              {state.isCheck && state.isLoading && (
+                <div className={styles.recResult}>
+                  <div className={styles.loadingRecResult}>
+                    <LoadingOutlined /> 正在识别中
+                  </div>
+                </div>
+              )}
+              {state.isCheck && !state.isLoading && (
                 <div className={styles.recResult}>
                   {state.message &&
                     (state.isValid ? (
