@@ -48,6 +48,7 @@ interface TState {
   excludeId: any;
   open: any;
   isMarkdown: any;
+  messageData: any;
   isTyping: any;
   typewriterArrCache: any;
   messageId: any;
@@ -255,6 +256,7 @@ const JobHunt: React.FC = () => {
     allow: '',
     aiData: {},
     editName: '',
+    messageData: '',
     visible: false,
     patams: '',
     data: [],
@@ -383,6 +385,8 @@ const JobHunt: React.FC = () => {
   useUpdateEffect(() => {
     if (state.isLoading === false && state.typewriterArrCache.length === 0) {
       getMessageDetail(state.messageArr[0].id, 1)
+      state.messageData = typewriterStrCache.current;
+      console.log(JSON.stringify(state.messageData));
     }
 
   }, [state.isTyping]);
@@ -605,7 +609,7 @@ const JobHunt: React.FC = () => {
             {state.visible && (
               <div>
                 <span className={classNames(sf.sFs14, sf.sFwBold)}>
-                  {state.isMarkdown === true ? (
+                  {isTypeFinished ? (
                     <div
                       className={styles.warningBox}
                       style={{ marginTop: 24 }}
@@ -615,7 +619,7 @@ const JobHunt: React.FC = () => {
                         style={{ width: 24, height: 24, marginRight: 16 }}
                       ></img>
                       <div className={styles.finallText}>
-                        <RcMarkdown content={state.typewriterArrCache.join('')}></RcMarkdown>
+                        <RcMarkdown content={state.messageData}></RcMarkdown>
                         <div className={styles.finallTextBottom}>
                           <div>
                             <span style={{ marginRight: 16 }}>您对本次的回答满意吗？</span>
@@ -643,8 +647,8 @@ const JobHunt: React.FC = () => {
                         style={{ width: 24, height: 24, marginRight: 16 }}
                       ></img>
                       <div className={styles.warnings}>
-                        <RcMarkdown content={state.typewriterArrCache.join('')}></RcMarkdown>
-                        {/* <Typewriter
+                        {/* <RcMarkdown content={state.typewriterArrCache.join('')}></RcMarkdown> */}
+                        <Typewriter
                           onInit={(typewriter: TypewriterClass) => {
                             state.isTyping = true;
                             typeWriter.current = typewriter;
@@ -658,7 +662,7 @@ const JobHunt: React.FC = () => {
                           options={{
                             delay: 25,
                           }}
-                        /> */}
+                        />
                       </div>
                     </div>
                   )}
