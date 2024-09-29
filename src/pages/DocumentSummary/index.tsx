@@ -14,6 +14,7 @@ import {
   uploadSummary,
 } from '@/services/documentSummary';
 import { getFileMajorType } from '@/utils/contants';
+import { onDownloadFile } from '@/utils/utils';
 import { DataUri, Graph } from '@antv/x6';
 import { Button, Select, message } from 'SeenPc';
 import { useReactive } from 'ahooks';
@@ -171,6 +172,17 @@ const DocumentSummary: React.FC = () => {
     state.graph = graph;
   };
 
+  const getAttachmentNameFromUrl = (url: string) => {
+    // 使用正则表达式匹配URL中最后一个斜杠之后的部分
+    const matches = /([^\/]+)\.pdf$/.exec(url);
+    // 如果匹配成功，返回匹配的附件名
+    if (matches && matches.length > 1) {
+      return matches[1] + '.pdf';
+    }
+    // 如果没有匹配到，返回空字符串
+    return '';
+  };
+
   const exportPopupContent = async () => {
     if (
       !state.exportParams.introductionChecked &&
@@ -187,7 +199,14 @@ const DocumentSummary: React.FC = () => {
           id: state.summaryData.id,
           ...extraParams,
         });
-        window.open(result as string, '_self');
+        if (state.exportParams.introduction === '.docx') {
+          window.open(result as string, '_self');
+        } else {
+          onDownloadFile(
+            result as string,
+            getAttachmentNameFromUrl(result as string),
+          );
+        }
       }
       if (state.exportParams.mindMapChecked) {
         let attachmentName = state.summaryData?.attachmentName?.replace(
@@ -398,7 +417,7 @@ const DocumentSummary: React.FC = () => {
                               </div>
                               <div>
                                 {item.status === 1
-                                  ? '解析中,请等待'
+                                  ? '解析中，请等待！'
                                   : item.status === 2
                                   ? '解析成功'
                                   : item.status === 0

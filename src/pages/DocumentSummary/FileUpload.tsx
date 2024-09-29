@@ -80,8 +80,8 @@ const FileUpload: React.FC<TProps> = ({ onChange, paramsId }) => {
         <CustomUpload {...DraggerProps}>
           <div className={styles.uploadContainer}>
             <span>点击或将文件拖拽到此处上传</span>
-            <span>文档格式:支持 PDF格式</span>
-            <span>文档大小:文件最大支持1M</span>
+            <span>文档格式：支持 PDF 文档格式</span>
+            <span>文档大小：文档最大支持1M</span>
           </div>
         </CustomUpload>
       )}
