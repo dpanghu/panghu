@@ -48,6 +48,7 @@ interface TState {
   excludeId: any;
   open: any;
   isMarkdown: any;
+  messageData: any;
   isTyping: any;
   typewriterArrCache: any;
   messageId: any;
@@ -255,6 +256,7 @@ const JobHunt: React.FC = () => {
     allow: '',
     aiData: {},
     editName: '',
+    messageData: '',
     visible: false,
     patams: '',
     data: [],
@@ -308,6 +310,7 @@ const JobHunt: React.FC = () => {
 
   const send = () => {
     let error: any = false;
+    state.isMarkdown = false;
     if (isArray(state.allow)) {
       if (state.allow[0] === '1') {
         console.log('sads', JSON.stringify(state.data));
@@ -352,6 +355,7 @@ const JobHunt: React.FC = () => {
               // 结束，包括接收完毕所有数据、报错、关闭链接
               onFinished: () => {
                 state.isLoading = false;
+                state.isTyping = false;
                 getHistoryList(state.patams, 1);
                 state.isMarkdown = true;
               },
@@ -381,6 +385,8 @@ const JobHunt: React.FC = () => {
   useUpdateEffect(() => {
     if (state.isLoading === false && state.typewriterArrCache.length === 0) {
       getMessageDetail(state.messageArr[0].id, 1)
+      state.messageData = typewriterStrCache.current;
+      console.log(JSON.stringify(state.messageData));
     }
 
   }, [state.isTyping]);
@@ -443,7 +449,7 @@ const JobHunt: React.FC = () => {
 
   const copyText = () => {
     navigator.clipboard
-      .writeText(typewriterStrCache.current)
+      .writeText(state.typewriterArrCache?.join(''))
       .then(() => {
         message.success('复制成功!');
       })
@@ -613,7 +619,7 @@ const JobHunt: React.FC = () => {
                         style={{ width: 24, height: 24, marginRight: 16 }}
                       ></img>
                       <div className={styles.finallText}>
-                        <RcMarkdown content={typewriterStrCache.current}></RcMarkdown>
+                        <RcMarkdown content={state.messageData}></RcMarkdown>
                         <div className={styles.finallTextBottom}>
                           <div>
                             <span style={{ marginRight: 16 }}>您对本次的回答满意吗？</span>
@@ -622,7 +628,7 @@ const JobHunt: React.FC = () => {
                             <img src={state.satisfied === 0 ? bDisLikeOutlined : dislikeOutlined} style={{ cursor: 'pointer' }} onClick={disLikeAnswer} />
                           </div>
                           <div>
-                            <span style={{ marginRight: 24 }}>{typewriterStrCache.current?.length || 0}个字符</span>
+                            <span style={{ marginRight: 24 }}>{state.typewriterArrCache?.length || 0}个字符</span>
                             <span style={{ marginRight: 24, cursor: 'pointer' }} onClick={() => {
                               send();
                             }}><img src={refresh} style={{ marginRight: 3 }} />重新回答</span>
@@ -641,8 +647,8 @@ const JobHunt: React.FC = () => {
                         style={{ width: 24, height: 24, marginRight: 16 }}
                       ></img>
                       <div className={styles.warnings}>
-                      <RcMarkdown content={state.typewriterArrCache.join('')}></RcMarkdown>
-                        {/* <Typewriter
+                        {/* <RcMarkdown content={state.typewriterArrCache.join('')}></RcMarkdown> */}
+                        <Typewriter
                           onInit={(typewriter: TypewriterClass) => {
                             state.isTyping = true;
                             typeWriter.current = typewriter;
@@ -656,7 +662,7 @@ const JobHunt: React.FC = () => {
                           options={{
                             delay: 25,
                           }}
-                        /> */}
+                        />
                       </div>
                     </div>
                   )}

@@ -5,6 +5,22 @@
     flex-direction: column;
     position: relative;
     min-height: 100vh;
+    :global {
+        .rc-markdown-body {
+            font-size: 14px !important;
+            line-height: 1.2 !important;
+            padding: 0px !important;
+            ol {
+                margin-bottom: 0px !important;
+            }
+            li {
+                margin-top: 0px !important;
+            }
+            p {
+                margin-bottom: 0px !important;
+            }
+        }
+    }
 
     :global {
         :where(.css-dev-only-do-not-override-2mh66p).ant-checkbox-checked .ant-checkbox-inner {
@@ -372,7 +388,7 @@
     height: 40px;
     cursor: pointer;
     display: flex;
-    font-size: 12px;
+    font-size: 11px;
     border: 1px solid #e4e4e4;
     align-items: center;
     justify-content: center;
