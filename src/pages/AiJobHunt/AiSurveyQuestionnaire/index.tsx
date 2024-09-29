@@ -150,15 +150,16 @@ const AiSurveyQuestionnaire: React.FC = () => {
                         conclusionValue: res.xaiSp.endtips,
                     })
                     setPromptValue(JSON.stringify(res.xaiSp.bind))
-                    function tryParseJSON(str: any) {
-                        try {
-                            JSON.parse(str);
-                            return true;
-                        } catch (e) {
-                            return false;
-                        }
-                    }
-                    if (typeof res.xaiSp.portfolio === 'string' && tryParseJSON(res.xaiSp.portfolio) && promptValue === '1') {
+                    // function tryParseJSON(str: any) {
+                    //     try {
+                    //         JSON.parse(str);
+                    //         return true;
+                    //     } catch (e) {
+                    //         return false;
+                    //     }
+                    // }
+                    // if (typeof res.xaiSp.portfolio === 'string' && tryParseJSON(res.xaiSp.portfolio) && promptValue === '1') {
+                    if (promptValue === '1') {
                         const jsonValue = JSON.parse(res.xaiSp.portfolio).portfolios
                         let arr: any = [];
                         const options = res.options || [];//防止options为空报错
@@ -182,7 +183,7 @@ const AiSurveyQuestionnaire: React.FC = () => {
                         }
                         setchooseData(obj)
                         setNoValue('')
-                    } else {
+                    } else if (promptValue === '0') {
                         setNoValue(res.xaiSp.portfolio)
                         setchooseData({})
                     }
