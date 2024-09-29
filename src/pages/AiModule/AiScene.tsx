@@ -31,6 +31,7 @@ import Typewriter, { type TypewriterClass } from 'typewriter-effect';
 import { history } from 'umi';
 import EventSourceStream from '../AiJobHunt/Home/DialogArea/EventSourceStream';
 import styles from './AiScene.less';
+import { ConsoleSqlOutlined } from '@ant-design/icons';
 // import SpeechInputComponent from '../Recognition/index';
 
 interface TState {
@@ -298,19 +299,18 @@ const JobHunt: React.FC = () => {
       limit: 999999999,
       pageNum: 1,
     }).then((res: any) => {
-      // if (type === 1) {
-      //   if (res.data.length !== 0) {
-      //     res.data[res.data.length - 1].active = true;
-      //   }
-      // }
       state.messageArr = res.data || [];
-      // getMessageDetail(res?.data[0]?.id, type)
+      if (type == 1) {
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
+        getMessageDetail(state.messageArr[0].id, 1);
+      }
     });
   };
 
   const send = () => {
     let error: any = false;
     state.isMarkdown = false;
+    state.typewriterArrCache = [];
     if (isArray(state.allow)) {
       if (state.allow[0] === '1') {
         console.log('sads', JSON.stringify(state.data));
@@ -354,8 +354,7 @@ const JobHunt: React.FC = () => {
             {
               // 结束，包括接收完毕所有数据、报错、关闭链接
               onFinished: () => {
-                state.isLoading = false;
-                state.isTyping = false;
+                state.messageData = state.typewriterArrCache.join('');
                 getHistoryList(state.patams, 1);
                 state.isMarkdown = true;
               },
@@ -449,7 +448,7 @@ const JobHunt: React.FC = () => {
 
   const copyText = () => {
     navigator.clipboard
-      .writeText(state.typewriterArrCache?.join(''))
+      .writeText(state.messageData)
       .then(() => {
         message.success('复制成功!');
       })
@@ -498,8 +497,10 @@ const JobHunt: React.FC = () => {
       themeId: choosedata.id,
     }).then((res: any) => {
       if (type !== 1) {
-        typewriterStrCache.current = res.answer;
+        state.messageData = res.answer;
+        console.log(state.messageData);
       }
+      state.isMarkdown = true;
       state.visible = true;
       state.messageId = res.messageId
       state.satisfied = res.satisfied;
@@ -609,7 +610,7 @@ const JobHunt: React.FC = () => {
             {state.visible && (
               <div>
                 <span className={classNames(sf.sFs14, sf.sFwBold)}>
-                  {isTypeFinished ? (
+                  {state.isMarkdown == true ? (
                     <div
                       className={styles.warningBox}
                       style={{ marginTop: 24 }}
@@ -628,7 +629,7 @@ const JobHunt: React.FC = () => {
                             <img src={state.satisfied === 0 ? bDisLikeOutlined : dislikeOutlined} style={{ cursor: 'pointer' }} onClick={disLikeAnswer} />
                           </div>
                           <div>
-                            <span style={{ marginRight: 24 }}>{state.typewriterArrCache?.length || 0}个字符</span>
+                            <span style={{ marginRight: 24 }}>{state.messageData?.length || 0}个字符</span>
                             <span style={{ marginRight: 24, cursor: 'pointer' }} onClick={() => {
                               send();
                             }}><img src={refresh} style={{ marginRight: 3 }} />重新回答</span>
@@ -647,8 +648,9 @@ const JobHunt: React.FC = () => {
                         style={{ width: 24, height: 24, marginRight: 16 }}
                       ></img>
                       <div className={styles.warnings}>
-                        {/* <RcMarkdown content={state.typewriterArrCache.join('')}></RcMarkdown> */}
-                        <Typewriter
+
+                        <RcMarkdown content={state.typewriterArrCache.join('')}></RcMarkdown>
+                        {/* <Typewriter
                           onInit={(typewriter: TypewriterClass) => {
                             state.isTyping = true;
                             typeWriter.current = typewriter;
@@ -662,7 +664,7 @@ const JobHunt: React.FC = () => {
                           options={{
                             delay: 25,
                           }}
-                        />
+                        /> */}
                       </div>
                     </div>
                   )}
