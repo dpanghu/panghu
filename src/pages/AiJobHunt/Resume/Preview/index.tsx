@@ -137,36 +137,40 @@ const ResumePreview: React.FC<Props> = ({ resumeInfo }) => {
           <span>求职意向</span>
           <div></div>
         </h4>
-        <Row>
-          <Col span={4}>
+        <div className={styles['employment-intention-wrapper']}>
+          <div className={styles['intention-item']}>
             <span className={styles['info-title']}>意向职位：</span>
             <span className={styles['info-content']}>{camputedPosition}</span>
-          </Col>
-          <Col span={4} offset={1} style={{ textAlign: 'center' }}>
+          </div>
+          <div></div>
+          <div className={styles['intention-item']}>
             <span className={styles['info-title']}>意向城市：</span>
             <span className={styles['info-content']}>
               {resumeInfo?.intentCity || '-'}
             </span>
-          </Col>
-          <Col span={4} offset={1} style={{ textAlign: 'center' }}>
+          </div>
+          <div></div>
+          <div className={styles['intention-item']}>
             <span className={styles['info-title']}>期望薪资：</span>
             <span className={styles['info-content']}>
               {resumeInfo?.salary || '-'}元/月
             </span>
-          </Col>
-          <Col span={4} offset={1} style={{ textAlign: 'center' }}>
+          </div>
+          <div></div>
+          <div className={styles['intention-item']}>
             <span className={styles['info-title']}>工作性质：</span>
             <span className={styles['info-content']}>
               {resumeInfo?.workNature || '-'}
             </span>
-          </Col>
-          <Col span={4} offset={1} style={{ textAlign: 'right' }}>
+          </div>
+          <div></div>
+          <div className={styles['intention-item']}>
             <span className={styles['info-title']}>到岗时间：</span>
             <span className={styles['info-content']}>
               {resumeInfo?.dutyDate || '-'}
             </span>
-          </Col>
-        </Row>
+          </div>
+        </div>
       </div>
       {/* 教育背景 */}
       <div className={styles['education-background']}>

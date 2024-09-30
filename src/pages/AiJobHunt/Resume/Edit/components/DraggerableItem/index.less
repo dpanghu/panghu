@@ -13,12 +13,11 @@
 .content-section-operate {
   position: absolute;
   display: none;
-  width: 16px;
+  width: 24px;
   top: 0;
-  right: -16px;
+  right: -24px;
   height: 200px;
   flex-direction: column;
-  gap: 4px;
   padding-left: 4px;
 
   span {
@@ -35,8 +34,11 @@
 each(@names, {
   .operate-icon-@{value} {
     display: inline-block;
-    width: 16px;
-    height: 16px;
-    background: url(~'~@/assets/images/resume/@{value}Icon.png') no-repeat 0 0/16px 16px;
+    width: 24px;
+    height: 24px;
+    background: url(~'~@/assets/images/resume/@{value}Icon.png') no-repeat 4px 4px/16px 16px;
+    &:hover{
+      opacity: 0.7;
+    }
   }
 });

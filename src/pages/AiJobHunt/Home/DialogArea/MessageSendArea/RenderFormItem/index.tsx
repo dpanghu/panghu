@@ -15,6 +15,7 @@ import {
 } from 'SeenPc';
 import sf from 'SeenPc/dist/esm/globalStyle/global.less';
 import type { FieldProperties, Plugin } from '../../../../type';
+import styles from './index.less';
 
 type Props = {
   plugin: Plugin;
@@ -146,14 +147,22 @@ const RenderFormItem: React.FC<Props> = ({ formRef, plugin }) => {
                 '、',
               )}类型文件，大小不超过${item?.fileConf?.maxSize}MB`}
             >
-              <Button style={{ width: 104 }} icon={<UploadOutlined />}>
+              <Button
+                type="primary"
+                style={{ width: 104 }}
+                icon={<UploadOutlined />}
+              >
                 点击上传
               </Button>
             </Tooltip>
           </Upload>
         ) : (
           <Upload {...params} className={classNames(sf.sFlex, sf.sFlexGap10)}>
-            <Button style={{ width: 104 }} icon={<UploadOutlined />}>
+            <Button
+              type="primary"
+              style={{ width: 104 }}
+              icon={<UploadOutlined />}
+            >
               点击上传
             </Button>
           </Upload>
@@ -161,6 +170,7 @@ const RenderFormItem: React.FC<Props> = ({ formRef, plugin }) => {
       default:
         return (
           <Cascader
+            className={styles['cascader-wrapper']}
             style={{ width: 104 }}
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
             dropdownMatchSelectWidth={false}
