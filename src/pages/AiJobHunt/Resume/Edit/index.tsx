@@ -165,6 +165,7 @@ const EditResume = React.forwardRef(({ resumeData, reload }: Props, ref) => {
       case 'input':
         return (
           <Input
+            size="large"
             className={eleClassName}
             placeholder={placeholder}
             style={{ width: '100%' }}
@@ -173,6 +174,7 @@ const EditResume = React.forwardRef(({ resumeData, reload }: Props, ref) => {
       case 'inputNumber':
         return (
           <Input
+            size="large"
             type="number"
             addonAfter={addonAfter}
             className={eleClassName}
@@ -182,6 +184,7 @@ const EditResume = React.forwardRef(({ resumeData, reload }: Props, ref) => {
       case 'select':
         return (
           <Select
+            size="large"
             className={eleClassName}
             placeholder={placeholder}
             // @ts-ignore
@@ -192,6 +195,7 @@ const EditResume = React.forwardRef(({ resumeData, reload }: Props, ref) => {
       case 'cascader':
         return (
           <Cascader
+            size="large"
             dropdownMatchSelectWidth={false}
             className={eleClassName}
             placeholder={placeholder}
@@ -207,6 +211,7 @@ const EditResume = React.forwardRef(({ resumeData, reload }: Props, ref) => {
       case 'rangerPicker':
         return (
           <DatePicker
+            size="large"
             type={'range'}
             // @ts-ignore
             width="auto"

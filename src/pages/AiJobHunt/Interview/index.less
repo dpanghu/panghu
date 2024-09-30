@@ -67,7 +67,7 @@
           height: 22px !important;
         }
 
-        .ant-btn>.anticon+span {
+        .ant-btn > .anticon + span {
           margin-inline-start: 0;
         }
       }
@@ -108,12 +108,13 @@
 
     .box {
       background: transparent;
-      padding: 0px
+      padding: 0px;
     }
 
     img {
       height: 24px;
       width: 24px;
+      border-radius: 50%;
       margin-left: 17px;
     }
   }
@@ -200,7 +201,8 @@
       position: relative;
 
       :global {
-        .ant-input-textarea-affix-wrapper.ant-input-affix-wrapper .ant-input-suffix {
+        .ant-input-textarea-affix-wrapper.ant-input-affix-wrapper
+          .ant-input-suffix {
           position: absolute;
           right: 68px;
           bottom: -8px;
@@ -252,9 +254,11 @@
         cursor: pointer;
 
         &:hover {
-          background: linear-gradient(90deg,
-              rgba(77, 108, 255, 70%) 0%,
-              rgba(119, 114, 255, 70%) 100%);
+          background: linear-gradient(
+            90deg,
+            rgba(77, 108, 255, 70%) 0%,
+            rgba(119, 114, 255, 70%) 100%
+          );
         }
       }
     }
@@ -266,7 +270,6 @@
   }
 
   @keyframes blink {
-
     from,
     to {
       opacity: 1;

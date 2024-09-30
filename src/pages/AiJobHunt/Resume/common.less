@@ -19,7 +19,9 @@ each(@avatarNames, {
 };
 each(@items, {
     .@{key} {
-      margin-top: 12px;
+      & when(@key = internship-experience),(@key = campus-experience),(@key = skill),(@key = work-experience),(@key = self-def){
+        margin-top: 32px !important;
+      }      
       h4{
         background: url('~@/assets/images/resume/@{key}.png') no-repeat 0 0/98px 22px;
         height: 22px;

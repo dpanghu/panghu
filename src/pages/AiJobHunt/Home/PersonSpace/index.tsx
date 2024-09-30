@@ -61,11 +61,13 @@ const PersonSpace = React.forwardRef(({}, ref) => {
         <Input
           placeholder="输入搜索文档的关键词"
           allowClear
+          grey
           maxLength={10}
           value={state.keywords}
           onChange={(e) => (state.keywords = e)}
           suffix={<span className={styles['search-icon']} onClick={onSearch} />}
           style={{ width: '100%', padding: '4px 8px' }}
+          className={styles['input-wrapper']}
           onKeyDown={(e) => {
             if (e.code === 'Enter' && e.shiftKey) {
               onSearch();

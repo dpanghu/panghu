@@ -32,7 +32,7 @@
 
 @media screen and (min-width: 1920px) {
   .basic-info {
-    width: 610px;
+    width: 618px;
   }
 }
 
@@ -105,6 +105,9 @@ each(@items, {
     h4 when (@key = self-def) {
       background-size: 110px 22px;
     }
+    h4 when(@key = employment-intention){
+      margin-bottom: 20px;
+    }
   }
 });
 
@@ -113,6 +116,7 @@ each(@items, {
   width: 100%;
   border-radius: 8px;
   padding: 16px;
+  padding-bottom: 0;
 
   & + & {
     margin-top: 16px;
@@ -192,4 +196,23 @@ each(@items, {
   width: 98px;
   height: 22px;
   color: #fff;
+}
+
+.container {
+  :global {
+    .ant-input,
+    .ant-picker-input > input {
+      font-size: 14px;
+    }
+    .ant-select-selector {
+      font-size: 14px !important;
+    }
+    .ant-input-number-input-wrap {
+      font-size: 14px;
+    }
+    label {
+      line-height: 40px;
+      height: 40px !important;
+    }
+  }
 }

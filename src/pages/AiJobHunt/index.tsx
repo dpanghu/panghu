@@ -29,7 +29,7 @@ const AiJobHuntLayout: React.FC = ({}) => {
   });
 
   return (
-    <div className={classnames(styles.container, sf.sFullAbs, sf.sPd8)}>
+    <div className={classnames(styles.container, sf.sFullAbs)}>
       {loading ? <PageLoading /> : outlet}
     </div>
   );
