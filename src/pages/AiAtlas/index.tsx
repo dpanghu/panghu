@@ -103,6 +103,10 @@ const AiAtlas = ({}) => {
   // 抽取知识
   const extractMsg = (userMessage: string) => {
     state.extractLoading = true;
+    state.data = {
+      ...state.data,
+      createState: CREATE_STATUS.UNGENERATED,
+    };
     if (userMessage) {
       extractKnowledge({
         userMessage,
