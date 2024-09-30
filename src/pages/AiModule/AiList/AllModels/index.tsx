@@ -7,6 +7,8 @@ import eyeImg from '@/assets/images/eye.png';
 import maohaoImg from '@/assets/images/maohao.png';
 import { message, Modal } from 'antd';
 import { history } from 'umi';
+import { base64 } from 'seent-tools';
+import qs from 'qs';
 import ScenePreview from '../../../AiModule/scenePreview';
 import { Button, Form, Input } from 'SeenPc';
 
@@ -246,7 +248,19 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
       {contextHolder}
       <div className={styles.cardGrid}>
         {data.map((item: any) => (
-          <Card.Grid key={item.id} className={styles.card} hoverable={true}>
+          <Card.Grid key={item.id} onClick={() => {
+            let commonData: any = JSON.parse(window.sessionStorage.getItem('commonDatas') as any || '{}');
+            let qsData: any = base64.encode(
+              qs.stringify({
+                imageId: item.id,
+                dataScope: JSON.parse(window.sessionStorage.getItem('commonDatas') as any || '{}').memberType == 'TEACHER' ? 'teacher' : 'stu',
+                userImg: '',
+                ...commonData,
+              })
+            );
+            console.log('222222222', qsData);
+            history.push(`/AiScene?qs=${qsData}`);
+          }} className={styles.card} hoverable={true}>
             <div className={styles.cardContent}>
               <div className={styles.left}>
                 <img src={item.icon} alt="" />
@@ -254,313 +268,9 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
               <div className={styles.right}>
                 <div className={styles.cardPicture}>
                   <img onClick={() => {
-                    console.log('222222222222');
                     setOpen(true);
                     setId(item.id);
                   }} className={styles.eye} src={eyeImg} alt="" />
-                  {/* {item.isConfig === 0 ? (
-                    <Dropdown
-                      className={`${styles.maohao} disabled-dropdown`}
-                      autoAdjustOverflow={true}
-                      overlayStyle={{ width: '92px', height: '141px' }}
-                      menu={{
-                        items: [
-                          {
-                            label: getPublishLabel(item.id),
-                            key: '0',
-                            style: {
-                              fontFamily: 'PingFangSC, PingFang SC',
-                              fontWeight: 400,
-                              fontSize: '14px',
-                              color: '#333333',
-                              lineHeight: '20px',
-                              textAlign: 'center',
-                              fontStyle: 'normal',
-                              borderRadius: '4px',
-                            },
-                            onClick: () => {
-                              handlePublishClick(item.id)
-                            }
-                          },
-                          {
-                            label: '编辑',
-                            key: '1',
-                            style: {
-                              fontFamily: 'PingFangSC, PingFang SC',
-                              fontWeight: 400,
-                              fontSize: '14px',
-                              color: '#333333',
-                              lineHeight: '20px',
-                              textAlign: 'center',
-                              fontStyle: 'normal',
-                              borderRadius: '4px',
-                            },
-                            onClick: () => {
-                              window.sessionStorage.setItem('pluginId', item.id);
-                              history.push('/createAiModule');
-                            }
-                          },
-                          {
-                            label: '复制',
-                            key: '3',
-                            style: {
-                              fontFamily: 'PingFangSC, PingFang SC',
-                              fontWeight: 400,
-                              fontSize: '14px',
-                              color: '#333333',
-                              lineHeight: '20px',
-                              textAlign: 'center',
-                              fontStyle: 'normal',
-                              borderRadius: '4px',
-                            },
-                            onClick: () => {
-                              copyPlugin({
-                                userId: 1,
-                                userToken: 2,
-                                schoolId: 3,
-                                memberId: 5,
-                                pluginId: item.id
-                              }).then((res) => {
-                                messageApi.open({
-                                  type: 'success',
-                                  content: '复制成功',
-                                });
-                                if (activeKey && activesKey) {
-                                  getAICardDetail({
-                                    userId: 1,
-                                    userToken: 2,
-                                    schoolId: 3,
-                                    memberId: 5,
-                                    domainId: activesKey,
-                                    modelTypeId: activeKey,
-                                    search: values,
-                                  }).then((res) => {
-                                    setData(res);
-                                  });
-                                }
-                                else if (activeKey && activesKey === null) {
-                                  getAICardDetail({
-                                    userId: 1,
-                                    userToken: 2,
-                                    schoolId: 3,
-                                    memberId: 5,
-                                    modelTypeId: activeKey,
-                                    search: values,
-                                  }).then((res) => {
-                                    setData(res);
-                                  });
-                                }
-                              })
-                            },
-                          },
-                          {
-                            label: '删除',
-                            key: '4',
-                            style: {
-                              fontFamily: 'PingFangSC, PingFang SC',
-                              fontWeight: 400,
-                              fontSize: '14px',
-                              color: '#333333',
-                              lineHeight: '20px',
-                              textAlign: 'center',
-                              fontStyle: 'normal',
-                              borderRadius: '4px',
-                            },
-                            onClick: () => {
-                              Modal.confirm({
-                                title: '你确定要删除吗？',
-                                okText: '确定',
-                                cancelText: '取消',
-                                onOk: () => {
-                                  deletePlugin({
-                                    userId: 1,
-                                    userToken: 2,
-                                    schoolId: 3,
-                                    memberId: 5,
-                                    pluginId: item.id
-                                  }).then((res) => {
-                                    if (activeKey && activesKey) {
-                                      getAICardDetail({
-                                        userId: 1,
-                                        userToken: 2,
-                                        schoolId: 3,
-                                        memberId: 5,
-                                        domainId: activesKey,
-                                        modelTypeId: activeKey,
-                                        search: values,
-                                      }).then((res) => {
-                                        setData(res);
-                                      });
-                                    } else if (activeKey && activesKey === null) {
-                                      getAICardDetail({
-                                        userId: 1,
-                                        userToken: 2,
-                                        schoolId: 3,
-                                        memberId: 5,
-                                        modelTypeId: activeKey,
-                                        search: values,
-                                      }).then((res) => {
-                                        setData(res);
-                                      });
-                                    }
-                                  });
-                                },
-                                onCancel: () => {
-                                  // 取消操作，可根据需要进行处理
-                                }
-                              });
-                            }
-                          },
-                        ]
-                      }}
-                      disabled
-                      style={{ pointerEvents: 'none', opacity: 0.5 }}
-                      onMouseEnter={(e: any) => {
-                        e.currentTarget.style.opacity = 0.5;
-                        e.currentTarget.style.cursor = 'not-allowed';
-                      }}
-                      onMouseLeave={(e: any) => {
-                        e.currentTarget.style.opacity = 0.5;
-                      }}
-                    >
-                      <a onClick={(e) => e.preventDefault()}>
-                        <Space>
-                          <img src={maohaoImg} alt="" />
-                        </Space>
-                      </a>
-                    </Dropdown>
-                  ) : (
-                    <Dropdown
-                      className={styles.maohao}
-                      autoAdjustOverflow={true}
-                      overlayStyle={{ width: '92px', height: '141px' }}
-                      menu={{
-                        items: [
-                          {
-                            label: getPublishLabel(item.id),
-                            key: '0',
-                            style: {
-                              fontFamily: 'PingFangSC, PingFang SC',
-                              fontWeight: 400,
-                              fontSize: '14px',
-                              color: '#333333',
-                              lineHeight: '20px',
-                              textAlign: 'center',
-                              fontStyle: 'normal',
-                              borderRadius: '4px',
-                            },
-                            onClick: () => {
-                              handlePublishClick(item.id)
-                            }
-                          },
-                          {
-                            label: '编辑',
-                            key: '1',
-                            style: {
-                              fontFamily: 'PingFangSC, PingFang SC',
-                              fontWeight: 400,
-                              fontSize: '14px',
-                              color: '#333333',
-                              lineHeight: '20px',
-                              textAlign: 'center',
-                              fontStyle: 'normal',
-                              borderRadius: '4px',
-                            },
-                            onClick: () => {
-                              window.sessionStorage.setItem('pluginId', item.id);
-                              history.push('/createAiModule');
-                            }
-                          },
-                          {
-                            label: '复制',
-                            key: '3',
-                            style: {
-                              fontFamily: 'PingFangSC, PingFang SC',
-                              fontWeight: 400,
-                              fontSize: '14px',
-                              color: '#333333',
-                              lineHeight: '20px',
-                              textAlign: 'center',
-                              fontStyle: 'normal',
-                              borderRadius: '4px',
-                            },
-                            onClick: () => {
-                              setOpens(true);
-                              setCopyPluginId(item.id);
-                            },
-                          },
-                          {
-                            label: '删除',
-                            key: '4',
-                            style: {
-                              fontFamily: 'PingFangSC, PingFang SC',
-                              fontWeight: 400,
-                              fontSize: '14px',
-                              color: '#333333',
-                              lineHeight: '20px',
-                              textAlign: 'center',
-                              fontStyle: 'normal',
-                              borderRadius: '4px',
-                            },
-                            onClick: () => {
-                              Modal.confirm({
-                                title: '你确定要删除吗？',
-                                okText: '确定',
-                                cancelText: '取消',
-                                onOk: () => {
-                                  deletePlugin({
-                                    userId: 1,
-                                    userToken: 2,
-                                    schoolId: 3,
-                                    memberId: 5,
-                                    pluginId: item.id
-                                  }).then((res) => {
-                                    messageApi.open({
-                                      type: 'success',
-                                      content: '删除成功',
-                                    });
-                                    if (activeKey && activesKey) {
-                                      getAICardDetail({
-                                        userId: 1,
-                                        userToken: 2,
-                                        schoolId: 3,
-                                        memberId: 5,
-                                        domainId: activesKey,
-                                        modelTypeId: activeKey,
-                                        search: values,
-                                      }).then((res) => {
-                                        setData(res);
-                                      });
-                                    } else if (activeKey && activesKey === null) {
-                                      getAICardDetail({
-                                        userId: 1,
-                                        userToken: 2,
-                                        schoolId: 3,
-                                        memberId: 5,
-                                        modelTypeId: activeKey,
-                                        search: values,
-                                      }).then((res) => {
-                                        setData(res);
-                                      });
-                                    }
-                                  });
-                                },
-                                onCancel: () => {
-                                  // 取消操作，可根据需要进行处理
-                                }
-                              });
-                            }
-                          },
-                        ]
-                      }}
-                    >
-                      <a onClick={(e) => e.preventDefault()}>
-                        <Space>
-                          <img src={maohaoImg} alt="" />
-                        </Space>
-                      </a>
-                    </Dropdown>
-                  )} */}
                 </div>
                 <div className={styles.cardTitle}>{item.name}</div>
                 <div className={styles.cardNote}>{item.note}</div>

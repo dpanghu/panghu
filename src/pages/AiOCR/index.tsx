@@ -17,9 +17,9 @@ import {
   uploadPic,
   uploads,
 } from '@/services/aiOCR';
-import { CloseCircleFilled } from '@ant-design/icons';
+import { CloseCircleFilled, LoadingOutlined } from '@ant-design/icons';
 import { useMount, useReactive } from 'ahooks';
-import { Input, message, Modal, Spin } from 'antd';
+import { Input, message, Modal, Spin, Tooltip } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { Upload } from 'SeenPc';
 import ImageAnnotator from './ImageAnnotator';
@@ -158,6 +158,22 @@ const AiOCR: React.FC = ({}) => {
           isPreset,
         );
       }
+      if (state.isCheck) {
+        const inputWords = state.message
+          .split(' ')
+          .filter((word: any) => word.trim() !== '');
+        const allDataWords = state.IdentifyData.flatMap((item: any) =>
+          item.words.split(' '),
+        );
+        const isValid = inputWords.every((inputWord: any) =>
+          allDataWords.some((dataWord: any) => dataWord.includes(inputWord)),
+        );
+        if (isValid) {
+          state.isValid = true;
+        } else {
+          state.isValid = false;
+        }
+      }
     } catch (err) {
       console.error('An error occurred during text recognition:', err);
     } finally {
@@ -190,12 +206,18 @@ const AiOCR: React.FC = ({}) => {
   );
   const props: any = {
     name: 'file',
+    accept: '.jpg,.jpeg,.png,.bmp',
     seenOss: {
       url: '/api/bus-xai/dbe3.private.params.upload.get',
       extraParams,
     },
     beforeUpload: (file: any) => {
-      const allowedFormats = ['image/jpeg', 'image/png', 'image/jpg'];
+      const allowedFormats = [
+        'image/jpeg',
+        'image/png',
+        'image/jpg',
+        'image/bmp',
+      ];
 
       if (!allowedFormats.includes(file.type)) {
         message.warning('请上传图片，支持jpg,jpeg,png格式');
@@ -214,10 +236,10 @@ const AiOCR: React.FC = ({}) => {
     },
 
     onChange(info: any) {
-      state.IdentifyData = [];
-      state.isSelect = '';
       const { status } = info.file;
       if (status === 'done') {
+        state.IdentifyData = [];
+        state.isSelect = '';
         console.log(`${info.file.name} file uploaded successfully.`);
         state.isrec = true;
         state.isLoading = true;
@@ -484,27 +506,39 @@ const AiOCR: React.FC = ({}) => {
               </div>
             )}
             <div className={styles.function}>
-              <div
-                className={state.isCheck ? styles.ischeck : styles.check}
-                onClick={() => (state.isCheck = !state.isCheck)}
-              >
-                校验
-              </div>
-              <img
-                src={state.isMark ? blueA : A}
-                alt=""
-                className={styles.A}
-                onClick={() => (state.isMark = !state.isMark)}
-              />
-              <img
-                src={state.isBlue ? blueRectangle : rectangle}
-                alt=""
-                className={styles.rectangle}
-                onClick={() => (state.isBlue = !state.isBlue)}
-              />
-              <img src={zoomOut} alt="Zoom Out" onClick={handleZoomOut} />
-              <img src={zoomIn} alt="Zoom In" onClick={handleZoomIn} />
-              <img src={rotate} alt="" onClick={changeAngle} />
+              <Tooltip title="文字对比">
+                <div
+                  className={state.isCheck ? styles.ischeck : styles.check}
+                  onClick={() => (state.isCheck = !state.isCheck)}
+                >
+                  校验
+                </div>
+              </Tooltip>
+              <Tooltip title="显示识别文字">
+                <img
+                  src={state.isMark ? blueA : A}
+                  alt=""
+                  className={styles.A}
+                  onClick={() => (state.isMark = !state.isMark)}
+                />
+              </Tooltip>
+              <Tooltip title="标记识别位置">
+                <img
+                  src={state.isBlue ? blueRectangle : rectangle}
+                  alt=""
+                  className={styles.rectangle}
+                  onClick={() => (state.isBlue = !state.isBlue)}
+                />
+              </Tooltip>
+              <Tooltip title="放小">
+                <img src={zoomOut} alt="Zoom Out" onClick={handleZoomOut} />
+              </Tooltip>
+              <Tooltip title="缩大">
+                <img src={zoomIn} alt="Zoom In" onClick={handleZoomIn} />
+              </Tooltip>
+              <Tooltip title="顺时针旋转90°">
+                <img src={rotate} alt="" onClick={changeAngle} />
+              </Tooltip>
             </div>
           </div>
           {state.isrec && state.preData.length > 0 && (
@@ -536,7 +570,14 @@ const AiOCR: React.FC = ({}) => {
                   </div>
                 )}
               </div>
-              {state.isCheck && (
+              {state.isCheck && state.isLoading && (
+                <div className={styles.recResult}>
+                  <div className={styles.loadingRecResult}>
+                    <LoadingOutlined /> 正在识别中
+                  </div>
+                </div>
+              )}
+              {state.isCheck && !state.isLoading && (
                 <div className={styles.recResult}>
                   {state.message &&
                     (state.isValid ? (
@@ -553,8 +594,12 @@ const AiOCR: React.FC = ({}) => {
                 </div>
               )}
               <div className={styles.rightBottom}>
-                <img src={copy} alt="" onClick={copyText} />
-                <img src={refresh} alt="" onClick={refreshText} />
+                <Tooltip title="复制识别结果">
+                  <img src={copy} alt="" onClick={copyText} />
+                </Tooltip>
+                <Tooltip title="重新识别">
+                  <img src={refresh} alt="" onClick={refreshText} />
+                </Tooltip>
               </div>
             </div>
           )}

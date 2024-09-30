@@ -86,6 +86,7 @@ const PersonSpace = React.forwardRef(({}, ref) => {
               fileName={item.name}
               type={item.pluginCode}
               onDelItem={onDelIte1m}
+              onRegenerate={onSearch}
             />
           </div>
         ))}

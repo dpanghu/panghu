@@ -15,7 +15,7 @@
     flex-direction: column;
     width: 50%;
     height: 100%;
-    padding: 16px;
+    padding: 16px 0 16px 16px;
     .questionContent {
       flex: 1;
       width: 100%;
@@ -82,7 +82,7 @@
             background: rgba(255, 255, 255, 0.8);
             border-radius: 8px;
             padding: 16px;
-            max-width: calc(100% - 80px);
+            max-width: calc(100% - 96px);
             line-height: 26px;
           }
         }
@@ -91,6 +91,7 @@
         display: flex;
         column-gap: 16px;
         justify-content: flex-end;
+        padding-right: 16px;
         .userIcon {
           width: 24px;
           height: 24px;
@@ -135,8 +136,8 @@
         position: relative;
         :global {
           .ant-input-data-count {
-            bottom: 6px;
-            right: 90px;
+            bottom: -18px;
+            right: 20px;
           }
         }
         .sendBtn {

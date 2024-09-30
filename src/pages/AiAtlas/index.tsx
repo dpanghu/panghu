@@ -103,11 +103,6 @@ const AiAtlas = ({}) => {
   // 抽取知识
   const extractMsg = (userMessage: string) => {
     state.extractLoading = true;
-    state.data = {
-      ...state.data,
-      extractState: EXTRACT_STATUS.SUCCESS,
-      createState: CREATE_STATUS.UNGENERATED,
-    };
     if (userMessage) {
       extractKnowledge({
         userMessage,
@@ -116,7 +111,11 @@ const AiAtlas = ({}) => {
       })
         .then((rst) => {
           if (rst) {
-            state.data!.info = rst.info;
+            state.data = {
+              ...state.data,
+              extractState: EXTRACT_STATUS.SUCCESS,
+              info: rst.info,
+            };
           }
           state.extractLoading = false;
         })
@@ -193,7 +192,7 @@ const AiAtlas = ({}) => {
           </div>
           <div className={styles['area-atlas-container']} id="graphContent">
             <header>知识图谱</header>
-            <section>
+            <section style={{ overflow: 'hidden' }}>
               {state.graphLoading ? (
                 <Loading loadingMessage="知识图谱生成中" />
               ) : state.data?.createState === CREATE_STATUS.GENERATED ? (
