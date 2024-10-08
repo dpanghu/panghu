@@ -141,12 +141,18 @@ const AiFVR: React.FC = ({}) => {
   );
   const props: any = {
     name: 'file',
+    accept: '.jpg,.jpeg,.png,.bmp',
     seenOss: {
       url: '/api/bus-xai/dbe3.private.params.upload.get',
       extraParams,
     },
     beforeUpload: (file: any) => {
-      const allowedFormats = ['image/jpeg', 'image/png', 'image/jpg'];
+      const allowedFormats = [
+        'image/jpeg',
+        'image/png',
+        'image/jpg',
+        'image/bmp',
+      ];
 
       if (!allowedFormats.includes(file.type)) {
         message.warning('上传的图片不符合要求，请重新选择合适的图片');
@@ -166,10 +172,10 @@ const AiFVR: React.FC = ({}) => {
     },
 
     onChange(info: any) {
-      state.IdentifyData = [];
-      state.isSelect = '';
       const { status } = info.file;
       if (status === 'done') {
+        state.IdentifyData = [];
+        state.isSelect = '';
         console.log(`${info.file.name} file uploaded successfully.`);
         state.isrec = true;
         state.isLoading = true;

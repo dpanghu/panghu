@@ -198,12 +198,18 @@ const AiLPR: React.FC = ({}) => {
   );
   const props: any = {
     name: 'file',
+    accept: '.jpg,.jpeg,.png,.bmp',
     seenOss: {
       url: '/api/bus-xai/dbe3.private.params.upload.get',
       extraParams,
     },
     beforeUpload: (file: any) => {
-      const allowedFormats = ['image/jpeg', 'image/png', 'image/jpg'];
+      const allowedFormats = [
+        'image/jpeg',
+        'image/png',
+        'image/jpg',
+        'img/bmp',
+      ];
 
       if (!allowedFormats.includes(file.type)) {
         message.warning('请上传图片，支持jpg,jpeg,png格式');
@@ -221,10 +227,10 @@ const AiLPR: React.FC = ({}) => {
       return true;
     },
     onChange(info: any) {
-      state.IdentifyData = [];
-      state.isSelect = '';
       const { status } = info.file;
       if (status === 'done') {
+        state.IdentifyData = [];
+        state.isSelect = '';
         console.log(`${info.file.name} file uploaded successfully.`);
         state.isrec = true;
         state.isLoading = true;

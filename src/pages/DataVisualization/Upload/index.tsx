@@ -83,10 +83,13 @@ const UploadCmp: React.FC<Props> = ({}) => {
             onChange={onChange}
           >
             <div className={styles['upload']}>
-              <div className={sf.sMrL8} style={{ textAlign: 'left' }}>
+              <div
+                className={sf.sMrL8}
+                style={{ textAlign: 'left', fontWeight: 'bold' }}
+              >
                 点击或将文件拖拽到此处上传
-                <br /> 文档格式:Excel
-                <br /> 文档大小:最大支持1M
+                <br /> 文档格式:支持 Excel 文档格式
+                <br /> 文档大小:文档最大支持1M
               </div>
             </div>
           </Dragger>

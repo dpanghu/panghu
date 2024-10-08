@@ -33,6 +33,7 @@
     "js-audio-recorder": "^1.0.7",
     "js-base64": "3.7.7",
     "lodash": "4.17.21",
+    "marked": "^14.1.2",
     "nanoid": "^5.0.7",
     "qs": "6.12.3",
     "rc-markdown": "^0.0.11",

@@ -16,9 +16,11 @@ import { scrollToBottom } from '@/utils/utils';
 import { Button, message } from 'SeenPc';
 import { useReactive, useUpdateEffect } from 'ahooks';
 import TextArea from 'antd/es/input/TextArea';
+import { marked } from 'marked';
 import React, { useEffect, useRef } from 'react';
 import Typewriter, { type TypewriterClass } from 'typewriter-effect';
 import EventSourceStream from '../AiJobHunt/Home/DialogArea/EventSourceStream';
+import Markdown from '../DocumentSummary/Mind';
 import styles from './QAResult.less';
 
 interface TProps {
@@ -37,7 +39,7 @@ interface TState {
   showTypewriter: boolean;
   aiAnswerStr: string;
   receiveText: boolean;
-  copyActive: boolean;
+  copyActive: Record<string, boolean>;
   downActive: boolean;
 }
 
@@ -59,7 +61,7 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
     showTypewriter: false,
     aiAnswerStr: '',
     receiveText: false,
-    copyActive: false,
+    copyActive: {},
     downActive: false,
   });
 
@@ -185,7 +187,7 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
   };
 
   const handleCopyContent = (params: RecordItem) => {
-    state.copyActive = true;
+    state.copyActive[params.id] = true;
     if (navigator.clipboard && window.isSecureContext) {
       return window.navigator?.clipboard
         ?.writeText(params?.content)
@@ -279,6 +281,24 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
     }
   }, [summaryData]);
 
+  useEffect(() => {
+    // 示例Markdown字符串
+    const markdownString = `
+# 标题
+ 
+这是一个段落。
+ 
+- 列表项一
+- 列表项二
+ 
+**粗体文本**
+ 
+[链接](https://example.com);`;
+    // 将Markdown转换为HTML
+    const htmlString = marked.parse(markdownString);
+    console.log(htmlString);
+  }, []);
+
   return (
     <div className={styles.QAResultContainer}>
       <div className={styles.fileContent}>
@@ -316,7 +336,7 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
                   className={styles.avatar}
                 />
                 <div className={styles.question}>
-                  {item.content}
+                  <Markdown content={item.content} />
                   <div className={styles.actionBtns}>
                     <img
                       onClick={() => {
@@ -336,7 +356,11 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
                       onClick={() => {
                         handleCopyContent(item);
                       }}
-                      src={state.copyActive ? activeCopyIcon : baseCopyIcon}
+                      src={
+                        state.copyActive?.[item.id]
+                          ? activeCopyIcon
+                          : baseCopyIcon
+                      }
                       alt=""
                     />
                   </div>
@@ -405,7 +429,7 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
                 e.preventDefault();
                 handleSendDialog();
               }}
-              placeholder="请输入问题，AI将根据文档内容，进行回答"
+              placeholder="请输入问题，AI将根据文档内容，进行回答。"
               style={{ height: 100, resize: 'none' }}
             />
             <Button

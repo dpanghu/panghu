@@ -197,3 +197,18 @@ export const getSessionStorage = (key: string) => {
 export const getResourceById = (sourceId: string) => {
   return sourceId ? `/api/dbe3/res/download/${sourceId}` : undefined;
 };
+
+// 下载文件 attachmentUrl:下载地址 filename:文件名称
+export const onDownloadFile = (attachmentUrl: string, filename: string) => {
+  fetch(attachmentUrl)
+    .then((response) => response.blob())
+    .then((blob) => {
+      const url = window.URL.createObjectURL(new Blob([blob]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', filename);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    });
+};

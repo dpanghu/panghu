@@ -123,7 +123,10 @@ const Resume: React.FC = ({}) => {
   return (
     <div className={classNames(sf.sFlex, sf.sFlexDirC, sf.sHFull)}>
       <div className={styles.header}>
-        <Button onClick={() => history.push('/AiJobHunt')}>
+        <Button
+          style={{ paddingLeft: 0 }}
+          onClick={() => history.push('/AiJobHunt')}
+        >
           <img src={goBack} />
           返回
           <Divider type="vertical" />

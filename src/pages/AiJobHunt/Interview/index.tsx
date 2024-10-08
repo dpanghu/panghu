@@ -1,3 +1,4 @@
+import userAvatar from '@/assets/images/avatar_passport.png';
 import goBack from '@/assets/images/goBack.png';
 import {
   exportInterview,
@@ -9,7 +10,7 @@ import { downloadFile } from '@/utils/utils';
 import { Button, message } from 'SeenPc';
 import { useCreation, useMount, useReactive } from 'ahooks';
 import { Input, Modal } from 'antd';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect } from 'react';
 import Typewriter from 'typewriter-effect';
 import { history, useParams } from 'umi';
 import EventSourceStream from '../Home/DialogArea/EventSourceStream';
@@ -30,7 +31,7 @@ type TState = {
   isType: boolean;
   imgSrc: any;
 };
-const Interview: React.FC = ({ }) => {
+const Interview: React.FC = ({}) => {
   const params = useParams<{ paramId?: string; themeId?: string }>();
   const queryData = useCreation(() => {
     return JSON.parse(window.sessionStorage.getItem('queryParams') || '{}');
@@ -72,16 +73,14 @@ const Interview: React.FC = ({ }) => {
       },
       {
         // 结束，包括接收完毕所有数据、报错、关闭链接
-        onFinished: () => {
-
-        },
+        onFinished: () => {},
         onError: (error) => {
           console.log(error);
         },
         // 接收到数据
         receiveMessage: (data) => {
           if (data.isEnd) {
-            console.log('11111')
+            console.log('11111');
             state.isLoading = false;
           }
         },
@@ -113,11 +112,12 @@ const Interview: React.FC = ({ }) => {
       content: '一旦提交，将不能再次作答此问题',
       okText: '确认',
       cancelText: '取消',
+      className: styles['delete-confirm'],
       centered: true,
       onOk() {
         submitUserAnswer();
       },
-      onCancel() { },
+      onCancel() {},
     });
   };
 
@@ -129,7 +129,7 @@ const Interview: React.FC = ({ }) => {
         state.AIComments = [...state.AIComments, item.aiComment];
       });
     });
-  }
+  };
   const handleShowReferenceAnswers = () => {
     if (state.isLoading) {
       message.warning('请先等待AI生成参考答案');
@@ -141,7 +141,7 @@ const Interview: React.FC = ({ }) => {
         state.ReferenceAnswers = [];
         state.AIComments = [];
       } else {
-        console.log('2222')
+        console.log('2222');
         getInterviewQuestionLists();
         state.showReferenceAnswers = true;
       }
@@ -188,22 +188,24 @@ const Interview: React.FC = ({ }) => {
   };
   const getShowAIAnswers = () => {
     getShowAIAnswer({ themeId: params.themeId }).then((res: any) => {
-      state.showReferenceAnswers = res.aiAnswer === 1 ? true : false
-      state.showAIComments = res.aiComment === 1 ? true : false
+      state.showReferenceAnswers = res.aiAnswer === 1 ? true : false;
+      state.showAIComments = res.aiComment === 1 ? true : false;
       if (res.aiAnswer === 1) {
-        getInterviewQuestionLists()
+        getInterviewQuestionLists();
       }
-    })
-  }
+    });
+  };
   const updateShowAIAnswers = () => {
     updateShowAIAnswer({
       themeId: params.themeId,
       aiAnswer: state.showReferenceAnswers ? 1 : 0,
-      aiComment: state.showAIComments ? 1 : 0
-    }).then((res) => console.log(res))
-  }
+      aiComment: state.showAIComments ? 1 : 0,
+    }).then((res) => console.log(res));
+  };
   useMount(() => {
-    let qsData: any = JSON.parse(window.sessionStorage.getItem('commonDatas') as any);
+    let qsData: any = JSON.parse(
+      window.sessionStorage.getItem('commonDatas') as any,
+    );
     state.imgSrc = qsData?.userImg;
     getInterviewQuestion();
     getShowAIAnswers();
@@ -211,7 +213,7 @@ const Interview: React.FC = ({ }) => {
 
   useEffect(() => {
     updateShowAIAnswers();
-  }, [state.showReferenceAnswers, state.showAIComments])
+  }, [state.showReferenceAnswers, state.showAIComments]);
 
   return (
     <div className={styles.interviewContainer}>
@@ -245,7 +247,7 @@ const Interview: React.FC = ({ }) => {
                   <>
                     <div className={styles.aiBox}>
                       {index === state.currentQuestionIndex &&
-                        state.isType === true ? (
+                      state.isType === true ? (
                         <div className={styles.box}>
                           {state.isLoading ? (
                             <div className={styles.loadingCursor}>|</div>
@@ -270,19 +272,18 @@ const Interview: React.FC = ({ }) => {
                         <div className={styles.box}>{faq.question}</div>
                       )}
                     </div>
-                    {index < state.currentQuestionIndex
-                      && (
-                        <div className={styles.answerBox}>
-                          {state.answers
-                            .filter((answer) => answer.questionIndex === index)
-                            .map((answer, answerIndex) => (
-                              <div className={styles.box} key={answerIndex}>
-                                {answer.stuAnswer}
-                              </div>
-                            ))}
-                          <img src={state.imgSrc} alt='' />
-                        </div>
-                      )}
+                    {index < state.currentQuestionIndex && (
+                      <div className={styles.answerBox}>
+                        {state.answers
+                          .filter((answer) => answer.questionIndex === index)
+                          .map((answer, answerIndex) => (
+                            <div className={styles.box} key={answerIndex}>
+                              {answer.stuAnswer}
+                            </div>
+                          ))}
+                        <img src={userAvatar} alt="" />
+                      </div>
+                    )}
                   </>
                 )}
               </div>
@@ -347,7 +348,11 @@ const Interview: React.FC = ({ }) => {
               onChange={(e) => (state.message = e.target.value)}
             />
             <div className={styles.inputFooter}>
-              <Button type="primary" onClick={handleAnswerSubmit} disabled={state.showBtn}>
+              <Button
+                type="primary"
+                onClick={handleAnswerSubmit}
+                disabled={state.showBtn}
+              >
                 发送
               </Button>
             </div>
