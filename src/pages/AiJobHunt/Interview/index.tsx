@@ -112,6 +112,7 @@ const Interview: React.FC = ({}) => {
       content: '一旦提交，将不能再次作答此问题',
       okText: '确认',
       cancelText: '取消',
+      className: styles['delete-confirm'],
       centered: true,
       onOk() {
         submitUserAnswer();
