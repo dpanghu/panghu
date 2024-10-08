@@ -253,12 +253,13 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
             let qsData: any = base64.encode(
               qs.stringify({
                 imageId: item.id,
+                dbeProjectVersionId: -1,
+                taskId: -1,
                 dataScope: JSON.parse(window.sessionStorage.getItem('commonDatas') as any || '{}').memberType == 'TEACHER' ? 'teacher' : 'stu',
                 userImg: '',
                 ...commonData,
               })
             );
-            console.log('222222222', qsData);
             history.push(`/AiScene?qs=${qsData}`);
           }} className={styles.card} hoverable={true}>
             <div className={styles.cardContent}>
