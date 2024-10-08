@@ -101,7 +101,8 @@ const DraggableItem: React.FC<Props> = ({
                                   fields.length > 1)) && (
                                 <Popconfirm
                                   title="删除项目"
-                                  description="是否确认呢删除该条信息?"
+                                  description="是否确认删除该条信息?"
+                                  placement="left"
                                   onConfirm={() => {
                                     remove(index);
                                   }}
