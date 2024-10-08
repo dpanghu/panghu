@@ -407,6 +407,7 @@ const JobHunt: React.FC = () => {
       memberId: '1',
       schoolId: '1',
     }).then((res: any) => {
+      window.sessionStorage.setItem('pluginCode', res.plugin?.code);
       if (
         res.plugin?.code === 'resume' ||
         res.plugin?.code === 'aiInterviewer'

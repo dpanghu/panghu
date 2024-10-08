@@ -37,9 +37,11 @@ class Axios {
     let qsData = JSON.parse(
       window.sessionStorage.getItem('queryParams') || '{}',
     );
+    let pluginCode = window.sessionStorage.getItem('pluginCode') || '';
     let commonData: any = getCommonData();
     conf.params = {
       ...qsData,
+      pluginCode,
       ...conf.params,
       ...commonData,
     };

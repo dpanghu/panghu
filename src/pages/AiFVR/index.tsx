@@ -119,6 +119,7 @@ const AiFVR: React.FC = ({}) => {
     // url = 'https://dbe3-public.oss-cn-beijing.aliyuncs.com/bus-runner/undefined/task/1723115090995/doujiao.png'
     uploadPic({
       url,
+
     }).then((rst) => {
       getImageList().then((res) => {
         selectImage(
