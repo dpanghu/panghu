@@ -407,6 +407,7 @@ const JobHunt: React.FC = () => {
       memberId: '1',
       schoolId: '1',
     }).then((res: any) => {
+      window.sessionStorage.setItem('pluginCode', res.plugin?.code);
       if (
         res.plugin?.code === 'resume' ||
         res.plugin?.code === 'aiInterviewer'
@@ -416,7 +417,7 @@ const JobHunt: React.FC = () => {
         history.push('/documentSummary');
       } else if (res.plugin?.code === 'tts') {
         history.push('/wenshengVoice');
-      } else if (res.plugin?.code === 'aiAQuestionGen') {
+      } else if (res.plugin?.code === 'aiAnswer') {
         history.push('/documentQA');
       } else if (res.plugin?.code === 'sentAnalysis') {
         history.push('/sentimentAnalysis');

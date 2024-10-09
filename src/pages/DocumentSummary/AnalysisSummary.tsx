@@ -1,5 +1,5 @@
 import FilePreview from '@/components/FilePreview';
-import MindMap from '@/components/MindMap';
+import TreeGraph from '@/components/TreeGraph';
 import { useReactive } from 'ahooks';
 import React, { useEffect } from 'react';
 import AnalysisResult from './AnalysisResult';
@@ -26,8 +26,6 @@ const AnalysisSummary: React.FC<TProps> = ({
 
   const formatData = () => {
     const data = JSON.parse(summaryData?.mindMap || '[]');
-    console.log(data);
-
     if (data?.length && data?.length === 1) {
       state.mindData = data[0];
     } else if (data?.length && data?.length > 1) {
@@ -55,15 +53,24 @@ const AnalysisSummary: React.FC<TProps> = ({
   return (
     <div className={styles.AnalysisSummaryContainer}>
       {state.fullscreen ? (
-        <MindMap
+        <TreeGraph
           dataSource={state.mindData}
           getMindGraph={getMindGraph}
           isFullscreen={state.fullscreen}
           changeFullscreen={handleFullscreen}
+          key={summaryData.id}
           attachmentName={summaryData.attachmentName}
           attachmentSuffixname={summaryData.attachmentSuffixname}
         />
       ) : (
+        // <MindMap
+        //   dataSource={state.mindData}
+        //   getMindGraph={getMindGraph}
+        //   isFullscreen={state.fullscreen}
+        //   changeFullscreen={handleFullscreen}
+        //   attachmentName={summaryData.attachmentName}
+        //   attachmentSuffixname={summaryData.attachmentSuffixname}
+        // />
         <>
           <div className={styles.fileContent}>
             <FilePreview

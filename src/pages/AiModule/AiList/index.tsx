@@ -66,7 +66,6 @@ const AiList: React.FC = () => {
     icon: <img style={{ width: '16px', height: '16px' }} src={homeworkImg} alt='' />,
     onClick: () => handleMenuClick(item.id, items),
     children: item.children?.map((child: any) => ({
-      // key: child.id,
       label: child.name,
     })) || undefined,
   }));

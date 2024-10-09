@@ -119,6 +119,8 @@ const WenshengVoice: React.FC = () => {
       state.isError = true;
     } finally {
       state.loading = false;
+      state.voicePlaying = false;
+      state.playFinished = true;
     }
   };
 
@@ -139,12 +141,15 @@ const WenshengVoice: React.FC = () => {
         paramId: state.paramsId,
         //   ...extraParams,
       });
+      timerRef.current && clearInterval(timerRef.current);
       state.voiceUrl = result.url;
       state.durationRest = 0;
     } catch (error) {
       state.isError = true;
     } finally {
       state.loading = false;
+      state.voicePlaying = false;
+      state.playFinished = true;
     }
   };
 
