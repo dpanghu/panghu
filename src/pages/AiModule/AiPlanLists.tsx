@@ -144,7 +144,7 @@ const App: React.FC = () => {
                                 return <div className={styles.box} key={item.id}>
                                     <div className={styles.ths} style={{ height: 42, background: 'linear-gradient( 270deg, rgba(88,108,255,0.88) 0%, rgba(85,157,255,0.9) 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>{item.day}</div>
                                     {
-                                        item.plan && item.plan.map((items: any)=> {
+                                        item.plan && item.plan.map((items: any) => {
                                             return <div className={styles.ths} key={items.id}>{items}</div>
                                         })
                                     }

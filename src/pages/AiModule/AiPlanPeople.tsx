@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Backs from '@/assets/images/backs.png'
 import Questionnaire from '../../components/Question';
 import { getAiPlanList, saveAnswer } from '@/services/aiJobHunt';
 import { useMount, useReactive } from 'ahooks';
 import styles from './AiPlanPeople.less';
-import { getConvertParamId } from '@/services/aiJobHunt/index';
+import { getConvertParamId, getGenerateStatus } from '@/services/aiJobHunt/index';
 import { Modal } from 'antd';
 import { Button, Input } from 'SeenPc';
 import { history } from 'umi';
@@ -71,16 +71,36 @@ const App: React.FC = () => {
             userMessage: state.portfolio,
             paramId: state.patams,
             pluginCode: 'studyPlan',
+            async: true,
         }).then((res: any) => {
             if (res) {
-                window.sessionStorage.setItem('planList', res);
-                window.sessionStorage.setItem('planportfolio', state.portfolio);
-                message.success('生成成功');
-                if (JSON.parse(res)?.length > 7) {
-                    history.push('/AiPlanList');
-                } else {
-                    history.push('/AiPlanLists');
-                }
+                // console.log(res, '111111');
+                let planState: any;
+                const checkStatus = async () => {
+                    const ress = await getGenerateStatus({
+                        themeId: res.themeId, // 主题id
+                    });
+                    if (ress.data.status === 1) {
+                        window.sessionStorage.setItem('planList', res);
+                        window.sessionStorage.setItem('planportfolio', state.portfolio);
+                        message.success('生成成功');
+                        if (JSON.parse(res)?.length > 7) {
+                            history.push('/AiPlanList');
+                        } else {
+                            history.push('/AiPlanLists');
+                        }
+                        clearInterval(planState);
+                    } else if (ress.data.status === 2) {
+                        message.error(res.data.failReason);
+                    } else if (ress.data.status === 0) {
+                        planState = setInterval(checkStatus, 2000);
+                    }
+                };
+                planState = setInterval(checkStatus, 2000);
+                return () => {
+                    // 清理定时器
+                    clearInterval(planState);
+                };
             }
         })
     }
@@ -128,7 +148,7 @@ const App: React.FC = () => {
                                 state.portrait && state.portrait.map((lists: any, index: any) => {
                                     return <>
                                         {
-                                            (index%2) === 0 ? <><div key={lists.id} style={{ width: '40%', display: 'flex', justifyContent: 'flex-end', minHeight: 50, paddingRight: Math.floor(index / 3) * 35, position: 'relative' }}>
+                                            (index % 2) === 0 ? <><div key={lists.id} style={{ width: '40%', display: 'flex', justifyContent: 'flex-end', minHeight: 50, paddingRight: Math.floor(index / 3) * 35, position: 'relative' }}>
                                                 <div className={styles.left}>{lists}</div>
                                             </div>
                                                 <div className={styles.mid} style={{ width: '18%', minHeight: 50 }}></div></> :
