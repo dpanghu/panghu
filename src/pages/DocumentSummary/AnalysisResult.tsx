@@ -1,6 +1,7 @@
-import MindMap from '@/components/MindMap';
+import TreeGraph from '@/components/TreeGraph';
 import { useReactive } from 'ahooks';
 import { Tabs } from 'antd';
+import { nanoid } from 'nanoid';
 import React, { useEffect } from 'react';
 import styles from './AnalysisResult.less';
 import CopyButton from './CopyButton';
@@ -30,23 +31,48 @@ const AnalysisResult: React.FC<TProps> = ({
     mindData: {},
   });
 
+  const addProperties = (data: any[], level = 2) => {
+    data.forEach((item: any, index) => {
+      item.level = level;
+      item.id = nanoid();
+      item.originId = nanoid();
+      item.order = 1 + index;
+      if (item.children && item.children.length > 0) {
+        addProperties(item.children, level + 1);
+      }
+    });
+  };
+
   const formatData = () => {
     const data = JSON.parse(summaryData?.mindMap || '[]');
-    console.log(data);
-
     if (data?.length && data?.length === 1) {
-      state.mindData = data[0];
+      state.mindData = {
+        ...data[0],
+        id: nanoid(),
+        originId: nanoid(),
+        order: 1,
+        level: 1,
+      };
     } else if (data?.length && data?.length > 1) {
       state.mindData = {
         name: '文档总结',
         children: data,
+        id: nanoid(),
+        originId: nanoid(),
+        order: 1,
+        level: 1,
       };
     } else {
       state.mindData = {
         name: '文档总结',
         children: [],
+        id: nanoid(),
+        originId: nanoid(),
+        order: 1,
+        level: 1,
       };
     }
+    addProperties(state.mindData.children);
   };
   const onChange = (key: string) => {
     state.activeKey = key;
@@ -111,7 +137,7 @@ const AnalysisResult: React.FC<TProps> = ({
           <Markdown content={summaryData?.summary} />
         ) : (
           Object.keys(state.mindData)?.length && (
-            <MindMap
+            <TreeGraph
               dataSource={state.mindData}
               getMindGraph={getMindGraph}
               isFullscreen={isFullscreen}

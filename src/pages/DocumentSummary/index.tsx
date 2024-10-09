@@ -3,6 +3,7 @@ import iconCircleIcon from '@/assets/images/icon-exclamation-circle.png';
 import PDFIcon from '@/assets/images/icon-file_PDF.png';
 import WordIcon from '@/assets/images/icon-file_word.png';
 import CustomUpload, { CustomUploadProps } from '@/components/CustomUpload';
+import { TreeGraph } from '@/components/TreeGraph/TreeGraph';
 import { getConvertParamId } from '@/services/aiJobHunt';
 import {
   delSummaryItem,
@@ -15,7 +16,6 @@ import {
 } from '@/services/documentSummary';
 import { getFileMajorType } from '@/utils/contants';
 import { onDownloadFile } from '@/utils/utils';
-import { DataUri, Graph } from '@antv/x6';
 import { Button, Select, message } from 'SeenPc';
 import { useReactive } from 'ahooks';
 import { Checkbox, Modal, Popconfirm, Spin } from 'antd';
@@ -40,7 +40,7 @@ interface TState {
   attachmentId: string;
   recentlyRecordModal: boolean;
   activeTabKey: string;
-  graph: Graph | null;
+  graph: TreeGraph | null;
 }
 
 const DocumentSummary: React.FC = () => {
@@ -168,7 +168,7 @@ const DocumentSummary: React.FC = () => {
     state.activeTabKey = activeKey;
   };
 
-  const getMindGraph = (graph: Graph) => {
+  const getMindGraph = (graph: any) => {
     state.graph = graph;
   };
 
@@ -213,21 +213,21 @@ const DocumentSummary: React.FC = () => {
           /\.[^/.]+$/,
           '',
         );
-        attachmentName = attachmentName + '-思维导图' + '.png';
-        state.graph?.toPNG(
-          (dataUri: string) => {
-            DataUri.downloadDataUri(dataUri, attachmentName);
-          },
-          {
-            width: 3840,
-            height: 2160,
-            quality: 1,
-            padding: {
-              top: 40,
-              bottom: 40,
-            },
-          },
-        );
+        attachmentName = attachmentName + '-思维导图';
+        state.graph?.setLeafLevelCollapse(true);
+        state.graph?.tree.fitView();
+        if (!state.graph) {
+          return;
+        }
+        let oldRatio = 0;
+        oldRatio = window.devicePixelRatio;
+        window.devicePixelRatio = 10; //自己设定值
+        state.graph?.tree?.downloadFullImage(attachmentName, 'image/png', {
+          padding: [50, 50, 50, 50],
+        });
+        setTimeout(() => {
+          window.devicePixelRatio = oldRatio;
+        }, 200);
       }
       message.success('导出成功');
       state.exportParams.popupOpen = false;
