@@ -94,10 +94,10 @@ const App: React.FC = () => {
                     } else if (ress.status === 2) {
                         message.error(ress.failReason);
                     } else if (ress.status === 0) {
-                        planState = setInterval(checkStatus, 3000);
+                        planState = setInterval(checkStatus, 5000);
                     }
                 };
-                planState = setInterval(checkStatus, 3000);
+                planState = setInterval(checkStatus, 5000);
             }
         })
     }
