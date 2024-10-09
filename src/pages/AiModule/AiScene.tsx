@@ -417,7 +417,7 @@ const JobHunt: React.FC = () => {
         history.push('/documentSummary');
       } else if (res.plugin?.code === 'tts') {
         history.push('/wenshengVoice');
-      } else if (res.plugin?.code === 'aiAQuestionGen') {
+      } else if (res.plugin?.code === 'aiAnswer') {
         history.push('/documentQA');
       } else if (res.plugin?.code === 'sentAnalysis') {
         history.push('/sentimentAnalysis');
