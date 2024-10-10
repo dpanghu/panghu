@@ -74,6 +74,9 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
   // 获取对话上下文
   const getMessageHistory = async () => {
     try {
+      if (!state.themeId) {
+        return;
+      }
       const result: RecordItem[] = await getMessageLast({
         themeId: state.themeId,
         num: 10,
