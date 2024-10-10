@@ -11,6 +11,7 @@ import { history } from 'umi';
 import banner1 from '@/assets/images/banner1.png';
 import banner1Text from '@/assets/images/banner1text.png';
 import banner1people from '@/assets/images/banner1people.png';
+import banner2people from '@/assets/images/banner2people.png';
 import banner2Text from '@/assets/images/banner2text.png';
 import banner2 from '@/assets/images/banner2.png';
 import { message } from 'antd';
@@ -39,6 +40,7 @@ interface TState {
     messageList: any;
     typewriterArrCache: any;
 }
+const sex: any = JSON.parse(window.sessionStorage.getItem('commonDatas') || '{}').sex;
 const App: React.FC = () => {
     const state = useReactive<TState>({
         curTheme: undefined,
@@ -186,7 +188,7 @@ const App: React.FC = () => {
                                 })
                             }
                         </div>
-                        <img src={banner1people} style={{ position: 'absolute', width: '80%', top: 0, }}></img>
+                        <img src={sex === 'MALE' ? banner2people : banner1people} style={{ position: 'absolute', width: '80%', top: 0, }}></img>
                     </div>
                     <img src={banner2} style={{ position: 'absolute', width: '100%', bottom: 205, height: 43 }}></img>
                     <img src={banner2Text} style={{ position: 'absolute', width: 174, bottom: 221 }}></img>
