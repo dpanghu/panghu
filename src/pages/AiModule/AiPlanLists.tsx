@@ -3,7 +3,7 @@ import { saveAnswer, getAiPlanList } from '@/services/aiJobHunt';
 import { useMount, useReactive } from 'ahooks';
 import styles from './AiPlanLists.less';
 import Backs from '@/assets/images/backs.png'
-import { getConvertParamId } from '@/services/aiJobHunt/index';
+import { getConvertParamId, getGenerateStatus } from '@/services/aiJobHunt/index';
 import { message } from 'antd';
 import { Button } from 'SeenPc';
 import planbac from '@/assets/images/plantitles.png';
@@ -92,15 +92,66 @@ const App: React.FC = () => {
     })
 
     const getPlan = () => {
+        let loadingTimer: any;
+        const showLoading = () => {
+            message.loading('正在生成中，请稍后');
+            loadingTimer = setTimeout(() => {
+                // 如果加载时间过长，可以在这里再次调用 showLoading 以保持加载状态
+                showLoading();
+            }, 3000);
+        };
+        showLoading();
         getAiPlanList({
             userMessage: window.sessionStorage.getItem('planportfolio'),
             paramId: state.patams,
             pluginCode: 'studyPlan',
+            async: true,
         }).then((res: any) => {
-            if (res) {
-                message.success('生成成功');
-                state.planList = JSON.parse(res);
-            }
+            let planState: any; // 定时器
+            let isTimerSet = false;// 标记定时器是否已经设置
+            const checkStatus = async () => {
+                try {
+                    const ress = await getGenerateStatus({
+                        themeId: res.themeId,
+                    });
+                    console.log(ress);
+                    if (ress.status === 1) {
+                        // 生成成功后，关闭加载状态
+                        clearTimeout(loadingTimer);
+                        message.destroy();
+                        state.planList = JSON.parse(ress.content);
+                        message.success('生成成功');
+                        if (JSON.parse(ress.content)?.length > 7) {
+                            history.push('/AiPlanList');
+                        } else {
+                            history.push('/AiPlanLists');
+                        }
+                        await Promise.resolve(); // 等待当前异步操作完成
+                        clearInterval(planState);
+                    } else if (ress.status === 2) {
+                        message.error(ress.failReason);
+                        // 失败时也关闭加载状态
+                        clearTimeout(loadingTimer);
+                        message.destroy();
+                        await Promise.resolve(); // 等待当前异步操作完成
+                        clearInterval(planState);
+                    } else if (ress.status === 0) {
+                        if (!isTimerSet) {
+                            planState = setInterval(checkStatus, 2000);
+                            isTimerSet = true;
+                        } else {
+                            // 如果定时器已经设置，可以考虑更新定时器间隔或不做任何操作
+                        }
+                    }
+                } catch (error) {
+                    // 错误时关闭加载状态
+                    clearTimeout(loadingTimer);
+                    message.destroy();
+                    clearInterval(planState);
+                    isTimerSet = false;
+                }
+            };
+            checkStatus();
         })
     }
 
