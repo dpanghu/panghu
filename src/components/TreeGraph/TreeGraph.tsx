@@ -152,7 +152,7 @@ export class TreeGraph {
           const isRight = that.options.editable
             ? cfg.id.split('-')[1] % 2 === 0
             : true;
-          const width = Util.getTextSize(cfg.name, 14)[0] + 8;
+          const width = Util.getTextSize(cfg.name, 14)[0] + 16;
           const isBlue = that._colorIsBlue(parseFloat(cfg.id.split('-')[1]));
           const color = isBlue
             ? {
@@ -542,18 +542,19 @@ export class TreeGraph {
   // 设置所有末级节点展开/收缩
   setLeafLevelCollapse(action: boolean) {
     if (!action) {
-      // this._setTargetNodesCollapse(false, (node: any) => {
-      //   return node.getModel()?.level < 2;
-      // });
-      // this._setTargetNodesCollapse(true, (node: any) => {
-      //   return node.getModel()?.level >= 2;
-      // });
-      const node = this.tree.findById('0');
-      if (node) {
-        node.getModel().collapsed = !node.getModel().collapsed;
-        this.tree.setItemState(node, 'collapsed', node.getModel().collapsed);
-        this.tree.layout();
-      }
+      this._setTargetNodesCollapse(false, (node: any) => {
+        return node.getModel()?.level < 2;
+      });
+      this._setTargetNodesCollapse(true, (node: any) => {
+        return node.getModel()?.level >= 2;
+      });
+      this.tree.fitView();
+      // const node = this.tree.findById('0');
+      // if (node) {
+      //   node.getModel().collapsed = !node.getModel().collapsed;
+      //   this.tree.setItemState(node, 'collapsed', node.getModel().collapsed);
+      //   this.tree.layout();
+      // }
     } else {
       // 因为不支持一次性全部展开，只能一层一层展开
       this._setTargetNodesCollapse(false, (node: any) => {
@@ -571,6 +572,7 @@ export class TreeGraph {
       this._setTargetNodesCollapse(false, (node: any) => {
         return node.getModel()?.level === 4;
       });
+      this.tree.fitView();
     }
   }
 

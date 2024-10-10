@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Backs from '@/assets/images/backs.png'
 import Questionnaire from '../../components/Question';
 import { getAiPlanList, saveAnswer } from '@/services/aiJobHunt';
 import { useMount, useReactive } from 'ahooks';
 import styles from './AiPlanPeople.less';
-import { getConvertParamId } from '@/services/aiJobHunt/index';
+import { getConvertParamId, getGenerateStatus } from '@/services/aiJobHunt/index';
 import { Modal } from 'antd';
 import { Button, Input } from 'SeenPc';
 import { history } from 'umi';
@@ -69,23 +69,69 @@ const App: React.FC = () => {
     });
 
     const save = () => {
+        let loadingTimer: any;
+        const showLoading = () => {
+            message.loading('正在生成中，请稍后');
+            loadingTimer = setTimeout(() => {
+                // 如果加载时间过长，可以在这里再次调用 showLoading 以保持加载状态
+                showLoading();
+            }, 3000);
+        };
+        showLoading();
         getAiPlanList({
             userMessage: state.portfolio,
             paramId: state.patams,
             pluginCode: 'studyPlan',
+            async: true,
         }).then((res: any) => {
-            if (res) {
-                window.sessionStorage.setItem('planList', res);
-                window.sessionStorage.setItem('planportfolio', state.portfolio);
-                message.success('生成成功');
-                if (JSON.parse(res)?.length > 7) {
-                    history.push('/AiPlanList');
-                } else {
-                    history.push('/AiPlanLists');
+            let planState: any; // 定时器
+            let isTimerSet = false;// 标记定时器是否已经设置
+            const checkStatus = async () => {
+                try {
+                    const ress = await getGenerateStatus({
+                        themeId: res.themeId,
+                    });
+                    console.log(ress);
+                    if (ress.status === 1) {
+                        // 生成成功后，关闭加载状态
+                        clearTimeout(loadingTimer);
+                        message.destroy();
+                        window.sessionStorage.setItem('planList', ress.content);
+                        window.sessionStorage.setItem('planportfolio', state.portfolio);
+                        message.success('生成成功');
+                        if (JSON.parse(ress.content)?.length > 7) {
+                            history.push('/AiPlanList');
+                        } else {
+                            history.push('/AiPlanLists');
+                        }
+                        await Promise.resolve(); // 等待当前异步操作完成
+                        clearInterval(planState);
+                    } else if (ress.status === 2) {
+                        message.error(ress.failReason);
+                        // 失败时也关闭加载状态
+                        clearTimeout(loadingTimer);
+                        message.destroy();
+                        await Promise.resolve(); // 等待当前异步操作完成
+                        clearInterval(planState);
+                    } else if (ress.status === 0) {
+                        if (!isTimerSet) {
+                            planState = setInterval(checkStatus, 2000);
+                            isTimerSet = true;
+                        } else {
+                            // 如果定时器已经设置，可以考虑更新定时器间隔或不做任何操作
+                        }
+                    }
+                } catch (error) {
+                    // 错误时关闭加载状态
+                    clearTimeout(loadingTimer);
+                    message.destroy();
+                    clearInterval(planState);
+                    isTimerSet = false;
                 }
-            }
-        })
-    }
+            };
+            checkStatus();
+        });
+    };
 
     useMount(() => {
         getConvertParamId({}).then((res: any) => {
@@ -130,7 +176,7 @@ const App: React.FC = () => {
                                 state.portrait && state.portrait.map((lists: any, index: any) => {
                                     return <>
                                         {
-                                            (index%2) === 0 ? <><div key={lists.id} style={{ width: '40%', display: 'flex', justifyContent: 'flex-end', minHeight: 50, paddingRight: Math.floor(index / 3) * 35, position: 'relative' }}>
+                                            (index % 2) === 0 ? <><div key={lists.id} style={{ width: '40%', display: 'flex', justifyContent: 'flex-end', minHeight: 50, paddingRight: Math.floor(index / 3) * 35, position: 'relative' }}>
                                                 <div className={styles.left}>{lists}</div>
                                             </div>
                                                 <div className={styles.mid} style={{ width: '18%', minHeight: 50 }}></div></> :

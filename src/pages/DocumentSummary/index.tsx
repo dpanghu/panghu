@@ -116,6 +116,14 @@ const DocumentSummary: React.FC = () => {
           state.showSummary = true;
           state.showActionBtns = true;
         }
+        if (result1.status === 3) {
+          clearInterval(intervalRef.current);
+          const result2: RecordItem[] = await getSummaryList();
+          state.summaryList = result2;
+          state.uploadLoading = false;
+          state.showSummary = false;
+          state.showActionBtns = false;
+        }
         // ossViewUrlRef.current = result1.ossViewUrl;
         // if (ossViewUrlRef.current !== '0') {
         //   state.summaryData = result1;
@@ -250,6 +258,7 @@ const DocumentSummary: React.FC = () => {
       const result: RecordItem[] = await getSummaryItem({ id });
       state.summaryData = result;
       state.recentlyRecordModal = false;
+      intervalRef.current && clearInterval(intervalRef.current);
     } catch (error) {}
   };
 
@@ -594,6 +603,7 @@ const DocumentSummary: React.FC = () => {
         <div className={styles.content}>
           {state.showSummary ? (
             <AnalysisSummary
+              key={state.summaryData.id}
               summaryData={state.summaryData}
               getActiveTabKey={getActiveTabKey}
               getMindGraph={getMindGraph}

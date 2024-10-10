@@ -1,4 +1,13 @@
 import { $axios } from '@/utils/http';
+
+//学生端-查询生成学习规划的状态
+export async function getGenerateStatus(params?: RecordItem) {
+  return $axios.request({
+    url: '/widget/xai/sp/plan/state',
+    method: 'POST',
+    params,
+  });
+}
 /** ------------------------------------------------- 求职 ------------------------------------ */
 
 // 获取转换参数id

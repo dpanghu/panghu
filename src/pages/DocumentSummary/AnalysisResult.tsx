@@ -27,7 +27,7 @@ const AnalysisResult: React.FC<TProps> = ({
   baseActiveKey,
 }) => {
   const state = useReactive<any>({
-    activeKey: baseActiveKey || '1',
+    activeKey: '1',
     mindData: {},
   });
 
@@ -44,6 +44,7 @@ const AnalysisResult: React.FC<TProps> = ({
   };
 
   const formatData = () => {
+    const match = summaryData?.attachmentName?.replace(/\.[^.]*$/, '');
     const data = JSON.parse(summaryData?.mindMap || '[]');
     if (data?.length && data?.length === 1) {
       state.mindData = {
@@ -55,7 +56,7 @@ const AnalysisResult: React.FC<TProps> = ({
       };
     } else if (data?.length && data?.length > 1) {
       state.mindData = {
-        name: '文档总结',
+        name: match,
         children: data,
         id: nanoid(),
         originId: nanoid(),
@@ -64,7 +65,7 @@ const AnalysisResult: React.FC<TProps> = ({
       };
     } else {
       state.mindData = {
-        name: '文档总结',
+        name: match,
         children: [],
         id: nanoid(),
         originId: nanoid(),
@@ -99,10 +100,10 @@ const AnalysisResult: React.FC<TProps> = ({
   useEffect(() => {
     state.activeKey = isExitFullscreen ? '2' : '1';
   }, [isExitFullscreen]);
-  useEffect(() => {
-    formatData();
-    state.activeKey = baseActiveKey;
-  }, [baseActiveKey]);
+  // useEffect(() => {
+  //   formatData();
+  //   // state.activeKey = baseActiveKey;
+  // }, [baseActiveKey]);
 
   return (
     <div className={styles.AnalysisResultContainer}>
@@ -130,6 +131,7 @@ const AnalysisResult: React.FC<TProps> = ({
         />
       )}
       <div
+        key={summaryData.id}
         className={styles.content}
         style={{ overflowY: state.activeKey === '1' ? 'auto' : 'visible' }}
       >
