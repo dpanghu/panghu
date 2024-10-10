@@ -66,6 +66,8 @@ const App: React.FC = () => {
         data: [],
     });
 
+    let planState: any; // 定时器
+
     const save = () => {
         getAiPlanList({
             userMessage: state.portfolio,
@@ -74,36 +76,40 @@ const App: React.FC = () => {
             async: true,
         }).then((res: any) => {
             if (res) {
-                // console.log(res, '111111');
-                let planState: any;
                 const checkStatus = async () => {
                     const ress = await getGenerateStatus({
                         themeId: res.themeId, // 主题id
                     });
-                    if (ress.data.status === 1) {
-                        window.sessionStorage.setItem('planList', res);
+                    if (ress.status === 1) {
+                        clearInterval(planState);
+                        // window.sessionStorage.setItem('planList', res);
+                        window.sessionStorage.setItem('planList', ress.content);
                         window.sessionStorage.setItem('planportfolio', state.portfolio);
                         message.success('生成成功');
-                        if (JSON.parse(res)?.length > 7) {
+                        if (JSON.parse(ress.content)?.length > 7) {
                             history.push('/AiPlanList');
                         } else {
                             history.push('/AiPlanLists');
                         }
-                        clearInterval(planState);
-                    } else if (ress.data.status === 2) {
-                        message.error(res.data.failReason);
-                    } else if (ress.data.status === 0) {
-                        planState = setInterval(checkStatus, 2000);
+                    } else if (ress.status === 2) {
+                        message.error(ress.failReason);
+                    } else if (ress.status === 0) {
+                        planState = setInterval(checkStatus, 5000);
                     }
                 };
-                planState = setInterval(checkStatus, 2000);
-                return () => {
-                    // 清理定时器
-                    clearInterval(planState);
-                };
+                planState = setInterval(checkStatus, 5000);
             }
         })
     }
+
+    useEffect(() => {
+        return () => {
+            // 组件卸载时清除定时器
+            if (planState) {
+                clearInterval(planState);
+            }
+        };
+    }, []);
 
     useMount(() => {
         getConvertParamId({}).then((res: any) => {
