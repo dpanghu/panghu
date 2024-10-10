@@ -13,6 +13,7 @@ type Question = {
     id: string;
     needValue?: any;
     display?: any;
+    disables?: any; 
 }
 
 type IProps = {
@@ -31,6 +32,7 @@ const QuestionNaire: React.FC<IProps> = ({ dataSource, title, description, foote
     const [form] = Form.useForm();
     const [value, setValue] = React.useState('');
     const [selectValues, setSelectValues] = React.useState<any>({});
+    const [disables, setDisables] = React.useState<any>(true);
     const [inputValues, setInputValues] = React.useState<any>({});
 
     const onFinish = (values: any) => {
@@ -173,6 +175,7 @@ const QuestionNaire: React.FC<IProps> = ({ dataSource, title, description, foote
                                             source.displays = 1;
                                         })
                                         handleRadioChange(item.id, e.target.value);
+                                        setDisables(true);
                                     } else if (chooseRadio.needInput) {
                                         // eslint-disable-next-line @typescript-eslint/no-unused-expressions, array-callback-return
                                         dataSource && dataSource.map((source: any) => {
@@ -180,6 +183,7 @@ const QuestionNaire: React.FC<IProps> = ({ dataSource, title, description, foote
                                                 source.displays = 0;
                                             }
                                         })
+                                        setDisables(false);
                                         handleRadioChange(item.id, e.target.value);
                                     }
                                 }} value={selectValues[item.id]}>
@@ -190,6 +194,7 @@ const QuestionNaire: React.FC<IProps> = ({ dataSource, title, description, foote
                                                 option.needInput == 1 && <Input
                                                     style={{ width: 100, marginLeft: 10 }}
                                                     value={option.needValue}
+                                                    disabled={disables}
                                                     onChange={(e) => {
                                                         option.needValue = e;
                                                     }}

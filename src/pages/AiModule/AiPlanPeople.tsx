@@ -11,6 +11,7 @@ import { history } from 'umi';
 import banner1 from '@/assets/images/banner1.png';
 import banner1Text from '@/assets/images/banner1text.png';
 import banner1people from '@/assets/images/banner1people.png';
+import banner2people from '@/assets/images/banner2people.png';
 import banner2Text from '@/assets/images/banner2text.png';
 import banner2 from '@/assets/images/banner2.png';
 import { message } from 'antd';
@@ -39,6 +40,7 @@ interface TState {
     messageList: any;
     typewriterArrCache: any;
 }
+const sex: any = JSON.parse(window.sessionStorage.getItem('commonDatas') || '{}').sex;
 const App: React.FC = () => {
     const state = useReactive<TState>({
         curTheme: undefined,
@@ -66,23 +68,34 @@ const App: React.FC = () => {
         data: [],
     });
 
-    let planState: any; // 定时器
-
     const save = () => {
+        let loadingTimer: any;
+        const showLoading = () => {
+            message.loading('正在生成中，请稍后');
+            loadingTimer = setTimeout(() => {
+                // 如果加载时间过长，可以在这里再次调用 showLoading 以保持加载状态
+                showLoading();
+            }, 3000);
+        };
+        showLoading();
         getAiPlanList({
             userMessage: state.portfolio,
             paramId: state.patams,
             pluginCode: 'studyPlan',
             async: true,
         }).then((res: any) => {
-            if (res) {
-                const checkStatus = async () => {
+            let planState: any; // 定时器
+            let isTimerSet = false;// 标记定时器是否已经设置
+            const checkStatus = async () => {
+                try {
                     const ress = await getGenerateStatus({
-                        themeId: res.themeId, // 主题id
+                        themeId: res.themeId,
                     });
+                    console.log(ress);
                     if (ress.status === 1) {
-                        clearInterval(planState);
-                        // window.sessionStorage.setItem('planList', res);
+                        // 生成成功后，关闭加载状态
+                        clearTimeout(loadingTimer);
+                        message.destroy();
                         window.sessionStorage.setItem('planList', ress.content);
                         window.sessionStorage.setItem('planportfolio', state.portfolio);
                         message.success('生成成功');
@@ -91,25 +104,34 @@ const App: React.FC = () => {
                         } else {
                             history.push('/AiPlanLists');
                         }
+                        await Promise.resolve(); // 等待当前异步操作完成
+                        clearInterval(planState);
                     } else if (ress.status === 2) {
                         message.error(ress.failReason);
+                        // 失败时也关闭加载状态
+                        clearTimeout(loadingTimer);
+                        message.destroy();
+                        await Promise.resolve(); // 等待当前异步操作完成
+                        clearInterval(planState);
                     } else if (ress.status === 0) {
-                        planState = setInterval(checkStatus, 5000);
+                        if (!isTimerSet) {
+                            planState = setInterval(checkStatus, 2000);
+                            isTimerSet = true;
+                        } else {
+                            // 如果定时器已经设置，可以考虑更新定时器间隔或不做任何操作
+                        }
                     }
-                };
-                planState = setInterval(checkStatus, 5000);
-            }
-        })
-    }
-
-    useEffect(() => {
-        return () => {
-            // 组件卸载时清除定时器
-            if (planState) {
-                clearInterval(planState);
-            }
-        };
-    }, []);
+                } catch (error) {
+                    // 错误时关闭加载状态
+                    clearTimeout(loadingTimer);
+                    message.destroy();
+                    clearInterval(planState);
+                    isTimerSet = false;
+                }
+            };
+            checkStatus();
+        });
+    };
 
     useMount(() => {
         getConvertParamId({}).then((res: any) => {
@@ -166,7 +188,7 @@ const App: React.FC = () => {
                                 })
                             }
                         </div>
-                        <img src={banner1people} style={{ position: 'absolute', width: '80%', top: 0, }}></img>
+                        <img src={sex === 'MALE' ? banner2people : banner1people} style={{ position: 'absolute', width: '80%', top: 0, }}></img>
                     </div>
                     <img src={banner2} style={{ position: 'absolute', width: '100%', bottom: 205, height: 43 }}></img>
                     <img src={banner2Text} style={{ position: 'absolute', width: 174, bottom: 221 }}></img>
