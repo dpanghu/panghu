@@ -129,37 +129,31 @@ const AiSurveyQuestionnaire: React.FC = () => {
             setIsModalOpen(true);
             //查询builder-问卷设置信息接口
             getQuestionnaire({ classId: 1, taskId: 2, projectVersionId: 1, memberId, userId, schoolId, userToken }).then((res: any) => {
-                setChioceValue(res.question.name)
-                setChioceValueID(res.question.id)
-                let arr: any = [];
-                const options = res.options || [];//防止options为空报错
-                for (let i = 0; i < options.length; i++) {
-                    //初始化
-                    if (!arr[i]) {
-                        arr[i] = {};
+                if (res.question) {
+                    setChioceValue(res.question.name)
+                    setChioceValueID(res.question.id)
+                    let arr: any = [];
+                    const options = res.options || [];//防止options为空报错
+                    for (let i = 0; i < options.length; i++) {
+                        //初始化
+                        if (!arr[i]) {
+                            arr[i] = {};
+                        }
+                        arr[i].label = options[i].name
+                        arr[i].value = options[i].id
+                        arr[i].inputValue = ''
                     }
-                    arr[i].label = options[i].name
-                    arr[i].value = options[i].id
-                    arr[i].inputValue = ''
+                    setData(arr)
                 }
-                setData(arr)
                 if (res.xaiSp) {
                     form.setFieldsValue({
                         titleValue: res.xaiSp.name,
                         contentValue: res.xaiSp.content,
                         conclusionValue: res.xaiSp.endtips,
                     })
-                    setPromptValue(JSON.stringify(res.xaiSp.bind))
-                    // function tryParseJSON(str: any) {
-                    //     try {
-                    //         JSON.parse(str);
-                    //         return true;
-                    //     } catch (e) {
-                    //         return false;
-                    //     }
-                    // }
-                    // if (typeof res.xaiSp.portfolio === 'string' && tryParseJSON(res.xaiSp.portfolio) && promptValue === '1') {
-                    if (promptValue === '1') {
+                    let a = JSON.stringify(res.xaiSp.bind)
+                    setPromptValue(a)
+                    if (a === '1') {
                         const jsonValue = JSON.parse(res.xaiSp.portfolio).portfolios
                         let arr: any = [];
                         const options = res.options || [];//防止options为空报错
@@ -183,9 +177,11 @@ const AiSurveyQuestionnaire: React.FC = () => {
                         }
                         setchooseData(obj)
                         setNoValue('')
-                    } else if (promptValue === '0') {
+                    } else if (a === '0' && res.question) {
                         setNoValue(res.xaiSp.portfolio)
                         setchooseData({})
+                    } else if (a === '0' && !res.question) {
+                        setNoValue(res.xaiSp.portfolio)
                     }
                 }
             })
