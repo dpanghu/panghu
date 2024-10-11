@@ -314,7 +314,7 @@ export const formItemConfig: Record<
             message: '请输入正确的邮箱地址!',
           },
           {
-            max: 20,
+            max: 30,
             message: ExceedMaxLength,
           },
         ],

@@ -245,7 +245,14 @@ const DocumentQA: React.FC = () => {
       <div className={styles.header}>
         <div className={styles.title}>AI文档问答</div>
         <div className={styles.action}>
-          <div className={styles.recordLast}>
+          <div
+            className={styles.recordLast}
+            style={
+              !state.showActionBtns || !state.showSummary
+                ? { marginRight: 65 }
+                : {}
+            }
+          >
             {/* <img src={recentRecordPng} alt="" /> */}
             <Popconfirm
               onOpenChange={(e) => {

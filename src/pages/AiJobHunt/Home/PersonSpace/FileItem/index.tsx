@@ -158,10 +158,16 @@ const FileItem: React.FC<Props> = ({
             }}
           />
         ) : data.status === FILE_STATUS.FAILURE ? (
-          <Tooltip title={data.failReason}>{state.name}</Tooltip>
+          <Tooltip title={data.failReason}>
+            <span className={classNames(sf.sFs14, sf.sColorGrey3, sf.sMrB4)}>
+              {state.name}
+            </span>
+          </Tooltip>
         ) : (
           <div
-            className={classNames(sf.sFs14, sf.sColorGrey3, sf.sMrB4)}
+            className={classNames(sf.sFs14, sf.sColorGrey3, sf.sMrB4, {
+              [styles.hoverLabel]: state.status === FILE_STATUS.SUCCESS,
+            })}
             onClick={() => {
               if (state.status === FILE_STATUS.SUCCESS) {
                 if (type === 'resume') {
