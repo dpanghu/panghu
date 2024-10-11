@@ -208,9 +208,9 @@ const Interview: React.FC = ({}) => {
   };
   const getShowAIAnswers = () => {
     getShowAIAnswer({ themeId: params.themeId }).then((res: any) => {
-      state.showReferenceAnswers = res.aiAnswer === 1 ? true : false;
-      state.showAIComments = res.aiComment === 1 ? true : false;
-      if (res.aiAnswer === 1) {
+      state.showReferenceAnswers = res?.aiAnswer === 1 ? true : false;
+      state.showAIComments = res?.aiComment === 1 ? true : false;
+      if (res?.aiAnswer === 1) {
         getInterviewQuestionLists();
       }
     });
