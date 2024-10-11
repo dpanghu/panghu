@@ -73,30 +73,39 @@ const Interview: React.FC = ({}) => {
       },
       {
         // 结束，包括接收完毕所有数据、报错、关闭链接
-        onFinished: () => {},
+        onFinished: (code) => {
+          if (code) {
+            state.isLoading = false;
+          }
+        },
         onError: (error) => {
           console.log(error);
         },
         // 接收到数据
         receiveMessage: (data) => {
           if (data.isEnd) {
-            console.log('11111');
             state.isLoading = false;
+          }
+        },
+        onReveiveFirstMessage: () => {
+          state.answers = [
+            ...state.answers,
+            {
+              stuAnswer: state.message,
+              questionIndex: state.currentQuestionIndex,
+            },
+          ];
+          state.message = '';
+          state.isType = true;
+          state.currentQuestionIndex += 1;
+
+          state.problemId = state.data[state.currentQuestionIndex]?.id;
+          if (state.currentQuestionIndex === state.data.length) {
+            state.showBtn = true;
           }
         },
       },
     ).run();
-    state.answers = [
-      ...state.answers,
-      { stuAnswer: state.message, questionIndex: state.currentQuestionIndex },
-    ];
-    state.message = '';
-    state.isType = true;
-    state.currentQuestionIndex += 1;
-    state.problemId = state.data[state.currentQuestionIndex]?.id;
-    if (state.currentQuestionIndex === state.data.length) {
-      state.showBtn = true;
-    }
   };
 
   const handleAnswerSubmit = () => {
@@ -128,6 +137,12 @@ const Interview: React.FC = ({}) => {
         state.ReferenceAnswers = [...state.ReferenceAnswers, item.aiAnswer];
         state.AIComments = [...state.AIComments, item.aiComment];
       });
+      const ele = document.querySelector('#interview_container>div:last-child');
+      if (ele) {
+        setTimeout(() => {
+          ele.scrollIntoView();
+        }, 10);
+      }
     });
   };
   const handleShowReferenceAnswers = () => {
@@ -141,7 +156,6 @@ const Interview: React.FC = ({}) => {
         state.ReferenceAnswers = [];
         state.AIComments = [];
       } else {
-        console.log('2222');
         getInterviewQuestionLists();
         state.showReferenceAnswers = true;
       }
@@ -153,6 +167,12 @@ const Interview: React.FC = ({}) => {
       state.showAIComments = false;
     } else {
       state.showAIComments = true;
+      const ele = document.querySelector('#interview_container>div:last-child');
+      if (ele) {
+        setTimeout(() => {
+          ele.scrollIntoView();
+        }, 10);
+      }
     }
   };
   const downLoadInterview = () => {
