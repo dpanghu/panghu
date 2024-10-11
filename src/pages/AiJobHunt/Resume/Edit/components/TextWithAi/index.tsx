@@ -76,7 +76,6 @@ const TextWithAi: React.FC<Props> = ({
     let qsData = {
       ...queryData,
       chatType: 'dtc240630',
-      themeId: resumeData?.xaiResume.themeId,
       paramId: resumeData?.xaiResume.id,
       pluginCode,
       userMessage: value || '',
