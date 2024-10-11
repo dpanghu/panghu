@@ -460,10 +460,16 @@ const JobHunt: React.FC = () => {
   }
 
   const setSatisfied = (satisfied: any) => {
-    setSatisfaction({
-      satisfied,
-      messageId: state.messageId
-    })
+    console.log(state.messageArr);
+    console.log(state.messageId);
+    getHistoryDetail({
+      themeId: state.messageId,
+    }).then((res: any) => {
+      setSatisfaction({
+        satisfied,
+        messageId: res?.messageId 
+      })
+    });
   }
 
   const likeAnswer = () => {
@@ -503,7 +509,7 @@ const JobHunt: React.FC = () => {
       }
       state.isMarkdown = true;
       state.visible = true;
-      state.messageId = res.messageId
+      state.messageId = res.id
       state.satisfied = res.satisfied;
     });
   }

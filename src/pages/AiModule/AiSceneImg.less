@@ -10,6 +10,20 @@
         :where(.css-dev-only-do-not-override-2mh66p).ant-upload-wrapper .ant-upload-drag .ant-upload {
             padding: 0 !important;
         }
+        .rc-markdown-body {
+            font-size: 14px !important;
+            line-height: 1.2 !important;
+            padding: 0px !important;
+            ol {
+                margin-bottom: 0px !important;
+            }
+            li {
+                margin-top: 0px !important;
+            }
+            p {
+                margin-bottom: 0px !important;
+            }
+        }
         :where(.css-2mh66p).ant-upload-wrapper .ant-upload-drag {
             position: relative;
             width: 100%;
@@ -117,7 +131,6 @@
         position: relative;
         padding-right: 28px;
         height: 100%;
-        overflow-y: auto;
         background: linear-gradient(133deg, #E5F0FF 0%, #E9E9FF 100%);
     }
 
@@ -225,13 +238,14 @@
         margin-top: 20px;
         .sendData {
             white-space: pre-wrap;
-            max-width: 370px;
+            max-width: 50%;
             padding: 16px;
             background: rgba(255,255,255,0.8);
             border-radius: 8px;
             font-family: PingFangSC, PingFang SC;
             font-weight: 400;
             font-size: 14px;
+            position: relative;
             color: #333333;
             line-height: 22px;
         }
@@ -241,8 +255,10 @@
         margin-top: 20px;
         .sendData {
             white-space: pre-wrap;
-            max-width: 370px;
+            max-width: 70%;
             padding: 16px;
+            padding-bottom: 24px;
+            position: relative;
             background: rgba(255,255,255,0.8);
             border-radius: 8px;
             font-family: PingFangSC, PingFang SC;
