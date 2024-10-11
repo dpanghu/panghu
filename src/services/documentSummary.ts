@@ -37,6 +37,7 @@ export async function getSummaryList<T>(params?: RecordItem): Promise<T> {
     url: '/seentao/xai/word/summary/list',
     method: 'POST',
     params,
+    hiddenLoading: true,
   });
 }
 
@@ -46,6 +47,7 @@ export async function getSummaryItem<T>(params?: RecordItem): Promise<T> {
     url: '/seentao/xai/word/summary/get',
     method: 'POST',
     params,
+    hiddenLoading: true,
   });
 }
 

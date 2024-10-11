@@ -18,7 +18,7 @@ import { useReactive, useUpdateEffect } from 'ahooks';
 import TextArea from 'antd/es/input/TextArea';
 import { marked } from 'marked';
 import React, { useEffect, useRef } from 'react';
-import Typewriter, { type TypewriterClass } from 'typewriter-effect';
+import { type TypewriterClass } from 'typewriter-effect';
 import EventSourceStream from '../AiJobHunt/Home/DialogArea/EventSourceStream';
 import Markdown from '../DocumentSummary/Mind';
 import styles from './QAResult.less';
@@ -138,7 +138,9 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
       conversation_id: state.conversationId,
       userMessage: state.questionValue.trim(),
     };
-    scrollToBottom(historyEleHref.current);
+    setTimeout(() => {
+      scrollToBottom(historyEleHref.current);
+    }, 200);
     state.showTypewriter = true;
     state.streamFinished = false;
     state.receiveText = false;
@@ -156,9 +158,9 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
       {
         // 结束，包括接收完毕所有数据、报错、关闭链接
         onFinished: () => {
-          setTimeout(() => {
-            state.showTypewriter = false;
-          }, 3000);
+          // setTimeout(() => {
+          //   state.showTypewriter = false;
+          // }, 3000);
           state.streamFinished = true;
         },
         onError: (error) => {
@@ -173,6 +175,14 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
             if (!state.conversationId) {
               state.conversationId = data.conversation_id;
               state.themeId = data.themeId;
+            }
+            if (data!.answer || data!.answer === '') {
+              state.aiAnswerStr += data!.answer;
+              scrollToBottom(historyEleHref.current);
+            }
+            if (data!.isEnd) {
+              state.streamFinished = true;
+              state.showTypewriter = false;
             }
             state.typewriterArr.push(data!.answer);
           }
@@ -223,24 +233,6 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
   };
 
   useUpdateEffect(() => {
-    // if (!typeWriter.current) {
-    //   return;
-    // }
-    const writeText = state.typewriterArr.shift()! || '';
-    state.textWriteFinished = false;
-    state.aiAnswerStr += writeText;
-    typeWriter
-      .current!.typeString(writeText)
-      .start()
-      .callFunction(() => {
-        state.textWriteFinished = true;
-        if (state.showTypewriter) {
-          scrollToBottom(historyEleHref.current);
-        }
-      });
-  }, [state.textWriteFinished, typeWriter.current]);
-
-  useUpdateEffect(() => {
     if (
       !state.typewriterArr.length &&
       state.textWriteFinished &&
@@ -258,7 +250,9 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
       //   content: state.aiAnswerStr || '暂无结果',
       // });
       if (state.themeId) {
-        getMessageHistory();
+        setTimeout(() => {
+          getMessageHistory();
+        }, 200);
       }
       state.aiAnswerStr = '';
       state.typewriterArr = [];
@@ -384,7 +378,10 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
                 alt=""
                 className={styles.avatar}
               />
-              <Typewriter
+              <div className={styles.question}>
+                <Markdown content={state.aiAnswerStr} />
+              </div>
+              {/* <Typewriter
                 onInit={(typewriter: TypewriterClass) => {
                   typeWriter.current = typewriter;
                   typewriter
@@ -397,7 +394,7 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
                 options={{
                   delay: 25,
                 }}
-              />
+              /> */}
             </div>
           )}
         </div>
