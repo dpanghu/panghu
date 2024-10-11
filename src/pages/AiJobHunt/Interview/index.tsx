@@ -246,7 +246,9 @@ const Interview: React.FC = ({}) => {
           <span className={styles.verticalLine}></span>
           <span>我的面试</span>
         </div>
-        <Button onClick={downLoadInterview}>下载</Button>
+        <Button onClick={downLoadInterview} disabled={!state.showBtn}>
+          下载
+        </Button>
       </div>
       <div className={styles.content}>
         <div className={styles.interviewContent} id="interview_container">
