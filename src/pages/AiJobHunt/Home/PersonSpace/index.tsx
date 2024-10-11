@@ -80,7 +80,13 @@ const PersonSpace = React.forwardRef(({}, ref) => {
       </div>
       <div className={styles.list}>
         {state.fileList.map((item) => (
-          <div key={item.id} className={styles.item}>
+          <div
+            key={item.id}
+            className={classNames(
+              styles.item,
+              item.pluginCode === 'resume' && styles.resumeIcon,
+            )}
+          >
             <FileItem
               fileId={item.id}
               fileName={item.name}

@@ -4,8 +4,8 @@ import { useCreation, useReactive, useUpdateEffect } from 'ahooks';
 import classnames from 'classnames';
 import { pick, uniqueId } from 'lodash';
 import qs from 'qs';
-import React, { useImperativeHandle, useMemo, useRef } from 'react';
-import Typewriter, { type TypewriterClass } from 'typewriter-effect';
+import RcMarkdown from 'rc-markdown';
+import React, { useEffect, useImperativeHandle, useRef } from 'react';
 import type { HistoryItem, SubmitMessage, Theme } from '../../type';
 import EventSourceStream from './EventSourceStream';
 import MessageSendArea from './MessageSendArea';
@@ -19,7 +19,6 @@ type Props = {
 type TState = {
   dialogHistory: HistoryItem[];
   isLoading: boolean;
-  isTyping: boolean;
   typewriterArrCache: string[];
 };
 const DialogNum = 10;
@@ -27,8 +26,8 @@ const DialogArea = React.forwardRef(
   ({ curTheme, onReveiveFirstMessage, onPluginCreate }: Props, ref) => {
     const curDialogId = useRef<string>('');
     const conversationId = useRef<string>('');
-    const typeWriter = useRef<TypewriterClass | null>(null);
-    const typewriterStrCache = useRef<string>('');
+    const resizeObserver = useRef<ResizeObserver>();
+    const scrollRef = useRef<HTMLDivElement>(null);
     const historyEleHref = useRef<HTMLDivElement>(null);
     const queryData = useCreation(() => {
       return JSON.parse(window.sessionStorage.getItem('queryParams') || '{}');
@@ -36,18 +35,8 @@ const DialogArea = React.forwardRef(
     const state = useReactive<TState>({
       dialogHistory: [],
       isLoading: false,
-      isTyping: false,
       typewriterArrCache: [],
     });
-
-    // 是否完成对话
-    const isTypeFinished = useMemo(() => {
-      return (
-        state.typewriterArrCache.length === 0 &&
-        !state.isTyping &&
-        !state.isLoading
-      );
-    }, [state.typewriterArrCache, state.isLoading, state.isTyping]);
 
     useUpdateEffect(() => {
       if (!curTheme) {
@@ -62,7 +51,6 @@ const DialogArea = React.forwardRef(
         }).then((res) => {
           state.isLoading = false;
           state.typewriterArrCache = [];
-          typewriterStrCache.current = '';
           state.dialogHistory = res.reverse();
           curDialogId.current = curTheme.id;
           conversationId.current = curTheme.conversationId || '';
@@ -71,41 +59,10 @@ const DialogArea = React.forwardRef(
       }
     }, [curTheme]);
 
-    useUpdateEffect(() => {
-      if (
-        (state.typewriterArrCache.length > 0 || state.isLoading) &&
-        !state.isTyping &&
-        typeWriter.current
-      ) {
-        state.isTyping = true;
-        const curStr: string = state.typewriterArrCache.shift()! || '';
-        typewriterStrCache.current += curStr;
-        typeWriter
-          .current!.typeString(curStr)
-          .start()
-          .callFunction(() => {
-            state.isTyping = false;
-            scrollToBottom(historyEleHref.current);
-          });
-      }
-      if (isTypeFinished) {
-        state.dialogHistory.push({
-          id: uniqueId(),
-          type: 1,
-          content: typewriterStrCache.current,
-        });
-        typewriterStrCache.current = '';
-        setTimeout(() => {
-          scrollToBottom(historyEleHref.current);
-        }, 10);
-      }
-    }, [state.isTyping]);
-
     const createNewDialog = () => {
       state.dialogHistory = [];
       state.isLoading = false;
       state.typewriterArrCache = [];
-      typewriterStrCache.current = '';
       curDialogId.current = '';
     };
 
@@ -113,19 +70,36 @@ const DialogArea = React.forwardRef(
       ref,
       () => {
         return {
-          isTypeFinished,
+          isTypeFinished: !state.isLoading,
           createNewDialog,
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
       },
-      [isTypeFinished],
+      [state.isLoading],
     );
+
+    const handleScroll = () => {
+      resizeObserver.current = new ResizeObserver(() => {
+        scrollRef.current?.scrollIntoView();
+      });
+
+      // 观察一个或多个元素
+      if (scrollRef.current) {
+        resizeObserver.current.observe(scrollRef.current);
+      }
+    };
+
+    useEffect(() => {
+      if (state.isLoading) {
+        handleScroll();
+      } else {
+        resizeObserver.current?.disconnect();
+      }
+    }, [state.isLoading]);
 
     const submitChat = async (msg: SubmitMessage) => {
       if (msg.pluginCode) {
         generatePlugin({
           ...msg,
-          themeId: curDialogId.current,
           conversationId: conversationId.current,
         }).then(() => {
           if (onPluginCreate) {
@@ -162,7 +136,18 @@ const DialogArea = React.forwardRef(
           {},
           {
             // 结束，包括接收完毕所有数据、报错、关闭链接
-            onFinished: () => {
+            onFinished: (code) => {
+              if (!code) {
+                state.dialogHistory.push({
+                  id: uniqueId(),
+                  type: 1,
+                  content: state.typewriterArrCache.join(''),
+                });
+                state.typewriterArrCache = [];
+                setTimeout(() => {
+                  scrollToBottom(historyEleHref.current);
+                }, 10);
+              }
               state.isLoading = false;
             },
             // 第一次接收到数据
@@ -188,9 +173,9 @@ const DialogArea = React.forwardRef(
           <div className={styles['dialog-initial-info']}>
             <div className={styles['conversion-item']}>
               <div className={styles['conversion-content']}>
-                <h2>您好，我是您的简历生成与优化小助手</h2>
+                <h2>您好，我是您的AI求职小助手</h2>
                 <p>
-                  在职场竞争中，还在为完善简历而苦恼？在这个AI时代，只需告诉我你的职业背景、技能与目标职位等信息，我将为您量身打造一份专业的简历，助您脱颖而出，迈向职业新高峰！
+                  通过先进的AI技术，我可以为您生成专业的简历，优化简历内容，并提供AI模拟面试服务，助您脱颖而出，迈向职业新高峰！
                 </p>
               </div>
             </div>
@@ -206,34 +191,31 @@ const DialogArea = React.forwardRef(
                     [styles['message-from-user']]: item.type === 0,
                   })}
                 >
-                  <pre className={styles['message-area']}>{item.content}</pre>
+                  {item.type === 1 ? (
+                    <div className={styles['message-area']}>
+                      <RcMarkdown content={item.content} />
+                    </div>
+                  ) : (
+                    <pre className={styles['message-area']}>{item.content}</pre>
+                  )}
                 </div>
               );
             })}
-            {!isTypeFinished && (
+            {state.isLoading && (
               <div className={styles['message-from-ai']}>
-                <Typewriter
-                  onInit={(typewriter: TypewriterClass) => {
-                    state.isTyping = true;
-                    typeWriter.current = typewriter;
-                    typewriter
-                      .typeString('')
-                      .start()
-                      .callFunction(() => {
-                        state.isTyping = false;
-                      });
-                  }}
-                  options={{
-                    delay: 25,
-                  }}
-                />
+                <div className={styles['message-area']} ref={scrollRef}>
+                  <RcMarkdown
+                    typeWriter={true}
+                    content={state.typewriterArrCache.join('')}
+                  />
+                </div>
               </div>
             )}
           </div>
         )}
         <div className={styles['diaplog-submit-container']}>
           <MessageSendArea
-            isTypeFinished={isTypeFinished}
+            isTypeFinished={!state.isLoading}
             onSubmit={(msg) => {
               submitChat(msg);
             }}
