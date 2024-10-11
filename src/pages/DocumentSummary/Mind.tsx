@@ -7,7 +7,7 @@ import CopyButton from './CopyButton';
 
 const Markdown = ({ content }: { content: string }) => {
   return (
-    <div style={{ whiteSpace: 'pre-wrap' }}>
+    <div>
       <ReactMarkdown
         components={{
           code: ({ children = [], className, ...props }) => {
