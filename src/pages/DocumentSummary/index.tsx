@@ -379,7 +379,7 @@ const DocumentSummary: React.FC = () => {
             className={styles.recordLast}
             style={
               !state.showActionBtns || !state.showSummary
-                ? { marginRight: 80 }
+                ? { marginRight: 65 }
                 : {}
             }
           >
