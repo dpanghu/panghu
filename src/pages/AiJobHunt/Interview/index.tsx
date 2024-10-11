@@ -123,7 +123,7 @@ const Interview: React.FC = ({}) => {
 
   //获取参考答案和AI点评
   const getInterviewQuestionLists = () => {
-    getInterviewQuestionList({ paramId: params.paramId }).then((res) => {
+    getInterviewQuestionList({ themeId: params.themeId }).then((res) => {
       res.forEach((item: any) => {
         state.ReferenceAnswers = [...state.ReferenceAnswers, item.aiAnswer];
         state.AIComments = [...state.AIComments, item.aiComment];
@@ -156,14 +156,14 @@ const Interview: React.FC = ({}) => {
     }
   };
   const downLoadInterview = () => {
-    exportInterview({ paramId: params.paramId }).then((res: any) => {
+    exportInterview({ themeId: params.themeId }).then((res: any) => {
       downloadFile(res);
     });
   };
 
   const getInterviewQuestion = () => {
     if (params.paramId) {
-      getInterviewQuestionList({ paramId: params.paramId })
+      getInterviewQuestionList({ themeId: params.themeId })
         .then((res) => {
           state.data = res;
         })
