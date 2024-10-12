@@ -9,6 +9,7 @@ import { Button } from 'SeenPc';
 import planbac from '@/assets/images/plantitle.png';
 import { history } from 'umi';
 import html2canvas from 'html2canvas';
+import { Spin } from 'antd/lib';
 interface TState {
     curTheme: any;
     dialogList: any;
@@ -17,6 +18,7 @@ interface TState {
     editId: string;
     editName: string;
     imgId: any;
+    loading: any;
     data: any;
     baseData: any;
     allow: any;
@@ -44,6 +46,7 @@ const App: React.FC = () => {
         isLoading: false,
         isTyping: false,
         messageList: [],
+        loading: false,
         allow: '',
         planList: [],
         aiData: {},
@@ -93,14 +96,7 @@ const App: React.FC = () => {
 
     const getPlan = () => {
         let loadingTimer: any;
-        const showLoading = () => {
-            message.loading('正在生成中，请稍后');
-            loadingTimer = setTimeout(() => {
-                // 如果加载时间过长，可以在这里再次调用 showLoading 以保持加载状态
-                showLoading();
-            }, 3000);
-        };
-        showLoading();
+        state.loading = true;
         getAiPlanList({
             userMessage: window.sessionStorage.getItem('planportfolio'),
             paramId: state.patams,
@@ -117,8 +113,7 @@ const App: React.FC = () => {
                     console.log(ress);
                     if (ress.status === 1) {
                         // 生成成功后，关闭加载状态
-                        clearTimeout(loadingTimer);
-                        message.destroy();
+                        state.loading = false;
                         state.planList = JSON.parse(ress.content);
                         message.success('生成成功');
                         if (JSON.parse(ress.content)?.length > 7) {
@@ -130,6 +125,7 @@ const App: React.FC = () => {
                         clearInterval(planState);
                     } else if (ress.status === 2) {
                         message.error(ress.failReason);
+                        state.loading = false;
                         // 失败时也关闭加载状态
                         clearTimeout(loadingTimer);
                         message.destroy();
@@ -177,6 +173,7 @@ const App: React.FC = () => {
     }
 
     return (
+        <Spin tip='正在生成中......' spinning={state.loading}>
         <div className={styles.peoplecontainer} >
             <div className={styles.head} onClick={() => {
                 history.push('/AiPlan')
@@ -221,6 +218,7 @@ const App: React.FC = () => {
                 }} size={'small'} style={{ marginLeft: 70, width: 88, height: 28 }} type='primary'>下载</Button>
             </div>
         </div>
+        </Spin>
     );
 };
 

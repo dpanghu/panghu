@@ -73,30 +73,39 @@ const Interview: React.FC = ({}) => {
       },
       {
         // 结束，包括接收完毕所有数据、报错、关闭链接
-        onFinished: () => {},
+        onFinished: (code) => {
+          if (code) {
+            state.isLoading = false;
+          }
+        },
         onError: (error) => {
           console.log(error);
         },
         // 接收到数据
         receiveMessage: (data) => {
           if (data.isEnd) {
-            console.log('11111');
             state.isLoading = false;
+          }
+        },
+        onReveiveFirstMessage: () => {
+          state.answers = [
+            ...state.answers,
+            {
+              stuAnswer: state.message,
+              questionIndex: state.currentQuestionIndex,
+            },
+          ];
+          state.message = '';
+          state.isType = true;
+          state.currentQuestionIndex += 1;
+
+          state.problemId = state.data[state.currentQuestionIndex]?.id;
+          if (state.currentQuestionIndex === state.data.length) {
+            state.showBtn = true;
           }
         },
       },
     ).run();
-    state.answers = [
-      ...state.answers,
-      { stuAnswer: state.message, questionIndex: state.currentQuestionIndex },
-    ];
-    state.message = '';
-    state.isType = true;
-    state.currentQuestionIndex += 1;
-    state.problemId = state.data[state.currentQuestionIndex]?.id;
-    if (state.currentQuestionIndex === state.data.length) {
-      state.showBtn = true;
-    }
   };
 
   const handleAnswerSubmit = () => {
@@ -123,11 +132,17 @@ const Interview: React.FC = ({}) => {
 
   //获取参考答案和AI点评
   const getInterviewQuestionLists = () => {
-    getInterviewQuestionList({ paramId: params.paramId }).then((res) => {
+    getInterviewQuestionList({ themeId: params.themeId }).then((res) => {
       res.forEach((item: any) => {
         state.ReferenceAnswers = [...state.ReferenceAnswers, item.aiAnswer];
         state.AIComments = [...state.AIComments, item.aiComment];
       });
+      const ele = document.querySelector('#interview_container>div:last-child');
+      if (ele) {
+        setTimeout(() => {
+          ele.scrollIntoView();
+        }, 10);
+      }
     });
   };
   const handleShowReferenceAnswers = () => {
@@ -141,7 +156,6 @@ const Interview: React.FC = ({}) => {
         state.ReferenceAnswers = [];
         state.AIComments = [];
       } else {
-        console.log('2222');
         getInterviewQuestionLists();
         state.showReferenceAnswers = true;
       }
@@ -153,17 +167,23 @@ const Interview: React.FC = ({}) => {
       state.showAIComments = false;
     } else {
       state.showAIComments = true;
+      const ele = document.querySelector('#interview_container>div:last-child');
+      if (ele) {
+        setTimeout(() => {
+          ele.scrollIntoView();
+        }, 10);
+      }
     }
   };
   const downLoadInterview = () => {
-    exportInterview({ paramId: params.paramId }).then((res: any) => {
+    exportInterview({ themeId: params.themeId }).then((res: any) => {
       downloadFile(res);
     });
   };
 
   const getInterviewQuestion = () => {
     if (params.paramId) {
-      getInterviewQuestionList({ paramId: params.paramId })
+      getInterviewQuestionList({ themeId: params.themeId })
         .then((res) => {
           state.data = res;
         })
@@ -188,9 +208,9 @@ const Interview: React.FC = ({}) => {
   };
   const getShowAIAnswers = () => {
     getShowAIAnswer({ themeId: params.themeId }).then((res: any) => {
-      state.showReferenceAnswers = res.aiAnswer === 1 ? true : false;
-      state.showAIComments = res.aiComment === 1 ? true : false;
-      if (res.aiAnswer === 1) {
+      state.showReferenceAnswers = res?.aiAnswer === 1 ? true : false;
+      state.showAIComments = res?.aiComment === 1 ? true : false;
+      if (res?.aiAnswer === 1) {
         getInterviewQuestionLists();
       }
     });
@@ -226,7 +246,9 @@ const Interview: React.FC = ({}) => {
           <span className={styles.verticalLine}></span>
           <span>我的面试</span>
         </div>
-        <Button onClick={downLoadInterview}>下载</Button>
+        <Button onClick={downLoadInterview} disabled={!state.showBtn}>
+          下载
+        </Button>
       </div>
       <div className={styles.content}>
         <div className={styles.interviewContent} id="interview_container">
