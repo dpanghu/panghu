@@ -96,17 +96,7 @@ const AiFVR: React.FC = ({}) => {
       const recognitionUrl = recognitionResults.url;
       const res = await getImageList();
       state.preData = res;
-      const {
-        id,
-        url: imageUrl,
-        note,
-        Preset,
-      } = state.preData.filter((item) => item.isPreset === false)[0];
-      if (state.isChooseFirst) {
-        selectImage(id, imageUrl, note, Preset);
-      } else {
-        selectImage(picUid, recognitionUrl, recognitionResult, isPreset);
-      }
+      selectImage(picUid, recognitionUrl, recognitionResult, isPreset);
     } catch (err) {
       console.error('An error occurred during text recognition:', err);
     } finally {
@@ -119,7 +109,6 @@ const AiFVR: React.FC = ({}) => {
     // url = 'https://dbe3-public.oss-cn-beijing.aliyuncs.com/bus-runner/undefined/task/1723115090995/doujiao.png'
     uploadPic({
       url,
-
     }).then((rst) => {
       getImageList().then((res) => {
         selectImage(

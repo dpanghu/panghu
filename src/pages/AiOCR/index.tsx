@@ -141,23 +141,13 @@ const AiOCR: React.FC = ({}) => {
       const recognitionUrl = recognitionResults.url;
       const res = await getImageList();
       state.preData = res;
-      const {
-        id,
-        url: imageUrl,
-        note,
-        Preset,
-      } = state.preData.filter((item) => item.isPreset === false)[0];
-      if (state.isChooseFirst) {
-        selectImage(id, imageUrl, rotationAngle, note, Preset);
-      } else {
-        selectImage(
-          picUid,
-          recognitionUrl,
-          rotationAngle,
-          recognitionResult,
-          isPreset,
-        );
-      }
+      selectImage(
+        picUid,
+        recognitionUrl,
+        rotationAngle,
+        recognitionResult,
+        isPreset,
+      );
       if (state.isCheck) {
         const inputWords = state.message
           .split(' ')
