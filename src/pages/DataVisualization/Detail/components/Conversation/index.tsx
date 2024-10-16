@@ -95,7 +95,6 @@ const Conversation: React.FC<Props> = ({ fileData }) => {
       qsParams: {
         attachmentUrl: fileData?.file.fileUrl,
       },
-      fileIds: [fileData?.file.id],
       themeId: themeId.current,
       conversationId: conversation_id.current,
     };
