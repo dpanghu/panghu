@@ -400,24 +400,28 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
         </div>
         <div className={styles.footer}>
           <div className={styles.baseQuestion}>
-            <span
-              title={preAnswer?.query1 || ''}
-              onClick={() => {
-                state.questionValue = preAnswer?.query1 || '';
-                handleSendDialog();
-              }}
-            >
-              {preAnswer?.query1 || ''}
-            </span>
-            <span
-              title={preAnswer?.query2 || ''}
-              onClick={() => {
-                state.questionValue = preAnswer?.query2 || '';
-                handleSendDialog();
-              }}
-            >
-              {preAnswer?.query2 || ''}
-            </span>
+            {preAnswer?.query1 && (
+              <span
+                title={preAnswer?.query1 || ''}
+                onClick={() => {
+                  state.questionValue = preAnswer?.query1 || '';
+                  handleSendDialog();
+                }}
+              >
+                {preAnswer?.query1 || ''}
+              </span>
+            )}
+            {preAnswer?.query2 && (
+              <span
+                title={preAnswer?.query2 || ''}
+                onClick={() => {
+                  state.questionValue = preAnswer?.query2 || '';
+                  handleSendDialog();
+                }}
+              >
+                {preAnswer?.query2 || ''}
+              </span>
+            )}
           </div>
           <div className={styles.ipt}>
             <TextArea
