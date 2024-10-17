@@ -73,7 +73,7 @@ export default class EventSourceStream {
         if (response.status !== 200) {
           message.error('信息生成错误：' + response.statusText);
           this.hooks?.onOpenError && this.hooks?.onOpenError(response);
-          this.destory();
+          this.destory(response.status);
           return;
         } else {
           this.hooks?.onOpen && this.hooks?.onOpen(response);
