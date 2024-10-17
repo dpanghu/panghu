@@ -193,7 +193,7 @@ const DialogArea = React.forwardRef(
                 >
                   {item.type === 1 ? (
                     <div className={styles['message-area']}>
-                      <RcMarkdown theme="dark" content={item.content} />
+                      <RcMarkdown theme="light" content={item.content} />
                     </div>
                   ) : (
                     <pre className={styles['message-area']}>{item.content}</pre>
@@ -205,7 +205,7 @@ const DialogArea = React.forwardRef(
               <div className={styles['message-from-ai']}>
                 <div className={styles['message-area']} ref={scrollRef}>
                   <RcMarkdown
-                    theme="dark"
+                    theme="light"
                     typeWriter={true}
                     content={state.typewriterArrCache.join('')}
                   />
