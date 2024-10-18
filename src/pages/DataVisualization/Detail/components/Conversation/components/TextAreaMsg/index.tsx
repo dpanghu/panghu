@@ -212,6 +212,7 @@ const TextAreaMsg: React.FC<Props> = ({ fileData, onSubmit, isLoading }) => {
                   <div
                     key={item}
                     className={styles['input-choosen-column-item']}
+                    title={item}
                   >
                     {item}
                   </div>
