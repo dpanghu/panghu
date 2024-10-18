@@ -100,7 +100,6 @@ const DialogArea = React.forwardRef(
       if (msg.pluginCode) {
         generatePlugin({
           ...msg,
-          conversationId: conversationId.current,
         }).then(() => {
           if (onPluginCreate) {
             onPluginCreate();
