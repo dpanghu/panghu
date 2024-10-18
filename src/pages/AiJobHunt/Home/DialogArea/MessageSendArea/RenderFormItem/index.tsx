@@ -129,7 +129,11 @@ const RenderFormItem: React.FC<Props> = ({ formRef, plugin }) => {
             accept={(item?.fileConf?.ext || [])
               .map((item) => '.' + item)
               .join(',')}
-            className={classNames(sf.sFlex, sf.sFlexGap10)}
+            className={classNames(
+              sf.sFlex,
+              sf.sFlexGap10,
+              styles['upload-wrapper'],
+            )}
             beforeUpload={(file) => {
               const isOverSize =
                 file.size / 1024 / 1024 > item.fileConf?.maxSize;
@@ -157,7 +161,14 @@ const RenderFormItem: React.FC<Props> = ({ formRef, plugin }) => {
             </Tooltip>
           </Upload>
         ) : (
-          <Upload {...params} className={classNames(sf.sFlex, sf.sFlexGap10)}>
+          <Upload
+            {...params}
+            className={classNames(
+              sf.sFlex,
+              sf.sFlexGap10,
+              styles['upload-wrapper'],
+            )}
+          >
             <Button
               type="primary"
               style={{ width: 104 }}

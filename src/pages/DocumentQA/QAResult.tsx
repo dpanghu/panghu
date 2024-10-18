@@ -98,6 +98,9 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
             id: item.id,
           });
         }
+        setTimeout(() => {
+          scrollToBottom(historyEleHref.current);
+        }, 50);
       });
     } catch (error) {}
   };
@@ -178,11 +181,16 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
             }
             if (data!.answer || data!.answer === '') {
               state.aiAnswerStr += data!.answer;
-              scrollToBottom(historyEleHref.current);
+              setTimeout(() => {
+                scrollToBottom(historyEleHref.current);
+              }, 100);
             }
             if (data!.isEnd) {
               state.streamFinished = true;
               state.showTypewriter = false;
+              setTimeout(() => {
+                scrollToBottom(historyEleHref.current);
+              }, 100);
             }
             state.typewriterArr.push(data!.answer);
           }
@@ -245,20 +253,18 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
 
   useUpdateEffect(() => {
     if (!state.showTypewriter) {
-      // state.dialogList.push({
-      //   type: 'answer',
-      //   content: state.aiAnswerStr || '暂无结果',
-      // });
-      if (state.themeId) {
-        setTimeout(() => {
-          getMessageHistory();
-        }, 200);
-      }
-      state.aiAnswerStr = '';
-      state.typewriterArr = [];
+      state.dialogList.push({
+        type: 'answer',
+        content: state.aiAnswerStr || '暂无结果',
+      });
       setTimeout(() => {
         scrollToBottom(historyEleHref.current);
       }, 200);
+      if (state.themeId) {
+        getMessageHistory();
+      }
+      state.aiAnswerStr = '';
+      state.typewriterArr = [];
     }
   }, [state.showTypewriter, state.themeId]);
 
