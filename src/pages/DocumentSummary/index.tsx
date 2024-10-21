@@ -102,6 +102,7 @@ const DocumentSummary: React.FC = () => {
       // } else {
       //   state.uploadLoading = true;
       // }
+      intervalRef.current && clearInterval(intervalRef.current);
       intervalRef.current = setInterval(async () => {
         timerOutRef.current += 15;
         const result1: RecordItem = await getSummaryItem({
@@ -123,6 +124,7 @@ const DocumentSummary: React.FC = () => {
           state.uploadLoading = false;
           state.showSummary = false;
           state.showActionBtns = false;
+          message.error('文档解析失败，请重新上传或到我的文档库中重新解析', 5);
         }
         // ossViewUrlRef.current = result1.ossViewUrl;
         // if (ossViewUrlRef.current !== '0') {
@@ -139,6 +141,7 @@ const DocumentSummary: React.FC = () => {
         state.summaryData = {};
         state.showSummary = false;
         state.showActionBtns = true;
+        message.error('文档解析超时，请重新上传或到 我的文档库 中重新解析', 5);
       }
     } catch (error) {}
   };
@@ -232,6 +235,7 @@ const DocumentSummary: React.FC = () => {
         window.devicePixelRatio = 10; //自己设定值
         state.graph?.tree?.downloadFullImage(attachmentName, 'image/png', {
           padding: [50, 50, 50, 50],
+          backgroundColor: '#e5f0ff',
         });
         setTimeout(() => {
           window.devicePixelRatio = oldRatio;
@@ -372,7 +376,14 @@ const DocumentSummary: React.FC = () => {
       <div className={styles.header}>
         <div className={styles.title}>AI文档总结</div>
         <div className={styles.action}>
-          <div className={styles.recordLast}>
+          <div
+            className={styles.recordLast}
+            style={
+              !state.showActionBtns || !state.showSummary
+                ? { marginRight: 65 }
+                : {}
+            }
+          >
             {/* <img src={recentRecordPng} alt="" /> */}
             <Popconfirm
               onOpenChange={(e) => {
@@ -611,10 +622,12 @@ const DocumentSummary: React.FC = () => {
             />
           ) : state.showActionBtns ? (
             <Spin
-              tip="文档解析中，请稍等！"
+              tip="文档解析中，请稍等..."
               spinning={state.uploadLoading}
               size="large"
-            />
+            >
+              <></>
+            </Spin>
           ) : (
             <FileUpload onChange={changeContent} paramsId={state.paramsId} />
           )}

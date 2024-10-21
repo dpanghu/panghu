@@ -2,7 +2,7 @@ import CustomUpload, { CustomUploadProps } from '@/components/CustomUpload';
 import { getAttachmentId, uploadSummary } from '@/services/documentSummary';
 import { getFileMajorType } from '@/utils/contants';
 import { useReactive } from 'ahooks';
-import { Spin } from 'antd';
+import Spin from 'antd/es/spin';
 import { RcFile } from 'antd/es/upload';
 import React from 'react';
 import styles from './FileUpload.less';
@@ -30,7 +30,6 @@ const FileUpload: React.FC<TProps> = ({ onChange, paramsId }) => {
         ...extraParams,
       });
       // 使用id轮询调用
-      console.log(result);
       onChange(result, true);
     } finally {
       state.loading = false;
@@ -71,11 +70,9 @@ const FileUpload: React.FC<TProps> = ({ onChange, paramsId }) => {
   return (
     <div className={styles.FileUploadContainer}>
       {state.loading ? (
-        <Spin
-          tip="文档解析中，请稍等！"
-          spinning={state.loading}
-          size="large"
-        />
+        <Spin tip="文档解析中，请稍等..." spinning={state.loading} size="large">
+          <></>
+        </Spin>
       ) : (
         <CustomUpload {...DraggerProps}>
           <div className={styles.uploadContainer}>

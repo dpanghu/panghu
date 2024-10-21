@@ -6,9 +6,9 @@ import fitContentIcon from '@/assets/images/mind_fitContent_icon.png';
 import fullscreenIcon from '@/assets/images/mind_fullscreen_icon.png';
 import zoomInIcon from '@/assets/images/mind_zoomIn_icon.png';
 import zoomOutIcon from '@/assets/images/mind_zoomOut_icon.png';
-import { useMount, useReactive } from 'ahooks';
+import { useMount, useReactive, useSize } from 'ahooks';
 import { Divider } from 'antd';
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { TreeGraph } from './TreeGraph';
 import styles from './index.less';
 
@@ -34,7 +34,8 @@ const TreeMind: React.FC<TProps> = ({
   getMindGraph,
 }) => {
   const graphRef = useRef<TreeGraph | null>(null);
-
+  const mindMapContainerRrf = useRef(null);
+  const size = useSize(mindMapContainerRrf);
   const state = useReactive<TState>({
     collapse: false,
   });
@@ -82,6 +83,12 @@ const TreeMind: React.FC<TProps> = ({
     initial();
   });
 
+  useEffect(() => {
+    if (size && graphRef.current) {
+      graphRef.current.tree.changeSize(size.width, size.height);
+    }
+  }, [size, graphRef.current]);
+
   return (
     <div className={styles.mindMapContent} draggable={false}>
       {isFullscreen && (
@@ -108,6 +115,7 @@ const TreeMind: React.FC<TProps> = ({
       )}
       <div
         id="MindMapContainer"
+        ref={mindMapContainerRrf}
         style={{ width: '100%', height: '100%' }}
       ></div>
       <div

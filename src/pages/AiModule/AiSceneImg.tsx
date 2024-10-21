@@ -9,6 +9,7 @@ import { useCreation, useMount, useReactive, useUpdateEffect } from 'ahooks';
 import { message } from 'antd';
 import classNames from 'classnames';
 import { exampleRandom } from '@/services/sentimentAnalysis';
+import RcMarkdown from 'rc-markdown';
 import { isArray } from 'lodash';
 import tushengwen from '@/assets/images/tushengwen.png';
 import uploadspng from '@/assets/images/uploads.png';
@@ -502,6 +503,14 @@ const JobHunt: React.FC = () => {
                                                 state.status = 'ending';
                                                 // state.typewriterArrCache.push('请更换图片或提问内容，重新生成。')
                                             }
+                                            if (state.status !== 'ending') {
+                                                state.messageList.push({
+                                                    type: 2,
+                                                    data: state.typewriterArrCache.join('')
+                                                })
+                                                state.typewriterArrCache = [];
+                                            }
+                                            state.visible = false;
                                             state.isLoading = false;
                                         },
                                         onError: (error) => {
@@ -638,7 +647,7 @@ const JobHunt: React.FC = () => {
                     </div>
                     <div className={styles.left_bottom}>
                         <Button
-                            disabled={state.isLoading || state.typewriterArrCache.length > 0}
+                            disabled={state.visible}
                             type="primary"
                             onClick={() => {
                                 send();
@@ -671,116 +680,114 @@ const JobHunt: React.FC = () => {
                     </div>
                 </div>
                 <div className={styles.mid_content}>
-                    <div className={styles.warningBox}>
-                        <img
-                            src={aiimg}
-                            style={{ width: 24, height: 24, marginRight: 16 }}
-                        ></img>
-                        <div className={styles.warning}>
-                            <div>{state.aiData.plugin?.tips}</div>
-                            <div className={styles.subwarning}>
-                                {state.aiData.plugin?.note}
-                            </div>
-                        </div>
-                    </div>
-                    {
-                        state.introduce && <div className={styles.warningBox} style={{ marginTop: 20 }}>
+                    <div style={{ display:'flex',flexDirection:'column',overflowY: 'auto',height:"calc(100% - 25px)" }}>
+                        <div className={styles.warningBox}>
                             <img
                                 src={aiimg}
                                 style={{ width: 24, height: 24, marginRight: 16 }}
                             ></img>
-                            <div className={styles.warningbase}>
-                                <div className={styles.baseTitle}>你可以这么提问：</div>
-                                {
-                                    state.baseData && state.baseData.map((el: any, index: any) => {
-                                        return <div key={el.id} style={{ borderBottom: index === state.baseData.length - 1 ? 'none' : '1px solid #F0E8FF' }} className={styles.titleBox}>
-                                            <div>{el.example}</div>
-                                            <div className={styles.basetest} onClick={() => {
-                                                let inputs: any = state.data.find((element: any) => element.elementType === 'input');
-                                                if (inputs !== void 0) {
-                                                    inputs.value = el.example;
-                                                }
-                                                let check: any = state.data.find((checks: any) => checks.elementType === 'checkbox');
-                                                check.value = el.pointName;
-
-                                            }}>试一试</div>
-                                        </div>
-                                    })
-                                }
-
+                            <div className={styles.warning}>
+                                <div>{state.aiData.plugin?.tips}</div>
+                                <div className={styles.subwarning}>
+                                    {state.aiData.plugin?.note}
+                                </div>
                             </div>
                         </div>
-                    }
-                    <div className={styles.messageList}>
                         {
-                            state.messageList && state.messageList.map((item: any) => {
-                                return <>
+                            state.introduce && <div className={styles.warningBox} style={{ marginTop: 20 }}>
+                                <img
+                                    src={aiimg}
+                                    style={{ width: 24, height: 24, marginRight: 16 }}
+                                ></img>
+                                <div className={styles.warningbase}>
+                                    <div className={styles.baseTitle}>你可以这么提问：</div>
                                     {
-                                        item.type === 1 ? <div className={styles.send}>
-                                            <div className={styles.sendData}>{item.data}</div>
-                                            <img src={state.userImg} style={{ width: 32, height: 32, marginLeft: 16, borderRadius: '50%', }}></img>
-                                        </div> : <div className={styles.receive}>
-                                            <img src={aiimg} style={{ width: 24, height: 24, marginRight: 16, borderRadius: '50%', }}></img>
-                                            <div className={styles.sendData}>
-                                                {item.data}
-                                                <img src={copyIcon} style={{ width: 15, height: 15 }} onClick={() => copyText(item.data)} />
+                                        state.baseData && state.baseData.map((el: any, index: any) => {
+                                            return <div key={el.id} style={{ borderBottom: index === state.baseData.length - 1 ? 'none' : '1px solid #F0E8FF' }} className={styles.titleBox}>
+                                                <div>{el.example}</div>
+                                                <div className={styles.basetest} onClick={() => {
+                                                    let inputs: any = state.data.find((element: any) => element.elementType === 'input');
+                                                    if (inputs !== void 0) {
+                                                        inputs.value = el.example;
+                                                    }
+                                                    let check: any = state.data.find((checks: any) => checks.elementType === 'checkbox');
+                                                    check.value = el.pointName;
+
+                                                }}>试一试</div>
+                                            </div>
+                                        })
+                                    }
+                                </div>
+                            </div>
+                        }
+                        <div className={styles.messageList}>
+                            {
+                                state.messageList && state.messageList.map((item: any) => {
+                                    return <>
+                                        {
+                                            item.type === 1 ? <div className={styles.send}>
+                                                <div className={styles.sendData}>{item.data}</div>
+                                                <img src={state.userImg} style={{ width: 32, height: 32, marginLeft: 16, borderRadius: '50%', }}></img>
+                                            </div> : <div className={styles.receive}>
+                                                <img src={aiimg} style={{ width: 24, height: 24, marginRight: 16, borderRadius: '50%', }}></img>
+                                                <div className={styles.sendData}>
+                                                    <RcMarkdown content={item.data}></RcMarkdown>
+                                                    <img src={copyIcon} style={{ width: 15, height: 15, cursor:'pointer',position:'absolute',right: 7, marginTop: 0 }} onClick={() => copyText(item.data)} />
+                                                </div>
+                                            </div>
+                                        }
+                                    </>
+                                })
+                            }
+                            {
+                                state.status === 'waiting' && <div className={styles.receive}>
+                                    <img src={aiimg} style={{ width: 24, height: 24, marginRight: 16, borderRadius: '50%', }}></img>
+                                    <div className={styles.sendData}>{'等我想想...'}</div>
+                                </div>
+                            }
+                        </div>
+                        {state.visible && (
+                            <div>
+                                <span className={classNames(sf.sFs14, sf.sFwBold)}>
+                                    {isTypeFinished ? (
+                                        <div className={styles.warningBox} style={{ marginTop: 24 }}>
+                                            <img
+                                                src={aiimg}
+                                                style={{ width: 24, height: 24, marginRight: 16 }}
+                                            ></img>
+                                            <div className={styles.finallText}>
+                                                {typewriterStrCache.current}
+
                                             </div>
                                         </div>
-                                    }
-                                </>
-                            })
-                        }
-                        {
-                            state.status === 'waiting' && <div className={styles.receive}>
-                                <img src={aiimg} style={{ width: 24, height: 24, marginRight: 16, borderRadius: '50%', }}></img>
-                                <div className={styles.sendData}>{'等我想想...'}</div>
+                                    ) : (
+                                        <div className={styles.warningBox} style={{ marginTop: 24 }}>
+                                            <img
+                                                src={aiimg}
+                                                style={{ width: 24, height: 24, marginRight: 16 }}
+                                            ></img>
+                                            <div className={styles.warnings}>
+                                             <RcMarkdown content={state.typewriterArrCache.join('')}></RcMarkdown>
+                                            </div>
+                                        </div>
+                                    )}
+                                </span>
                             </div>
-                        }
+                        )}
                     </div>
-                    {state.visible && (
-                        <div>
-                            <span className={classNames(sf.sFs14, sf.sFwBold)}>
-                                {isTypeFinished ? (
-                                    <div className={styles.warningBox} style={{ marginTop: 24 }}>
-                                        <img
-                                            src={aiimg}
-                                            style={{ width: 24, height: 24, marginRight: 16 }}
-                                        ></img>
-                                        <div className={styles.finallText}>
-                                            {typewriterStrCache.current}
-                                            {/* <pre className={styles.texts} style={{ whiteSpace: 'pre-wrap', margin: 0, color: '#272648', fontSize: 14, lineHeight: '24px',fontWeight: 400 }}>
-                    {typewriterStrCache.current}
-                  </pre> */}
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <div className={styles.warningBox} style={{ marginTop: 24 }}>
-                                        <img
-                                            src={aiimg}
-                                            style={{ width: 24, height: 24, marginRight: 16 }}
-                                        ></img>
-                                        <div className={styles.warnings}>
-                                            <Typewriter
-                                                onInit={(typewriter: TypewriterClass) => {
-                                                    state.isTyping = true;
-                                                    typeWriter.current = typewriter;
-                                                    typewriter
-                                                        .typeString('')
-                                                        .start()
-                                                        .callFunction(() => {
-                                                            state.isTyping = false;
-                                                        });
-                                                }}
-                                                options={{
-                                                    delay: 25,
-                                                }}
-                                            />
-                                        </div>
-                                    </div>
-                                )}
-                            </span>
-                        </div>
-                    )}
+                    <div
+                        style={{
+                            position: 'absolute',
+                            fontSize: 13,
+                            bottom: 18,
+                            color: 'rgb(134, 142, 179)',
+                            fontWeight: 400,
+                            display: 'flex',
+                            alignSelf: 'center',
+                        }}
+                    >
+                        所有内容均由人工智能模型输出，其内容的准确性和完整性无法保证，不代表我们的态度和观点。
+                    </div>
                 </div>
             </div>
         </div>

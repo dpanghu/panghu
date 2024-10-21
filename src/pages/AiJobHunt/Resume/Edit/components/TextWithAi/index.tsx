@@ -2,13 +2,13 @@ import refreshPng from '@/assets/images/resume/refresh.png';
 import EventSourceStream from '@/pages/AiJobHunt/Home/DialogArea/EventSourceStream';
 import type { PluginsCode } from '@/pages/AiJobHunt/constants';
 import type { ResumeResponse } from '@/pages/AiJobHunt/type';
+import RcMarkdownExtend from '@/pages/DataVisualization/Detail/components/Conversation/components/RcMarkdownExtend';
 import { Button, Input, message } from 'SeenPc';
 import sf from 'SeenPc/dist/esm/globalStyle/global.less';
-import { useCreation, useReactive, useUpdateEffect } from 'ahooks';
+import { useCreation, useReactive } from 'ahooks';
 import classNames from 'classnames';
 import type { ChangeEventHandler } from 'react';
-import React, { memo, useMemo, useRef } from 'react';
-import Typewriter, { type TypewriterClass } from 'typewriter-effect';
+import React, { memo } from 'react';
 import styles from './index.less';
 
 type UseCount = {
@@ -52,9 +52,6 @@ const TextWithAi: React.FC<Props> = ({
   const queryData = useCreation(() => {
     return JSON.parse(window.sessionStorage.getItem('queryParams') || '{}');
   }, []);
-  const typeWriter = useRef<TypewriterClass | null>(null);
-  const typewriterStrCache = useRef<string>('');
-
   const state = useReactive<TState>({
     isLoading: false,
     isTyping: false,
@@ -62,46 +59,23 @@ const TextWithAi: React.FC<Props> = ({
     message: 'string',
     visible: false,
   });
-  // 是否完成对话
-  const isTypeFinished = useMemo(() => {
-    return (
-      state.typewriterArrCache.length === 0 &&
-      !state.isTyping &&
-      !state.isLoading
-    );
-  }, [state.typewriterArrCache, state.isLoading, state.isTyping]);
-
-  useUpdateEffect(() => {
-    if (
-      (state.typewriterArrCache.length > 0 || state.isLoading) &&
-      !state.isTyping &&
-      typeWriter.current
-    ) {
-      state.isTyping = true;
-      const curStr: string = state.typewriterArrCache.shift()! || '';
-      typewriterStrCache.current += curStr;
-      typeWriter
-        .current!.typeString(curStr)
-        .start()
-        .callFunction(() => {
-          state.isTyping = false;
-        });
-    }
-  }, [state.isTyping]);
 
   const send = () => {
+    if (value === '') {
+      message.error('请先输入润色内容');
+      return;
+    }
     if (useCount[pluginCode]! >= 3) {
       message.error('自动渲染次数已用完');
       return;
     }
     state.visible = true;
     state.isLoading = true;
-    typewriterStrCache.current = '';
+    state.typewriterArrCache = [];
     onCountChange(pluginCode);
     let qsData = {
       ...queryData,
       chatType: 'dtc240630',
-      themeId: resumeData?.xaiResume.themeId,
       paramId: resumeData?.xaiResume.id,
       pluginCode,
       userMessage: value || '',
@@ -137,7 +111,6 @@ const TextWithAi: React.FC<Props> = ({
   const close = () => {
     state.visible = false;
     state.typewriterArrCache = [];
-    typewriterStrCache.current = '';
   };
 
   return (
@@ -162,7 +135,7 @@ const TextWithAi: React.FC<Props> = ({
         }}
         placeholder={placeholder}
       />
-      {isTypeFinished && (
+      {!state.isLoading && (
         <div className={styles['ai-btn']} onClick={send}></div>
       )}
       {state.visible && (
@@ -186,7 +159,7 @@ const TextWithAi: React.FC<Props> = ({
               )}
             >
               <span className={classNames(sf.sFs14, sf.sFwBold)}>
-                {isTypeFinished ? '内容润色完成' : '内容润色中'}
+                {!state.isLoading ? '内容润色完成' : '内容润色中'}
               </span>
               <span
                 className={classNames(sf.sColorGrey6, sf.sFs13)}
@@ -198,7 +171,7 @@ const TextWithAi: React.FC<Props> = ({
                 </span>
                 次
               </span>
-              {isTypeFinished && (
+              {!state.isLoading && (
                 <span
                   className={styles['close']}
                   onClick={() => close()}
@@ -206,7 +179,7 @@ const TextWithAi: React.FC<Props> = ({
               )}
             </div>
             <div className={classNames(sf.sFlex, sf.sFlex1, sf.sPositionRel)}>
-              {isTypeFinished ? (
+              {!state.isLoading ? (
                 <div
                   className={classNames(
                     sf.sPositionAbs,
@@ -216,7 +189,7 @@ const TextWithAi: React.FC<Props> = ({
                   )}
                 >
                   <pre style={{ whiteSpace: 'pre-wrap', margin: 0 }}>
-                    {typewriterStrCache.current}
+                    {state.typewriterArrCache.join('')}
                   </pre>
                 </div>
               ) : (
@@ -228,25 +201,13 @@ const TextWithAi: React.FC<Props> = ({
                     sf.sWFull,
                   )}
                 >
-                  <Typewriter
-                    onInit={(typewriter: TypewriterClass) => {
-                      state.isTyping = true;
-                      typeWriter.current = typewriter;
-                      typewriter
-                        .typeString('')
-                        .start()
-                        .callFunction(() => {
-                          state.isTyping = false;
-                        });
-                    }}
-                    options={{
-                      delay: 25,
-                    }}
+                  <RcMarkdownExtend
+                    content={state.typewriterArrCache.join('')}
                   />
                 </div>
               )}
             </div>
-            {isTypeFinished && typewriterStrCache.current && (
+            {!state.isLoading && (
               <div
                 style={{ height: 40 }}
                 className={classNames(
@@ -276,7 +237,7 @@ const TextWithAi: React.FC<Props> = ({
                 <div
                   className={styles['use-ai-content-btn']}
                   onClick={() => {
-                    onChange(typewriterStrCache.current);
+                    onChange(state.typewriterArrCache.join(''));
                     state.visible = false;
                   }}
                 >
