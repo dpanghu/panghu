@@ -311,14 +311,12 @@ const AiOCR: React.FC = ({}) => {
 
   const handleChange = (e: any) => {
     state.message = e.target.value;
-    const inputWords = state.message
-      .split(' ')
-      .filter((word: any) => word.trim() !== '');
+    console.log(state.message.trim().replace('\n', ''));
     const allDataWords = state.IdentifyData.flatMap((item: any) =>
       item.words.split(' '),
-    );
-    const isValid = inputWords.every((inputWord: any) =>
-      allDataWords.some((dataWord: any) => dataWord.includes(inputWord)),
+    ).join('');
+    const isValid = allDataWords.includes(
+      state.message.trim().replace('\n', ''),
     );
     if (isValid) {
       state.isValid = true;
