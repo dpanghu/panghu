@@ -103,7 +103,7 @@ const App: React.FC = () => {
                         clearInterval(planState);
                     } else if (ress.status === 2) {
                         state.loading = false;
-                        message.error('生成失败');
+                        message.error(ress.failReason || '生成失败');
                         // 失败时也关闭加载状态
                         clearTimeout(loadingTimer);
                         await Promise.resolve(); // 等待当前异步操作完成
