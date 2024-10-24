@@ -102,6 +102,7 @@ const DocumentSummary: React.FC = () => {
       // } else {
       //   state.uploadLoading = true;
       // }
+      intervalRef.current && clearInterval(intervalRef.current);
       intervalRef.current = setInterval(async () => {
         timerOutRef.current += 15;
         const result1: RecordItem = await getSummaryItem({

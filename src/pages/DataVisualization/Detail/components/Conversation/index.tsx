@@ -61,7 +61,7 @@ const Conversation: React.FC<Props> = ({ fileData }) => {
   // 监控滚动
   const handleScroll = () => {
     resizeObserver.current = new ResizeObserver(() => {
-      scrollRef.current?.scrollIntoView();
+      scrollRef.current?.scrollIntoView(false);
     });
 
     // 观察一个或多个元素
@@ -95,7 +95,6 @@ const Conversation: React.FC<Props> = ({ fileData }) => {
       qsParams: {
         attachmentUrl: fileData?.file.fileUrl,
       },
-      fileIds: [fileData?.file.id],
       themeId: themeId.current,
       conversationId: conversation_id.current,
     };

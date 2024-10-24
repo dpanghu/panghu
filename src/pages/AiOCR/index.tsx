@@ -141,33 +141,23 @@ const AiOCR: React.FC = ({}) => {
       const recognitionUrl = recognitionResults.url;
       const res = await getImageList();
       state.preData = res;
-      const {
-        id,
-        url: imageUrl,
-        note,
-        Preset,
-      } = state.preData.filter((item) => item.isPreset === false)[0];
-      if (state.isChooseFirst) {
-        selectImage(id, imageUrl, rotationAngle, note, Preset);
-      } else {
-        selectImage(
-          picUid,
-          recognitionUrl,
-          rotationAngle,
-          recognitionResult,
-          isPreset,
-        );
-      }
+      selectImage(
+        picUid,
+        recognitionUrl,
+        rotationAngle,
+        recognitionResult,
+        isPreset,
+      );
       if (state.isCheck) {
-        const inputWords = state.message
-          .split(' ')
-          .filter((word: any) => word.trim() !== '');
+        if (state.message.trim() === '') {
+          state.isValid = false;
+          return;
+        }
+        const inputWords = state.message.trim().replace(/\s/g, '');
         const allDataWords = state.IdentifyData.flatMap((item: any) =>
           item.words.split(' '),
-        );
-        const isValid = inputWords.every((inputWord: any) =>
-          allDataWords.some((dataWord: any) => dataWord.includes(inputWord)),
-        );
+        ).join('');
+        const isValid = allDataWords.includes(inputWords);
         if (isValid) {
           state.isValid = true;
         } else {
@@ -321,14 +311,15 @@ const AiOCR: React.FC = ({}) => {
 
   const handleChange = (e: any) => {
     state.message = e.target.value;
-    const inputWords = state.message
-      .split(' ')
-      .filter((word: any) => word.trim() !== '');
+    if (state.message.trim() === '') {
+      state.isValid = false;
+      return;
+    }
     const allDataWords = state.IdentifyData.flatMap((item: any) =>
       item.words.split(' '),
-    );
-    const isValid = inputWords.every((inputWord: any) =>
-      allDataWords.some((dataWord: any) => dataWord.includes(inputWord)),
+    ).join('');
+    const isValid = allDataWords.includes(
+      state.message.trim().replace(/\s/g, ''),
     );
     if (isValid) {
       state.isValid = true;
@@ -435,15 +426,15 @@ const AiOCR: React.FC = ({}) => {
 
   useEffect(() => {
     if (state.isCheck) {
-      const inputWords = state.message
-        .split(' ')
-        .filter((word: any) => word.trim() !== '');
+      if (state.message.trim() === '') {
+        state.isValid = false;
+        return;
+      }
+      const inputWords = state.message.trim().replace(/\s/g, '');
       const allDataWords = state.IdentifyData.flatMap((item: any) =>
         item.words.split(' '),
-      );
-      const isValid = inputWords.every((inputWord: any) =>
-        allDataWords.some((dataWord: any) => dataWord.includes(inputWord)),
-      );
+      ).join('');
+      const isValid = allDataWords.includes(inputWords);
       if (isValid) {
         state.isValid = true;
       } else {

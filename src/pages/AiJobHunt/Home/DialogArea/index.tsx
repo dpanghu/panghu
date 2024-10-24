@@ -79,7 +79,7 @@ const DialogArea = React.forwardRef(
 
     const handleScroll = () => {
       resizeObserver.current = new ResizeObserver(() => {
-        scrollRef.current?.scrollIntoView();
+        scrollRef.current?.scrollIntoView(false);
       });
 
       // 观察一个或多个元素
@@ -100,7 +100,6 @@ const DialogArea = React.forwardRef(
       if (msg.pluginCode) {
         generatePlugin({
           ...msg,
-          conversationId: conversationId.current,
         }).then(() => {
           if (onPluginCreate) {
             onPluginCreate();
@@ -193,7 +192,7 @@ const DialogArea = React.forwardRef(
                 >
                   {item.type === 1 ? (
                     <div className={styles['message-area']}>
-                      <RcMarkdown content={item.content} />
+                      <RcMarkdown theme="light" content={item.content} />
                     </div>
                   ) : (
                     <pre className={styles['message-area']}>{item.content}</pre>
@@ -205,6 +204,7 @@ const DialogArea = React.forwardRef(
               <div className={styles['message-from-ai']}>
                 <div className={styles['message-area']} ref={scrollRef}>
                   <RcMarkdown
+                    theme="light"
                     typeWriter={true}
                     content={state.typewriterArrCache.join('')}
                   />
