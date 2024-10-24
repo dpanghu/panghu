@@ -11,6 +11,7 @@ import bDisLikeOutlined from '@/assets/images/DislikeOutlined2@2x.png'
 import likeOutlined from '@/assets/images/LikeOutlined@2x.png'
 import bLikeOutlined from '@/assets/images/LikeOutlined2@2x.png'
 import { getConvertParamId } from '@/services/aiJobHunt/index';
+import receive_icon from '@/assets/images/receive_icon.png';
 import {
   deleteHistory,
   getHistory,
@@ -31,7 +32,6 @@ import Typewriter, { type TypewriterClass } from 'typewriter-effect';
 import { history } from 'umi';
 import EventSourceStream from '../AiJobHunt/Home/DialogArea/EventSourceStream';
 import styles from './AiScene.less';
-import { ConsoleSqlOutlined } from '@ant-design/icons';
 // import SpeechInputComponent from '../Recognition/index';
 
 interface TState {
@@ -497,7 +497,8 @@ const JobHunt: React.FC = () => {
     clone.forEach((element: any) => {
       element.active = false;
     });
-    let choosedata: any = clone.find((element: any) => element.id == id);
+    let choosedata: any = clone.find((element
+      : any) => element.id == id);
     choosedata.active = true;
     state.messageArr = clone;
     getHistoryDetail({
@@ -621,12 +622,14 @@ const JobHunt: React.FC = () => {
                     <div
                       className={styles.warningBox}
                       style={{ marginTop: 24 }}
+                      
                     >
                       <img
                         src={aiimg}
                         style={{ width: 24, height: 24, marginRight: 16 }}
                       ></img>
                       <div className={styles.finallText}>
+                        <img src={receive_icon} style={{ position:'absolute',width: 15, left: -12, top: -1 }}></img>
                         <RcMarkdown content={state.messageData}></RcMarkdown>
                         <div className={styles.finallTextBottom}>
                           <div>
@@ -657,21 +660,6 @@ const JobHunt: React.FC = () => {
                       <div className={styles.warnings}>
 
                         <RcMarkdown content={state.typewriterArrCache.join('')}></RcMarkdown>
-                        {/* <Typewriter
-                          onInit={(typewriter: TypewriterClass) => {
-                            state.isTyping = true;
-                            typeWriter.current = typewriter;
-                            typewriter
-                              .typeString('')
-                              .start()
-                              .callFunction(() => {
-                                state.isTyping = false;
-                              });
-                          }}
-                          options={{
-                            delay: 25,
-                          }}
-                        /> */}
                       </div>
                     </div>
                   )}
@@ -679,7 +667,6 @@ const JobHunt: React.FC = () => {
               </div>
             )}
           </div>
-          {/* <SpeechInputComponent></SpeechInputComponent> */}
         </div>
         {state.open === true ? (
           <div className={styles.right_list}>
