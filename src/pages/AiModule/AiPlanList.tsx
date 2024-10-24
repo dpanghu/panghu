@@ -86,6 +86,13 @@ const App: React.FC = () => {
         });
     }
 
+    const ensureArrayLength = (arr: any, defaultData: any, targetLength = 4) => {  
+        while (arr.length < targetLength) {  
+            arr.push(defaultData);  
+        }  
+        return arr;  
+    }
+
     useMount(() => {
         let planList: any = JSON.parse(window.sessionStorage.getItem('planList') as any);
         state.planList = planList;
@@ -114,7 +121,14 @@ const App: React.FC = () => {
                     if (ress.status === 1) {
                         // 生成成功后，关闭加载状态
                         state.loading = false;
-                        state.planList = JSON.parse(ress.content);
+                        let data_result: any = JSON.parse(ress.content);
+                        // eslint-disable-next-line @typescript-eslint/no-unused-expressions, array-callback-return
+                        data_result && data_result.map((el: any)=> {
+                            if(el.plan?.length !== 4) {
+                                el.plan = ensureArrayLength(el.plan, '暂无内容')
+                            }
+                        })
+                        state.planList = data_result;
                         message.success('生成成功');
                         if (JSON.parse(ress.content)?.length > 7) {
                             history.push('/AiPlanList');
