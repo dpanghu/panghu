@@ -16,7 +16,6 @@ import { scrollToBottom } from '@/utils/utils';
 import { Button, message } from 'SeenPc';
 import { useReactive, useUpdateEffect } from 'ahooks';
 import TextArea from 'antd/es/input/TextArea';
-import { marked } from 'marked';
 import React, { useEffect, useRef } from 'react';
 import { type TypewriterClass } from 'typewriter-effect';
 import EventSourceStream from '../AiJobHunt/Home/DialogArea/EventSourceStream';
@@ -98,9 +97,9 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
             id: item.id,
           });
         }
-        setTimeout(() => {
-          scrollToBottom(historyEleHref.current);
-        }, 50);
+        // setTimeout(() => {
+        //   scrollToBottom(historyEleHref.current);
+        // }, 50);
       });
     } catch (error) {}
   };
@@ -148,6 +147,10 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
     state.streamFinished = false;
     state.receiveText = false;
     state.questionValue = '';
+    state.dialogList.push({
+      type: 'answer',
+      content: '正在生成答案...',
+    });
     new EventSourceStream(
       '/api/bus-xai/xai/plugin/create/stream',
       {
@@ -160,12 +163,7 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
       },
       {
         // 结束，包括接收完毕所有数据、报错、关闭链接
-        onFinished: () => {
-          // setTimeout(() => {
-          //   state.showTypewriter = false;
-          // }, 3000);
-          state.streamFinished = true;
-        },
+        onFinished: () => {},
         onError: (error) => {
           state.showTypewriter = false;
         },
@@ -241,27 +239,14 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
   };
 
   useUpdateEffect(() => {
-    if (
-      !state.typewriterArr.length &&
-      state.textWriteFinished &&
-      state.streamFinished
-    ) {
-      console.log('输出完成');
-      state.showTypewriter = false;
-    }
-  }, [state.typewriterArr, state.streamFinished, state.textWriteFinished]);
-
-  useUpdateEffect(() => {
-    if (!state.showTypewriter) {
-      state.dialogList.push({
-        type: 'answer',
-        content: state.aiAnswerStr || '暂无结果',
-      });
-      setTimeout(() => {
-        scrollToBottom(historyEleHref.current);
-      }, 200);
-      if (state.themeId) {
-        getMessageHistory();
+    if (!state.showTypewriter && state.themeId) {
+      if (state.aiAnswerStr) {
+        state.dialogList[state.dialogList.length - 1].content =
+          state.aiAnswerStr;
+        setTimeout(() => {
+          getMessageHistory();
+          scrollToBottom(historyEleHref.current);
+        }, 200);
       }
       state.aiAnswerStr = '';
       state.typewriterArr = [];
@@ -275,32 +260,14 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
   }, [state.conversationId]);
 
   useEffect(() => {
-    if (summaryData?.id && summaryData?.themeId) {
-      getMessageHistory();
-    }
     if (!state.themeId) {
       state.themeId = summaryData.themeId;
       state.conversationId = summaryData.conversationId;
     }
+    if (summaryData?.id && summaryData?.themeId) {
+      getMessageHistory();
+    }
   }, [summaryData]);
-
-  useEffect(() => {
-    // 示例Markdown字符串
-    const markdownString = `
-# 标题
- 
-这是一个段落。
- 
-- 列表项一
-- 列表项二
- 
-**粗体文本**
- 
-[链接](https://example.com);`;
-    // 将Markdown转换为HTML
-    const htmlString = marked.parse(markdownString);
-    console.log(htmlString);
-  }, []);
 
   return (
     <div className={styles.QAResultContainer}>
@@ -329,7 +296,7 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
               </span>
             </div>
           </div>
-          {state.dialogList.map((item) =>
+          {state.dialogList.map((item, index) =>
             item.type === 'answer' ? (
               <div className={styles.AIAnswer}>
                 <img
@@ -339,34 +306,47 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
                   className={styles.avatar}
                 />
                 <div className={styles.question}>
-                  <Markdown content={item.content} />
-                  <div className={styles.actionBtns}>
-                    <img
-                      onClick={() => {
-                        handleSatisfied(item, 'up');
-                      }}
-                      src={item.satisfied === 1 ? activeUpIcon : baseUpIcon}
-                      alt=""
-                    />
-                    <img
-                      onClick={() => {
-                        handleSatisfied(item, 'down');
-                      }}
-                      src={item.satisfied === 0 ? activeDownIcon : baseDownIcon}
-                      alt=""
-                    />
-                    <img
-                      onClick={() => {
-                        handleCopyContent(item);
-                      }}
-                      src={
-                        state.copyActive?.[item.id]
-                          ? activeCopyIcon
-                          : baseCopyIcon
-                      }
-                      alt=""
-                    />
-                  </div>
+                  <Markdown
+                    content={
+                      !!state.showTypewriter &&
+                      index === state.dialogList.length - 1
+                        ? state.aiAnswerStr
+                          ? state.aiAnswerStr
+                          : '正在生成答案...'
+                        : item.content
+                    }
+                  />
+                  {!state.showTypewriter && (
+                    <div className={styles.actionBtns}>
+                      <img
+                        onClick={() => {
+                          handleSatisfied(item, 'up');
+                        }}
+                        src={item.satisfied === 1 ? activeUpIcon : baseUpIcon}
+                        alt=""
+                      />
+                      <img
+                        onClick={() => {
+                          handleSatisfied(item, 'down');
+                        }}
+                        src={
+                          item.satisfied === 0 ? activeDownIcon : baseDownIcon
+                        }
+                        alt=""
+                      />
+                      <img
+                        onClick={() => {
+                          handleCopyContent(item);
+                        }}
+                        src={
+                          state.copyActive?.[item.id]
+                            ? activeCopyIcon
+                            : baseCopyIcon
+                        }
+                        alt=""
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
             ) : (
@@ -375,33 +355,6 @@ const QAResult: React.FC<TProps> = ({ summaryData, paramsId }) => {
                 <img src={userIcon} alt="" className={styles.userIcon} />
               </div>
             ),
-          )}
-          {state.showTypewriter && (
-            <div className={styles.AIAnswer}>
-              <img
-                draggable={false}
-                src={avatarIcon}
-                alt=""
-                className={styles.avatar}
-              />
-              <div className={styles.question}>
-                <Markdown content={state.aiAnswerStr} />
-              </div>
-              {/* <Typewriter
-                onInit={(typewriter: TypewriterClass) => {
-                  typeWriter.current = typewriter;
-                  typewriter
-                    .typeString('')
-                    .start()
-                    .callFunction(() => {
-                      scrollToBottom(historyEleHref.current);
-                    });
-                }}
-                options={{
-                  delay: 25,
-                }}
-              /> */}
-            </div>
           )}
         </div>
         <div className={styles.footer}>
