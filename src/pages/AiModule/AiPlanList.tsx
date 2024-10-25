@@ -95,6 +95,10 @@ const App: React.FC = () => {
 
     useMount(() => {
         let planList: any = JSON.parse(window.sessionStorage.getItem('planList') as any);
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions, array-callback-return
+        planList && planList.map((el: any)=> {
+            ensureArrayLength(el.plan,'暂无内容');
+        })
         state.planList = planList;
         getConvertParamId({}).then((res: any) => {
             state.patams = res;
