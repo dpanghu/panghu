@@ -121,6 +121,7 @@ const AiSurveyQuestionnaire: React.FC = () => {
         },
     };
     const [data, setData] = useState<any>([]);//存储关联题目及其选项
+    const [a, setA] = useState<any>(false);//控制大模型提示语是否可用
     //点击保存按钮，弹出模态框
     const showModal = () => {
         if (openValue === false) {
@@ -144,6 +145,8 @@ const AiSurveyQuestionnaire: React.FC = () => {
                         arr[i].inputValue = ''
                     }
                     setData(arr)
+                } else {
+                    setA(true)
                 }
                 if (res.xaiSp) {
                     form.setFieldsValue({
@@ -400,6 +403,7 @@ const AiSurveyQuestionnaire: React.FC = () => {
         {
             label: '与题目选项绑定',
             value: '1',
+            disabled: a,
         },
         {
             label: '不与题目选项绑定',
