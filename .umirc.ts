@@ -155,6 +155,33 @@ export default defineConfig({
       ],
     },
     {
+      path: '/IntelligentAssistant',
+      component: '@/pages/IntelligentAssistant',
+      layout: false,
+      routes: [
+        // {
+        //   path: '/aiJobHunt',
+        //   component: '@/pages/AiJobHunt/Home',
+        //   title: 'XAI | ai求职',
+        // },
+        // {
+        //   path: '/aiJobHunt/resume/:id',
+        //   component: '@/pages/AiJobHunt/Resume',
+        //   exact: true,
+        //   title: 'XAI | ai简历',
+        // },
+        // {
+        //   path: '/aiJobHunt/interview/:paramId/:themeId',
+        //   component: '@/pages/AiJobHunt/Interview',
+        //   exact: true,
+        //   title: 'XAI | ai面试',
+        // },
+        // {
+        //   component: '@/pages/404',
+        // },
+      ],
+    },
+    {
       path: '/aiJobHunt',
       component: '@/pages/AiJobHunt',
       layout: false,
@@ -194,7 +221,7 @@ export default defineConfig({
   npmClient: 'npm',
   proxy: {
     '/api/': {
-      target: 'https://tapi.seentao.com/',
+      target: 'https://dapi.seentao.com/',
       onProxyReq: function (req) {
         if (
           req.path.includes('/chat/stream') ||
