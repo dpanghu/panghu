@@ -3,7 +3,7 @@ import { useMount, useReactive } from 'ahooks';
 import styles from './index.less';
 interface TState {
     curTheme: any;
-}
+}mai
 const App: React.FC = () => {
     const state = useReactive<TState>({
         curTheme: undefined,

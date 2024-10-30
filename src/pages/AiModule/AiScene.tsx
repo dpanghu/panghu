@@ -629,7 +629,7 @@ const JobHunt: React.FC = () => {
                         style={{ width: 24, height: 24, marginRight: 16 }}
                       ></img>
                       <div className={styles.finallText}>
-                        <img src={receive_icon} style={{ position:'absolute',width: 15, left: -12, top: -1 }}></img>
+                        <img src={receive_icon} style={{ position:'absolute',width: 15, left: -12,height: 18, top: -1 }}></img>
                         <RcMarkdown content={state.messageData}></RcMarkdown>
                         <div className={styles.finallTextBottom}>
                           <div>
@@ -658,7 +658,7 @@ const JobHunt: React.FC = () => {
                         style={{ width: 24, height: 24, marginRight: 16 }}
                       ></img>
                       <div className={styles.warnings}>
-
+                      <img src={receive_icon} style={{ position:'absolute',width: 15, left: -12,height: 18, top: -1 }}></img>
                         <RcMarkdown content={state.typewriterArrCache.join('')}></RcMarkdown>
                       </div>
                     </div>
