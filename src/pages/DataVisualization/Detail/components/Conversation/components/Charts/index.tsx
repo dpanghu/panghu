@@ -6,7 +6,7 @@ import {
   useMount,
   useReactive,
 } from 'ahooks';
-import { Popover, Tooltip } from 'antd';
+import { Popover, Tooltip, message } from 'antd';
 import classNames from 'classnames';
 import * as echarts from 'echarts';
 import { keys, values } from 'lodash';
@@ -41,7 +41,8 @@ const Charts: React.FC<Props> = ({ props }) => {
       if (keys(ChartType).find((chart) => chart === parsedData.type)) {
         state.type = parsedData.type;
       } else {
-        state.type = 'bar';
+        state.type = 'unknown';
+        message.error('数据返回格式不正确');
       }
     }
   }, [props]);
@@ -53,6 +54,9 @@ const Charts: React.FC<Props> = ({ props }) => {
       state.isError = false;
     } catch (err) {
       state.isError = true;
+    }
+    if (state.type === 'unknown') {
+      return 'unknown';
     }
     // @ts-ignore
     return ChartOptions[state.type](parsedData);
@@ -68,7 +72,9 @@ const Charts: React.FC<Props> = ({ props }) => {
   useEffect(() => {
     if (echartRef.current) {
       echartRef.current.clear();
-      echartRef.current.setOption(parsedOptions);
+      if (parsedOptions !== 'unknown') {
+        echartRef.current.setOption(parsedOptions);
+      }
     }
   }, [parsedOptions]);
 
