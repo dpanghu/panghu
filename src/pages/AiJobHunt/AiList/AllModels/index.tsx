@@ -262,7 +262,7 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                       menu={{
                         items: [
                           {
-                            label: getPublishLabel(item.id),
+                            label: item.status == 0 ? '取消发布' : '发布',
                             key: '0',
                             style: {
                               fontFamily: 'PingFangSC, PingFang SC',
@@ -433,7 +433,7 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                       menu={{
                         items: [
                           {
-                            label: getPublishLabel(item.id),
+                            label: item.status == 0 ? '取消发布' : '发布',
                             key: '0',
                             style: {
                               fontFamily: 'PingFangSC, PingFang SC',
