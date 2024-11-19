@@ -58,6 +58,9 @@ const Charts: React.FC<Props> = ({ props }) => {
     if (state.type === 'unknown') {
       return 'unknown';
     }
+    if (keys(ChartType).find((chart) => chart !== parsedData.type)) {
+      return 'unknown';
+    }
     // @ts-ignore
     return ChartOptions[state.type](parsedData);
   }, [JSON.stringify(props), state.type]);
