@@ -45,11 +45,11 @@ const TextContent: React.FC<Props> = ({
             }
             setValue(val);
           }}
-          maxLength={300}
+          maxLength={600}
         ></Input>
       </section>
       <footer>
-        <span>{value.length}/300</span>
+        <span>{value.length}/600</span>
         <div
           onClick={() => {
             if (!value) {
