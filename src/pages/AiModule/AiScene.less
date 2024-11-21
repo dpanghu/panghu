@@ -10,14 +10,17 @@
             font-size: 14px !important;
             line-height: 1.2 !important;
             padding: 0px !important;
+            table {
+                width: unset;
+            }
             ol {
-                margin-bottom: 0px !important;
+                margin-bottom: 12px !important;
             }
             li {
-                margin-top: 0px !important;
+                margin-top: 12px !important;
             }
             p {
-                margin-bottom: 0px !important;
+                margin-bottom: 12px !important;
             }
         }
     }
@@ -99,7 +102,7 @@
     }
 
     .config_head {
-        display: flex;
+        display: none;
         padding: 16px 16px 4px 16px;
         align-items: center;
         font-family: PingFangSC, PingFang SC;
@@ -157,11 +160,11 @@
         color: #272648;
         line-height: 17px;
         color: #272648;
-        border-radius: 8px;
+        position: relative;
+        border-radius: 0px 8px 8px 8px;
         font-style: normal;
         width: 100%;
         background: white;
-        white-space: pre-wrap;
     }
     .finallText {
         padding: 26px 16px 18px 30px;
@@ -176,7 +179,6 @@
         width: 100%;
         border: 1px solid #FEFDFF;
         background: white;
-        white-space: pre-wrap;
         position: relative;
     }
 
@@ -301,7 +303,7 @@
     padding-left: 16px;
     padding-right: 16px;
     flex-direction: column;
-    height: calc(100% - 150px);
+    height: calc(100% - 110px);
     overflow-y: auto;
 }
 
@@ -497,7 +499,6 @@
     height: 100%;
     align-items: center;
     border-left: 1px solid rgba(0, 0, 0, 0.06);
-    ;
 }
 
 .middle {

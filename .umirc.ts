@@ -131,7 +131,7 @@ export default defineConfig({
     {
       path: '/aiAtlas',
       component: '@/pages/AiAtlas',
-      title: 'AI图谱生成',
+      title: 'AI图谱生成',   
       layout: false,
     },
     {
@@ -152,6 +152,33 @@ export default defineConfig({
           component: '@/pages/DataVisualization/Detail',
           title: 'AI数据可视化',
         },
+      ],
+    },
+    {
+      path: '/IntelligentAssistant',
+      component: '@/pages/IntelligentAssistant',
+      layout: false,
+      routes: [
+        {
+          path: '/IntelligentAssistant/teamManage',
+          component: '@/pages/IntelligentAssistant/teamManage',
+          title: '团队管理',
+        },
+        // {
+        //   path: '/aiJobHunt/resume/:id',
+        //   component: '@/pages/AiJobHunt/Resume',
+        //   exact: true,
+        //   title: 'XAI | ai简历',
+        // },
+        // {
+        //   path: '/aiJobHunt/interview/:paramId/:themeId',
+        //   component: '@/pages/AiJobHunt/Interview',
+        //   exact: true,
+        //   title: 'XAI | ai面试',
+        // },
+        // {
+        //   component: '@/pages/404',
+        // },
       ],
     },
     {
@@ -194,7 +221,7 @@ export default defineConfig({
   npmClient: 'npm',
   proxy: {
     '/api/': {
-      target: 'https://tapi.seentao.com/',
+      target: 'https://dapi.seentao.com/',
       onProxyReq: function (req) {
         if (
           req.path.includes('/chat/stream') ||

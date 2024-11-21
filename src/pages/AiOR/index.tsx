@@ -386,7 +386,7 @@ const AiOR: React.FC = ({}) => {
 
   return (
     <div className={styles.aiOr}>
-      <div className={styles.title}>物体识别</div>
+      <div className={styles.title} style={{ fontWeight: 600 }}>AI物体识别</div>
       <div className={styles.bottom}>
         <div className={styles.content}>
           <div className={state.isrec ? styles.aleft : styles.left}>
