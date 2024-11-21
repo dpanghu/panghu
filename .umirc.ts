@@ -131,7 +131,7 @@ export default defineConfig({
     {
       path: '/aiAtlas',
       component: '@/pages/AiAtlas',
-      title: 'AI图谱生成',
+      title: 'AI图谱生成',   
       layout: false,
     },
     {
@@ -159,11 +159,11 @@ export default defineConfig({
       component: '@/pages/IntelligentAssistant',
       layout: false,
       routes: [
-        // {
-        //   path: '/aiJobHunt',
-        //   component: '@/pages/AiJobHunt/Home',
-        //   title: 'XAI | ai求职',
-        // },
+        {
+          path: '/IntelligentAssistant/teamManage',
+          component: '@/pages/IntelligentAssistant/teamManage',
+          title: '团队管理',
+        },
         // {
         //   path: '/aiJobHunt/resume/:id',
         //   component: '@/pages/AiJobHunt/Resume',
