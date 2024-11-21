@@ -1,0 +1,137 @@
+@import '../global.less';
+
+.history-and-space {
+  width: 300px;
+  background: linear-gradient(135deg, #f9f9ff 0%, #f0f1fe 100%);
+  box-shadow: 1px 0 0 0 rgba(72, 79, 152, 5%);
+  padding-top: 10px;
+  border-top-left-radius: 8px;
+}
+
+.history {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0 16px;
+  overflow: hidden;
+}
+
+.header {
+  height: 32px;
+  margin-bottom: 28px;
+  background: url('~@/assets/images/seentaoAi.png') no-repeat 16px 0 / 102px
+    32px;
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  padding-right: 16px;
+
+  & > div {
+    width: 13px;
+    height: 13px;
+    background: url('~@/assets/images/multiplePoint.png') no-repeat 0 0 / 13px
+      13px;
+    cursor: pointer;
+  }
+}
+
+.create-btn {
+  background: linear-gradient(90deg, #4d6cff 0%, #7772ff 100%);
+  border-radius: 8px;
+  width: 268px;
+  height: 32px;
+  font-weight: 400;
+  font-size: 14px;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 16px;
+  gap: 10px;
+
+  img {
+    width: 16px;
+    height: 16px;
+  }
+
+  &:hover {
+    background: linear-gradient(
+      90deg,
+      rgba(77, 108, 255, 70%) 0%,
+      rgba(119, 114, 255, 70%) 100%
+    );
+  }
+}
+
+.dialog-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 2px 0;
+}
+
+.hr {
+  height: 14px;
+  background: linear-gradient(0deg, #e5e7ff 0%, rgba(240, 241, 254, 0%) 100%);
+}
+
+.space {
+  height: 259px;
+  background: url('~@/assets/images/spaceBg.png') no-repeat;
+  background-size: cover;
+  padding: 16px;
+}
+
+.dialog-list-container,
+.person-space {
+  width: 200px;
+}
+
+.dialog-list-item {
+  cursor: pointer;
+  width: 100%;
+  height: 48px;
+  background: url('~@/assets/images/talkItem.png') no-repeat 16px 17px / 16px
+    14px;
+  padding-left: 38px;
+  line-height: 48px;
+  font-size: 14px;
+  color: #272648;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  padding-right: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .search-btn {
+    display: none;
+  }
+
+  &.active,
+  &:hover {
+    background-color: #fff;
+    border-radius: 4px;
+
+    .search-btn {
+      display: block;
+    }
+  }
+}
+
+.search-btn {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background: url('~@/assets/images/edit.png') no-repeat 0 0 / 16px;
+}
+
+.input-edit {
+  border: 0;
+  padding-left: 0;
+
+  &:focus {
+    box-shadow: none;
+  }
+}

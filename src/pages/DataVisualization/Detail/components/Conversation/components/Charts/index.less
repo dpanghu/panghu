@@ -1,0 +1,95 @@
+.container {
+  width: calc(100% - 25px);
+  position: relative;
+  border-radius: 4px;
+  border: 1px solid #e6e6e6;
+  min-height: 300px;
+}
+.chart {
+  min-height: 300px;
+}
+
+.toggleChart {
+  background: #ffffff;
+  box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.15);
+  border-radius: 0px 4px 4px 0px;
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  top: 8px;
+  right: -25px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.popup-container {
+  width: 176px;
+  height: 132px;
+  header {
+    height: 36px;
+    font-size: 14px;
+    color: #1a1a1e;
+    line-height: 36px;
+    padding-left: 16px;
+    font-weight: bold;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  }
+  section {
+    display: flex;
+    align-items: start;
+    justify-content: flex-start;
+    padding: 16px;
+    gap: 16px;
+    & > div {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      background-size: 16px;
+
+      background-position: 2px 2px;
+    }
+  }
+}
+
+.chart-bar {
+  background-image: url('~@/assets/images/dataVisualization/bar.png');
+  &.active,
+  &:hover {
+    background-color: #eef1ff;
+    border-radius: 2px;
+    background-image: url('~@/assets/images/dataVisualization/barActive.png');
+  }
+}
+
+.chart-line {
+  background-image: url('~@/assets/images/dataVisualization/line.png');
+  &.active,
+  &:hover {
+    background-color: #eef1ff;
+    border-radius: 2px;
+    background-image: url('~@/assets/images/dataVisualization/lineActive.png');
+  }
+}
+
+.chart-pie {
+  background-image: url('~@/assets/images/dataVisualization/pie.png');
+  &.active,
+  &:hover {
+    background-color: #eef1ff;
+    border-radius: 2px;
+    background-image: url('~@/assets/images/dataVisualization/pieActive.png');
+  }
+}
+
+.error-message {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-self: center;
+  align-items: center;
+}

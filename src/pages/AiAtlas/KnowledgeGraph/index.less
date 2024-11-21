@@ -1,0 +1,69 @@
+.container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  :global(#graph) {
+    width: 100%;
+    height: 100%;
+  }
+  background: linear-gradient(180deg, #e5f0ff 0%, #e9e9ff 100%);
+}
+
+.operate {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  font-size: 12px;
+}
+
+@iconbg: {
+  background-size: 16px 16px;
+  background-position: 8px 8px;
+  .icon-no-full-screen {
+  }
+  background-repeat: no-repeat;
+  background-color: #fff;
+  width: 32px;
+  height: 32px;
+  box-shadow: 0px 0px 12px 0px #dee3ff;
+  border-radius: 4px;
+  cursor: pointer;
+};
+
+.icon-reset-position {
+  @iconbg();
+  background-image: url('@/assets/images/aiAtlas/resetPosition.png');
+}
+
+.icon-scale-in {
+  @iconbg();
+  box-shadow: unset;
+  background-image: url('@/assets/images/aiAtlas/scaleIn.png');
+}
+
+.icon-scale-out {
+  @iconbg();
+  box-shadow: unset;
+  background-image: url('@/assets/images/aiAtlas/scaleOut.png');
+}
+
+.icon-scale {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  box-shadow: 0px 0px 12px 0px #dee3ff;
+  border-radius: 4px;
+}
+
+.icon-full-screen {
+  @iconbg();
+  background-image: url('@/assets/images/aiAtlas/fullScreen.png');
+}
+
+.icon-no-full-screen {
+  @iconbg();
+  background-image: url('@/assets/images/aiAtlas/noFullScreen.png');
+}

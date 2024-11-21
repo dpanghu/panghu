@@ -1,0 +1,391 @@
+import userAvatar from '@/assets/images/avatar_passport.png';
+import goBack from '@/assets/images/goBack.png';
+import {
+  exportInterview,
+  getInterviewQuestionList,
+  getShowAIAnswer,
+  updateShowAIAnswer,
+} from '@/services/aiJobHunt';
+import { downloadFile } from '@/utils/utils';
+import { Button, message } from 'SeenPc';
+import { useCreation, useMount, useReactive } from 'ahooks';
+import { Input, Modal } from 'antd';
+import React, { useEffect } from 'react';
+import Typewriter from 'typewriter-effect';
+import { history, useParams } from 'umi';
+import EventSourceStream from '../Home/DialogArea/EventSourceStream';
+import styles from './index.less';
+
+type TState = {
+  data: any[];
+  message: string;
+  currentQuestionIndex: number;
+  answers: any[];
+  showBtn: boolean; // 是否显示参考答案按钮
+  showReferenceAnswers: boolean; //是否显示参考答案以及AI点评按钮
+  ReferenceAnswers: any[];
+  showAIComments: boolean; //是否显示AI点评
+  AIComments: any[];
+  problemId: string;
+  isLoading: boolean;
+  isType: boolean;
+  imgSrc: any;
+};
+const Interview: React.FC = ({}) => {
+  const params = useParams<{ paramId?: string; themeId?: string }>();
+  const queryData = useCreation(() => {
+    return JSON.parse(window.sessionStorage.getItem('queryParams') || '{}');
+  }, []);
+
+  const state = useReactive<TState>({
+    data: [],
+    message: '',
+    currentQuestionIndex: 0,
+    answers: [],
+    showBtn: false,
+    showReferenceAnswers: false,
+    ReferenceAnswers: [],
+    showAIComments: false,
+    AIComments: [],
+    problemId: '',
+    isLoading: false,
+    isType: false,
+    imgSrc: '',
+  });
+  const submitUserAnswer = () => {
+    state.isLoading = true;
+    let qsData = {
+      ...queryData,
+      chatType: 'dtc240630',
+      paramId: state.problemId,
+      pluginCode: 'aiComment',
+      userMessage: state.message || '',
+    };
+    new EventSourceStream(
+      '/api/bus-xai/xai/plugin/create/stream',
+      {
+        method: 'POST',
+        data: qsData,
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'text/event-stream',
+        },
+      },
+      {
+        // 结束，包括接收完毕所有数据、报错、关闭链接
+        onFinished: (code) => {
+          if (code) {
+            state.isLoading = false;
+          }
+        },
+        onError: (error) => {
+          console.log(error);
+        },
+        // 接收到数据
+        receiveMessage: (data) => {
+          if (data.isEnd) {
+            state.isLoading = false;
+          }
+        },
+        onReveiveFirstMessage: () => {
+          state.answers = [
+            ...state.answers,
+            {
+              stuAnswer: state.message,
+              questionIndex: state.currentQuestionIndex,
+            },
+          ];
+          state.message = '';
+          state.isType = true;
+          state.currentQuestionIndex += 1;
+
+          state.problemId = state.data[state.currentQuestionIndex]?.id;
+          if (state.currentQuestionIndex === state.data.length) {
+            state.showBtn = true;
+          }
+        },
+      },
+    ).run();
+  };
+
+  const handleAnswerSubmit = () => {
+    if (state.showBtn || state.isLoading || state.isType) {
+      return;
+    }
+    if (state.message.trim() === '') {
+      message.warning('请输入问题的答案');
+      return;
+    }
+    Modal.confirm({
+      title: '确认提交',
+      content: '一旦提交，将不能再次作答此问题',
+      okText: '确认',
+      cancelText: '取消',
+      className: styles['delete-confirm'],
+      centered: true,
+      onOk() {
+        submitUserAnswer();
+      },
+      onCancel() {},
+    });
+  };
+
+  //获取参考答案和AI点评
+  const getInterviewQuestionLists = () => {
+    getInterviewQuestionList({ themeId: params.themeId }).then((res) => {
+      res.forEach((item: any) => {
+        state.ReferenceAnswers = [...state.ReferenceAnswers, item.aiAnswer];
+        state.AIComments = [...state.AIComments, item.aiComment];
+      });
+      const ele = document.querySelector('#interview_container>div:last-child');
+      if (ele) {
+        setTimeout(() => {
+          ele.scrollIntoView();
+        }, 10);
+      }
+    });
+  };
+  const handleShowReferenceAnswers = () => {
+    if (state.isLoading) {
+      message.warning('请先等待AI生成参考答案');
+      return;
+    } else {
+      if (state.showReferenceAnswers) {
+        state.showReferenceAnswers = false;
+        state.showAIComments = false;
+        state.ReferenceAnswers = [];
+        state.AIComments = [];
+      } else {
+        getInterviewQuestionLists();
+        state.showReferenceAnswers = true;
+      }
+    }
+  };
+
+  const handleShowAIComments = () => {
+    if (state.showAIComments) {
+      state.showAIComments = false;
+    } else {
+      state.showAIComments = true;
+      const ele = document.querySelector('#interview_container>div:last-child');
+      if (ele) {
+        setTimeout(() => {
+          ele.scrollIntoView();
+        }, 10);
+      }
+    }
+  };
+  const downLoadInterview = () => {
+    exportInterview({ themeId: params.themeId }).then((res: any) => {
+      downloadFile(res);
+    });
+  };
+
+  const getInterviewQuestion = () => {
+    if (params.paramId) {
+      getInterviewQuestionList({ themeId: params.themeId })
+        .then((res) => {
+          state.data = res;
+        })
+        .then(() => {
+          const firstEmptyUserAnswerIndex = state.data.findIndex(
+            (q) => !q.stuAnswer,
+          );
+          state.currentQuestionIndex =
+            firstEmptyUserAnswerIndex === -1
+              ? state.data.length
+              : firstEmptyUserAnswerIndex;
+          state.problemId = state.data[state.currentQuestionIndex]?.id;
+          state.showBtn = state.currentQuestionIndex === state.data.length;
+          state.answers = state.data
+            .slice(0, state.currentQuestionIndex)
+            .map((faq, index) => ({
+              stuAnswer: faq.stuAnswer,
+              questionIndex: index,
+            }));
+        });
+    }
+  };
+  const getShowAIAnswers = () => {
+    getShowAIAnswer({ themeId: params.themeId }).then((res: any) => {
+      state.showReferenceAnswers = res?.aiAnswer === 1 ? true : false;
+      state.showAIComments = res?.aiComment === 1 ? true : false;
+      if (res?.aiAnswer === 1) {
+        getInterviewQuestionLists();
+      }
+    });
+  };
+  const updateShowAIAnswers = () => {
+    updateShowAIAnswer({
+      themeId: params.themeId,
+      aiAnswer: state.showReferenceAnswers ? 1 : 0,
+      aiComment: state.showAIComments ? 1 : 0,
+    }).then((res) => console.log(res));
+  };
+  useMount(() => {
+    let qsData: any = JSON.parse(
+      window.sessionStorage.getItem('commonDatas') as any,
+    );
+    state.imgSrc = qsData?.userImg;
+    getInterviewQuestion();
+    getShowAIAnswers();
+  });
+
+  useEffect(() => {
+    updateShowAIAnswers();
+  }, [state.showReferenceAnswers, state.showAIComments]);
+
+  return (
+    <div className={styles.interviewContainer}>
+      <div className={styles.top}>
+        <div className={styles.topLeft}>
+          <Button onClick={() => history.push('/aiJobHunt')}>
+            <img src={goBack} />
+            返回
+          </Button>
+          <span className={styles.verticalLine}></span>
+          <span>我的面试</span>
+        </div>
+        <Button onClick={downLoadInterview} disabled={!state.showBtn}>
+          下载
+        </Button>
+      </div>
+      <div className={styles.content}>
+        <div className={styles.interviewContent} id="interview_container">
+          <div className={styles.aiBox}>
+            <div className={styles.box}>
+              <p className={styles.welBox}>
+                欢迎参加本次面试，我是您的AI面试官，在接下来的时间里，我将通过一系列问题来了解您的专业技能、工作经验以及个人能力。
+              </p>
+              <p className={styles.headTip}>
+                请您认真审题，并在思考后，清晰、详细的进行回答。
+              </p>
+            </div>
+          </div>
+          {state.data.map((faq, index) => {
+            return (
+              <div key={index}>
+                {index <= state.currentQuestionIndex && (
+                  <>
+                    <div className={styles.aiBox}>
+                      {index === state.currentQuestionIndex &&
+                      state.isType === true ? (
+                        <div className={styles.box}>
+                          {state.isLoading ? (
+                            <div className={styles.loadingCursor}>|</div>
+                          ) : (
+                            <Typewriter
+                              options={{
+                                delay: 50,
+                              }}
+                              onInit={(typewriter) => {
+                                state.isType = true;
+                                typewriter
+                                  .typeString(faq.question)
+                                  .start()
+                                  .callFunction(() => {
+                                    state.isType = false;
+                                  });
+                              }}
+                            />
+                          )}
+                        </div>
+                      ) : (
+                        <div className={styles.box}>{faq.question}</div>
+                      )}
+                    </div>
+                    {index < state.currentQuestionIndex && (
+                      <div className={styles.answerBox}>
+                        {state.answers
+                          .filter((answer) => answer.questionIndex === index)
+                          .map((answer, answerIndex) => (
+                            <div className={styles.box} key={answerIndex}>
+                              {answer.stuAnswer}
+                            </div>
+                          ))}
+                        <img src={userAvatar} alt="" />
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            );
+          })}
+          {state.showBtn && (
+            <div className={styles.aiBox}>
+              <div className={styles.box}>
+                本次面试已结束，感谢您参加此次面试，我们会尽快对您的表现进行评估并给出反馈
+              </div>
+            </div>
+          )}
+          {state.showReferenceAnswers && (
+            <div className={styles.aiAnswerBox}>
+              <span>参考答案:</span>
+              <div>
+                {state.ReferenceAnswers.map((answer, index) => (
+                  <div key={index}>
+                    第{index + 1}题答案：{answer}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          {state.showAIComments && (
+            <div className={styles.aiCommentBox}>
+              <span>AI点评:</span>
+              <div>
+                {state.AIComments.map((comment, index) => (
+                  <div key={index}>
+                    第{index + 1}题AI点评：{comment}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+        <div className={styles.footer}>
+          <div className={styles.footerBtn}>
+            {state.showBtn && (
+              <Button onClick={handleShowReferenceAnswers}>参考答案</Button>
+            )}
+            {state.showReferenceAnswers && (
+              <Button onClick={handleShowAIComments}>AI点评</Button>
+            )}
+          </div>
+          <div className={styles.inputArea}>
+            <Input.TextArea
+              autoSize={{ minRows: 1, maxRows: 3 }}
+              showCount
+              maxLength={2000}
+              onKeyDown={(e) => {
+                if (e.code === 'Enter' && e.shiftKey) {
+                  handleAnswerSubmit();
+                } else if (e.code === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  handleAnswerSubmit();
+                }
+              }}
+              value={state.showBtn ? '' : state.message}
+              placeholder={'请输入问题的答案'}
+              onChange={(e) => (state.message = e.target.value)}
+            />
+            <div className={styles.inputFooter}>
+              <Button
+                type="primary"
+                onClick={handleAnswerSubmit}
+                disabled={state.showBtn}
+              >
+                发送
+              </Button>
+            </div>
+          </div>
+          <p className={styles.footerTip}>
+            所有内容均由人工智能模型输出，其内容的准确性和完整性无法保证，不代表我们的态度和观点。
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Interview;

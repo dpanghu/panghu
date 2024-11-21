@@ -1,0 +1,218 @@
+@import '../common.less';
+
+.container {
+  background: url('~@/assets/images/resume/resumeBg.png') no-repeat;
+  background-size: contain;
+  padding: 32px;
+  padding-top: 40px;
+  position: relative;
+
+  :global(.ant-form-item) {
+    margin-bottom: 20px;
+  }
+}
+
+.form-label {
+  width: 56px;
+  text-align-last: justify;
+  text-align: justify;
+  font-size: 14px;
+  color: #333;
+  margin-right: 14px;
+}
+
+.basic-info {
+  display: flex;
+}
+@media screen and (max-width: 1920px) {
+  .basic-info {
+    width: 562px;
+  }
+}
+
+@media screen and (min-width: 1920px) {
+  .basic-info {
+    width: 618px;
+  }
+}
+
+.basic-avatar {
+  position: absolute;
+  top: 70px;
+  right: 56px;
+  width: 148px;
+  height: 188px;
+}
+
+.form-item-full-width {
+  width: 100%;
+}
+
+.basic-short-input {
+  width: 128px !important;
+}
+
+.basic-long-input {
+  width: 228px !important;
+}
+
+@media screen and (max-width: 1920px) {
+  .form-gap {
+    margin-right: 46px;
+  }
+}
+
+@media screen and (min-width: 1920px) {
+  .form-gap {
+    margin-right: 94px;
+  }
+}
+
+@items: {
+  education-background: #5977ff;
+  campus-experience: #7157ff;
+  employment-intention: #5182ff;
+  self-evaluation: #8d33ff;
+  skill: #7e45ff;
+  honor: #853cff;
+  internship-experience: #6667ff;
+  work-experience: #8d33ff;
+  project-experience: #8d33ff;
+  self-def: #8d33ff;
+};
+each(@items, {
+  .@{key} {
+    margin-top: 12px;
+    h4{
+      background: url('~@/assets/images/resume/@{key}.png') no-repeat 0 0/98px 22px;
+      height: 22px;
+      margin-bottom: 16px;
+      span{
+        font-size: 14px;
+        color: #FFFFFF;
+        display: block;
+        padding-left: 22px;
+        background: url('~@/assets/images/resume/@{key}-icon.png') no-repeat 6px 3px/16px 16px;
+      }
+      div{
+        width: calc(100% - 22px);
+        height: 1px; 
+        background-color: @value;
+        margin-left: 22px;
+        margin-top: -1px;
+      }
+    }
+    h4 when (@key = self-def) {
+      background-size: 110px 22px;
+    }
+    h4 when(@key = employment-intention){
+      margin-bottom: 20px;
+    }
+  }
+});
+
+.content-section {
+  background: #f7f8ff;
+  width: 100%;
+  border-radius: 8px;
+  padding: 16px;
+  padding-bottom: 0;
+
+  & + & {
+    margin-top: 16px;
+  }
+}
+
+.content-text-area {
+  width: 100%;
+  padding-bottom: 26px !important;
+
+  textarea {
+    height: 110px !important;
+    resize: none;
+  }
+}
+
+.content-text-area-count {
+  position: relative;
+  top: -26px;
+  right: 8px;
+  display: inline-block;
+  height: 22px;
+  font-size: 14px;
+  color: #adb3cc;
+  line-height: 22px;
+}
+
+.append-btn-group {
+  margin-top: 32px;
+  border-top: 1px solid #8d33ff;
+  padding-top: 24px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  & > div {
+    width: 240px;
+    height: 32px;
+    background: #fff;
+    border-radius: 4px;
+    border: 1px solid #8d33ff;
+    cursor: pointer;
+    font-size: 14px;
+    color: #8d33ff;
+    text-align: center;
+    line-height: 32px;
+
+    span {
+      display: inline-block;
+      height: 22px;
+      line-height: 22px;
+      padding-left: 20px;
+      background-repeat: no-repeat;
+      background-position: 2px 3px;
+      background-size: 16px;
+    }
+
+    &:first-child span {
+      background-image: url('~@/assets/images/resume/project-experience-color-icon.png');
+    }
+
+    &:nth-child(2) span {
+      background-image: url('~@/assets/images/resume/self-def-color-icon.png');
+    }
+
+    &:last-child span {
+      background-image: url('~@/assets/images/resume/work-experience-color-icon.png');
+    }
+  }
+}
+
+.editable-title {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  padding-left: 12px;
+  width: 98px;
+  height: 22px;
+  color: #fff;
+}
+
+.container {
+  :global {
+    .ant-input,
+    .ant-picker-input > input {
+      font-size: 14px;
+    }
+    .ant-select-selector {
+      font-size: 14px !important;
+    }
+    .ant-input-number-input-wrap {
+      font-size: 14px;
+    }
+    label {
+      line-height: 40px;
+      height: 40px !important;
+    }
+  }
+}

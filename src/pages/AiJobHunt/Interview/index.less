@@ -1,0 +1,306 @@
+.interviewContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  font-family: PingFangSC, 'PingFang SC';
+  font-weight: 400;
+  font-size: 14px;
+  color: #333;
+  line-height: 22px;
+  text-align: left;
+  font-style: normal;
+
+  .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 54px;
+    margin-top: -8px;
+
+    :global {
+      .ant-btn-default {
+        height: 32px;
+        background: #fff;
+        border-radius: 4px;
+        border: 1px solid rgba(0, 0, 0, 25%);
+        font-family: PingFangSC, 'PingFang SC';
+        font-weight: 400;
+        font-size: 14px;
+        color: #333;
+        line-height: 18px;
+        text-align: left;
+        font-style: normal;
+      }
+    }
+
+    .topLeft {
+      display: flex;
+      align-items: center;
+      font-family: PingFangSC, 'PingFang SC';
+      font-weight: 400;
+      font-size: 14px;
+      color: #333;
+      line-height: 22px;
+      height: 22px;
+      text-align: left;
+      font-style: normal;
+
+      .verticalLine {
+        width: 1px;
+        height: 10px;
+        background: rgba(0, 0, 0, 15%);
+        border-radius: 1px;
+        margin: 0 8px;
+      }
+
+      img {
+        height: 16px;
+        width: 16px;
+        margin: 4px 0 2px;
+      }
+
+      :global {
+        .ant-btn-default {
+          box-shadow: none;
+          border: none;
+          padding: 0;
+          height: 22px !important;
+        }
+
+        .ant-btn > .anticon + span {
+          margin-inline-start: 0;
+        }
+      }
+    }
+  }
+
+  .box,
+  .aiAnswerBox,
+  .aiCommentBox {
+    padding: 16px 32px 16px 30px;
+    background: rgba(255, 255, 255, 80%);
+    border-radius: 8px;
+    white-space: break-spaces;
+    display: inline-block;
+
+    :global {
+      .Typewriter {
+        border: none;
+        padding: 0px;
+        margin: 0px;
+        width: 100%;
+        max-width: 700px;
+      }
+    }
+  }
+
+  .aiBox {
+    background: url('~@/assets/images/rebotIcon.png') no-repeat 0 0 / 24px 24px;
+    padding: 0 28px 0 40px;
+    margin-bottom: 16px;
+  }
+
+  .answerBox {
+    padding: 0 0 0 40px;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: end;
+
+    .box {
+      background: transparent;
+      padding: 0px;
+    }
+
+    img {
+      height: 24px;
+      width: 24px;
+      border-radius: 50%;
+      margin-left: 17px;
+    }
+  }
+
+  .aiAnswerBox,
+  .aiCommentBox {
+    margin: 0 40px 16px;
+
+    span {
+      font-weight: 500;
+    }
+  }
+
+  .content {
+    flex: 1;
+    background: linear-gradient(133deg, #e5f0ff 0%, #e9e9ff 100%);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    height: 0;
+
+    .interviewContent {
+      flex: 1;
+      overflow: auto;
+      padding: 32px;
+
+      p {
+        margin-bottom: 0;
+      }
+
+      .wel_box {
+        font-size: 16px;
+      }
+
+      .headTip {
+        width: 336px;
+        height: 24px;
+        font-family: PingFangSC, 'PingFang SC';
+        font-weight: 400;
+        font-size: 14px;
+        color: #959aa6;
+        line-height: 24px;
+        text-align: left;
+        font-style: normal;
+      }
+    }
+  }
+
+  .footer {
+    padding: 8px 72px;
+
+    .footerBtn {
+      display: flex;
+      margin-bottom: 8px;
+
+      :global {
+        .ant-btn-default {
+          width: 72px;
+          height: 32px;
+          margin-right: 8px;
+        }
+      }
+    }
+
+    .footerTip {
+      height: 18px;
+      font-family: PingFangSC, 'PingFang SC';
+      font-weight: 400;
+      font-size: 13px;
+      color: #868eb3;
+      line-height: 18px;
+      text-align: center;
+      font-style: normal;
+      margin: 20px 0 8px;
+    }
+
+    .inputArea {
+      background: #fff;
+      border-radius: 8px;
+      border: 1px solid #5a73ff;
+      padding: 14px 20px 0;
+      transition: border-radius 0.3s;
+      z-index: 200;
+      position: relative;
+
+      :global {
+        .ant-input-textarea-affix-wrapper.ant-input-affix-wrapper
+          .ant-input-suffix {
+          position: absolute;
+          right: 68px;
+          bottom: -8px;
+          width: 42px;
+          height: 12px;
+          font-family: PingFangSC, 'PingFang SC';
+          font-weight: 400;
+          font-size: 12px;
+          color: #868eb3;
+          line-height: 12px;
+          text-align: left;
+          font-style: normal;
+        }
+
+        .ant-input-affix-wrapper {
+          border-color: transparent;
+          resize: none;
+          min-height: 28px;
+
+          &:hover,
+          &:focus,
+          &:active,
+          &:not(:hover):not(:focus):not(:active) {
+            border-color: transparent;
+            box-shadow: none;
+          }
+        }
+      }
+    }
+
+    .inputFooter {
+      text-align: right;
+      height: 40px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-end;
+
+      div {
+        margin-right: 2px;
+        width: 68px;
+        height: 32px;
+        background: linear-gradient(90deg, #4d6cff 0%, #7772ff 100%);
+        border-radius: 4px;
+        font-weight: 400;
+        font-size: 14px;
+        color: #fff;
+        line-height: 32px;
+        text-align: center;
+        cursor: pointer;
+
+        &:hover {
+          background: linear-gradient(
+            90deg,
+            rgba(77, 108, 255, 70%) 0%,
+            rgba(119, 114, 255, 70%) 100%
+          );
+        }
+      }
+    }
+  }
+
+  .loadingCursor {
+    opacity: 1;
+    animation: blink 1s step-end 0s infinite;
+  }
+
+  @keyframes blink {
+    from,
+    to {
+      opacity: 1;
+    }
+
+    50% {
+      opacity: 0;
+    }
+  }
+}
+
+.delete-confirm {
+  :global {
+    .ant-btn-default {
+      border-radius: 4px;
+      background: rgb(242, 243, 245);
+      border-color: transparent !important;
+      &:hover {
+        opacity: 0.7;
+        color: #545e6e !important;
+      }
+    }
+    .ant-btn-primary {
+      border-color: transparent !important;
+      border-radius: 4px;
+      background: #5a73ff;
+      &:hover {
+        opacity: 0.7;
+        background: #5a73ff !important;
+        color: #fff !important;
+      }
+    }
+  }
+}
