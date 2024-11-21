@@ -323,7 +323,7 @@ const AiFVR: React.FC = ({}) => {
   }, [shouldPaste]);
   return (
     <div className={styles.aiFvr}>
-      <div className={styles.title}>果蔬识别</div>
+      <div className={styles.title} style={{ fontWeight: 600 }}>AI果蔬识别</div>
       <div className={styles.bottom}>
         <div className={styles.content}>
           <div className={state.isrec ? styles.aleft : styles.left}>

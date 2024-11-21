@@ -445,7 +445,7 @@ const AiOCR: React.FC = ({}) => {
 
   return (
     <div className={styles.aiOcr}>
-      <div className={styles.title}>文字识别</div>
+      <div className={styles.title} style={{ fontWeight: 600 }}>AI文字识别</div>
       <div className={styles.bottom}>
         <div className={styles.content}>
           <div className={state.isrec ? styles.aleft : styles.left}>

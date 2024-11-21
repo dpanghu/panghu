@@ -398,7 +398,7 @@ const AiLPR: React.FC = ({}) => {
 
   return (
     <div className={styles.aiLpr}>
-      <div className={styles.title}>车牌识别</div>
+      <div className={styles.title}>AI车牌识别</div>
       <div className={styles.bottom}>
         <div className={styles.content}>
           <div className={state.isrec ? styles.aleft : styles.left}>
