@@ -77,7 +77,7 @@ const UploadCmp: React.FC<Props> = ({}) => {
             showUploadList={false}
             // @ts-ignore
             seenOss={{
-              url: '/api/bus-xai/dbe3.private.params.upload.get',
+              url: '/api/xsuite/bucenter.file.upload.get',
               extraParams,
             }}
             onChange={onChange}

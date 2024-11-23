@@ -190,7 +190,7 @@ const AiLPR: React.FC = ({}) => {
     name: 'file',
     accept: '.jpg,.jpeg,.png,.bmp',
     seenOss: {
-      url: '/api/bus-xai/dbe3.private.params.upload.get',
+      url: '/api/xsuite/bucenter.file.upload.get',
       extraParams,
     },
     beforeUpload: (file: any) => {

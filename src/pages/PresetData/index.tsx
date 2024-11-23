@@ -164,7 +164,7 @@ const PresetData: React.FC<TProps> = ({}) => {
     // action: 'https://tapi.seentao.com/bus-xai/dbe3.private.params.upload.get',
     // data: extraParams,
     seenOss: {
-      url: '/api/bus-xai/dbe3.private.params.upload.get',
+      url: '/api/xsuite/bucenter.file.upload.get',
       extraParams,
     },
     customUploadSuccess: async (file: RcFile) => {

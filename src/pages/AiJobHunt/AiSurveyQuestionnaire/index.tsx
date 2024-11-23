@@ -82,7 +82,7 @@ const AiSurveyQuestionnaire: React.FC = () => {
     //上传文件
     const props: any = {
         seenOss: {
-            url: '/api/bus-xai/dbe3.private.params.upload.get',
+            url: '/api/xsuite/bucenter.file.upload.get',
             extraParams
         },
         name: 'file',
