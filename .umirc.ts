@@ -160,9 +160,24 @@ export default defineConfig({
       layout: false,
       routes: [
         {
+          path: '/IntelligentAssistant/application',
+          component: '@/pages/IntelligentAssistant/application',
+          title: '团队管理',
+        },
+        {
           path: '/IntelligentAssistant/teamManage',
           component: '@/pages/IntelligentAssistant/teamManage',
-          title: '团队管理',
+          title: '应用管理',
+        },
+        {
+          path: '/IntelligentAssistant/knowledge',
+          component: '@/pages/IntelligentAssistant/knowledge',
+          title: '知识库',
+        },
+        {
+          path: '/IntelligentAssistant/statistic',
+          component: '@/pages/IntelligentAssistant/statistic',
+          title: '数据统计',
         },
         // {
         //   path: '/aiJobHunt/resume/:id',

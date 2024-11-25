@@ -7,6 +7,7 @@ import layout3 from '@/assets/images/layout3.png';
 import layout4 from '@/assets/images/layout4.png';
 import { Table } from 'SeenPc';
 import { useOutlet } from '@umijs/max';
+import { history } from 'umi';
 import { getTeamList } from '@/services/aiassistant';
 import logos from '@/assets/images/seentao_logo.svg';
 interface TState {
@@ -23,19 +24,19 @@ const App: React.FC = () => {
     layoutData: [
       {
         name: '应用管理',
-        id: '1',
+        id: 'application',
       },
       {
         name: '知识库',
-        id: '2',
+        id: 'knowledge',
       },
       {
         name: '团队管理',
-        id: '3',
+        id: 'teamManage',
       },
       {
         name: '数据统计',
-        id: '4',
+        id: 'statistic',
       }
     ],
     currentLayout: '1'
@@ -45,25 +46,14 @@ const App: React.FC = () => {
     getTeamList({
       page: state.page,
       limit: state.limit,
-      userId: '95996487937818663',
-      userName: '13581731521',
-      userToken: '3dad8428b2d16fbf4b0207f099c496a9',
-      userType: 'PLATFORM',
-      memberId: '119223553064173608',
-      orgType: 'SCHOOL',
-      orgId: '119223501898383409',
-      schoolId: '119223501898383409',
-      memberType: 'TEACHER',
-      dbeCourseId: '102822587426836481',
-      orgCode: 'test_datasets_auth',
-      memberCode: '3123123',
-
     }).then((res: any) => {
       console.log(res);
     })
   }
 
   useMount(() => {
+    let location_url = window.location;
+    console.log(location_url);
   })
 
   const chooseLayout = (id: any) => {
@@ -104,6 +94,7 @@ const App: React.FC = () => {
             state.layoutData && state.layoutData.map((item: any, index: any) => {
               return <div onClick={() => {
                 chooseLayout(item.id);
+                history.push(`/IntelligentAssistant/${item.id}`);
               }} className={state.currentLayout === item.id ? styles.layout_boxs : styles.layout_box} key={item.id}>
                 <img className={styles.layout_img} src={index === 0 ? layout1 : index === 1 ? layout2 : index === 2 ? layout3 : layout4}></img>
                 {item.name}
