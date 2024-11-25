@@ -215,7 +215,14 @@ const App: React.FC = () => {
                             type: 'checkbox',
                             ...rowSelection,
                         }} rowKey={(item: any) => item.memberId} pagination={false} dataSource={state.data1} columns={column1}></Table>
-                        <Pagination pageSize={state.limit1} current={state.page1} total={state.total1} style={{ marginTop: 16, alignSelf: 'flex-end' }}></Pagination>
+                        <Pagination onChange={(page,limit)=> {
+                            state.page1 = page;
+                            getLists({
+                                page: state.page1,
+                                limit: state.limit,
+                                search: state.search,
+                            });
+                        }} pageSize={state.limit1} current={state.page1} total={state.total1} style={{ marginTop: 16, alignSelf: 'flex-end' }}></Pagination>
                     </div>
                 </div>
             </Modal>
