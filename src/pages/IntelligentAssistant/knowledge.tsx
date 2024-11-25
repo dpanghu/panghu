@@ -41,7 +41,6 @@ const App: React.FC = () => {
 
     useMount(() => {
         let qs: any = getQueryParam();
-        let accountId: any = '';
         if (qs.accountId !== void 0) {
             state.accountId = qs.accountId;
         } else {
@@ -56,7 +55,7 @@ const App: React.FC = () => {
             <iframe src={`http://10.10.16.33:1180/repo_simple_web/loginByWorkbench/${state.accountId}?qs=${
                base64.encode(
                 qs.stringify({
-                    route: 'knowledge',
+                    route: '/knowledge',
                     frame: 1,
                 }),
               )

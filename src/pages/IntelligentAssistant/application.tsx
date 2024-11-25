@@ -56,7 +56,7 @@ const App: React.FC = () => {
             <iframe src={`http://10.10.16.33:1180/repo_simple_web/loginByWorkbench/${state.accountId}?qs=${
                base64.encode(
                 qs.stringify({
-                    route: 'application',
+                    route: '/application',
                     frame: 1,
                 }),
               )
