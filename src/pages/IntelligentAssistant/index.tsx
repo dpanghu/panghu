@@ -39,7 +39,7 @@ const App: React.FC = () => {
         id: 'statistic',
       }
     ],
-    currentLayout: '1'
+    currentLayout: ''
   });
 
   const getList = () => {
@@ -51,9 +51,24 @@ const App: React.FC = () => {
     })
   }
 
+  const getSubstringAfterLastSlash = (str: any) => {
+    // 找到最后一个 '/' 的索引
+    const lastIndex = str.lastIndexOf('/');
+
+    // 检查是否找到了 '/'
+    if (lastIndex !== -1 && lastIndex < str.length - 1) {
+      // 使用 substring 获取最后一个 '/' 后面的内容
+      return str.substring(lastIndex + 1);
+    } else {
+      // 如果没有找到 '/'，则返回整个字符串或空字符串（根据需要调整）
+      return '';
+    }
+  }
+
   useMount(() => {
-    let location_url = window.location;
-    console.log(location_url);
+    let location_url = getSubstringAfterLastSlash(window.location.pathname);
+    state.currentLayout = location_url;
+    console.log(state.currentLayout);
   })
 
   const chooseLayout = (id: any) => {
