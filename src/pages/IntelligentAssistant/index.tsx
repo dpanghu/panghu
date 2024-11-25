@@ -111,23 +111,27 @@ const App: React.FC = () => {
             // eslint-disable-next-line array-callback-return
             state.layoutData && state.layoutData.map((item: any, index: any) => {
               return <div onClick={() => {
-                let qs: any = getQueryParam();
-                let accountId = '';
-                if (qs.accountId !== void 0) {
-                  accountId = qs.accountId;
-                } else {
-                  accountId = JSON.parse(
-                    (window.sessionStorage.getItem('commonDatas') as any) || '{}',
-                  ).accountId;
+                if (item.id !== 'teamManage') {
+                  let qsData: any = getQueryParam();
+                  let accountId = '';
+                  if (qsData.accountId !== void 0) {
+                    accountId = qsData.accountId;
+                  } else {
+                    accountId = JSON.parse(
+                      (window.sessionStorage.getItem('commonDatas') as any) || '{}',
+                    ).accountId;
+                  }
+                  chooseLayout(item.id);
+                  window.open(`http://10.10.16.33:1180/repo_simple_web/loginByWorkbench/${accountId}?qs=${base64.encode(
+                    qs.stringify({
+                      route: `/${item.id}`,
+                      frame: 1,
+                    }),
+                  )
+                    }`)
+                }else {
+                  history.push(`/IntelligentAssistant/${item.id}`);
                 }
-                chooseLayout(item.id);
-                window.open(`http://10.10.16.33:1180/repo_simple_web/loginByWorkbench/${accountId}?qs=${base64.encode(
-                  qs.stringify({
-                    route: `/${item.id}`,
-                    frame: 1,
-                  }),
-                )
-                  }`)
                 // history.push(`/IntelligentAssistant/${item.id}`);
               }} className={state.currentLayout === item.id ? styles.layout_boxs : styles.layout_box} key={item.id}>
                 <img className={styles.layout_img} src={index === 0 ? layout1 : index === 1 ? layout2 : index === 2 ? layout3 : layout4}></img>
