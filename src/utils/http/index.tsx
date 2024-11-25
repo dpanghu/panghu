@@ -44,6 +44,7 @@ class Axios {
       pluginCode,
       ...conf.params,
       ...commonData,
+      taskId: conf.params?.taskId == void 0 ? commonData.taskId : conf.params?.taskId,
     };
     if (conf.method?.toLocaleUpperCase() === 'POST') {
       if (conf.isFormData) {

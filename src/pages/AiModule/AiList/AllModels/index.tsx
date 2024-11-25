@@ -255,6 +255,7 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                 imageId: item.id,
                 dbeProjectVersionId: -1,
                 taskId: 0,
+                origin: 'application',
                 dataScope: JSON.parse(window.sessionStorage.getItem('commonDatas') as any || '{}').memberType == 'TEACHER' ? 'teacher' : 'stu',
                 userImg: '',
                 ...commonData,
