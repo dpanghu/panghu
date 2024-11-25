@@ -6,6 +6,9 @@ import layout2 from '@/assets/images/layout2.png';
 import layout3 from '@/assets/images/layout3.png';
 import layout4 from '@/assets/images/layout4.png';
 import { Table } from 'SeenPc';
+import { getQueryParam } from '@/utils/utils';
+import qs from 'qs';
+import { base64 } from 'seent-tools';
 import { useOutlet } from '@umijs/max';
 import { history } from 'umi';
 import { getTeamList } from '@/services/aiassistant';
@@ -108,8 +111,24 @@ const App: React.FC = () => {
             // eslint-disable-next-line array-callback-return
             state.layoutData && state.layoutData.map((item: any, index: any) => {
               return <div onClick={() => {
+                let qs: any = getQueryParam();
+                let accountId = '';
+                if (qs.accountId !== void 0) {
+                  accountId = qs.accountId;
+                } else {
+                  accountId = JSON.parse(
+                    (window.sessionStorage.getItem('commonDatas') as any) || '{}',
+                  ).accountId;
+                }
                 chooseLayout(item.id);
-                history.push(`/IntelligentAssistant/${item.id}`);
+                window.open(`http://10.10.16.33:1180/repo_simple_web/loginByWorkbench/${accountId}?qs=${base64.encode(
+                  qs.stringify({
+                    route: `/${item.id}`,
+                    frame: 1,
+                  }),
+                )
+                  }`)
+                // history.push(`/IntelligentAssistant/${item.id}`);
               }} className={state.currentLayout === item.id ? styles.layout_boxs : styles.layout_box} key={item.id}>
                 <img className={styles.layout_img} src={index === 0 ? layout1 : index === 1 ? layout2 : index === 2 ? layout3 : layout4}></img>
                 {item.name}
