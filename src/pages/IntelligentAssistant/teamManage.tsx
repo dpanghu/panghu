@@ -206,7 +206,7 @@ const App: React.FC = () => {
                     <div style={{ display: 'flex', marginTop: 16, flexDirection: 'column' }}>
                         <span style={{ marginBottom: 16, display: 'flex', alignItems: 'center' }}>用户名：<Input allowClear={true} value={state.search} onChange={(e: any) => state.search = e} suffix={<SearchOutlined onClick={() => {
                             getLists({
-                                page: state.page1,
+                                pageNum: state.page1,
                                 limit: state.limit1,
                                 search: state.search,
                             });
@@ -218,7 +218,7 @@ const App: React.FC = () => {
                         <Pagination onChange={(page,limit)=> {
                             state.page1 = page;
                             getLists({
-                                page: state.page1,
+                                pageNum: state.page1,
                                 limit: state.limit,
                                 search: state.search,
                             });
@@ -236,7 +236,7 @@ const App: React.FC = () => {
                     state.page1 = 1;
                     state.limit1 = 10;
                     getLists({
-                        page: 1,
+                        pageNum: 1,
                         limit: 10,
                         search: '',
                     });
