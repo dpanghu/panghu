@@ -6,6 +6,7 @@ export type AtlasInfo = {
   info: string;
   extractState: EXTRACT_STATUS;
   createState: CREATE_STATUS;
+  isCreated?: boolean;
 };
 
 export type GraphDataType = {
