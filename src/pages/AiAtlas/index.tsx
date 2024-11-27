@@ -177,6 +177,9 @@ const AiAtlas = ({}) => {
                   createRandomCase={createRandomCase}
                   extractMsg={extractMsg}
                   extractLoading={state.extractLoading}
+                  onTextChanged={() => {
+                    state.data = { ...state.data, isCreated: false };
+                  }}
                 />
               </div>
               <div className={styles['area-knowledge']}>
