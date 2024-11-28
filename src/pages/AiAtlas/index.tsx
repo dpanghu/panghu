@@ -134,6 +134,11 @@ const AiAtlas = ({}) => {
             state.extractLoading = false;
           })
           .catch(() => {
+            state.data = {
+              ...state.data,
+              extractState: EXTRACT_STATUS.ERROR,
+              info: '',
+            };
             state.extractLoading = false;
           });
       }
