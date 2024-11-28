@@ -33,6 +33,7 @@ export async function saveTeam(params?: RecordItem) {
     url: '/xai/aiassistant/account/add',
     method: 'POST',
     params,
+    isPlatform: true,
     isJSON: true,
   });
 }
