@@ -83,7 +83,7 @@ const JobHunt: React.FC = () => {
     const imgProps: any = {
         name: 'file',
         seenOss: {
-            url: '/api/bus-xai/dbe3.private.params.upload.get',
+            url: '/api/xsuite/bucenter.file.upload.get',
             extraParams,
         },
         beforeUpload: (file: any) => {

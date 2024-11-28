@@ -75,7 +75,6 @@ const App: React.FC = () => {
             memberId: '42084774565642240',
             schoolId: '100678506119168',
             classId: '1',
-            taskId: '2',
             paramId: state.patams,
             dbeProjectVersionId: '1'
         }).then((res: any) => {

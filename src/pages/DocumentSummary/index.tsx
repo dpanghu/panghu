@@ -329,7 +329,7 @@ const DocumentSummary: React.FC = () => {
     allowFileType: ['pdf', 'PDF'],
     allowFileSize: 1,
     seenOss: {
-      url: '/api/bus-xai/dbe3.private.params.upload.get',
+      url: '/api/xsuite/bucenter.file.upload.get',
       extraParams,
     },
     customUploadSuccess: async (file: RcFile) => {

@@ -22,7 +22,7 @@ const AiSurveyQuestionnaire: React.FC = () => {
 
     useEffect(() => {
         //获取问卷列表
-        getImportDataList({ taskId: 2, projectVersionId: 1, memberId, userId, schoolId, userToken }).then((res: any) => {
+        getImportDataList({ projectVersionId: 1, memberId, userId, schoolId, userToken }).then((res: any) => {
             const dataSource: any = [];
             for (let i = 0; i < res.length; i++) {
                 dataSource.push({
@@ -55,7 +55,7 @@ const AiSurveyQuestionnaire: React.FC = () => {
     const { memberId, userId, schoolId, userToken } = Param;
     //上传文件成功调用builder-导入数据接口
     const importDataMethod = (url: any) => {
-        importData({ url, projectVersionId: 1, taskId: 2, memberId, userId, schoolId, userToken }).then((res: any) => {
+        importData({ url, projectVersionId: 1,memberId, userId, schoolId, userToken }).then((res: any) => {
             message.success('上传成功');
             setOpenValue(true)
         }).catch((msg: any) => {
@@ -82,7 +82,7 @@ const AiSurveyQuestionnaire: React.FC = () => {
     //上传文件
     const props: any = {
         seenOss: {
-            url: '/api/bus-xai/dbe3.private.params.upload.get',
+            url: '/api/xsuite/bucenter.file.upload.get',
             extraParams
         },
         name: 'file',
@@ -129,7 +129,7 @@ const AiSurveyQuestionnaire: React.FC = () => {
         } else {
             setIsModalOpen(true);
             //查询builder-问卷设置信息接口
-            getQuestionnaire({ classId: 1, taskId: 2, projectVersionId: 1, memberId, userId, schoolId, userToken }).then((res: any) => {
+            getQuestionnaire({ classId: 1, projectVersionId: 1, memberId, userId, schoolId, userToken }).then((res: any) => {
                 if (res.question) {
                     setChioceValue(res.question.name)
                     setChioceValueID(res.question.id)
@@ -226,7 +226,7 @@ const AiSurveyQuestionnaire: React.FC = () => {
                         arr[i].portfolio = clone[i].inputValue;
                     }
                     const val = JSON.stringify({ "questionId": chioceValueID, "portfolios": arr });
-                    saveQuestionnaire({ name: values.titleValue, content: values.contentValue, endtips: values.conclusionValue, bind: promptValue, portfolio: val, projectVersionId: 1, taskId: 2, memberId, userId, schoolId, userToken }).then((res) => {
+                    saveQuestionnaire({ name: values.titleValue, content: values.contentValue, endtips: values.conclusionValue, bind: promptValue, portfolio: val, projectVersionId: 1, memberId, userId, schoolId, userToken }).then((res) => {
                         message.success('保存成功');
                     })
                     setIsModalOpen(false);
@@ -234,7 +234,7 @@ const AiSurveyQuestionnaire: React.FC = () => {
             } else if (promptValue === '') {
                 message.error('请选择是否绑定题目');
             } else if (promptValue === '0') {
-                saveQuestionnaire({ name: values.titleValue, content: values.contentValue, endtips: values.conclusionValue, bind: promptValue, portfolio: noValue, projectVersionId: 1, taskId: 2, memberId, userId, schoolId, userToken }).then((res) => {
+                saveQuestionnaire({ name: values.titleValue, content: values.contentValue, endtips: values.conclusionValue, bind: promptValue, portfolio: noValue, projectVersionId: 1, memberId, userId, schoolId, userToken }).then((res) => {
                     message.success('保存成功');
                 })
                 setIsModalOpen(false);
@@ -319,9 +319,9 @@ const AiSurveyQuestionnaire: React.FC = () => {
     const handleOkss = () => {
         setIsModalOpenss(false);
         //builder-删除导入数据接口
-        deleteImportData({ taskId: 2, projectVersionId: 1, memberId, userId, schoolId, userToken }).then((res: any) => {
+        deleteImportData({ projectVersionId: 1, memberId, userId, schoolId, userToken }).then((res: any) => {
             //删除后调用列表接口
-            getImportDataList({ taskId: 2, projectVersionId: 1, memberId, userId, schoolId, userToken }).then((res: any) => {
+            getImportDataList({  projectVersionId: 1, memberId, userId, schoolId, userToken }).then((res: any) => {
                 const dataSource: any = [];
                 for (let i = 0; i < res.length; i++) {
                     dataSource.push({
@@ -365,7 +365,7 @@ const AiSurveyQuestionnaire: React.FC = () => {
     // 获取列表题目
     const getList = () => {
         // builder-查询导入数据列表接口
-        getImportDataList({ taskId: 2, projectVersionId: 1, memberId, userId, schoolId, userToken }).then((res: any) => {
+        getImportDataList({  projectVersionId: 1, memberId, userId, schoolId, userToken }).then((res: any) => {
             const dataSource: any = [];
             for (let i = 0; i < res.length; i++) {
                 dataSource.push({

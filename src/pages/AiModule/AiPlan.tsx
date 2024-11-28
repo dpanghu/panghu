@@ -132,32 +132,32 @@ const App: React.FC = () => {
 
     const save = (values: any) => {
         let arr: any = [];
-        console.log('2222222222',values);
+        console.log('2222222222', values);
         // eslint-disable-next-line @typescript-eslint/no-unused-expressions, array-callback-return
         values && values.map((el: any) => {
             let obj: any = {};
-            if(el.type === 'radio') {
+            if (el.type === 'radio') {
                 // eslint-disable-next-line array-callback-return, @typescript-eslint/no-unused-expressions, eqeqeq
-                let chooseInput: any =  el.options.find((el: any) => el.needInput == 1);;
+                let chooseInput: any = el.options.find((el: any) => el.needInput == 1);;
                 // eslint-disable-next-line @typescript-eslint/no-unused-expressions, array-callback-return
-                if(chooseInput !== void 0) {
+                if (chooseInput !== void 0) {
                     // eslint-disable-next-line eqeqeq
-                    if(chooseInput.id == el.value) {
+                    if (chooseInput.id == el.value) {
                         obj.answerInput = chooseInput.needValue
                     }
                 }
                 obj.questionId = el.id;
                 obj.answerOptionIds = el.value;
-            }else if(el.type === 'input') {
+            } else if (el.type === 'input') {
                 obj.questionId = el.id;
                 obj.answerInput = el.value;
-            }else if(el.type == 'checkbox') {
+            } else if (el.type == 'checkbox') {
                 obj.questionId = el.id;
                 obj.answerOptionIds = el.value.join(',');
             }
             arr.push(obj);
         })
-        console.log('values',arr);
+        console.log('values', arr);
         saveAnswer({
             answer: JSON.stringify(arr),
             userId: '42084774553583616',
@@ -165,14 +165,13 @@ const App: React.FC = () => {
             memberId: '42084774565642240',
             schoolId: '100678506119168',
             classId: '1',
-            taskId: '2',
             paramId: state.patams,
             dbeProjectVersionId: '1'
         }).then((res: any) => {
             message.success('保存成功');
             console.log(res);
-            window.sessionStorage.setItem('portfolio',res.portfolio);
-            window.sessionStorage.setItem('portrait',res.portrait);
+            window.sessionStorage.setItem('portfolio', res.portfolio);
+            window.sessionStorage.setItem('portrait', res.portrait);
             history.push('/AiPlanPeople');
         });
     }
@@ -181,15 +180,18 @@ const App: React.FC = () => {
         getConvertParamId({}).then((res: any) => {
             state.patams = res;
         });
-        getQuestion({
+        let send: any = {
             userId: '42084774553583616',
             userToken: '2ba4dcfc10abe43a03e7253e8ed53998',
             memberId: '42084774565642240',
             schoolId: '100678506119168',
             classId: '1',
-            taskId: '2',
             dbeProjectVersionId: '1'
-        }).then((res: any) => {
+        };
+        if (JSON.parse(window.sessionStorage.getItem('commonDatas') as any || '{}').origin == 'application') {
+            send.taskId = 0;
+        }
+        getQuestion({ ...send }).then((res: any) => {
             console.log(res);
             let arr: any = [];
             let types: any = {
@@ -197,7 +199,7 @@ const App: React.FC = () => {
                 'SINGLE_CHOICE': 'radio',
                 'MULTI_CHOICE': 'checkbox'
             }
-            
+
             // eslint-disable-next-line @typescript-eslint/no-unused-expressions, array-callback-return
             res.questionList && res.questionList.map((item: any) => {
                 if (item.options) {

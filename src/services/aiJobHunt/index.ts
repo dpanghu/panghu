@@ -224,6 +224,14 @@ export async function getAICardDetail<T>(params?: RecordItem): Promise<T> {
     params,
   });
 }
+//查询可编辑AI插件列表
+export async function getAICardDetails<T>(params?: RecordItem): Promise<T> {
+  return $axios.request({
+    url: '/xai/plugin/released/list',
+    method: 'GET',
+    params,
+  });
+}
 //删除插件
 export async function deletePlugin<T>(params?: RecordItem): Promise<T> {
   return $axios.request({

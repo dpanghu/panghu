@@ -9,6 +9,7 @@ type Props = {
   extractLoading: boolean;
   extractMsg: (msg: string) => void;
   createRandomCase: () => void;
+  onTextChanged: () => void;
 };
 const TextContent: React.FC<Props> = ({
   createRandomCase,
@@ -16,6 +17,7 @@ const TextContent: React.FC<Props> = ({
   isFirst,
   content,
   extractLoading,
+  onTextChanged,
 }) => {
   const [value, setValue] = useState<string>('');
 
@@ -43,6 +45,7 @@ const TextContent: React.FC<Props> = ({
             if (isFirst) {
               localStorage.setItem(LS_NAME, val);
             }
+            onTextChanged();
             setValue(val);
           }}
           maxLength={600}

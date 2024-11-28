@@ -6,7 +6,7 @@ import layout2 from '@/assets/images/layout2.png';
 import layout3 from '@/assets/images/layout3.png';
 import layout4 from '@/assets/images/layout4.png';
 import { Table, Button, Modal, ComboBox, Input, Pagination } from 'SeenPc';
-import { getTeamList, delTeams, getAllTeam,  saveTeam } from '@/services/aiassistant';
+import { getTeamList, delTeams, getAllTeam, saveTeam } from '@/services/aiassistant';
 import logos from '@/assets/images/seentao_logo.svg';
 import { SearchOutlined } from '@ant-design/icons';
 import { message } from 'antd';
@@ -24,13 +24,15 @@ interface TState {
     search: any;
     data: any;
     open: any;
-    totla: any;
+    currentRole: any;
+    total: any;
     selectedRowKeys: any;
     selectedRowKeys1: any;
     team_id: any;
     account_id: any;
     data1: any;
     open1: any;
+
 }
 const role: any = {
     'normal': '普通用户',
@@ -42,6 +44,7 @@ const App: React.FC = () => {
         page: 1,
         limit: 10,
         page1: 1,
+        currentRole: '',
         selectedRowKeys1: [],
         role: 'normal',
         total: 0,
@@ -100,6 +103,10 @@ const App: React.FC = () => {
     }
 
     useMount(() => {
+        state.currentRole = JSON.parse(
+            (window.sessionStorage.getItem('commonDatas') as any) || '{}',
+        ).currentRole;
+        console.log('222',state.currentRole);
         getList();
     })
 
@@ -128,13 +135,13 @@ const App: React.FC = () => {
         {
             title: '操作',
             render: (item: any) => {
-                return <div onClick={() => { 
-                    if(item.role == 'owner') {
-                       message.warning('该角色为超级管理员，无法进行移除');
-                    }else {
+                return <div onClick={() => {
+                    if (item.role == 'owner') {
+                        message.warning('该角色为超级管理员，无法进行移除');
+                    } else {
                         state.open = true; state.account_id = item.account_id
                     }
-                 }} style={{ cursor: "pointer", color: '#5a73ff' }}>移除</div>
+                }} style={{ cursor: "pointer", color: '#5a73ff',display: state.currentRole == 'normal' ? 'none' : 'flex' }}>移除</div>
             }
         },
     ]
@@ -153,7 +160,7 @@ const App: React.FC = () => {
 
     const rowSelection = {
         selectedRowKeys: state.selectedRowKeys,
-        onChange: (item: any, items: any)=> {
+        onChange: (item: any, items: any) => {
             console.log(items);
             state.selectedRowKeys = item;
             state.selectedRowKeys1 = items;
@@ -174,9 +181,9 @@ const App: React.FC = () => {
             }} open={state.open} width={380}>
                 <div style={{ fontSize: 15, marginLeft: 12 }}>确定移除该用户吗</div>
             </Modal>
-            <Modal title='邀请成员' onCancel={() => { state.open1 = false }} onOk={() => {
+            <Modal title='邀请成员' onCancel={() => { getList(); state.open1 = false }} onOk={() => {
                 let members: any = [];
-                state.selectedRowKeys1 && state.selectedRowKeys1.map((el: any)=> {
+                state.selectedRowKeys1 && state.selectedRowKeys1.map((el: any) => {
                     members.push({
                         cloud_user_id: el.userId,
                         name: el.memberName,
@@ -186,10 +193,11 @@ const App: React.FC = () => {
                 saveTeam({
                     role: state.role,
                     members: members,
-                }).then(()=> {
-                    message.success('保存成功');
-                    state.open1 = false;
-                    getList();
+                }).then((res: any) => {
+                    console.log(res);
+                    message.success(res.msg);
+                    // state.open1 = false;
+                    // getList();
                 })
             }} open={state.open1}>
                 <div style={{ display: 'flex', flexDirection: 'column', padding: 16 }}>
@@ -206,7 +214,7 @@ const App: React.FC = () => {
                     <div style={{ display: 'flex', marginTop: 16, flexDirection: 'column' }}>
                         <span style={{ marginBottom: 16, display: 'flex', alignItems: 'center' }}>用户名：<Input allowClear={true} value={state.search} onChange={(e: any) => state.search = e} suffix={<SearchOutlined onClick={() => {
                             getLists({
-                                page: state.page1,
+                                pageNum: state.page1,
                                 limit: state.limit1,
                                 search: state.search,
                             });
@@ -215,13 +223,20 @@ const App: React.FC = () => {
                             type: 'checkbox',
                             ...rowSelection,
                         }} rowKey={(item: any) => item.memberId} pagination={false} dataSource={state.data1} columns={column1}></Table>
-                        <Pagination pageSize={state.limit1} current={state.page1} total={state.total1} style={{ marginTop: 16, alignSelf: 'flex-end' }}></Pagination>
+                        <Pagination onChange={(page, limit) => {
+                            state.page1 = page;
+                            getLists({
+                                pageNum: state.page1,
+                                limit: state.limit,
+                                search: state.search,
+                            });
+                        }} pageSize={state.limit1} current={state.page1} total={state.total1} style={{ marginTop: 16, alignSelf: 'flex-end' }}></Pagination>
                     </div>
                 </div>
             </Modal>
             <div style={{ display: 'flex', width: '100%', paddingLeft: 0, marginBottom: 20, justifyContent: 'space-between' }}>
                 <div>我的团队</div>
-                <Button type='primary' onClick={() => {
+                <Button style={{ display: state.currentRole == 'normal' ? 'none' : 'flex' }} type='primary' onClick={() => {
                     state.open1 = true;
                     state.selectedRowKeys = [];
                     state.selectedRowKeys1 = [];
@@ -229,17 +244,17 @@ const App: React.FC = () => {
                     state.page1 = 1;
                     state.limit1 = 10;
                     getLists({
-                        page: 1,
+                        pageNum: 1,
                         limit: 10,
                         search: '',
                     });
                 }}>邀请成员</Button>
             </div>
             <Table pagination={false} dataSource={state.data} columns={column}></Table>
-            <div style={{ width:'100%',display:'flex',justifyContent:'flex-end' }}>
-            <Pagination pageSize={state.limit} current={state.page} total={state.total} style={{ marginTop: 16 }}></Pagination>
+            <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
+                <Pagination pageSize={state.limit} current={state.page} total={state.total} style={{ marginTop: 16 }}></Pagination>
             </div>
-            
+
         </div>
     );
 };

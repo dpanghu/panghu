@@ -22,6 +22,7 @@ const KnowledgeGraph: React.FC<Props> = ({ data }) => {
   console.log(isFullscreen);
 
   useMount(() => {
+    console.time();
     const container = document.getElementById('graph');
     if (!container) return;
     const width = container.scrollWidth;
@@ -109,6 +110,7 @@ const KnowledgeGraph: React.FC<Props> = ({ data }) => {
     graphObj.data(data);
     graphObj.render();
     graphObj.on('afterrender', () => {
+      console.timeEnd();
       graphObj.fitView();
     });
     graph.current = graphObj;

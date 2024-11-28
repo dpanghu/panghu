@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Card } from 'antd';
-import { getAICardDetail, deletePlugin, copyPlugin, publishPlugin } from '@/services/aiJobHunt'
+import { getAICardDetails, deletePlugin, copyPlugin, publishPlugin } from '@/services/aiJobHunt'
 import styles from './index.less';
 import { Dropdown, Space } from 'antd';
 import eyeImg from '@/assets/images/eye.png';
@@ -45,7 +45,7 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
         [keyToDelete]: !publishedStates[keyToDelete],
       });
       if (activeKey && activesKey) {
-        getAICardDetail({
+        getAICardDetails({
           userId: 1,
           userToken: 2,
           schoolId: 3,
@@ -57,7 +57,7 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
           setData(res);
         });
       } else if (activeKey && activesKey === null) {
-        getAICardDetail({
+        getAICardDetails({
           userId: 1,
           userToken: 2,
           schoolId: 3,
@@ -73,7 +73,7 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
   useEffect(() => {
     // 根据参数获取不同AI数据
     if (activeKey && activesKey) {
-      getAICardDetail({
+      getAICardDetails({
         userId: 1,
         userToken: 2,
         schoolId: 3,
@@ -86,7 +86,7 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
       });
     }
     else if (activeKey && activesKey === null) {
-      getAICardDetail({
+      getAICardDetails({
         userId: 1,
         userToken: 2,
         schoolId: 3,
@@ -135,7 +135,7 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
           content: '复制成功',
         });
         if (activeKey && activesKey) {
-          getAICardDetail({
+          getAICardDetails({
             userId: 1,
             userToken: 2,
             schoolId: 3,
@@ -148,7 +148,7 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
           });
         }
         else if (activeKey && activesKey === null) {
-          getAICardDetail({
+          getAICardDetails({
             userId: 1,
             userToken: 2,
             schoolId: 3,
@@ -255,6 +255,7 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                 imageId: item.id,
                 dbeProjectVersionId: -1,
                 taskId: 0,
+                origin: 'application',
                 dataScope: JSON.parse(window.sessionStorage.getItem('commonDatas') as any || '{}').memberType == 'TEACHER' ? 'teacher' : 'stu',
                 userImg: '',
                 ...commonData,

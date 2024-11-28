@@ -48,18 +48,6 @@ export function getCommonData() {
       (window.sessionStorage.getItem('commonDatas') as any) || '{}',
     );
   } else {
-    // const { schoolMemberId ,schoolId, userId, userName, memberId, userToken, userType, classId, platformCode  } = qs;
-    // commonData = {
-    //   schoolMemberId,
-    //   schoolId,
-    //   userId,
-    //   userName,
-    //   memberId,
-    //   userToken,
-    //   userType,
-    //   classId,
-    //   platformCode
-    // }
     window.sessionStorage.setItem('commonDatas', JSON.stringify(qs));
     commonData = qs;
   }
