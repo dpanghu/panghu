@@ -110,10 +110,6 @@ const App: React.FC = () => {
         getList();
     })
 
-    const chooseLayout = (id: any) => {
-        state.currentLayout = id;
-    }
-
     const column = [
         {
             title: '姓名',
