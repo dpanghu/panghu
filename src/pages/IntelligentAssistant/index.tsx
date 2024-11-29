@@ -18,12 +18,16 @@ interface TState {
   currentLayout: any;
   page: any;
   limit: any;
+  headImgUrl: any;
+  schoolName: any;
 }
 const App: React.FC = () => {
   const outlet = useOutlet();
   const state = useReactive<TState>({
     page: 1,
     limit: 10,
+    headImgUrl: '',
+    schoolName: '',
     layoutData: [
       {
         name: '应用管理',
@@ -71,7 +75,20 @@ const App: React.FC = () => {
   useMount(() => {
     let location_url = getSubstringAfterLastSlash(window.location.pathname);
     state.currentLayout = location_url;
-    console.log(state.currentLayout);
+    let qs: any = getQueryParam();
+    console.log(qs);
+    if (qs.headImgUrl !== void 0) {
+      state.headImgUrl = qs.headImgUrl;
+      state.schoolName = qs.schoolName;
+    } else {
+      state.headImgUrl = JSON.parse(
+        (window.sessionStorage.getItem('commonDatas') as any) || '{}',
+      ).headImgUrl;
+      state.headImgUrl = JSON.parse(
+        (window.sessionStorage.getItem('commonDatas') as any) || '{}',
+      ).schoolName;
+    }
+      console.log(state.currentLayout);
   })
 
   const chooseLayout = (id: any) => {
@@ -101,8 +118,10 @@ const App: React.FC = () => {
       <div className={styles.head}>
         <div className={styles.head_title}><img src={logos} style={{ width: 40, height: 25, marginLeft: 0, marginRight: 6 }}></img>新道教育知识库</div>
         <div className={styles.head_right}>
-          <span>四川大学</span>
-          <div className={styles.average_img}></div>
+          <span>{state.schoolName}</span>
+          <div className={styles.average_img}>
+            <img style={{ width:'100%',height:'100%' }} src={state.headImgUrl}></img>
+          </div>
         </div>
       </div>
       <div className={styles.content}>
@@ -129,7 +148,7 @@ const App: React.FC = () => {
                     }),
                   )
                     }`)
-                }else {
+                } else {
                   history.push(`/IntelligentAssistant/${item.id}`);
                 }
                 // history.push(`/IntelligentAssistant/${item.id}`);

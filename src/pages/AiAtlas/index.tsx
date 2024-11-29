@@ -87,10 +87,12 @@ const AiAtlas = ({}) => {
         );
         getAtlasHistory().then((rst) => {
           if (rst) {
-            state.data = rst;
-            if (rst.createState === CREATE_STATUS.GENERATED) {
-              generateGraph(JSON.parse(rst.info));
-            }
+            state.data = {
+              ...rst,
+              isCreated: true,
+              createState: CREATE_STATUS.UNGENERATED,
+              extractState: EXTRACT_STATUS.PENDING,
+            };
           }
         });
         state.loading = false;
@@ -107,25 +109,39 @@ const AiAtlas = ({}) => {
       ...state.data,
       createState: CREATE_STATUS.UNGENERATED,
     };
-    if (userMessage) {
-      extractKnowledge({
-        userMessage,
-        pluginCode: PluginCode,
-        id: state?.data?.id || '',
-      })
-        .then((rst) => {
-          if (rst) {
+    if (state.data.isCreated) {
+      state.data = {
+        ...state.data,
+        extractState: EXTRACT_STATUS.SUCCESS,
+        isCreated: false,
+      };
+      state.extractLoading = false;
+    } else {
+      if (userMessage) {
+        extractKnowledge({
+          userMessage,
+          pluginCode: PluginCode,
+          id: state?.data?.id || '',
+        })
+          .then((rst) => {
+            if (rst) {
+              state.data = {
+                ...state.data,
+                extractState: EXTRACT_STATUS.SUCCESS,
+                info: rst.info,
+              };
+            }
+            state.extractLoading = false;
+          })
+          .catch(() => {
             state.data = {
               ...state.data,
-              extractState: EXTRACT_STATUS.SUCCESS,
-              info: rst.info,
+              extractState: EXTRACT_STATUS.ERROR,
+              info: '',
             };
-          }
-          state.extractLoading = false;
-        })
-        .catch(() => {
-          state.extractLoading = false;
-        });
+            state.extractLoading = false;
+          });
+      }
     }
   };
 
@@ -139,8 +155,12 @@ const AiAtlas = ({}) => {
       getRandomCase({ id: randomId.current, pluginCode: PluginCode }).then(
         (rst) => {
           randomId.current = rst.id;
-          state.data = rst;
-          generateGraph(JSON.parse(state.data!.info));
+          state.data = {
+            ...rst,
+            isCreated: true,
+            extractState: EXTRACT_STATUS.PENDING,
+            createState: CREATE_STATUS.UNGENERATED,
+          };
         },
       );
     }, 0);
@@ -162,6 +182,9 @@ const AiAtlas = ({}) => {
                   createRandomCase={createRandomCase}
                   extractMsg={extractMsg}
                   extractLoading={state.extractLoading}
+                  onTextChanged={() => {
+                    state.data = { ...state.data, isCreated: false };
+                  }}
                 />
               </div>
               <div className={styles['area-knowledge']}>
