@@ -88,7 +88,7 @@ const App: React.FC = () => {
             console.log(res);
             state.data = res.data;
             state.team_id = res.team_id;
-            state.total1 = Number(res.total);
+            state.total = Number(res.total);
         })
     }
 
@@ -248,7 +248,11 @@ const App: React.FC = () => {
             </div>
             <Table pagination={false} dataSource={state.data} columns={column}></Table>
             <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
-                <Pagination pageSize={state.limit} current={state.page} total={state.total} style={{ marginTop: 16 }}></Pagination>
+                <Pagination onChange={(page, limit) => {
+                            state.page = page;
+                            state.limit = limit;
+                            getList();
+                        }} pageSize={state.limit} current={state.page} total={state.total} style={{ marginTop: 16 }}></Pagination>
             </div>
 
         </div>
