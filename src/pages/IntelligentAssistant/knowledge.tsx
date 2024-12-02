@@ -52,7 +52,7 @@ const App: React.FC = () => {
 
     return (
         <div className={styles.container} >
-            <iframe  style={{ width:'100%',height:'100%',border:'none' }}  src={`/repo_simple_web/loginByWorkbench/${state.accountId}?qs=${
+            <iframe  style={{ width:'100%',height:'100%',border:'none' }}  src={`https://dbigm1.seentao.com/repo_simple_web/repo_simple_web/loginByWorkbench/${state.accountId}?qs=${
                base64.encode(
                 qs.stringify({
                     route: '/knowledge',
