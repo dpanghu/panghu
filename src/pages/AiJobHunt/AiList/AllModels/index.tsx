@@ -244,6 +244,9 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
         {data.map((item: any) => (
           <Card.Grid key={item.id} className={styles.card} hoverable={true}>
             <div className={styles.cardContent}>
+              <div className={item.status == 0 ? styles.cardStatus1 : styles.cardStatus}>
+                {item.status == 0 ? '已发布': '未发布'}
+              </div>
               <div className={styles.left}>
                 <img src={item.icon} alt="" />
               </div>

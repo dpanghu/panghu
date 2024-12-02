@@ -76,6 +76,7 @@ const App: React.FC = () => {
     let location_url = getSubstringAfterLastSlash(window.location.pathname);
     state.currentLayout = location_url;
     let qs: any = getQueryParam();
+    console.log(qs);
     if (qs.headImgUrl !== void 0) {
       state.headImgUrl = qs.headImgUrl;
       state.schoolName = qs.schoolName;
