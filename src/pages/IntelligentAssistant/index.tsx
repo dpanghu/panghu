@@ -87,7 +87,7 @@ const App: React.FC = () => {
         (window.sessionStorage.getItem('commonDatas') as any) || '{}',
       ).schoolName;
     }
-      console.log(state.currentLayout);
+    console.log(state.currentLayout);
   })
 
   const chooseLayout = (id: any) => {
@@ -119,7 +119,7 @@ const App: React.FC = () => {
         <div className={styles.head_right}>
           <span>{state.schoolName}</span>
           <div className={styles.average_img}>
-            <img style={{ width:'100%',height:'100%' }} src={state.headImgUrl}></img>
+            <img style={{ width: '100%', height: '100%' }} src={state.headImgUrl}></img>
           </div>
         </div>
       </div>
@@ -140,13 +140,14 @@ const App: React.FC = () => {
                     ).accountId;
                   }
                   chooseLayout(item.id);
-                  window.open(`http://10.10.16.33:1180/repo_simple_web/loginByWorkbench/${accountId}?qs=${base64.encode(
-                    qs.stringify({
-                      route: `/${item.id}`,
-                      frame: 1,
-                    }),
-                  )
-                    }`)
+                  history.push(`/IntelligentAssistant/${item.id}`);
+                  // window.open(`http://10.10.16.33:1180/repo_simple_web/loginByWorkbench/${accountId}?qs=${base64.encode(
+                  //   qs.stringify({
+                  //     route: `/${item.id}`,
+                  //     frame: 1,
+                  //   }),
+                  // )
+                  //   }`)
                 } else {
                   history.push(`/IntelligentAssistant/${item.id}`);
                 }
