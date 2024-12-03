@@ -129,6 +129,12 @@ const App: React.FC = () => {
             }
         },
         {
+            title: '用户类型',
+            render: (item: any) => {
+                return <div>{item.user_mode == 'online' ? '公有云用户' : '混合云用户'}</div>
+            }
+        },
+        {
             title: '操作',
             render: (item: any) => {
                 return <div onClick={() => {
