@@ -98,6 +98,12 @@ export default defineConfig({
       layout: false,
     },
     {
+      path: '/aiJobHunt/AiListTable',
+      component: '@/pages/AiJobHunt/AiListTable',
+      title: 'XAI | ai列表表格',
+      layout: false,
+    },
+    {
       path: '/documentSummary',
       component: '@/pages/DocumentSummary',
       title: 'AI文档总结',

@@ -51,7 +51,7 @@ const AiList: React.FC = () => {
   }
   //点击搜索
   const handleSearchClick = (val: any) => {
-    setSearchValue(val)
+    setSearchValue(val);
   }
   //scrollKey传到子组件后，子组件重新渲染，scrollKey清空
   const deletes = setInterval(() => {
@@ -110,6 +110,9 @@ const AiList: React.FC = () => {
                     value={value}
                     onChange={(e: any) => {
                       setvalue(e);
+                      if (e === '') {
+                        setSearchValue('');
+                      }
                     }}
                     size="medium"
                   ></Input>
