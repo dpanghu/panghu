@@ -129,12 +129,21 @@ const App: React.FC = () => {
             }
         },
         {
+            title: '用户类型',
+            render: (item: any) => {
+                return <div>{item.user_mode == 'online' ? '公有云用户' : '混合云用户'}</div>
+            }
+        },
+        {
             title: '操作',
             render: (item: any) => {
                 return <div onClick={() => {
                     if (item.role == 'owner') {
                         message.warning('该角色为超级管理员，无法进行移除');
-                    } else {
+                    }else if(item.user_mode == 'offline') {
+                        message.warning('该账号无法移除');
+                    } 
+                    else {
                         state.open = true; state.account_id = item.account_id
                     }
                 }} style={{ cursor: "pointer", color: '#5a73ff',display: state.currentRole == 'normal' ? 'none' : 'flex' }}>移除</div>

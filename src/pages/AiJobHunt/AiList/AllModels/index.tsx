@@ -25,7 +25,7 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
 
   // 处理发布按钮点击事件
   const handlePublishClick = (keyToDelete: string) => {
-    const state = publishedStates[keyToDelete] ? 'unrelase' : 'normal';
+    const state = publishedStates[keyToDelete] ? 'unrelase' : 'auditing';
     publishPlugin({
       userId: 1,
       userToken: 2,
@@ -36,7 +36,7 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
     }).then((res) => {
       messageApi.open({
         type: 'success',
-        content: publishedStates[keyToDelete] ? '取消发布成功' : '发布成功',
+        content: publishedStates[keyToDelete] ? '取消发布成功' : '发布成功,待审核',
       });
       setPublishedStates({
         ...publishedStates,
