@@ -32,6 +32,7 @@ import Typewriter, { type TypewriterClass } from 'typewriter-effect';
 import { history } from 'umi';
 import EventSourceStream from '../AiJobHunt/Home/DialogArea/EventSourceStream';
 import styles from './AiScene.less';
+import { qs } from 'seent-tools';
 // import SpeechInputComponent from '../Recognition/index';
 
 interface TState {
@@ -395,12 +396,17 @@ const JobHunt: React.FC = () => {
       state.patams = res;
     });
     let qsData: any = getQueryParam();
-    window.sessionStorage.setItem('commonDatas', JSON.stringify(qsData));
+    if (qsData.userId == void 0) {
+      qsData = JSON.parse(window.sessionStorage.getItem('commonDatas') as any || '{}');
+    }else {
+      window.sessionStorage.setItem('commonDatas', JSON.stringify(qsData));
+    }
     // 如果是预置数据界面，不需要调用接口
     if (qsData.isPreset) {
       history.push('/presetData');
       return;
     }
+
     getPluginDetail({
       id: qsData.imageId,
       userId: '1',
@@ -467,7 +473,7 @@ const JobHunt: React.FC = () => {
     }).then((res: any) => {
       setSatisfaction({
         satisfied,
-        messageId: res?.messageId 
+        messageId: res?.messageId
       })
     });
   }
@@ -622,14 +628,14 @@ const JobHunt: React.FC = () => {
                     <div
                       className={styles.warningBox}
                       style={{ marginTop: 24 }}
-                      
+
                     >
                       <img
                         src={aiimg}
                         style={{ width: 24, height: 24, marginRight: 16 }}
                       ></img>
                       <div className={styles.finallText}>
-                        <img src={receive_icon} style={{ position:'absolute',width: 15, left: -12,height: 18, top: -1 }}></img>
+                        <img src={receive_icon} style={{ position: 'absolute', width: 15, left: -12, height: 18, top: -1 }}></img>
                         <RcMarkdown content={state.messageData}></RcMarkdown>
                         <div className={styles.finallTextBottom}>
                           <div>
@@ -658,7 +664,7 @@ const JobHunt: React.FC = () => {
                         style={{ width: 24, height: 24, marginRight: 16 }}
                       ></img>
                       <div className={styles.warnings}>
-                      <img src={receive_icon} style={{ position:'absolute',width: 15, left: -12,height: 18, top: -1 }}></img>
+                        <img src={receive_icon} style={{ position: 'absolute', width: 15, left: -12, height: 18, top: -1 }}></img>
                         <RcMarkdown content={state.typewriterArrCache.join('')}></RcMarkdown>
                       </div>
                     </div>
