@@ -152,7 +152,7 @@ const SentimentAnalysis: React.FC = () => {
 
   return (
     <div className={styles?.main}>
-      <div className={styles?.title}>情感分析</div>
+      <div className={styles?.title}>AI情感分析</div>
       <div className={styles?.content}>
         <div className={styles?.contentInfo}>
           <div className={styles?.contentInfoLeft}>
