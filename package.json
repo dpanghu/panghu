@@ -4,6 +4,7 @@
   "scripts": {
     "build": "max build",
     "build-proe": "max build",
+    "build-prod": "max build",
     "build-test": "max build",
     "build-prod": "max build",
     "dev": "max dev",
