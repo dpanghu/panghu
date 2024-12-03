@@ -140,7 +140,10 @@ const App: React.FC = () => {
                 return <div onClick={() => {
                     if (item.role == 'owner') {
                         message.warning('该角色为超级管理员，无法进行移除');
-                    } else {
+                    }else if(item.user_mode == 'offline') {
+                        message.warning('该账号无法移除');
+                    } 
+                    else {
                         state.open = true; state.account_id = item.account_id
                     }
                 }} style={{ cursor: "pointer", color: '#5a73ff',display: state.currentRole == 'normal' ? 'none' : 'flex' }}>移除</div>
