@@ -213,7 +213,7 @@ const AiListTable: React.FC = () => {
         },
     ];
     return (
-        <div className={styles.tableContainer}>
+        <div className={styles.tableContainer} style={{ padding: '30px' }}>
             {
                 opens && <ScenePreview id={id} onCancel={() => { setOpens(false) }} onOk={() => { setOpens(false) }}></ScenePreview>
             }
@@ -227,7 +227,7 @@ const AiListTable: React.FC = () => {
             >
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '30px' }}><ComboBox options={option} value={val} onChange={handleChange}></ComboBox></div>
             </Modal>
-            <div className={styles.tableTop}>
+            <div className={styles.tableTop} style={{ marginBottom: 24 }}>
                 <div className={styles.tableTop1}>
                     <Select
                         option={options}
@@ -274,7 +274,7 @@ const AiListTable: React.FC = () => {
                         }}
                         size="medium"
                     ></Input>
-                    <Button type="primary" onClick={() => {
+                    <Button type="primary" style={{ marginLeft: 16 }} onClick={() => {
                         gettabledata(pageNums, limits, value, values, valuess, inputValue);
                     }}>搜索</Button>
                 </div>
