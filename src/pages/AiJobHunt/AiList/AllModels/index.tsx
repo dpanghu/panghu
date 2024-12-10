@@ -24,19 +24,18 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
   };
 
   // 处理发布按钮点击事件
-  const handlePublishClick = (keyToDelete: string) => {
-    const state = publishedStates[keyToDelete] ? 'unrelase' : 'auditing';
+  const handlePublishClick = (keyToDelete: string,status: any) => {
     publishPlugin({
       userId: 1,
       userToken: 2,
       schoolId: 3,
       memberId: 5,
       pluginId: keyToDelete,
-      state,
+      state: status == 0 ? 'unrelase' : status == 4 ? 'unrelase' : 'auditing',
     }).then((res) => {
       messageApi.open({
         type: 'success',
-        content: publishedStates[keyToDelete] ? '取消发布成功' : '发布成功,待审核',
+        content: '操作成功',
       });
       setPublishedStates({
         ...publishedStates,
@@ -245,7 +244,7 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
           <Card.Grid key={item.id} className={styles.card} hoverable={true}>
             <div className={styles.cardContent}>
               <div className={item.status == 0 ? styles.cardStatus1 : styles.cardStatus}>
-                {item.status == 0 ? '已发布': '未发布'}
+                {item.status == 0 ? '已发布': item.status == 4 ? '待审核' : item.status == 5 ? '审核驳回' : '未发布'}
               </div>
               <div className={styles.left}>
                 <img src={item.icon} alt="" />
@@ -265,7 +264,7 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                       menu={{
                         items: [
                           {
-                            label: item.status == 0 ? '取消发布' : '发布',
+                            label: item.status == 0 ? '取消发布' : item.status == 4 ? '取消发布' : '发布',
                             key: '0',
                             style: {
                               fontFamily: 'PingFangSC, PingFang SC',
@@ -278,7 +277,7 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                               borderRadius: '4px',
                             },
                             onClick: () => {
-                              handlePublishClick(item.id)
+                              handlePublishClick(item.id,item.status)
                             }
                           },
                           {
@@ -436,7 +435,7 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                       menu={{
                         items: [
                           {
-                            label: item.status == 0 ? '取消发布' : '发布',
+                            label: item.status == 0 ? '取消发布' : item.status == 4 ? '取消发布' : '发布',
                             key: '0',
                             style: {
                               fontFamily: 'PingFangSC, PingFang SC',
@@ -449,7 +448,7 @@ const AllModels: React.FC<{ itemss: any[]; activeKey: string | null; activesKey:
                               borderRadius: '4px',
                             },
                             onClick: () => {
-                              handlePublishClick(item.id)
+                              handlePublishClick(item.id,item.status)
                             }
                           },
                           {
