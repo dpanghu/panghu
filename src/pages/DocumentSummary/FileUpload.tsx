@@ -44,7 +44,7 @@ const FileUpload: React.FC<TProps> = ({ onChange, paramsId }) => {
     // action: 'https://tapi.seentao.com/bus-xai/dbe3.private.params.upload.get',
     // data: extraParams,
     seenOss: {
-      url: '/api/xsuite/bucenter.file.upload.get',
+      url: '/api/bus-xai/dbe3.private.params.upload.get',
       extraParams,
     },
     customUploadSuccess: async (file: RcFile) => {

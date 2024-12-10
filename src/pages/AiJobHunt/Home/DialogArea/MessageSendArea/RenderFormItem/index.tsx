@@ -119,7 +119,7 @@ const RenderFormItem: React.FC<Props> = ({ formRef, plugin }) => {
         // eslint-disable-next-line
         const params = {
           seenOss: {
-            url: '/api/xsuite/bucenter.file.upload.get',
+            url: '/api/bus-xai/dbe3.private.params.upload.get',
             extraParams,
           },
         };
