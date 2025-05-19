@@ -3,15 +3,15 @@ name: Build Windows EXE
 on:
   workflow_dispatch:
   push:
-    tags:
-      - 'v*'
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: windows-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v3
 
       - name: Setup Node.js
@@ -19,17 +19,21 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: npm install
 
-      - name: Build frontend
-        run: npm run build
-
-      - name: Build Electron App (Windows)
+      - name: Build App (Electron)
         run: npm run electron:build
 
-      - name: Upload Artifact
+      - name: List Output Files
+        run: |
+          echo "Listing dist/ directory:"
+          dir dist
+
+      - name: Upload EXE Artifact
         uses: actions/upload-artifact@v3
         with:
-          name: windows-build
-          path: dist/*.exe
+          name: windows-exe
+          path: |
+            dist/*.exe
+            dist/*.nsis.zip
