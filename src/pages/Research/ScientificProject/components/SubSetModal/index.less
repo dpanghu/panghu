@@ -1,0 +1,67 @@
+.container {
+  width: 892px;
+  height: 615px;
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-right: 20px;
+    .action {
+      display: flex;
+      column-gap: 10px;
+    }
+  }
+  :global {
+    .ant-modal-footer {
+      display: flex;
+      justify-content: center;
+      column-gap: 16px;
+      button {
+        width: 90px;
+      }
+    }
+  }
+  .content {
+    width: 100%;
+    min-height: 200px;
+    max-height: 465px;
+    .main {
+      display: grid;
+      grid-template-rows: max-content;
+      gap: 20px;
+      justify-content: center;
+      width: 100%;
+      min-height: 160px;
+      max-height: 430px;
+      padding: 10px;
+      overflow-y: auto;
+      .empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+      }
+    }
+    .caseCard {
+      grid-template-columns: repeat(auto-fill, 296px);
+    }
+    .dataSetCard {
+      grid-template-columns: repeat(auto-fill, 402px);
+    }
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      width: 100%;
+      height: 40px;
+      padding: 0 20px;
+    }
+  }
+
+  :global {
+    .ant-modal-body {
+      padding: 12px;
+    }
+  }
+}

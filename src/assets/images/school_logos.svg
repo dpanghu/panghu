@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>编组 8</title>
+    <defs>
+        <circle id="path-1" cx="16" cy="16" r="16"></circle>
+    </defs>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="状态" transform="translate(-578.000000, -106.000000)">
+            <g id="位图备份-10" transform="translate(578.000000, 106.000000)">
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"></use>
+                </mask>
+                <use id="蒙版" fill="#FFFFFF" xlink:href="#path-1"></use>
+                <g id="编组-9" mask="url(#mask-2)">
+                    <g transform="translate(1.000000, 6.533607)">
+                        <polygon id="矩形" stroke="none" fill="#8B9DFF" fill-rule="evenodd" points="6 8.46639333 15 4.46639333 15 25.4663933 6 25.4663933"></polygon>
+                        <path d="M15,8.96639333 L15,16.9663933 C12.790861,16.9663933 11,15.1755323 11,12.9663933 C11,10.7572543 12.790861,8.96639333 15,8.96639333 L15,8.96639333 Z" id="形状结合" stroke="none" fill="#EEF1FF" fill-rule="evenodd"></path>
+                        <polygon id="矩形备份-4" stroke="none" fill="#5A73FF" fill-rule="evenodd" points="15 4.46639333 24 8.46639333 24 25.4663933 15 25.4663933"></polygon>
+                        <path d="M15,8.96639333 C17.209139,8.96639333 19,10.7572543 19,12.9663933 C19,15.1755323 17.209139,16.9663933 15,16.9663933 L15,16.9663933 Z" id="形状结合" stroke="none" fill="#BDC7FF" fill-rule="evenodd"></path>
+                        <path d="M12,18.4663933 L15,18.4663933 L15,18.4663933 L15,25.4663933 L11,25.4663933 L11,19.4663933 C11,18.9141086 11.4477153,18.4663933 12,18.4663933 Z" id="矩形" stroke="none" fill="#EEF1FF" fill-rule="evenodd"></path>
+                        <path d="M1,16.4663933 L6,16.4663933 L6,16.4663933 L6,25.4663933 L0,25.4663933 L0,17.4663933 C-6.76353751e-17,16.9141086 0.44771525,16.4663933 1,16.4663933 Z" id="矩形备份-5" stroke="none" fill="#7B8FFF" fill-rule="evenodd"></path>
+                        <path d="M25,16.4663933 L30,16.4663933 L30,16.4663933 L30,25.4663933 L24,25.4663933 L24,17.4663933 C24,16.9141086 24.4477153,16.4663933 25,16.4663933 Z" id="矩形备份-6" stroke="none" fill="#6A81FF" fill-rule="evenodd" transform="translate(27.000000, 20.966393) scale(-1, 1) translate(-27.000000, -20.966393) "></path>
+                        <polyline id="路径-2" stroke="#ACB9FF" stroke-width="1" fill="none" stroke-linecap="round" stroke-linejoin="round" points="15 4.46639333 15 2.14472637e-16 16 1.39686311 18.0466512 1.39686311"></polyline>
+                        <path d="M15,18.4663933 L18,18.4663933 C18.5522847,18.4663933 19,18.9141086 19,19.4663933 L19,25.4663933 L19,25.4663933 L15,25.4663933 L15,18.4663933 Z" id="矩形" stroke="none" fill="#BDC7FF" fill-rule="evenodd"></path>
+                        <path d="M4.49722479,5.46639333 L15.4972248,5.46639333 C16.0495095,5.46639333 16.4972248,5.91410858 16.4972248,6.46639333 C16.4972248,7.01867808 16.0495095,7.46639333 15.4972248,7.46639333 L4.49722479,7.46639333 C3.94494004,7.46639333 3.49722479,7.01867808 3.49722479,6.46639333 C3.49722479,5.91410858 3.94494004,5.46639333 4.49722479,5.46639333 Z" id="矩形" stroke="none" fill="#ACB9FF" fill-rule="evenodd" transform="translate(9.997225, 6.466393) rotate(-24.000000) translate(-9.997225, -6.466393) "></path>
+                        <path d="M25.4778878,7.78989941 L15.4288878,3.31579634 C14.9243506,3.09116189 14.3332401,3.31806793 14.1086057,3.82260515 C13.8839713,4.32714238 14.1108773,4.91825281 14.6154145,5.14288725 L24.6644146,9.61699033 C25.1689518,9.84162477 25.7600622,9.61471874 25.9846967,9.11018151 C26.2093311,8.60564429 25.9824251,8.01453386 25.4778878,7.78989941 Z" id="矩形" stroke="none" fill="#ACB9FF" fill-rule="evenodd"></path>
+                        <polygon id="路径-3" stroke="none" fill="#ACB9FF" fill-rule="evenodd" points="15 2.0597106 13 4.46639333 17 4.46639333"></polygon>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

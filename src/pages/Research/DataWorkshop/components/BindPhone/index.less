@@ -1,0 +1,109 @@
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.title {
+  margin-bottom: 12px;
+  color: #333333;
+  font-weight: 500;
+  font-size: 32px;
+  font-family: PingFangSC, PingFang SC;
+  font-style: normal;
+  line-height: 32px;
+  text-align: left;
+}
+
+.titleName {
+  margin-bottom: 44px;
+  color: #666666;
+  font-weight: 400;
+  font-size: 14px;
+  font-family: PingFangSC, PingFang SC;
+  font-style: normal;
+  line-height: 22px;
+  text-align: left;
+}
+
+.input {
+  :global {
+    .ant-input {
+      width: 280px;
+      height: 40px;
+      color: #333;
+      background: rgba(149, 162, 255, 0.1);
+      border: 1px solid rgba(90, 115, 255, 0.09);
+      border-radius: 8px;
+      box-shadow: inset 0px 2px 6px 0px rgba(108, 103, 255, 0.18);
+      // border-radius: 8px;
+      // border: 1px solid #FF2739;
+    }
+
+    .ant-input-status-error:not(.ant-input-disabled):not(.ant-input-borderless).ant-input,
+    .ant-input-status-error:not(.ant-input-disabled):not(.ant-input-borderless).ant-input:hover {
+      background: rgba(149, 162, 255, 0.1) !important;
+    }
+  }
+}
+
+.inputGroup {
+  :global {
+    .ant-input-group {
+      display: flex;
+      align-items: center;
+      width: 280px;
+      height: 40px;
+      border: 1px solid rgba(90, 115, 255, 0.09);
+      border-radius: 8px;
+      box-shadow: inset 0px 2px 6px 0px rgba(108, 103, 255, 0.18);
+      // border: 1px solid #FF2739;
+    }
+
+    .ant-input-group.ant-input-group-compact > *:not(:last-child) {
+      margin-right: 0;
+    }
+
+    .ant-input {
+      width: 210px;
+      height: 40px;
+      color: #333;
+      background: rgba(149, 162, 255, 0.1);
+      // box-shadow: inset 0px 2px 6px 0px rgba(108, 103, 255, 0.18);
+      border: none;
+    }
+
+    .ant-input-status-error:not(.ant-input-disabled):not(.ant-input-borderless).ant-input,
+    .ant-input-status-error:not(.ant-input-disabled):not(.ant-input-borderless).ant-input:hover {
+      background: rgba(149, 162, 255, 0.1) !important;
+    }
+
+    .ant-btn {
+      height: 40px;
+      color: #5a73ff;
+      background: rgba(149, 162, 255, 0.1);
+      // box-shadow: inset 0px 2px 6px 0px rgba(108, 103, 255, 0.18);
+      // border-radius: 8px;
+      // border-top: 1px solid rgba(90, 115, 255, 0.09);
+      // border-right: 1px solid rgba(90, 115, 255, 0.09);
+      // border-bottom: 1px solid rgba(90, 115, 255, 0.09);
+      border: none;
+      box-shadow: none;
+    }
+  }
+}
+
+.btn {
+  :global {
+    .ant-btn {
+      width: 280px;
+      height: 40px;
+      background: #ff2739;
+      border: none;
+      border-radius: 8px;
+    }
+  }
+}

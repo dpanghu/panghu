@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>编组 9</title>
+    <defs>
+        <path d="M12,0 C18.627417,-1.21743675e-15 24,5.372583 24,12 C24,18.627417 18.627417,24 12,24 C5.372583,24 8.11624501e-16,18.627417 0,12 C-8.11624501e-16,5.372583 5.372583,1.21743675e-15 12,0 Z" id="path-1"></path>
+        <filter x="-75.0%" y="-75.0%" width="250.0%" height="250.0%" filterUnits="objectBoundingBox" id="filter-2">
+            <feOffset dx="0" dy="0" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="6" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0.871   0 0 0 0 0.89   0 0 0 0 1  0 0 0 1 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="首页" transform="translate(-16.000000, -8.000000)">
+            <g id="编组-9" transform="translate(28.000000, 20.000000)">
+                <g id="hover备份-4" opacity="0.6">
+                    <g id="矩形">
+                        <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
+                        <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-1"></use>
+                    </g>
+                </g>
+                <g id="返回上一级" transform="translate(2.000001, 4.000000)">
+                    <g id="icon-caret-up备份" transform="translate(8.000000, 8.000000) scale(-1, 1) rotate(-90.000000) translate(-8.000000, -8.000000) translate(-0.000000, 0.000000)">
+                        <rect id="矩形" x="0" y="-4.39520439e-15" width="16.0000001" height="16"></rect>
+                        <path d="M3.1446406,4.25344043 C3.31820696,4.07987407 3.58763136,4.06058892 3.7824995,4.19558498 L3.85174739,4.25344043 L7.998194,8.39999382 L12.1446406,4.25344043 C12.318207,4.07987407 12.5876314,4.06058892 12.7824995,4.19558498 L12.8517474,4.25344043 C13.0253137,4.42700678 13.0445989,4.69643118 12.9096028,4.89129932 L12.8517474,4.96054721 L8.35174739,9.46054721 C8.17818103,9.63411356 7.90875663,9.65339871 7.71388849,9.51840266 L7.6446406,9.46054721 L3.1446406,4.96054721 C2.94937846,4.76528506 2.94937846,4.44870257 3.1446406,4.25344043 Z" id="路径-25备份" fill="#666666" fill-rule="nonzero"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

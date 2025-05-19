@@ -1,0 +1,119 @@
+.modal {
+  border-radius: 8px;
+
+  :global {
+    .ant-modal-footer {
+      .ant-btn-primary {
+        background: #ff2739;
+        border: none;
+      }
+    }
+
+    .ant-modal-header {
+      height: 48px;
+      background: url('~@/assets/images/reSearch/headerBg.png') no-repeat;
+      background-size: 624px 48px;
+    }
+
+    .ant-modal-body {
+      background: url('~@/assets/images/reSearch/bodyBg.png') no-repeat;
+      background-size: 624px 57px;
+    }
+  }
+}
+
+.container {
+  position: relative;
+  width: 478px;
+  min-height: 80px;
+  margin: 0 auto 18px;
+  padding: 17px 0 15px 31px;
+  border: 1px solid #ffecec;
+  border-radius: 8px;
+
+  &:first-child {
+    .dot {
+      &::before {
+        position: absolute;
+        top: 20px;
+        left: 6px;
+        width: 4px;
+        height: 74px;
+        background: #ffe9eb;
+        border-radius: 3px;
+        opacity: 0.41;
+        content: '';
+      }
+    }
+  }
+
+  &:nth-child(2) {
+    .dot {
+      top: 26px;
+
+      &::before {
+        position: absolute;
+        top: 20px;
+        left: 6px;
+        width: 4px;
+        height: 104px;
+        background: #ffe9eb;
+        border-radius: 3px;
+        opacity: 0.41;
+        content: '';
+      }
+    }
+  }
+
+  &:last-child {
+    .dot {
+      top: 50px;
+    }
+  }
+
+  p {
+    margin-bottom: 8px;
+    color: #333;
+    font-weight: 600;
+  }
+
+  .span {
+    color: #333;
+  }
+
+  .fileName {
+    color: #5a73ff;
+    cursor: pointer;
+  }
+
+  .name {
+    margin-left: 20px;
+    color: #666;
+  }
+
+  .btn {
+    margin-top: 8px;
+    color: #5a73ff;
+    background: #fff;
+    border: 1px solid #5a73ff;
+    border-radius: 6px;
+  }
+}
+
+.dot {
+  position: absolute;
+  top: 32px;
+  left: -23px;
+  width: 16px;
+  height: 16px;
+  padding: 4px;
+  background: #ff9b37;
+  border-radius: 50%;
+
+  .whiteDot {
+    width: 8px;
+    height: 8px;
+    background: #fff;
+    border-radius: 50%;
+  }
+}

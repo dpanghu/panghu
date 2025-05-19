@@ -1,0 +1,21 @@
+.container {
+  width: 100%;
+  height: 100%;
+  .coverBox {
+    display: grid;
+    grid-template-rows: max-content;
+    grid-template-columns: repeat(auto-fill, 274px);
+    gap: 10px;
+    justify-content: center;
+    .cover {
+      position: relative;
+      .radio {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        z-index: 999;
+        transform: scale(1.5);
+      }
+    }
+  }
+}

@@ -1,8 +1,0 @@
-import React from 'react';
-
-type Props = {};
-const DeleteModal: React.FC<Props> = ({}) => {
-  return <div></div>;
-};
-
-export default DeleteModal;

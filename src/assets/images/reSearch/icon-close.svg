@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>icon-close</title>
+    <g id="builder-案例库" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="数据集导入" transform="translate(-992.000000, -137.000000)">
+            <g id="编组-2" transform="translate(408.000000, 120.000000)">
+                <g id="icon-close" transform="translate(584.000000, 17.000000)">
+                    <rect id="矩形" x="0" y="0" width="16" height="16"></rect>
+                    <line x1="2" y1="2" x2="14" y2="14" id="路径-3" stroke="#999999" stroke-linecap="round" stroke-linejoin="round"></line>
+                    <line x1="2" y1="2" x2="14" y2="14" id="路径-3" stroke="#999999" stroke-linecap="round" stroke-linejoin="round" transform="translate(8.000000, 8.000000) scale(-1, 1) translate(-8.000000, -8.000000) "></line>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,51 @@
+.audio--start-animate {
+  display: flex;
+  align-items: center;
+  > hr {
+    display: inline-block;
+    width: 2px;
+    height: 3px;
+    margin: 0 2px;
+    background-color: #5778f6;
+    border: none;
+    animation: audio-animate-note 0.2s ease-in-out;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    &.hr1 {
+      animation-delay: -1s;
+    }
+    &.hr2 {
+      animation-delay: -0.9s;
+    }
+    &.hr3 {
+      animation-delay: -0.8s;
+    }
+    &.hr4 {
+      animation-delay: -0.7s;
+    }
+    &.hr5 {
+      animation-delay: -0.6s;
+    }
+    &.hr6 {
+      animation-delay: -0.5s;
+    }
+    &.hr7 {
+      animation-delay: -0.4s;
+    }
+    &.hr8 {
+      animation-delay: -0.3s;
+    }
+    &.hr9 {
+      animation-delay: -0.2s;
+    }
+  }
+
+  @keyframes audio-animate-note {
+    0% {
+      transform: scaleY(1);
+    }
+    100% {
+      transform: scaleY(4);
+    }
+  }
+}

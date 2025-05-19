@@ -1,0 +1,116 @@
+.login {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  position: relative;
+  // min-height: 768px;
+  background-size: cover;
+  .header {
+    position: absolute;
+    display: flex;
+    top: 30px;
+    left: 30px;
+    align-items: center;
+  }
+  .login_title {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    font-size: 32px;
+    color: white;
+  }
+
+  .foot {
+    &:hover {
+      color: dodgerblue;
+    }
+  }
+
+  .loginForm {
+    width: 370px;
+    height: 400px;
+    // margin-left: 65%;
+    padding: 32px;
+    background: rgba(26, 61, 121, 0.2);
+    border-radius: 8px;
+    position: absolute;
+    right: 150px;
+    box-shadow: 0px 2px 7px 0px #cdd5ff;
+
+    img {
+      display: block;
+      // width: 55px;
+      height: 28px;
+      margin-bottom: 4px;
+    }
+
+    .logheader {
+      width: 192px;
+      height: 33px;
+      color: #333333;
+      font-weight: 500;
+      font-size: 24px;
+      font-family: PingFangSC-Medium, PingFang SC;
+      line-height: 33px;
+    }
+
+    .rempassword {
+      color: #666666;
+      font-weight: 400;
+      font-size: 12px;
+      font-family: PingFangSC-Regular, PingFang SC;
+      line-height: 16px;
+    }
+
+    /* 去掉输入框默认边框和默认背景颜色 */
+    .ant-input {
+      background-color: transparent !important;
+      border-color: transparent;
+    }
+
+    .input {
+      height: 40px;
+      font-size: 14px;
+      background: #f7f8fa;
+      border: none;
+      border-radius: 8px;
+
+      // 设置输入框的背景色
+      input[type='text'] {
+        background-color: #f7f8fa;
+      }
+
+      input[type='password'] {
+        background-color: #f7f8fa;
+      }
+    }
+
+    .loginButton {
+      width: '100%';
+      height: 40px;
+      background: #ff2739;
+      border-radius: 8px;
+    }
+  }
+
+  .loginBottom {
+    position: absolute;
+    bottom: 2%;
+    left: 23%;
+    width: 54%;
+    color: #666666;
+    font-size: 12px;
+  }
+}
+
+@keyframes bounce {
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(-100px);
+  }
+}

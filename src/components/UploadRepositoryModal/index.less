@@ -1,0 +1,234 @@
+.file_tree_modal {
+  .top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+
+    .breadcrumb {
+      flex: 1;
+    }
+
+    .right {
+      display: flex;
+
+      :global {
+        .ant-btn-default {
+          background: #fff;
+          border: 1px solid #d9d9d9;
+          border-left: 0;
+        }
+      }
+
+      .button {
+        margin-left: 10px;
+      }
+    }
+
+    .input {
+      width: 200px;
+    }
+  }
+
+  .teams_file_tree {
+    display: flex;
+    width: 840px;
+    height: 500px;
+    border: 1px solid rgba(204, 204, 204, 1);
+    border-radius: 4px;
+
+    :global {
+      .ant-tree-node-selected {
+        .ant-tree-title {
+          display: inline-block;
+        }
+      }
+
+      .ant-tree .ant-tree-treenode-disabled .ant-tree-node-content-wrapper {
+        color: #000900;
+        cursor: pointer;
+      }
+    }
+
+    .teams {
+      width: 256px;
+      height: 100%;
+      padding-top: 9px;
+    }
+
+    .files {
+      flex: 1;
+      height: 100%;
+      padding: 24px;
+      overflow: auto;
+      border-left: 1px solid rgba(228, 232, 235, 1);
+
+      .folders {
+        padding-left: 33px;
+
+        .folder {
+          display: flex;
+          justify-content: space-between;
+          line-height: 28px;
+          cursor: pointer;
+
+          .icon {
+            margin-right: 5px;
+          }
+
+          .time {
+            padding-left: 12px;
+          }
+        }
+      }
+    }
+  }
+
+  :global {
+    .ant-modal-body {
+      padding-top: 12px;
+    }
+
+    .ant-tree li .ant-tree-node-content-wrapper {
+      height: auto !important;
+    }
+
+    .ant-modal-footer {
+      border-top: 0;
+    }
+  }
+}
+
+.navigation {
+  border-bottom: 1px solid #e4e8eb;
+
+  li {
+    position: relative;
+    width: 256px;
+    height: 40px;
+    color: #909191;
+    line-height: 40px;
+    cursor: pointer;
+
+    img {
+      width: 20px;
+      height: 20px;
+      margin: 0 23px 0 21px;
+    }
+
+    &:hover,
+    &.active {
+      &::before {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: block;
+        width: 2px;
+        height: 40px;
+        background-color: #db4437;
+        content: '';
+      }
+
+      color: #f32424;
+      background: #f9eceb;
+    }
+  }
+}
+
+.add_team {
+  height: 40px;
+  padding-left: 15px;
+  color: #909191;
+  font-family: PingFangSC-Regular;
+  line-height: 40px;
+
+  & > span {
+    float: right;
+    margin-top: 4px;
+    color: #909191;
+  }
+}
+
+.team_list {
+  height: 420px;
+  overflow: auto;
+
+  li {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 50px;
+    padding-left: 13px;
+    line-height: 50px;
+    cursor: pointer;
+
+    &:hover,
+    &.active {
+      background: #f7f8f9;
+
+      &::before {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: block;
+        width: 2px;
+        height: 50px;
+        background-color: #db4437;
+        content: '';
+      }
+    }
+
+    .team_icon {
+      display: inline-block;
+      width: 28px;
+      height: 28px;
+      margin-right: 17px;
+      color: #ff8000;
+      font-size: 16px;
+      line-height: 28px;
+      text-align: center;
+      background: rgba(255, 127, 0, 0.15);
+      border: 1px solid rgba(255, 127, 0, 1);
+      border-radius: 50%;
+    }
+
+    .team_name {
+      width: 154px;
+      margin-right: 10px;
+      margin-bottom: 0;
+      overflow: hidden; // 溢出多余裁剪
+      white-space: nowrap; // 文本不会换行。
+      text-overflow: ellipsis; // 显示省略符号来代表被修剪的文本。
+    }
+  }
+}
+
+.treeTitle {
+  display: flex;
+}
+
+.file {
+  width: 260px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.size {
+  min-width: 80px;
+  margin-left: 27px;
+}
+
+.time {
+  width: 150px;
+}
+
+.fileIcon {
+  margin: 0 6px 0 4px;
+}
+
+.emptyText {
+  margin-top: 40%;
+  color: #666;
+  text-align: center;
+}

@@ -1,0 +1,9 @@
+解决情况,文件路径,开始位置,结束位置,修改意见,日期;
+unresolved;,/src/pages/cardRegistry/index.less;,53-4;,72-5;,:global {
+        .adm-input-element {
+            flex: auto;
+            display: inline-block;
+  ;,2025/1/15;
+unresolved;,/src/components/Layout/index.tsx;,351-3;,405-10;,;,2025/1/15;
+unresolved;,/src/components/Layout/index.tsx;,351-3;,405-10;,sdas;,2025/1/15;
+unresolved;,/src/pages/cardRegistry/index.tsx;,137-11;,148-18;,;,2025/1/16;

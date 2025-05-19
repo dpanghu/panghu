@@ -6,7 +6,7 @@ export interface CreateAxiosConfig extends AxiosRequestConfig {
    */
   getHeaders?: boolean;
 
-  show?: any,
+  show?: any;
 
   /**
    * 当接口返回错误时是否自定义处理错误
@@ -32,9 +32,9 @@ export interface CreateAxiosConfig extends AxiosRequestConfig {
   isJSON?: boolean;
 
   /**
-   * 定义请求参数是否为Json格式
+   * 定义接口请求类型，根据类型区分采用哪些公共参数
    */
-  noAi?: any;
+  type?: any;
 
   /**
    * 是否屏蔽错误消息
@@ -45,8 +45,11 @@ export interface CreateAxiosConfig extends AxiosRequestConfig {
    * 是否隐藏loading
    */
   hiddenLoading?: boolean;
+
   /**
-   * 导入数据错误需要返回的url
+   * 是否为科研工作台相关请求
    */
-  needUrl?: boolean;
+  isScientificXHR?: boolean;
+
+  reject?: Boolean;
 }

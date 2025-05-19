@@ -1,0 +1,304 @@
+.container {
+  min-height: calc(100vh - 471px);
+  padding: 43px 51px 46px 41px;
+  :global {
+    .ant-pagination .ant-pagination-item-active {
+      width: auto !important;
+    }
+    .ant-pagination .ant-pagination-item-active a {
+      white-space: nowrap;
+    }
+    .ant-modal-content .ant-modal-body {
+      padding: 24px !important;
+    }
+  }
+  .btns {
+    position: absolute;
+    top: 13px;
+    right: 22px;
+
+    button {
+      width: 94px;
+      height: 32px;
+      color: #5a73ff;
+      background: #f6f7ff;
+      border: 1px solid #5a73ff;
+      border-radius: 4px;
+
+      &:last-child {
+        margin-left: 16px;
+      }
+    }
+  }
+
+  .content {
+    margin-bottom: 36px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .title {
+    width: 250px;
+    height: 54px;
+    margin: 0 auto 16px;
+    line-height: 54px;
+    text-align: center;
+    background: url('~@/assets/images/reSearch/titleBg.png') no-repeat;
+    background-size: 100% 100%;
+
+    span {
+      color: #000;
+      font-weight: 800;
+      font-size: 18px;
+      line-height: 18px;
+      background: linear-gradient(270deg, #0037ff 0%, #5400ff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
+
+  .teacherMember {
+    display: flex;
+    flex-wrap: wrap;
+    width: 1096px;
+    margin: 0 auto;
+  }
+
+  .box {
+    position: relative;
+    width: 256px;
+    margin: 0 24px 24px 0;
+    padding: 24px;
+    background: url('~@/assets/images/reSearch/memberManage.png') no-repeat;
+    background-size: 100% 184px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.1);
+
+    &:nth-child(4n) {
+      margin-right: 0;
+    }
+
+    .admin {
+      position: absolute;
+      top: 0;
+      right: 0;
+      display: inline-block;
+      width: 55px;
+      height: 20px;
+      color: #fff;
+      font-size: 14px;
+      line-height: 20px;
+      text-align: center;
+      background: #5a73ff;
+      border-radius: 0 4px 0 4px;
+    }
+
+    .memberName {
+      margin-bottom: 8px;
+      font-weight: 600;
+      font-size: 18px;
+    }
+
+    .schoolName {
+      margin: 4px 0;
+    }
+
+    .dot {
+      position: absolute;
+      right: 20px;
+      bottom: 8px;
+      color: #666;
+      font-size: 24px;
+      cursor: pointer;
+    }
+  }
+}
+
+.drop {
+  :global {
+    .ant-dropdown-menu {
+      // width: 92px;
+      border-radius: 8px;
+      box-shadow: 0 0 4px 1px rgba(0, 0, 0, 0.15);
+    }
+
+    .ant-dropdown-menu-title-content {
+      text-align: center;
+    }
+
+    .ant-dropdown-menu-item:hover {
+      background: rgba(116, 139, 255, 0.1);
+    }
+
+    .ant-dropdown-menu-item {
+      margin: 0 5px;
+      // width: 76px;
+      // margin-left: 8px;
+      padding: 5px 10px;
+      border-radius: 4px;
+    }
+  }
+}
+
+.input {
+  position: absolute !important;
+  top: 11px;
+  right: 57px;
+  width: 200px !important;
+  background: rgba(0, 0, 0, 0.04);
+  border: 0;
+
+  :global {
+    .ant-input {
+      background: transparent;
+    }
+  }
+}
+
+.table {
+  border: 1px solid #e6e6e6;
+  border-radius: 4px;
+
+  :global {
+    .ant-table-thead
+      > tr
+      > th:not(:last-child):not(.ant-table-selection-column):not(
+        .ant-table-row-expand-icon-cell
+      ):not([colspan])::before {
+      width: 0;
+    }
+
+    .ant-table-thead {
+      background: #f2f3f5;
+    }
+
+    .ant-table-tbody > tr.ant-table-row-selected > td {
+      background: none;
+    }
+
+    .ant-table-tbody > tr:hover,
+    .ant-table-tbody > tr:focus {
+      background: none;
+    }
+
+    .ant-table-tbody > tr {
+      &:last-child {
+        td {
+          border-bottom: 0;
+        }
+      }
+    }
+  }
+}
+
+.page {
+  margin-top: 20px !important;
+  text-align: right;
+}
+
+.modal {
+  :global {
+    .ant-modal-header {
+      background: url('~@/assets/images/reSearch/addModalHeaderBg.png') no-repeat;
+      background-size: 100% 100%;
+    }
+
+    .ant-modal-body {
+      background: url('~@/assets/images/reSearch/addModalBodyBg.png') no-repeat;
+      background-size: 100% 100%;
+    }
+
+    .ant-modal-footer {
+      button {
+        width: 80px;
+        background: #f2f3f5;
+
+        &:last-child {
+          background: #ff2739;
+          border: none;
+        }
+      }
+    }
+  }
+}
+
+.roleModal {
+  :global {
+    .ant-modal-footer {
+      button {
+        width: 80px;
+
+        &:last-child {
+          background: #ff2739;
+          border: none;
+        }
+      }
+    }
+  }
+}
+
+.modal_tag_box {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  width: 576px;
+  height: 300px;
+  overflow: auto;
+
+  .modal_tags {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 132px;
+    height: 36px;
+    margin-right: 16px;
+    margin-bottom: 16px;
+    color: #333;
+    font-weight: 400;
+    font-size: 12px;
+    font-family: PingFangSC-Regular, PingFang SC;
+    line-height: 20px;
+    background: rgba(116, 139, 255, 0.1);
+    border-radius: 4px;
+    cursor: pointer;
+
+    &:nth-child(4n) {
+      margin-right: 0;
+    }
+
+    img {
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+
+    &:hover {
+      opacity: 0.7;
+    }
+  }
+}
+
+.confirmModal {
+  :global {
+    .ant-modal-body {
+      height: 142px;
+      padding: 0;
+      line-height: 142px;
+      text-align: center;
+    }
+
+    .ant-modal-footer {
+      button {
+        width: 80px;
+
+        &:last-child {
+          background: #ff2739;
+          border: none;
+        }
+      }
+    }
+  }
+}

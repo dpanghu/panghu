@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>hover</title>
+    <defs>
+        <rect id="path-1" x="12" y="12" width="24" height="24" rx="4"></rect>
+        <filter x="-75.0%" y="-75.0%" width="250.0%" height="250.0%" filterUnits="objectBoundingBox" id="filter-2">
+            <feOffset dx="0" dy="0" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="6" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.15 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="教师-课程内容" transform="translate(-1312.000000, -383.000000)">
+            <g id="编组-16" transform="translate(1016.000000, 285.000000)">
+                <g id="hover备份-2" transform="translate(296.000000, 98.000000)">
+                    <g id="矩形">
+                        <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
+                        <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-1"></use>
+                    </g>
+                    <path d="M31.5,16 C31.7761424,16 32,16.2238576 32,16.5 L32,20.5 C32,20.7761424 31.7761424,21 31.5,21 C31.2238576,21 31,20.7761424 31,20.5 L30.9994661,17.707 L27.0251263,21.6819805 C26.8298641,21.8772427 26.5132816,21.8772427 26.3180195,21.6819805 C26.1227573,21.4867184 26.1227573,21.1701359 26.3180195,20.9748737 L30.2924661,17 L27.5,17 C27.2238576,17 27,16.7761424 27,16.5 C27,16.2238576 27.2238576,16 27.5,16 L31.5,16 Z" id="形状结合备份-4" fill="#666666" fill-rule="nonzero"></path>
+                    <path d="M21.2928932,26.2071068 C21.5690356,26.2071068 21.7928932,26.4309644 21.7928932,26.7071068 L21.7928932,30.7071068 C21.7928932,30.9832492 21.5690356,31.2071068 21.2928932,31.2071068 C21.0167508,31.2071068 20.7928932,30.9832492 20.7928932,30.7071068 L20.7924661,27.9141068 L16.8180195,31.8890873 C16.6227573,32.0843494 16.3061748,32.0843494 16.1109127,31.8890873 C15.9156506,31.6938252 15.9156506,31.3772427 16.1109127,31.1819805 L20.0854661,27.2071068 L17.2928932,27.2071068 C17.0167508,27.2071068 16.7928932,26.9832492 16.7928932,26.7071068 C16.7928932,26.4309644 17.0167508,26.2071068 17.2928932,26.2071068 L21.2928932,26.2071068 Z" id="形状结合备份" fill="#666666" fill-rule="nonzero" transform="translate(18.878680, 29.121320) scale(-1, -1) translate(-18.878680, -29.121320) "></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

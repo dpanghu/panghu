@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>返回上一级</title>
+    <g id="builder-初始化" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="数据集列表" transform="translate(-24.000000, -15.000000)">
+            <g id="编组-2" transform="translate(24.000000, 13.000000)">
+                <g id="返回上一级" transform="translate(0.000000, 2.000000)">
+                    <rect id="矩形" fill-opacity="0.1" fill="#748BFF" x="0" y="0" width="20" height="20" rx="2"></rect>
+                    <g id="icon-caret-up备份" transform="translate(10.000001, 10.000000) scale(-1, 1) rotate(-90.000000) translate(-10.000001, -10.000000) translate(2.000001, 2.000000)">
+                        <rect id="矩形" x="0" y="0" width="16.0000001" height="16"></rect>
+                        <polyline id="路径-25备份" stroke="#5A73FF" stroke-linecap="round" stroke-linejoin="round" points="4 6 8.50000004 10.5 13.0000001 6"></polyline>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

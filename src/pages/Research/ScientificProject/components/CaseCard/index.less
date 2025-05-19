@@ -1,0 +1,142 @@
+.container {
+  width: 296px;
+  height: 309px;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  transition: all 0.2s;
+  &:hover {
+    border: 1px solid #86a5e2;
+  }
+  .top {
+    position: relative;
+    > img {
+      width: 100%;
+      height: 166px;
+    }
+    .radio {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      transform: scale(1.2);
+    }
+
+    .caseTag {
+      margin-top: 10px;
+
+      .tagsel {
+        position: absolute;
+        bottom: 10px;
+        left: 16px;
+        width: 250px;
+        overflow: hidden;
+        line-height: 23px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+
+        span {
+          display: inline-block;
+          height: 21px;
+          margin-right: 8px;
+          padding: 0 3px 0 8px;
+          color: #666;
+          line-height: 21px;
+          text-align: center;
+          background: rgba(255, 255, 255, 0.54);
+          border: 1px solid rgba(255, 255, 255, 0.61);
+          border-radius: 4px;
+        }
+      }
+    }
+  }
+  .main {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 100%;
+    height: calc(100% - 166px);
+    padding: 15px;
+    row-gap: 3px;
+    .name {
+      display: flex;
+      align-items: center;
+      padding: 5px 0;
+      .casesName {
+        display: inline-block;
+        max-width: 195px;
+        overflow: hidden;
+        color: #333;
+        font-size: 18px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+      .isProposeMark {
+        display: inline-block;
+        margin-left: 8px;
+        padding: 1px 6px;
+        color: #a77aff;
+        font-size: 14px;
+        line-height: 20px;
+        text-align: center;
+        background: rgba(167, 122, 255, 0.1);
+        border: 1px solid #dccaff;
+        border-radius: 4px;
+      }
+    }
+    .desc {
+      overflow: hidden;
+      color: #666;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    .platform,
+    .case {
+      color: #666;
+      > span {
+        &:nth-child(2) {
+          max-width: 190px;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+      }
+    }
+  }
+}
+
+.tooltip {
+  :global {
+    .ant-tooltip-inner {
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 8px;
+    }
+
+    .ant-tooltip-arrow-content {
+      --antd-arrow-background-color: linear-gradient(
+        to right bottom,
+        rgba(255, 255, 255, 0.8),
+        rgba(255, 255, 255, 0.8)
+      );
+    }
+  }
+
+  .span {
+    display: inline-block;
+    height: 20px;
+    margin-right: 8px;
+    padding: 0 8px;
+    color: #666;
+    line-height: 20px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    border-radius: 4px;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}

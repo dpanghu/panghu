@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="247px" height="172px" viewBox="0 0 247 172" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>椭圆形</title>
+    <defs>
+        <linearGradient x1="50%" y1="53.1184654%" x2="85.7385384%" y2="88.9836761%" id="linearGradient-1">
+            <stop stop-color="#86E7FC" offset="0%"></stop>
+            <stop stop-color="#5A73FF" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.05">
+        <g id="应用配置-开发态" transform="translate(-152.000000, -203.000000)" stroke="url(#linearGradient-1)" stroke-width="69.8971519">
+            <g id="编组-17" transform="translate(112.000000, 72.000000)">
+                <g id="编组-22" transform="translate(40.000000, 132.000000)">
+                    <g id="编组-18" transform="translate(-179.868671, -260.412791)">
+                        <ellipse id="椭圆形" style="mix-blend-mode: multiply;" cx="215.283228" cy="215.555233" rx="180.334652" ry="180.606657"></ellipse>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -11,8 +11,8 @@ const antIcon = <Loading3QuartersOutlined spin />;
 
 const PageLoading: React.FC<IProps> = ({ tip = '加载中，请稍后...' }) => {
   return (
-    <div className={styles.pageLoading}>
-      <Spin indicator={antIcon} size="large" tip={tip} delay={300} />
+    <div className={styles.pageLoading} id="custom_loading">
+      <Spin indicator={antIcon} size="large" tip={tip} />
     </div>
   );
 };

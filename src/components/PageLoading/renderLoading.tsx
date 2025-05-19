@@ -1,8 +1,7 @@
 import PageLoading from '@/components/PageLoading';
-import { createRoot } from 'react-dom/client';
+import ReactDOM from 'react-dom';
 
 const collectors = new Map<string, string>();
-let pageLoading = null;
 
 const getLoadingDom = () => {
   let loadingDom = document.getElementById('page-loading');
@@ -15,22 +14,30 @@ const getLoadingDom = () => {
   return loadingDom;
 };
 
-const showLoading = (url: string, show: any) => {
-  if (collectors.size === 0 && show === undefined) {
+const showLoading = (url: string, tip?: string) => {
+  if (collectors.size === 0) {
     const loadingDom = getLoadingDom();
-    pageLoading = createRoot(loadingDom);
-    pageLoading.render(<PageLoading />);
+    // collectors.set(url, url);
+    ReactDOM.render(<PageLoading tip={tip} />, loadingDom);
   }
   collectors.set(url, url);
 };
 
 const clearLoading = (url: string, show: any) => {
-  if (url && collectors.has(url)) {
-    collectors.delete(url);
-  }
-  if (collectors.size === 0 && show === undefined) {
-    pageLoading?.unmount();
-  }
+  try {
+    if (url && collectors.has(url)) {
+      collectors.delete(url);
+    }
+    if (collectors.size === 0 && !show) {
+      const flag = ReactDOM.unmountComponentAtNode(
+        document.getElementById('page-loading') as HTMLDivElement,
+      );
+      const loadingChild = document.getElementById('custom_loading');
+      const loadingParent = getLoadingDom();
+      if (!flag && loadingChild && loadingParent) {
+        loadingParent?.removeChild(loadingChild as HTMLElement);
+      }
+    }
+  } catch (error) {}
 };
-
 export { showLoading, clearLoading };

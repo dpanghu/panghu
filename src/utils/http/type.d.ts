@@ -16,5 +16,6 @@ declare type UploadFileParams = {
 declare type ResponseResult<T = any> = {
   code: number;
   msg?: string;
+  errorExportUrl?: any;
   data?: T;
 };

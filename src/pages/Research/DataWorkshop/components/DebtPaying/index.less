@@ -1,0 +1,188 @@
+.container {
+  .header {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 180px;
+
+    .left {
+      display: flex;
+      flex-direction: column;
+      width: 40%;
+      row-gap: 10px;
+
+      .title {
+        color: #333;
+        font-weight: 400;
+        font-size: 20px;
+      }
+
+      .action {
+        display: flex;
+        column-gap: 20px;
+
+        .dateLabel {
+          display: flex;
+          column-gap: 10px;
+
+          .dateItem {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 76px;
+            height: 32px;
+            background: #f7f8ff;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+
+            &:hover {
+              opacity: 0.75;
+            }
+          }
+
+          .activeItem {
+            color: #fff;
+            background: #5a73ff;
+          }
+        }
+      }
+    }
+
+    .right {
+      display: flex;
+      justify-content: space-around;
+      width: 60%;
+
+      .detail {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        row-gap: 15px;
+      }
+    }
+  }
+
+  .charts {
+    // width: 100%;
+    display: grid;
+    grid-auto-rows: 295px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    width: 100%;
+    // padding: 10px;
+
+    .tableContent {
+      display: flex;
+      flex-direction: column;
+      // justify-content: space-between;
+      width: 100%;
+      height: 100%;
+      padding: 20px 15px 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      row-gap: 15px;
+
+      .tableTitle {
+        color: #333;
+        font-size: 16px;
+      }
+
+      .tableBox {
+        width: 100%;
+
+        height: 100%;
+        overflow-y: auto;
+        .table {
+          flex: 1;
+          width: 100%;
+          border-radius: 8px;
+
+          :global {
+            // .ant-table-row:hover {
+            //   color: #5a73ff;
+            //   background-color: #f7f8ff;
+            // }
+
+            .ant-table {
+              border: 1px solid #eef1ff;
+              border-radius: 8px;
+            }
+
+            .ant-table-tbody {
+              height: 160px;
+              overflow-y: auto;
+            }
+
+            .ant-table-tbody > tr > td {
+              padding: 6px 16px;
+              border-right: 1px solid #eef1ff;
+              border-bottom: 1px solid #eef1ff;
+              cursor: pointer;
+
+              &:last-child {
+                padding: 0;
+                border-right: 0;
+              }
+            }
+
+            .ant-table-tbody > tr {
+              &:last-child {
+                td {
+                  border-bottom: 0;
+                }
+              }
+            }
+
+            .ant-table-thead > tr {
+              background: linear-gradient(180deg, #dfe5ff 0%, #fff 100%);
+            }
+
+            .ant-table-thead > tr > th {
+              padding: 7px 12px;
+              color: #666;
+              font-weight: 400;
+              background: linear-gradient(180deg, #dfe5ff 0%, #fff 100%);
+              border-color: #eef1ff;
+              border-right: 1px solid #eef1ff;
+
+              // &:last-child {
+              //   position: relative;
+              //   z-index: 99;
+
+              //   &::after {
+              //     position: absolute;
+              //     top: 0;
+              //     right: 0;
+              //     z-index: -1;
+              //     width: 219px;
+              //     height: 52px;
+              //     // background-image: url('~@/assets/images/reSearch/tableHead.png');
+              //     background-repeat: no-repeat;
+              //     background-position: right;
+              //     background-size: 219px 52px;
+              //     content: '';
+              //   }
+              // }
+            }
+
+            .ant-table-container table > thead > tr:first-child th:first-child {
+              border-top-left-radius: 7px;
+            }
+
+            .ant-table-container table > thead > tr:first-child th:last-child {
+              border-top-right-radius: 7px;
+            }
+
+            .ant-table-thead
+              > tr
+              > th:not(:last-child):not(.ant-table-selection-column)
+              :not(.ant-table-row-expand-icon-cell):not([colspan])::before {
+              display: none;
+            }
+          }
+        }
+      }
+    }
+  }
+}

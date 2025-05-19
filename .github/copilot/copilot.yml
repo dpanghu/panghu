@@ -1,0 +1,11 @@
+# .github/copilot/copilot.yml
+ 
+# 定义一个名为 "add" 的函数的代码模板
+labels:
+  - "adds"
+ 
+"":
+  |
+    def add(x, y):
+        """Add two numbers together."""
+        return x + y

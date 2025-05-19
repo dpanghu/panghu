@@ -1,0 +1,68 @@
+.modalContainer {
+  width: 100%;
+  height: 490px;
+  // padding: 10px 20px;
+  background: url('../../../../../assets/images/reSearch/openModalTitle.png') no-repeat;
+  background-position: top center;
+  background-size: 100%;
+
+  :global {
+    .ant-modal-footer {
+      padding: 10px 24px;
+    }
+
+    .ant-modal-footer .ant-btn + .ant-btn:not(.ant-dropdown-trigger) {
+      margin-left: 14px;
+    }
+  }
+
+  .header {
+    display: flex;
+    align-items: center;
+    padding: 12px 24px;
+    padding-bottom: 10px;
+    column-gap: 8px;
+    border-bottom: 1px solid #e1e1e1;
+
+    span {
+      &:nth-child(1) {
+        font-weight: 700;
+        font-size: 18px;
+      }
+
+      &:nth-child(2) {
+        color: #999;
+      }
+    }
+  }
+
+  .mainBox {
+    .main {
+      padding: 20px 24px 10px;
+
+      .steps {
+        display: flex;
+        justify-content: center;
+        padding-bottom: 10px;
+
+        :global {
+          .ant-steps {
+            width: 500px;
+          }
+        }
+      }
+
+      .intr {
+        width: 100%;
+        height: 364px;
+        overflow-y: auto;
+
+        :global {
+          .bf-content {
+            height: 317px;
+          }
+        }
+      }
+    }
+  }
+}

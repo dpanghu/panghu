@@ -1,0 +1,219 @@
+.container {
+  min-height: calc(100vh - 471px);
+  padding: 24px 40px 47px;
+
+  .content {
+    width: 1096px;
+    margin: 0 auto 60px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .box {
+    width: 1096px;
+    margin: 0 auto;
+  }
+
+  .title {
+    width: 250px;
+    height: 54px;
+    margin: 0 auto 16px;
+    line-height: 54px;
+    text-align: center;
+    background: url('~@/assets/images/reSearch/titleBg.png') no-repeat;
+    background-size: 100% 100%;
+
+    span {
+      color: #000;
+      font-weight: 800;
+      font-size: 18px;
+      line-height: 18px;
+      background: linear-gradient(270deg, #0037ff 0%, #5400ff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
+
+  .text {
+    margin: 16px 0 12px 0;
+    color: #333;
+    font-weight: 800;
+    font-size: 16px;
+    text-align: center;
+  }
+
+  .article {
+    margin: 0 auto;
+    color: #333;
+    word-wrap: break-word;
+  }
+
+  .photos {
+    display: flex;
+    width: 100%;
+
+    :global {
+      .ant-carousel {
+        width: 100%;
+      }
+
+      .ant-carousel .slick-dots li {
+        background-color: #666;
+      }
+
+      .ant-carousel .slick-dots li.slick-active button {
+        background-color: rgb(220, 20, 20);
+      }
+    }
+  }
+
+  .photo {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 934px;
+    margin: 24px auto 0;
+    overflow: hidden;
+
+    img {
+      // width: 200px;
+      max-width: 750px;
+      height: 258px;
+    }
+  }
+
+  .teacher {
+    display: flex;
+    width: 1096px;
+    height: 195px;
+    margin: 16px auto 0;
+    padding: 23px 100px 22px;
+    background: url('~@/assets/images/reSearch/scTchBg.png') no-repeat;
+    background-size: 100% 100%;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.1);
+
+    img {
+      width: 150px;
+      height: 150px;
+      margin-right: 32px;
+      object-fit: contain;
+      border-radius: 10px;
+    }
+  }
+
+  .name {
+    color: #333;
+    font-weight: 800;
+    font-size: 20px;
+  }
+
+  .span {
+    position: relative;
+    color: #666;
+
+    &::after {
+      position: absolute;
+      bottom: -7px;
+      left: 0;
+      width: 41px;
+      height: 4px;
+      background: linear-gradient(144deg, #8cf6fb 0%, #5a73ff 100%);
+      border-radius: 2px;
+      content: '';
+    }
+  }
+
+  .member_span {
+    color: #666;
+  }
+
+  .describe,
+  .member_des {
+    margin-top: 10px;
+    color: #666;
+    font-weight: 800;
+  }
+
+  .member_des {
+    width: 316px;
+    height: 60px;
+    margin-top: 5px;
+    color: #999;
+    word-wrap: break-word;
+  }
+
+  .member {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .member_box {
+    display: flex;
+    width: 536px;
+    height: 172px;
+    margin-top: 24px;
+    margin-right: 24px;
+    padding: 26px 34px;
+    background: url('~@/assets/images/reSearch/memberBg.png') no-repeat;
+    background-size: 100% 100%;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.1);
+
+    &:nth-child(2n) {
+      margin-right: 0;
+    }
+
+    img {
+      width: 120px;
+      height: 120px;
+      margin-right: 32px;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+  }
+
+  .cooperate_content {
+    display: flex;
+    flex-wrap: wrap;
+    width: 1096px;
+    margin: 0 auto;
+  }
+
+  .cooperate {
+    width: 256px;
+    height: 322px;
+    margin-right: 24px;
+    margin-bottom: 24px;
+    padding: 22px 24px 40px 18px;
+    background: url('~@/assets/images/reSearch/scBg.png') no-repeat;
+    background-size: 100% 100%;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.1);
+
+    &:nth-child(4n) {
+      margin-right: 0;
+    }
+
+    img {
+      width: 172px;
+      height: 65px;
+      object-fit: contain;
+    }
+
+    .cooperate_title {
+      margin: 34px 0 6px 0;
+      font-weight: 800;
+      font-size: 20px;
+    }
+
+    .cooperate_des {
+      width: 214px;
+      color: #999;
+      font-weight: 800;
+      word-wrap: break-word;
+    }
+  }
+}

@@ -1,0 +1,43 @@
+.modal_box {
+  .search {
+    cursor: pointer;
+  }
+
+  .modal_tag_box {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    width: 606px;
+    height: 300px;
+    overflow: auto;
+
+    .modal_tags {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 132px;
+      height: 36px;
+      margin-top: 16px;
+      margin-left: 16px;
+      color: #333;
+      font-weight: 400;
+      font-size: 12px;
+      font-family: PingFangSC-Regular, PingFang SC;
+      line-height: 20px;
+      background: rgba(116, 139, 255, 0.1);
+      border-radius: 4px;
+      cursor: pointer;
+
+      img {
+        position: absolute;
+        top: 0;
+        right: 0;
+      }
+
+      &:hover {
+        opacity: 0.7;
+      }
+    }
+  }
+}

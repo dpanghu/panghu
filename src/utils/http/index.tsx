@@ -1,20 +1,30 @@
-import {
-  clearLoading,
-  showLoading,
-} from '@/components/PageLoading/renderLoading';
-import { message } from 'SeenPc';
+import { clearLoading, showLoading } from '@/components/PageLoading/renderLoading';
+import { message } from 'antd';
 import type { AxiosInstance, AxiosResponse } from 'axios';
 import axios from 'axios';
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import qs from 'qs';
-import { getCommonData, transformFormData } from '../utils';
+import {
+  _getQueryCoursewareParam,
+  _getQueryParam,
+  transformFormData,
+  getItemInStorage,
+} from '../utils';
 import { CodeMessage } from './config';
 import { ContentType } from './enum';
 import type { CreateAxiosConfig } from './interface.d';
+import Cookies from 'js-cookie';
+import { clearCookie } from '../../utils/enum';
+import { logout } from './workspace';
+const hostMap: any = {
+  'https://tedu.seentao.com': 'https://tcloud.seentao.com',
+  'https://dedu.seentao.com': 'https://dcloud.seentao.com',
+  'https://edu.seentao.com': 'https://cloud.seentao.com',
+};
 
 const errorResult: string = '__ERROR_RESULT__';
-const errorResult401: string = '__ERROR_RESULT__401__';
-
+// const errorResult401: string = '__ERROR_RESULT__401__';
+let logouts: any = false;
 class Axios {
   private instance: AxiosInstance;
 
@@ -27,65 +37,77 @@ class Axios {
    * 指定post请求方式的content-type
    */
   private setHeaders() {
-    this.instance.defaults.headers.post['Content-Type'] =
-      ContentType.FORM_URLENCODED;
+    this.instance.defaults.headers.post['Content-Type'] = ContentType.FORM_URLENCODED;
   }
 
   // 请求拦截器 添加公共参数 及自定义axiosConfig
   private transformRequest(config: CreateAxiosConfig): CreateAxiosConfig {
     const conf: any = cloneDeep(config);
-    let qsData = JSON.parse(
-      window.sessionStorage.getItem('queryParams') || '{}',
-    );
-    let pluginCode = window.sessionStorage.getItem('pluginCode') || '';
-    let commonData: any = getCommonData();
+    // this.instance.defaults.headers.userToken = Cookies.get('userToken') || '';
+    let commonData = _getQueryParam(config);
+    let projectData =
+      JSON.parse(window.sessionStorage.getItem('projectJson') || '{}') === null
+        ? {}
+        : JSON.parse(window.sessionStorage.getItem('projectJson') || '{}');
+    let classData =
+      JSON.parse(window.sessionStorage.getItem('classData') || '{}') === null
+        ? {}
+        : JSON.parse(window.sessionStorage.getItem('classData') || '{}');
     conf.params = {
-      ...qsData,
-      pluginCode,
-      ...conf.params,
+      classId: classData.classId,
+      projectVersionId: projectData.id,
       ...commonData,
-      taskId: conf.params?.taskId == void 0 ? commonData.taskId : conf.params?.taskId,
+      ...conf.params,
     };
+
+    // 判断当前请求是否为科研工作台请求，添加 memberType字段
+    if (config.isScientificXHR) {
+      conf.params = {
+        isSchoolAdministrator: !!(Cookies.get('memberType') === 'SCHOOL_ADMINISTRATOR'),
+        ...conf.params,
+      };
+    }
+
+    // 判断是否存在交互式课件id，如果存在就将其设置为公共参数
+    const courseware_iframe = JSON.parse(
+      window.sessionStorage.getItem('courseware_iframe') || 'false',
+    );
+    if (courseware_iframe) {
+      conf.params = {
+        ...conf.params,
+        ..._getQueryCoursewareParam(),
+      };
+    }
+
     if (conf.method?.toLocaleUpperCase() === 'POST') {
       if (conf.isFormData) {
         conf.data = transformFormData(conf.params);
-        this.instance.defaults.headers.post['Content-Type'] =
-          ContentType.FORM_DATA;
+        this.instance.defaults.headers.post['Content-Type'] = ContentType.FORM_DATA;
       } else if (conf.isJSON) {
         conf.data = conf.params;
         this.instance.defaults.headers.post['Content-Type'] = ContentType.JSON;
       } else {
         conf.data = qs.stringify(conf.params);
-        this.instance.defaults.headers.post['Content-Type'] =
-          ContentType.FORM_URLENCODED;
+        this.instance.defaults.headers.post['Content-Type'] = ContentType.FORM_URLENCODED;
       }
       conf.params = null;
     }
-    if (!conf.hiddenLoading) {
-      showLoading(conf.url as string, conf.show);
-    }
+    !conf.hiddenLoading && showLoading(conf.url as string, conf.show);
     return conf;
   }
 
   // 响应拦截器
-  private transformResponse(res: ResponseResult, conf: CreateAxiosConfig): any {
-    const { data, msg, code } = res;
-    if (code === 401) {
-      Promise.reject(CodeMessage[401]);
-      message.error(CodeMessage[401]);
-      return errorResult401;
+  private transformResponse(res: ResponseResult, conf: CreateAxiosConfig, type: any): any {
+    const { data, msg, code, errorExportUrl } = res;
+    if (code === 401 && logouts === false) {
+      !conf.hiddenErrorMessage && message.error(msg);
     }
-    if (Number(code) !== 200 && conf.needUrl) {
-      return Promise.reject(res);
-    }
-    if (Number(code) !== 200) {
-      if (!conf.hiddenErrorMessage) {
+    if (Number(code) !== 200 && logouts === false) {
+      !conf.hiddenErrorMessage &&
         message.error(msg || CodeMessage[Number(code)] || CodeMessage.other);
-      }
-      Promise.reject();
-      return errorResult;
+      return Promise.reject(errorExportUrl || msg);
     }
-    return conf.isPlatform ? res : data;
+    return conf.isPlatform ? res : type === 'dtc' ? res : data;
   }
 
   public request<T = any>(config: CreateAxiosConfig): Promise<T> {
@@ -94,11 +116,9 @@ class Axios {
       this.instance
         .request(conf)
         .then((res: AxiosResponse<ResponseResult>) => {
-          if (!conf.hiddenLoading) {
-            clearLoading(conf.url as string, conf.show as any);
-          }
+          !conf.hiddenLoading && clearLoading(conf.url as string, conf.show as any);
           const { data, headers } = res;
-          const ret: any = this.transformResponse(data, conf);
+          const ret: any = this.transformResponse(data, conf, config.type);
           if (conf.handError) {
             resolve(data as unknown as Promise<T>);
           } else if (ret !== errorResult) {
@@ -112,10 +132,9 @@ class Axios {
           reject();
         })
         .catch((e: Error) => {
-          if (!conf.hiddenLoading) {
-            clearLoading(conf.url as string, conf.show as any);
-          }
-          message.error(`系统开小差了(${e.message})，请刷新后重试或联系管理员`);
+          !conf.hiddenLoading && clearLoading(conf.url as string, conf.show as any);
+          !conf.hiddenErrorMessage &&
+            message.error(`系统开小差了(${e.message})，请刷新后重试或联系管理员`);
           reject();
         });
     });
@@ -139,8 +158,8 @@ class Axios {
 }
 
 export const $axios = new Axios({
-  baseURL: '/api/bus-xai',
+  baseURL: '/api/',
   responseType: 'json',
-  timeout: 2000 * 60,
+  timeout: 1000 * 60,
   timeoutErrorMessage: '请求超时，请稍后重试',
 });

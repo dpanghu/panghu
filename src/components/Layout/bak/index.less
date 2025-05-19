@@ -1,0 +1,283 @@
+.layout_container {
+  .menuIcons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    background: #ff2739;
+    border-radius: 5px;
+
+    ~ div {
+      color: #333;
+      font-weight: 600;
+    }
+  }
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 1280px;
+  height: 100vh;
+  // padding: 20px;
+  background: #f1f5ff;
+  ::-webkit-scrollbar-thumb {
+    background-color: transparent;
+  }
+
+  :hover {
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba(0, 0, 13, 0.15);
+    }
+  }
+
+  .content {
+    flex: 1;
+    // min-width: 1250px;
+    height: calc(100% - 24px);
+    margin-left: 16px;
+    padding: 0px;
+    overflow: hidden;
+    background: white;
+    border-radius: 8px;
+  }
+  .contents {
+    height: 100%;
+    margin-right: 4px;
+    padding: 0px;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    background: white;
+    border-radius: 8px;
+  }
+  .noScroll {
+    flex: 1;
+    height: calc(100% - 24px);
+    margin-right: -17px;
+    // margin-left: 16px;
+    // padding-bottom: 10px;
+    margin-left: 0px;
+    overflow-x: hidden;
+    // overflow-y: auto;
+    overflow-y: auto;
+    &::-webkit-scrollbar {
+      width: 10px;
+    }
+    &:hover::-webkit-scrollbar {
+      width: 10px;
+    }
+    // &::-webkit-scrollbar:hover {
+    //   width: 12px;
+    // }
+    &::-webkit-scrollbar-thumb {
+      // 内容区的滚动条滑块样式，这个是重点
+      // background-color: rgba(144, 147, 153, 0.6);
+      background-clip: padding-box;
+      border-color: transparent;
+      border-style: dashed;
+      border-width: 2px;
+      border-radius: 6px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      // 内容区滚动条滑块划过样式
+      background: rgba(144, 147, 153, 0.6);
+    }
+  }
+
+  .noPaddindBgContent {
+    flex: 1;
+    height: calc(100% - 24px);
+    // margin-left: 16px;
+    // padding-bottom: 10px;
+    margin-left: 2px;
+    overflow-x: hidden;
+    // overflow-y: auto;
+    overflow-y: auto;
+  }
+
+  .menu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+    cursor: pointer;
+
+    .menuIcon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 38px;
+      height: 38px;
+      background: white;
+      border-radius: 5px;
+
+      &:hover {
+        background: #ff2739;
+        border-radius: 5px;
+      }
+    }
+
+    .menuTitle {
+      color: #666;
+      font-weight: 400;
+      font-size: 14px;
+      font-family: PingFangSC-Regular, PingFang SC;
+      line-height: 20px;
+    }
+    .longTitle {
+      width: 30px;
+      color: #666;
+      font-weight: 400;
+      font-size: 14px;
+      font-family: PingFangSC-Regular, PingFang SC;
+      line-height: 20px;
+    }
+  }
+
+  .body,
+  .stuBody {
+    display: flex;
+    height: calc(100vh - 72px);
+    margin-top: 72px;
+    padding-right: 24px;
+    padding-left: 24px;
+
+    .sideMenu {
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      align-items: center;
+      width: 72px;
+      height: calc(100% - 24px);
+      padding: 14px 0;
+      background: #fff;
+      border-radius: 8px;
+    }
+
+    .content {
+      margin-right: 0px;
+      border-radius: 8px;
+    }
+
+    .contents {
+      margin-right: 0;
+    }
+  }
+
+  .stuBody {
+    height: calc(100vh - 72px);
+    margin-top: 72px;
+    // padding: 0 2px 0 18px;
+    padding-right: 0;
+    :global {
+      .ant-modal-body {
+        height: calc(100vh - 200px);
+        padding: 0;
+      }
+    }
+    .content {
+      margin-right: 24px;
+      border-radius: 8px;
+    }
+    .sideMenu {
+      // transform: translateX(6px);
+    }
+  }
+
+  .back {
+    width: 88px;
+    height: 30px;
+    background: #fff;
+    box-shadow: 0 0 4px 1px rgba(0, 0, 0, 0.15);
+  }
+
+  .header {
+    position: fixed;
+    top: 0;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 48px;
+    padding-left: 38px;
+    background: white;
+  }
+
+  .logo {
+    width: 42px;
+    height: 21px;
+    margin-right: 35px;
+    margin-bottom: 8px;
+    margin-left: 1px;
+
+    img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .title {
+    margin-left: 20px;
+    padding: 2px 16px 2px 16px;
+    color: #ffffff;
+    font-weight: 500;
+    font-size: 14px;
+    font-family: PingFangSC-Medium, PingFang SC;
+    line-height: 20px;
+    background: #5a73ff;
+    border-radius: 12px;
+
+    // width: 126px;
+    // height: 25px;
+    // margin-left: 8px;
+    // color: #333;
+    // font-weight: 500;
+    // font-size: 18px;
+    // font-family: PingFangSC-Medium, PingFang SC;
+    // line-height: 25px;
+  }
+
+  .teacherMenu {
+    display: flex;
+    align-items: center;
+    column-gap: 8px;
+    > span {
+      width: 102px;
+      text-align: center;
+      cursor: pointer;
+    }
+    .active {
+      padding: 2px 16px 2px 16px;
+      color: #ffffff;
+      font-weight: 500;
+      font-size: 14px;
+      font-family: PingFangSC-Medium, PingFang SC;
+      line-height: 20px;
+      background: #5a73ff;
+      border-radius: 12px;
+    }
+    .default {
+      width: 24px;
+      height: 24px;
+      margin-top: 0px;
+      padding-top: 1px;
+      font-size: 14px;
+      background: #eef1ff;
+      border-radius: 50%;
+      border-radius: 50%;
+    }
+  }
+
+  .login_message {
+    position: absolute;
+    right: 25px;
+    display: flex;
+    width: auto;
+
+    // width: 100px;
+    img {
+      margin-left: 8px;
+      cursor: pointer;
+    }
+  }
+}

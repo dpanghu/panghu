@@ -1,0 +1,87 @@
+.main {
+  padding: 30px;
+}
+//   .ant-form {
+//     box-sizing: border-box;
+//     margin: 0;
+//     padding: 0;
+//     color: rgba(0, 0, 0, 0.85);
+//     font-size: 14px;
+//     font-variant: tabular-nums;
+//     line-height: 1.5715;
+//     list-style: none;
+//     font-feature-settings: 'tnum', "tnum";
+//     display: flex;
+// }
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  // width: 100%;
+  // margin: 20px 0;
+
+  :global {
+    .ant-input {
+      width: 260px;
+    }
+
+    .ant-input-affix-wrapper {
+      width: 260px;
+    }
+  }
+}
+
+.selectStyle {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 15px;
+
+  // > div {
+  //   width: 300px;
+
+  //   > span {
+  //     width: 80px;
+  //   }
+  // }
+
+  :global {
+    .ant-select {
+      width: 200px;
+    }
+
+    .ant-input-affix-wrapper {
+      width: 230px;
+    }
+  }
+}
+.answer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 0;
+  // width: 310px;
+}
+//   .ant-form-item-label > label {
+//     position: relative;
+//     display: inline-flex;
+//     align-items: center;
+//     max-width: 100%;
+//     height: 32px;
+//     color: rgba(0, 0, 0, 0.85);
+//     font-size: 14px;
+//     width: 110px;
+//     justify-content: end;
+// }
+// .tips{
+//     width: 110px;
+//     justify-content: end;
+// }
+.tableCell {
+  display: inline-block;
+  width: 100px;
+  overflow: 'hidden';
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}

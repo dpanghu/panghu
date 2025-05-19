@@ -1,8 +1,8 @@
 import { defineConfig } from '@umijs/max';
 
 export default defineConfig({
-  base: '/bus_xai_web/',
-  publicPath: '/bus_xai_web/',
+  base: '/',
+  publicPath: '/',
   antd: {},
   access: {},
   model: {},
@@ -15,235 +15,96 @@ export default defineConfig({
   esbuildMinifyIIFE: true,
   routes: [
     {
+      path: '/login',
+      title: '登录',
+      layout: false,
+      component: '@/pages/login',
+    },
+    {
+      path: '/role',
+      title: '角色',
+      layout: false,
+      component: '@/pages/login/role',
+    },
+    {
+      path: '/cardRegistry',
+      title: '数据大屏',
+      layout: false,
+      component: '@/pages/cardRegistry',
+    },
+    {
       path: '/',
-      layout: false,
-      component: '@/pages/404',
-      redirect: '/aiJobHunt',
-    },
-    {
-      path: '/createAiModule',
-      layout: false,
-      component: '@/pages/AiModule/createAiModule',
-    },
-    {
-      path: '/AiScene',
-      layout: false,
-      component: '@/pages/AiModule/AiScene',
-    },
-    {
-      path: '/AiPlanList',
-      layout: false,
-      component: '@/pages/AiModule/AiPlanList',
-    },
-    {
-      path: '/AiPlanLists',
-      layout: false,
-      component: '@/pages/AiModule/AiPlanLists',
-    },
-    {
-      path: '/AiPlan',
-      layout: false,
-      component: '@/pages/AiModule/AiPlan',
-    },
-    {
-      path: '/AiPlanPeople',
-      layout: false,
-      component: '@/pages/AiModule/AiPlanPeople',
-    },
-    {
-      path: '/AiScene',
-      layout: false,
-      component: '@/pages/AiModule/AiScene',
-    },
-    {
-      path: '/AiScenes',
-      layout: false,
-      component: '@/pages/AiModule/AiList',
-    },
-    {
-      path: '/AiSceneImg',
-      layout: false,
-      component: '@/pages/AiModule/AiSceneImg',
-    },
-    {
-      path: '/OCR',
-      layout: false,
-      component: '@/pages/AiOCR',
-    },
-    {
-      path: '/aiJobHunt/AiSurveyQuestionnaire',
-      component: '@/pages/AiJobHunt/AiSurveyQuestionnaire',
-      title: 'XAI | ai调查问卷',
-      layout: false,
-    },
-    {
-      path: '/FVR',
-      layout: false,
-      component: '@/pages/AiFVR',
-    },
-    {
-      path: '/LPR',
-      layout: false,
-      component: '@/pages/AiLPR',
-    },
-    {
-      path: '/OR',
-      layout: false,
-      component: '@/pages/AiOR',
-    },
-    {
-      path: '/aiJobHunt/AiList',
-      component: '@/pages/AiJobHunt/AiList',
-      title: 'XAI | ai列表',
-      layout: false,
-    },
-    {
-      path: '/aiJobHunt/AiListTable',
-      component: '@/pages/AiJobHunt/AiListTable',
-      title: 'XAI | ai列表表格',
-      layout: false,
-    },
-    {
-      path: '/documentSummary',
-      component: '@/pages/DocumentSummary',
-      title: 'AI文档总结',
-      layout: false,
-    },
-    {
-      path: '/documentQA',
-      component: '@/pages/DocumentQA',
-      title: 'AI文档问答',
-      layout: false,
-    },
-    // ai情感分析
-    {
-      path: '/sentimentAnalysis',
-      component: '@/pages/SentimentAnalysis',
-      title: 'AI情感分析',
-      layout: false,
-    },
-    {
-      path: '/wenshengVoice',
-      component: '@/pages/WenshengVoice',
-      title: 'AI文生语音',
-      layout: false,
-    },
-    {
-      path: '/presetData',
-      component: '@/pages/PresetData',
-      title: '预置数据',
-      layout: false,
-    },
-    {
-      path: '/aiAtlas',
-      component: '@/pages/AiAtlas',
-      title: 'AI图谱生成',   
-      layout: false,
-    },
-    {
-      path: '/dataVisualization',
-      component: '@/pages/DataVisualization',
-      title: 'AI数据可视化',
+      title: 'xxx管理系统',
+      component: '@/components/Layout',
       layout: false,
       routes: [
         {
-          path: '/dataVisualization/upload',
-          component: '@/pages/DataVisualization/Upload',
-          exact: true,
-          title: 'AI数据可视化',
+          path: '/userManage',
+          title: '用户管理',
+          component: '@/pages/userManage',
         },
         {
-          path: '/dataVisualization/detail/:id',
-          exact: true,
-          component: '@/pages/DataVisualization/Detail',
-          title: 'AI数据可视化',
+          path: '/dataBoard',
+          title: '数据大屏',
+          layout: false,
+          component: '@/pages/dataBoard',
+        },
+        {
+          path: '/pageIndex',
+          title: '首页',
+          component: '@/pages/pageIndex',
+        },
+        {
+          path: '/orgManage',
+          title: '企业管理',
+          component: '@/pages/orgManage',
+        },
+        {
+          path: '/qrcodeManage',
+          title: '二维码管理',
+          component: '@/pages/qrcodeManage',
+        },
+        {
+          path: '/deptManage',
+          title: '部门管理',
+          component: '@/pages/deptManage',
+        },
+        {
+          path: '/cardManage',
+          title: '测试片管理',
+          component: '@/pages/cardManage',
+        },
+        {
+          path: '/roleManage',
+          title: '角色管理',
+          component: '@/pages/roleManage',
+        },
+        {
+          path: '/sampleManage',
+          title: '采样管理',
+          layout: false,
+          component: '@/pages/sampleManage',
+        },
+        {
+          path: '/userAdmin',
+          title: '在线用户管理',
+          component: '@/pages/userAdmin',
         },
       ],
     },
-    {
-      path: '/IntelligentAssistant',
-      component: '@/pages/IntelligentAssistant',
-      layout: false,
-      routes: [
-        {
-          path: '/IntelligentAssistant/application',
-          component: '@/pages/IntelligentAssistant/application',
-          title: '团队管理',
-        },
-        {
-          path: '/IntelligentAssistant/teamManage',
-          component: '@/pages/IntelligentAssistant/teamManage',
-          title: '应用管理',
-        },
-        {
-          path: '/IntelligentAssistant/knowledge',
-          component: '@/pages/IntelligentAssistant/knowledge',
-          title: '知识库',
-        },
-        {
-          path: '/IntelligentAssistant/statistic',
-          component: '@/pages/IntelligentAssistant/statistic',
-          title: '数据统计',
-        },
-        // {
-        //   path: '/aiJobHunt/resume/:id',
-        //   component: '@/pages/AiJobHunt/Resume',
-        //   exact: true,
-        //   title: 'XAI | ai简历',
-        // },
-        // {
-        //   path: '/aiJobHunt/interview/:paramId/:themeId',
-        //   component: '@/pages/AiJobHunt/Interview',
-        //   exact: true,
-        //   title: 'XAI | ai面试',
-        // },
-        // {
-        //   component: '@/pages/404',
-        // },
-      ],
-    },
-    {
-      path: '/aiJobHunt',
-      component: '@/pages/AiJobHunt',
-      layout: false,
-      routes: [
-        {
-          path: '/aiJobHunt',
-          component: '@/pages/AiJobHunt/Home',
-          title: 'XAI | ai求职',
-        },
-        {
-          path: '/aiJobHunt/resume/:id',
-          component: '@/pages/AiJobHunt/Resume',
-          exact: true,
-          title: 'XAI | ai简历',
-        },
-        {
-          path: '/aiJobHunt/interview/:paramId/:themeId',
-          component: '@/pages/AiJobHunt/Interview',
-          exact: true,
-          title: 'XAI | ai面试',
-        },
-        {
-          component: '@/pages/404',
-        },
-      ],
-    },
-
     {
       component: '@/pages/404',
     },
   ],
   cssLoaderModules: {
-    // 配置驼峰式使用
     exportLocalsConvention: 'camelCase',
   },
   favicons: ['./favicon.ico'],
   npmClient: 'npm',
   proxy: {
     '/api/': {
-      target: 'https://dapi.seentao.com/',
-      onProxyReq: function (req) {
+      target: 'http://120.55.61.17:8999/',
+      onProxyReq(req) {
         if (
           req.path.includes('/chat/stream') ||
           req.path.includes('/create/stream')
@@ -251,7 +112,7 @@ export default defineConfig({
           req.removeHeader('Content-Encoding');
         }
       },
-      onProxyRes: function (proxyRes, req, res) {
+      onProxyRes(proxyRes, req, res) {
         if (
           req.path.includes('/chat/stream') ||
           req.path.includes('/create/stream')
@@ -260,7 +121,7 @@ export default defineConfig({
         }
       },
       changeOrigin: true,
-      pathRewrite: { '^/api': '' },
+      pathRewrite: { '^/api': '/api' },
     },
   },
 });

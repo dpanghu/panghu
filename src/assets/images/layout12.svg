@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>课程备份 6</title>
+    <defs>
+        <path d="M21,60 L77,60 C81.418278,60 85,63.581722 85,68 L85,766 C85,770.418278 81.418278,774 77,774 L21,774 C16.581722,774 13,770.418278 13,766 L13,68 C13,63.581722 16.581722,60 21,60 Z" id="path-1"></path>
+        <filter x="-33.3%" y="-3.4%" width="166.7%" height="106.7%" filterUnits="objectBoundingBox" id="filter-2">
+            <feOffset dx="0" dy="0" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="8" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0.928410823   0 0 0 0 0.93735947   0 0 0 0 1  0 0 0 1 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="学生工作台" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="画板" transform="translate(-37.000000, -152.000000)">
+            <rect fill="#FFFFFF" x="0" y="0" width="1112" height="857"></rect>
+            <g id="矩形" fill-rule="nonzero">
+                <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
+                <use fill="#FFFFFF" xlink:href="#path-1"></use>
+            </g>
+            <rect id="矩形备份-53" fill="#FF2739" x="30" y="144" width="38" height="38" rx="5.33333333"></rect>
+            <g id="课程备份-6" transform="translate(37.000000, 152.000000)" fill-rule="nonzero">
+                <rect id="矩形" fill="#000000" opacity="0" x="0" y="0" width="24" height="24"></rect>
+                <g id="编组-60" transform="translate(3.000000, 4.500000)" fill="#FFFFFF">
+                    <path d="M15.5,0 C16.8807119,0 18,1.11928813 18,2.5 L18,2.5 L18,9.83333333 C18,11.2140452 16.8807119,12.3333333 15.5,12.3333333 L15.5,12.3333333 L8.716,12.333 L4.76979302,15.9784259 C4.47088954,16.2544787 3.99887297,16.0750123 3.93726589,15.695422 L3.93726589,15.695422 L3.9305588,15.6111111 L3.93,12.333 L2.5,12.3333333 C1.1745166,12.3333333 0.089961328,11.3017974 0.00531767968,9.99770902 L0.00531767968,9.99770902 L0,9.83333333 L0,2.5 C0,1.11928813 1.11928813,0 2.5,0 L2.5,0 Z M5,5.5 C4.44771525,5.5 4,5.94771525 4,6.5 C4,7.05228475 4.44771525,7.5 5,7.5 C5.55228475,7.5 6,7.05228475 6,6.5 C6,5.94771525 5.55228475,5.5 5,5.5 Z M9,5.5 C8.44771525,5.5 8,5.94771525 8,6.5 C8,7.05228475 8.44771525,7.5 9,7.5 C9.55228475,7.5 10,7.05228475 10,6.5 C10,5.94771525 9.55228475,5.5 9,5.5 Z M13,5.5 C12.4477153,5.5 12,5.94771525 12,6.5 C12,7.05228475 12.4477153,7.5 13,7.5 C13.5522847,7.5 14,7.05228475 14,6.5 C14,5.94771525 13.5522847,5.5 13,5.5 Z" id="形状结合"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

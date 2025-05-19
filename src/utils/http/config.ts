@@ -13,6 +13,4 @@ export const CodeMessage: RecordItem = {
   other: '系统发生未知错误，请刷新重试或联系管理员',
 };
 
-export const Public = '/public';
-
 export const SuccessCode = 200;

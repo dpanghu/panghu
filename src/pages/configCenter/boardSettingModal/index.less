@@ -1,0 +1,30 @@
+.cancelModalBtn {
+  margin-left: 20px;
+}
+.tags {
+  text-align: left;
+  .tagItem {
+    display: inline-block;
+    margin-right: 10px;
+    margin-bottom: 4px;
+    padding: 0 10px;
+    color: var(--globalColor);
+    background: rgba(116, 139, 255, 0.1);
+    border-radius: 2px;
+  }
+  .close {
+    margin-left: 8px;
+    color: var(--third-txt-color);
+    cursor: pointer;
+    &:hover {
+      color: var(--globalColor);
+    }
+  }
+}
+.wrap {
+  :global {
+    .ant-upload-list-item-card-actions {
+      display: none;
+    }
+  }
+}

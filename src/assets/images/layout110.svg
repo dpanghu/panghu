@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>课程备份 13</title>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="教师工作台其他状态" transform="translate(-117.000000, -975.000000)">
+            <g id="编组-31" transform="translate(93.000000, 204.000000)">
+                <g id="编组-14备份" transform="translate(17.000000, 764.000000)">
+                    <g id="课程备份-13" transform="translate(7.000000, 7.000000)">
+                        <rect id="矩形" fill="#000000" fill-rule="nonzero" opacity="0" x="0" y="0" width="24" height="24"></rect>
+                        <g id="编组-60" transform="translate(3.500000, 6.000000)">
+                            <path d="M2,11.3333333 C0.8954305,11.3333333 0,10.4379028 0,9.33333333 L0,2 C0,0.8954305 0.8954305,0 2,0 L15,0 C16.1045695,0 17,0.8954305 17,2 L17,9.33333333 C17,10.4379028 16.1045695,11.3333333 15,11.3333333 L10.0210471,11.3333333 L8.0210471,11.3333333 L2,11.3333333 Z" id="路径" stroke="#FFFFFF" fill="#FFFFFF" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <circle id="椭圆形" fill="#FF2739" cx="4.5" cy="6" r="1"></circle>
+                            <circle id="椭圆形备份-15" fill="#FF2739" cx="8.5" cy="6" r="1"></circle>
+                            <circle id="椭圆形备份-16" fill="#FF2739" cx="12.5" cy="6" r="1"></circle>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
